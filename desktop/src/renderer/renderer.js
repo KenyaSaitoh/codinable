@@ -43,7 +43,7 @@ let appInfo     = null;   // get-app-info の結果 (バージョン・モデル
 let projects    = [];     // ワークスペース直下のプロジェクト一覧
 let project     = null;   // 選択中のプロジェクト名
 let projectInfo = null;   // detectProject の結果 (kinds / gradleTasks / npmScripts / staticRoot)
-let courses     = [];     // コースパック (新規プロジェクトダイアログで使う)
+let courses     = [];     // コースパック (演習一覧と新規プロジェクトダイアログで使う)
 
 // ═══════════════════════════════════════════
 //  テーマ / フォント / キーバインド
@@ -121,6 +121,8 @@ function loadLocalSettings() {
   if (aiW) $('ai-panel').style.width = `${aiW}px`;
   const runH = parseInt(localStorage.getItem('runHeight'), 10);
   if (runH) $('run-output-wrap').style.height = `${runH}px`;
+  const exerciseH = parseInt(localStorage.getItem('exerciseHeight'), 10);
+  if (exerciseH) $('exercise-list').style.height = `${exerciseH}px`;
 }
 
 // ═══════════════════════════════════════════
@@ -571,6 +573,9 @@ async function reloadProjects() {
     select.appendChild(opt);
   }
   if (project) select.value = project;
+
+  // 「作成済み」の印が付く演習が変わるので、一覧を描き直す
+  if (courses.length) renderExercises();
 }
 
 async function selectProject(name, { openInitial = [] } = {}) {
@@ -588,6 +593,8 @@ async function selectProject(name, { openInitial = [] } = {}) {
   project = name || null;
   localStorage.setItem('lastProject', project || '');
   $('project-select').value = project || '';
+  // どの演習を開いているかの ▶ 印を付け替える
+  if (courses.length) renderExercises();
 
   await refreshProjectInfo();
   await reloadTree();
@@ -654,6 +661,162 @@ async function restoreTemplate() {
 }
 
 // ═══════════════════════════════════════════
+//  演習一覧
+//
+//  演習 = 講座のレッスンに対応する「動かして確かめる 1 単位」。
+//  問題を出して解かせるものではないので、正解・不正解や採点は持たない。
+//
+//  受講者の操作を「演習を選ぶ → 実行を押す」の 2 手に収めるため、
+//  選んだ時点で作業用プロジェクトの用意・ファイルを開く・実行対象の選択
+//  (= 実行環境の切り替え) までを済ませる。
+// ═══════════════════════════════════════════
+
+/** runtime → 一覧に出すアイコン。course.yaml の runtime と対応させる */
+const RUNTIME_ICONS = {
+  java: '☕', spring: '🌱', node: '🟩', react: '⚛️',
+  python: '🐍', static: '🌐', sql: '🗄', shell: '🖥', other: '📦',
+};
+
+async function reloadExercises() {
+  courses = await window.api.loadCourses(getLang());
+
+  const select = $('exercise-course-select');
+  const previous = select.value || localStorage.getItem('lastCourse') || '';
+  select.innerHTML = '';
+  for (const course of courses) {
+    const opt = document.createElement('option');
+    opt.value = course.id;
+    opt.textContent = course.name;
+    select.appendChild(opt);
+  }
+  // 講座が 1 つしか入っていないときは選ぶ意味がないので隠す
+  select.classList.toggle('hidden', courses.length <= 1);
+  select.value = courses.some(c => c.id === previous) ? previous : (courses[0]?.id || '');
+
+  renderExercises();
+}
+
+function currentCourse() {
+  return courses.find(c => c.id === $('exercise-course-select').value) || null;
+}
+
+/** 演習に対応する作業用プロジェクト (まだ作っていなければ null) */
+function projectForExercise(course, exercise) {
+  return projects.find(p => p.courseId === course.id && p.template === exercise.id) || null;
+}
+
+function renderExercises() {
+  const list    = $('exercise-list');
+  const course  = currentCourse();
+  const entries = course?.exercises || [];
+
+  $('exercise-count').textContent = String(entries.length);
+  list.innerHTML = '';
+  if (!entries.length) {
+    list.innerHTML = `<div class="tree-placeholder">${escapeHtml(t('exerciseEmpty'))}</div>`;
+    return;
+  }
+
+  let lastChapter = null;
+  for (const exercise of entries) {
+    // 一覧そのものはフラットに並べる。どのチャプターのものかが分かるよう、
+    // チャプターが変わるところにだけ細い見出しを挟む
+    if (exercise.chapter && exercise.chapter !== lastChapter) {
+      const heading = document.createElement('div');
+      heading.className = 'exercise-chapter';
+      heading.textContent = tf('exerciseChapter', { n: exercise.chapter });
+      list.appendChild(heading);
+      lastChapter = exercise.chapter;
+    }
+
+    const created = projectForExercise(course, exercise);
+    const item = document.createElement('button');
+    item.type  = 'button';
+    item.className = 'q-item exercise-item';
+    // created = 作業用プロジェクトが既にある (進捗ではなく、作ったかどうか)
+    item.classList.toggle('created', !!created);
+    item.classList.toggle('active', !!created && created.name === project);
+    item.title = exercise.description || exercise.name;
+    item.innerHTML =
+      '<span class="q-status"></span>' +
+      '<span class="exercise-runtime-icon" aria-hidden="true">' +
+        `${RUNTIME_ICONS[exercise.runtime] || RUNTIME_ICONS.other}</span>` +
+      '<span class="exercise-body">' +
+        `<span class="exercise-title">${escapeHtml(exercise.name)}</span>` +
+        (exercise.lesson
+          ? `<span class="exercise-lesson">${escapeHtml(exercise.lesson)}</span>`
+          : '') +
+      '</span>' +
+      `<span class="exercise-tag">${escapeHtml(t(`runtime_${exercise.runtime}`))}</span>`;
+    item.addEventListener('click', () => openExercise(course, exercise));
+    list.appendChild(item);
+  }
+}
+
+/**
+ * 演習を開く。
+ * 作業用プロジェクトが無ければ雛形から作り、選んで、実行対象まで合わせる。
+ */
+async function openExercise(course, exercise) {
+  let target = projectForExercise(course, exercise);
+
+  if (!target) {
+    const name = uniqueProjectName(exercise.suggestName || exercise.id);
+    const res  = await window.api.wsCreateProject({
+      name, courseId: course.id, templateId: exercise.id, lang: getLang(),
+    });
+    if (!res.ok) {
+      await alertDialog(tf('errCreateFailed', { error: res.error || '' }));
+      return;
+    }
+    await reloadProjects();
+    target = projects.find(p => p.name === name);
+    if (!target) return;
+  }
+
+  await selectProject(target.name, { openInitial: exercise.openFiles });
+  await applyExerciseRunTarget(exercise);
+  renderExercises();
+}
+
+/** 既にあるプロジェクトと名前がぶつからないようにする */
+function uniqueProjectName(base) {
+  const safe = String(base).replace(/[^A-Za-z0-9._-]/g, '-').replace(/^[^A-Za-z0-9]+/, '')
+               || 'exercise';
+  if (!projects.some(p => p.name === safe)) return safe;
+  for (let i = 2; i < 100; i++) {
+    if (!projects.some(p => p.name === `${safe}-${i}`)) return `${safe}-${i}`;
+  }
+  return `${safe}-${Date.now()}`;
+}
+
+/**
+ * 演習が宣言している実行対象を選ぶ。これが「実行環境の自動切り替え」にあたる。
+ *
+ * course.yaml の run は実行対象セレクトと同じ書式。ただし file: のときは、
+ * 実行対象 'file' が「いま開いているファイル」を指すため、先にそのファイルを開く。
+ */
+async function applyExerciseRunTarget(exercise) {
+  if (!exercise.run) return;
+  const [kind, arg = ''] = exercise.run.split(/:(.*)/s);
+
+  if (kind === 'file') {
+    if (arg) await openFile(arg);
+    selectRunTarget('file');
+    return;
+  }
+  selectRunTarget(exercise.run);
+}
+
+/** 実行対象セレクトにその選択肢があれば選ぶ (無ければ触らない) */
+function selectRunTarget(value) {
+  const select = $('run-target-select');
+  if (![...select.options].some(opt => opt.value === value)) return;
+  select.value = value;
+  $('btn-run').disabled = running || !project;
+}
+
+// ═══════════════════════════════════════════
 //  新規プロジェクトダイアログ
 // ═══════════════════════════════════════════
 
@@ -694,11 +857,11 @@ function renderTemplateList() {
     cards.push({ id: null, name: t('templateBlank'), description: t('templateBlankDesc'), tags: [] });
   } else {
     const course = courses.find(c => c.id === courseId);
-    for (const tpl of course?.templates || []) {
+    for (const exercise of course?.exercises || []) {
       cards.push({
-        id: tpl.id, name: tpl.name, description: tpl.description,
-        suggestName: tpl.suggestName, openFiles: tpl.openFiles,
-        tags: [tpl.chapter, tpl.kind].filter(Boolean),
+        id: exercise.id, name: exercise.name, description: exercise.description,
+        suggestName: exercise.suggestName, openFiles: exercise.openFiles,
+        tags: [exercise.lesson, t(`runtime_${exercise.runtime}`)].filter(Boolean),
       });
     }
     if (!cards.length) {
@@ -1673,6 +1836,8 @@ function retranslateDynamicUi() {
   renderTree();
   updateRunTargets();
   refreshProjectInfo();
+  // 演習名・説明はコースパックが言語ごとに持っているので読み直す
+  reloadExercises();
   if (!chatMessages.length) clearChat();
   if (!coverage) clearTestResults();
 }
@@ -1716,6 +1881,12 @@ function setupResize(handleId, targetId, { axis, invert = false, storageKey, min
 // ═══════════════════════════════════════════
 
 function wireEvents() {
+  // ── 演習一覧 ──
+  $('exercise-course-select').addEventListener('change', ev => {
+    localStorage.setItem('lastCourse', ev.target.value);
+    renderExercises();
+  });
+
   // ── ヘッダー ──
   $('project-select').addEventListener('change', ev => selectProject(ev.target.value));
   $('btn-new-project').addEventListener('click', openNewProjectDialog);
@@ -1824,6 +1995,9 @@ function wireEvents() {
   });
   setupResize('run-log-handle', 'run-output-wrap', {
     axis: 'y', invert: true, storageKey: 'runHeight', min: 60, max: 700,
+  });
+  setupResize('exercise-resize-handle', 'exercise-list', {
+    axis: 'y', storageKey: 'exerciseHeight', min: 60, max: 620,
   });
 
   // ── キーボード ──
@@ -1939,6 +2113,8 @@ async function boot() {
   wireEvents();
   wireIpc();
 
+  // 演習一覧を先に読む (プロジェクト一覧の描画で「作成済み」の照合に使う)
+  await reloadExercises();
   await reloadProjects();
   const last = localStorage.getItem('lastProject');
   const initial = projects.some(p => p.name === last) ? last : projects[0]?.name || null;

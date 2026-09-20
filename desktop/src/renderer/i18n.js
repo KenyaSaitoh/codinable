@@ -56,6 +56,24 @@ const UI_STRINGS = {
     settingsSaved:       '設定を保存しました。',
     wsChangedReload:     'ワークスペースを変更しました。プロジェクト一覧を読み込み直します。',
 
+    // ── 演習一覧 ──
+    // 演習 = 講座のレッスンに対応する「動かして確かめる 1 単位」。
+    // 問題を解かせるものではないので、正解・採点・完了といった語は使わない。
+    exerciseTitle:       '📚 演習',
+    exerciseCourseTitle: '講座を選びます',
+    exerciseEmpty:       '演習がありません',
+    exerciseChapter:     'チャプター {n}',
+    exerciseNotCreated:  'まだ開いていません（選ぶと雛形から用意します）',
+    runtime_java:        'Java',
+    runtime_spring:      'Spring',
+    runtime_node:        'Node.js',
+    runtime_react:       'React',
+    runtime_python:      'Python',
+    runtime_static:      '静的Web',
+    runtime_sql:         'SQL',
+    runtime_shell:       'Shell',
+    runtime_other:       'その他',
+
     // ── ファイルツリー ──
     explorerTitle:       '📁 ファイル',
     explorerEmpty:       'プロジェクトを選択してください',
@@ -260,6 +278,21 @@ const UI_STRINGS = {
     btnCancel:           'Cancel',
     settingsSaved:       'Settings saved.',
     wsChangedReload:     'Workspace changed. Reloading the project list.',
+
+    exerciseTitle:       '📚 Exercises',
+    exerciseCourseTitle: 'Choose a course',
+    exerciseEmpty:       'No exercises',
+    exerciseChapter:     'Chapter {n}',
+    exerciseNotCreated:  'Not opened yet (choosing it sets up the files)',
+    runtime_java:        'Java',
+    runtime_spring:      'Spring',
+    runtime_node:        'Node.js',
+    runtime_react:       'React',
+    runtime_python:      'Python',
+    runtime_static:      'Static web',
+    runtime_sql:         'SQL',
+    runtime_shell:       'Shell',
+    runtime_other:       'Other',
 
     explorerTitle:       '📁 Files',
     explorerEmpty:       'Select a project first',

@@ -17,13 +17,14 @@
 const fs   = require('fs');
 const os   = require('os');
 const path = require('path');
-const { spawn, execFile } = require('child_process');
+const { spawn } = require('child_process');
 
 const {
   IS_WIN, resolveJavaTool, resolveNode, resolveNpm, resolvePython, resolveBash,
-  resolveHsqldb, resolveGradleWrapperJar, getDevEnv,
+  resolveHsqldb, resolveGradleWrapperJar, resolveRuntimeDir, getDevEnv,
   getJavaRuntimeOptions, getJavacRuntimeOptions,
 } = require('./runtimes');
+const crypto = require('crypto');
 const { decodeOutput, killTree, killPort, walkTree } = require('./util');
 const { resolveProjectDir, detectProject } = require('./workspace');
 const { JACOCO_INIT_SCRIPT, collectTestRunArtifacts } = require('../test-report');
@@ -31,6 +32,10 @@ const { JACOCO_INIT_SCRIPT, collectTestRunArtifacts } = require('../test-report'
 const CP_SEP = IS_WIN ? ';' : ':';
 
 let current = null;   // { proc, projectDir, kind, task, isTest }
+
+// 実行の世代番号。前処理 (npm install など) の途中で ⏹ を押されたり、
+// 別の実行が始まったりしたときに、古い実行が続きを走らせないようにする。
+let runToken = 0;
 
 // ── 起動 URL の検出 ────────────────────────────────────────
 //
@@ -162,6 +167,76 @@ function findJavaMain(projectDir, preferred) {
   return { sources, mainFile: withMain || sources[0] || null };
 }
 
+// ── 依存の自動用意 ─────────────────────────────────────────
+//
+// 演習は「選んで実行を押したら動く」ことを最優先にする。そのため
+// npm install / pip install は受講者に踏ませず、実行の前段として自動で通す。
+// 一度用意できたら次回は飛ばすので、待たされるのは初回だけである。
+
+/** node_modules が無い / package.json のほうが新しいなら npm install が要る */
+function needsNpmInstall(projectDir) {
+  const pkg = path.join(projectDir, 'package.json');
+  if (!fs.existsSync(pkg)) return false;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(pkg, 'utf8'));
+    const deps = { ...(parsed.dependencies || {}), ...(parsed.devDependencies || {}) };
+    if (!Object.keys(deps).length) return false;
+  } catch { return false; }
+
+  const modules = path.join(projectDir, 'node_modules');
+  if (!fs.existsSync(modules)) return true;
+  try {
+    // 依存を足した後は package.json のほうが新しくなる
+    return fs.statSync(pkg).mtimeMs > fs.statSync(modules).mtimeMs;
+  } catch { return false; }
+}
+
+function npmInstallStep(projectDir, env) {
+  const npm = resolveNpm();
+  if (!npm) return null;
+  return {
+    label: 'npm install',
+    command: `"${npm}" install --no-audit --no-fund`,
+    shell: true, cwd: projectDir, env,
+  };
+}
+
+/**
+ * requirements.txt の内容に対応する済み印。
+ * 同梱 Python の site-packages の中に置くので、ランタイムを入れ直したら
+ * 印も一緒に消える (= パッケージが無いのに「済み」と誤判定しない)。
+ */
+function pipMarkerPath(requirementsPath) {
+  const hash = crypto.createHash('sha1')
+    .update(fs.readFileSync(requirementsPath)).digest('hex').slice(0, 12);
+  return path.join(resolveRuntimeDir('python'), 'Lib', 'site-packages',
+                   `.codinable-requirements-${hash}`);
+}
+
+function pipInstallStep(projectDir, env) {
+  const requirements = path.join(projectDir, 'requirements.txt');
+  if (!fs.existsSync(requirements)) return null;
+
+  let marker;
+  try { marker = pipMarkerPath(requirements); } catch { return null; }
+  if (fs.existsSync(marker)) return null;
+
+  return {
+    label: 'pip install -r requirements.txt',
+    exe:   resolvePython(),
+    args:  ['-m', 'pip', 'install', '-r', requirements, '--disable-pip-version-check',
+            '--no-warn-script-location'],
+    cwd: projectDir, env,
+    // 成功したときだけ印を付ける
+    onSuccess: () => {
+      try {
+        fs.mkdirSync(path.dirname(marker), { recursive: true });
+        fs.writeFileSync(marker, new Date().toISOString(), 'utf8');
+      } catch { /* 印が書けなくても動作には影響しない (次回また入れ直すだけ) */ }
+    },
+  };
+}
+
 // ── 実行仕様の組み立て ─────────────────────────────────────
 
 /**
@@ -213,8 +288,14 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
       // install / ci は run を付けずに呼ぶ
       const args = ['install', 'ci', 'test', 'start'].includes(script)
         ? [script] : ['run', script];
+      const steps = [];
+      if (script !== 'install' && script !== 'ci' && needsNpmInstall(projectDir)) {
+        const install = npmInstallStep(projectDir, env);
+        if (install) steps.push(install);
+      }
       return {
         label: `npm ${args.join(' ')}`,
+        steps,
         run:   { command: `"${npm}" ${args.join(' ')}`, shell: true, cwd: projectDir, env },
       };
     }
@@ -255,16 +336,24 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
       if (ext === '.java') return buildSpec({ kind: 'java', projectDir, relPath, uiLang });
 
       if (ext === '.py') {
+        const pip = pipInstallStep(projectDir, env);
         return {
           label: `python ${relPath}`,
+          steps: pip ? [pip] : [],
           // -u: 対話入力でプロンプトが先に届くようバッファリングを切る
           run: { exe: resolvePython(), args: ['-X', 'utf8', '-u', full], cwd: projectDir, env },
         };
       }
       if (ext === '.ts' || ext === '.mts' || ext === '.js' || ext === '.mjs' || ext === '.cjs') {
+        const steps = [];
+        if (needsNpmInstall(projectDir)) {
+          const install = npmInstallStep(projectDir, env);
+          if (install) steps.push(install);
+        }
         // Node.js 24 以降は type stripping で .ts をそのまま実行できる
         return {
           label: `node ${relPath}`,
+          steps,
           run: { exe: resolveNode(), args: ['--no-warnings', full], cwd: projectDir, env },
         };
       }
@@ -286,17 +375,43 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
 
 // ── 実行 ───────────────────────────────────────────────────
 
-function execStep(step) {
+/**
+ * 前処理 (javac / npm install / pip install) を 1 つ動かす。
+ * npm install は分単位で掛かることがあるので、出力は溜めずに流し、
+ * 動いている間も current に入れて ⏹ で止められるようにする。
+ */
+function execStep(step, send) {
   return new Promise(resolve => {
-    execFile(step.exe, step.args, {
-      cwd: step.cwd, env: step.env, timeout: 180_000, encoding: 'buffer', maxBuffer: 32 * 1024 * 1024,
-    }, (err, stdout, stderr) => {
-      resolve({ err, out: decodeOutput(stdout), errText: decodeOutput(stderr) });
+    let proc;
+    try {
+      proc = step.shell
+        ? spawn(step.command, [], { cwd: step.cwd, env: step.env, shell: true, windowsHide: true })
+        : spawn(step.exe, step.args, { cwd: step.cwd, env: step.env, windowsHide: true });
+    } catch (err) {
+      send('run-output', `\n❌ ${err.message}\n`);
+      resolve(-1);
+      return;
+    }
+
+    current = { proc, projectDir: step.cwd, kind: 'prepare', task: step.label, isTest: false };
+
+    const onData = chunk => send('run-output', decodeOutput(chunk));
+    proc.stdout.on('data', onData);
+    proc.stderr.on('data', onData);
+
+    proc.on('error', err => {
+      send('run-output', `\n❌ ${err.code === 'ENOENT' ? 'コマンドが見つかりません' : err.message}\n`);
+      resolve(-1);
+    });
+    proc.on('close', code => {
+      if (current && current.proc === proc) current = null;
+      resolve(code);
     });
   });
 }
 
 async function stop() {
+  runToken++;
   if (!current) return { ok: true };
   const task = current;
   current = null;
@@ -317,6 +432,7 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
   }
 
   await stop();
+  const token = runToken;
 
   let spec;
   try {
@@ -336,15 +452,18 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
 
   send('run-output', `▶ ${spec.label}\n\n`);
 
-  // 前処理 (javac など)。失敗したらそこで終わる
+  // 前処理 (javac / npm install / pip install)。失敗したらそこで終わる
   for (const step of spec.steps || []) {
-    const { err, out, errText } = await execStep(step);
-    if (out) send('run-output', out);
-    if (errText) send('run-output', errText);
-    if (err) {
-      send('run-exit', { code: typeof err.code === 'number' ? err.code : 1, phase: step.label || 'compile' });
+    if (step.label !== spec.label) send('run-output', `▶ ${step.label}\n`);
+    const code = await execStep(step, send);
+    if (token !== runToken) return { ok: true };   // 途中で ⏹ か別の実行が始まった
+    if (code !== 0) {
+      send('run-output', `\n❌ ${step.label} が失敗しました\n`);
+      send('run-exit', { code: typeof code === 'number' ? code : 1, phase: step.label || 'compile' });
       return { ok: true };
     }
+    if (step.onSuccess) step.onSuccess();
+    if (step.label !== spec.label) send('run-output', '\n');
   }
 
   let proc;

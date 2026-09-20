@@ -207,11 +207,22 @@ function probeRuntimes(decodeOutput) {
   const env = getDevEnv();
   const probe = (exe, args) => new Promise(resolve => {
     if (!exe) return resolve(null);
-    execFile(exe, args, { timeout: 6000, encoding: 'buffer', env }, (err, stdout, stderr) => {
+    // Windows の .cmd / .bat は shell 経由でしか起動できない (直接 spawn すると
+    // EINVAL)。npm.cmd がここに来るので、拡張子を見て切り替える。
+    const viaShell = IS_WIN && /\.(cmd|bat)$/i.test(exe);
+    const command  = viaShell ? `"${exe}" ${args.join(' ')}` : exe;
+    const options  = { timeout: 6000, encoding: 'buffer', env, windowsHide: true };
+    const done = (err, stdout, stderr) => {
       if (err) return resolve(null);
       const text = (decodeOutput(stdout) || decodeOutput(stderr)).trim();
       resolve(text.split('\n')[0] || null);
-    });
+    };
+    // spawn は同期的に投げることがある (EINVAL など)。1 つの失敗で
+    // 設定パネル全体が出なくなると原因が見えないので、ここで閉じ込める。
+    try {
+      if (viaShell) execFile(command, { ...options, shell: true }, done);
+      else          execFile(exe, args, options, done);
+    } catch { resolve(null); }
   });
 
   return Promise.all([

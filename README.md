@@ -13,6 +13,7 @@ LLM とのチャットも使えるが、これは任意機能である（API キ
 
 | 機能 | 内容 |
 |------|------|
+| 演習 | 講座のレッスンに対応する実行単位。サイドバー上段の一覧から選ぶと、ファイルの用意から実行環境の選択までが済む |
 | エディタ | CodeMirror 6。Java は言語サーバー（Eclipse JDT LS）による補完・定義ジャンプ・診断つき |
 | 実行 | Gradle タスク / npm スクリプト / 単体の Java・Python・Node.js・Bash ファイル |
 | Spring Boot | `bootRun` でアプリを起動し、出力の URL を検知してプレビュータブを開く |
@@ -83,21 +84,33 @@ codinable/
 （設定画面で場所を変更できる）。ふつうのフォルダなので、同じものを VS Code や
 IntelliJ で開いても成立する。
 
+## 演習
+
+**演習（exercise）** は「動かして確かめる 1 単位」で、講座のレッスンと 1 対 1 に
+対応する。問題を出して解いてもらうものではない。
+
+サイドバー上段に、チャプターの区切りを挟んだフラットな一覧として並ぶ。
+演習を選ぶと次が自動で行われるので、あとは「実行」を押すだけでよい。
+
+1. 作業用プロジェクトを雛形から用意する（2 回目以降は前回の続きを開く）
+2. その演習の主要なファイルをエディタで開く
+3. 実行対象を選ぶ（= Java / React / Python / Node.js / 静的 Web の切り替え）
+
 ## コースパックの追加
 
 `courses/` にディレクトリを 1 つ増やし、`course.yaml` と `templates/` を置くだけでよい。
-アプリ側の変更は不要で、起動時に読み込まれ「新規プロジェクト」の選択肢に並ぶ。
+アプリ側の変更は不要で、起動時に読み込まれて演習一覧に並ぶ。
 
 ```text
 courses/<講座ID>/
-├── course.yaml          講座名・説明・雛形の一覧（日本語と英語）
-└── templates/<雛形ID>/  そのまま作業用ディレクトリにコピーされる中身
+├── course.yaml          講座名・説明・演習の一覧（日本語と英語）
+└── templates/<演習ID>/  そのまま作業用ディレクトリにコピーされる中身
 ```
 
 `course.yaml` の書き方は `courses/webapp-archi-overview/course.yaml` の
 コメントを参照。収録済みの講座は次の 1 つ。
 
-| 講座ID | 対応する Udemy 講座 | 雛形 |
+| 講座ID | 対応する Udemy 講座 | 演習 |
 |---|---|---|
 | `webapp-archi-overview` | Web システム＋生成AI 技術概要編 | 静的 Web ページ / HTTP（curl）/ SQL / JavaScript・TypeScript / Spring MVC / Flask / Express / REST API + JUnit / React SPA |
 

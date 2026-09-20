@@ -1,21 +1,28 @@
 # ═══════════════════════════════════════════════════════════
-#  Udemy「Webシステム＋生成AI 技術概要編」の雛形
+#  Udemy「Webシステム＋生成AI 技術概要編」の演習
 #
 #  講義そのものは動画側にあるため、ここには「開いてすぐ動く最小構成」だけを置く。
-#  受講者は雛形からプロジェクトを作り、動画を見ながら自分で書き換えていく。
+#  受講者は演習を選んで実行し、動きを確かめながら動画を進める。
+#  問題を出して解かせることはしない。
 #
 #  講座を追加するときは courses/ にディレクトリを 1 つ増やして
-#  この形式の course.yaml と templates/ を置くだけでよい (アプリ側の変更は不要)。
+#  この形式の course.yaml と templates/ を置くだけでよい（アプリ側の変更は不要）。
 #
-#  templates[] の項目:
-#    id           プロジェクト作成時に main へ渡す識別子 (dir 省略時はディレクトリ名)
-#    dir          templates/ 配下のディレクトリ名 (省略時は id)
-#    chapter      カード上のタグ。対応する講義チャプター
-#    kind         カード上のタグ。何の雛形か
-#    suggestName  プロジェクト名の既定値
-#    names        表示名 (言語ごと)
-#    descriptions 説明 (言語ごと)
-#    openFiles    作成直後に開くファイル (プロジェクト相対パス)
+#  exercises[] の項目:
+#    id           演習の識別子（dir 省略時はディレクトリ名として使う）
+#    dir          templates/ 配下のディレクトリ名（省略時は id）
+#    chapter      対応するチャプター番号。一覧のバッジに出る
+#    lesson       対応するレッスン番号と名前。一覧の副題に出る
+#    runtime      実行環境（java / spring / node / react / python / static / sql / shell）。
+#                 一覧のアイコンとタグになる
+#    run          実行対象の既定値。演習を選ぶだけで「実行」が押せる状態になる。
+#                 書式は実行対象セレクトと同じ:
+#                   file:<相対パス> / gradle:<タスク> / npm:<スクリプト> /
+#                   static:<配信ルート・空文字はプロジェクト直下> / java
+#    suggestName  作業用プロジェクト名の既定値
+#    names        演習名（言語ごと）
+#    descriptions 「何をどう動かすか」の説明（言語ごと）
+#    openFiles    演習を開いた直後に開くファイル（プロジェクト相対パス）
 # ═══════════════════════════════════════════════════════════
 id: webapp-archi-overview
 order: 1
@@ -27,169 +34,207 @@ names:
 descriptions:
   ja: >-
     HTML・CSS・JavaScript から HTTP、SQL、サーバーサイド MVC（Spring / Flask / Express）、
-    Web API、React による SPA までを一通り扱う講座の雛形です。
+    Web API、React による SPA までを一通り扱う講座の演習です。
     講座本編は PostgreSQL と Maven を前提にしていますが、ここでは Codinable に同梱の
     HSQLDB と Gradle Wrapper で動くように調整してあります。
   en: >-
-    Templates for the course covering HTML/CSS/JavaScript, HTTP, SQL, server-side MVC
+    Exercises for the course covering HTML/CSS/JavaScript, HTTP, SQL, server-side MVC
     (Spring / Flask / Express), Web APIs and React SPAs.
-    The course itself assumes PostgreSQL and Maven; these templates are adjusted to run
-    on the HSQLDB and Gradle Wrapper bundled with Codinable.
+    The course itself assumes PostgreSQL and Maven; these are adjusted to run on the
+    HSQLDB and Gradle Wrapper bundled with Codinable.
 
 udemy:
   url: https://github.com/KenyaSaitoh/learn_webapp_archi_overview
 
-templates:
+exercises:
   - id: static-web
-    chapter: 'Ch.3'
-    kind: static
+    chapter: 3
+    lesson: '3.1 - 3.3 HTML / JavaScript / CSS'
+    runtime: static
+    # 静的ページは内蔵の静的サーバーで配信する（プロジェクト直下が配信ルート）
+    run: 'static:'
     suggestName: static-web
     names:
-      ja: 静的Webページ（HTML / CSS / JavaScript）
-      en: Static web page (HTML / CSS / JavaScript)
+      ja: 静的Webページを表示する
+      en: Display a static web page
     descriptions:
       ja: >-
-        HTML で構造、CSS で装飾、JavaScript で振る舞いを書く最小構成です。
+        HTML で構造、CSS で装飾、JavaScript で振る舞いを書いた名簿管理ページです。
         「実行」を押すとプレビュータブに表示されます。
+        追加・削除を試し、3 つのファイルの役割の違いを確かめてください。
       en: >-
-        A minimal page with structure in HTML, styling in CSS and behaviour in JavaScript.
+        A roster page with structure in HTML, styling in CSS and behaviour in JavaScript.
         Press Run and it opens in the preview tab.
+        Try adding and removing rows to see how the three files divide the work.
     openFiles:
       - index.html
+      - app.js
 
   - id: http-curl
-    chapter: 'Ch.4'
-    kind: shell
+    chapter: 4
+    lesson: '4.1 - 4.2 HTTPの基本的な仕組み / 高度な仕組み'
+    runtime: shell
+    run: 'file:01_get.sh'
     suggestName: http-curl
     names:
-      ja: HTTP の観察（curl スクリプト）
-      en: Observing HTTP (curl scripts)
+      ja: HTTPのやりとりを観察する
+      en: Observe HTTP traffic
     descriptions:
       ja: >-
-        リクエストライン・ヘッダー・ステータスコードを curl で確かめるスクリプト集です。
-        ターミナルタブからも同じコマンドを打てます。
+        リクエストライン・ヘッダー・ステータスコードを curl で確かめるスクリプトです。
+        3 本あるので、実行対象を切り替えて順に実行してください。
+        ターミナルタブで同じコマンドを直接打つこともできます。
       en: >-
         Scripts that use curl to inspect request lines, headers and status codes.
-        You can type the same commands in the terminal tab.
+        There are three; switch the run target to try each one.
+        You can also type the same commands directly in the terminal tab.
     openFiles:
       - 01_get.sh
 
   - id: sql-basics
-    chapter: 'Ch.6'
-    kind: sql
+    chapter: 6
+    lesson: '6.1 データベースとSQLの基本'
+    runtime: sql
+    # SQL は SQL タブから実行する。実行対象としては選ばない
+    run: null
     suggestName: sql-basics
     names:
-      ja: SQL の基本（EMPLOYEE / DEPARTMENT）
-      en: SQL basics (EMPLOYEE / DEPARTMENT)
+      ja: SQLを実行して結果を見る
+      en: Run SQL and inspect the results
     descriptions:
       ja: >-
         講義と同じ EMPLOYEE / DEPARTMENT テーブルです。
-        SQL タブで「DB起動」→「SQL実行」の順に押してください。
+        SQL タブで「DB起動」を押し、01_create.sql を流してから
+        02・03 の SELECT や結合を 1 文ずつ選択して実行してください。
       en: >-
         The same EMPLOYEE / DEPARTMENT tables used in the lectures.
-        In the SQL tab, press "Start DB" and then "Run SQL".
+        In the SQL tab press "Start DB", run 01_create.sql, then select statements
+        from 02 and 03 one at a time and run them.
     openFiles:
       - 01_create.sql
 
   - id: javascript-basics
-    chapter: 'Ch.7'
-    kind: node
+    chapter: 7
+    lesson: '7.1 - 7.2 JavaScriptの基本 / 発展とTypeScript'
+    runtime: node
+    run: 'file:01_basics.js'
     suggestName: javascript-basics
     names:
-      ja: JavaScript と TypeScript の基本
-      en: JavaScript and TypeScript basics
+      ja: JavaScriptとTypeScriptを動かす
+      en: Run JavaScript and TypeScript
     descriptions:
       ja: >-
-        Node.js で直接動かせるスクリプト集です。.ts も型を書いたままそのまま実行できます
-        （Node.js 24 の type stripping）。
+        Node.js で直接動かせるスクリプトです。基本・非同期処理・TypeScript の 3 本あります。
+        .ts も型を書いたままそのまま実行できます（Node.js のtype stripping）。
       en: >-
-        Scripts you can run directly with Node.js. The .ts files run as-is, types included
-        (Node.js 24 type stripping).
+        Scripts you can run directly with Node.js: basics, async, and TypeScript.
+        The .ts file runs as-is, types included (Node.js type stripping).
     openFiles:
       - 01_basics.js
 
   - id: spring-mvc-calc
-    chapter: 'Ch.8.2'
-    kind: spring
+    chapter: 8
+    lesson: '8.2 Spring MVCによるアプリケーション構築'
+    runtime: spring
+    run: 'gradle:bootRun'
     suggestName: spring-mvc-calc
     names:
-      ja: Spring MVC の計算アプリケーション
-      en: Spring MVC calculator application
+      ja: Spring MVCのアプリケーションを動かす
+      en: Run a Spring MVC application
     descriptions:
       ja: >-
-        Controller + Thymeleaf の最小構成です。実行対象で「Gradle: bootRun」を選んでください
-        （初回は Gradle の取得に数分かかります）。
+        Controller + Thymeleaf の計算アプリケーションです。「実行」でサーバーが起動し、
+        プレビュータブが自動で開きます（初回は Gradle の取得に数分かかります）。
+        入力値検証や 0 除算のエラーも試せます。
       en: >-
-        A minimal Controller + Thymeleaf setup. Choose "Gradle: bootRun" as the run target
-        (the first run downloads Gradle and takes a few minutes).
+        A Controller + Thymeleaf calculator. Run it and the server starts, opening the
+        preview tab automatically (the first run downloads Gradle and takes a few minutes).
+        Validation errors and division by zero are worth trying too.
     openFiles:
       - src/main/java/pro/kensait/spring/calc/CalcController.java
 
   - id: flask-calc
-    chapter: 'Ch.8.3'
-    kind: python
+    chapter: 8
+    lesson: '8.3 Flaskによるアプリケーション構築'
+    runtime: python
+    run: 'file:app.py'
     suggestName: flask-calc
     names:
-      ja: Flask の計算アプリケーション
-      en: Flask calculator application
+      ja: Flaskのアプリケーションを動かす
+      en: Run a Flask application
     descriptions:
       ja: >-
-        Spring MVC と同じ計算アプリケーションを Flask で書いたものです。
-        先にターミナルで pip install -r requirements.txt を実行してください。
+        同じ計算アプリケーションを Flask で書いたものです。
+        先にターミナルタブで pip install -r requirements.txt を実行してください。
+        Spring MVC 版と見比べると、MVC の骨組みが同じことが分かります。
       en: >-
         The same calculator written with Flask.
-        Run pip install -r requirements.txt in the terminal first.
+        Run pip install -r requirements.txt in the terminal tab first.
+        Compare it with the Spring MVC version to see the same MVC structure.
     openFiles:
       - app.py
 
   - id: express-calc
-    chapter: 'Ch.8.4'
-    kind: node
+    chapter: 8
+    lesson: '8.4 Expressによるアプリケーション構築'
+    runtime: node
+    # 初回は npm: install を選んでから npm: start に切り替える
+    run: 'npm:start'
     suggestName: express-calc
     names:
-      ja: Express の計算アプリケーション
-      en: Express calculator application
+      ja: Expressのアプリケーションを動かす
+      en: Run an Express application
     descriptions:
       ja: >-
         同じ計算アプリケーションを Express + EJS で書いたものです。
-        実行対象で「npm: install」→「npm: start」の順に選んでください。
+        初回だけ実行対象を「npm: install」にして実行し、そのあと「npm: start」に戻してください。
       en: >-
         The same calculator written with Express + EJS.
-        Choose "npm: install" and then "npm: start" as the run target.
+        On the first run choose "npm: install", then switch back to "npm: start".
     openFiles:
       - app.js
 
   - id: spring-rest-users
-    chapter: 'Ch.9'
-    kind: spring
+    chapter: 9
+    lesson: '9.1 WebAPIによるアプリケーション連携'
+    runtime: spring
+    # 既定はテスト実行。テスト結果タブでメソッド単位の成否とカバレッジが見える
+    run: 'gradle:test'
     suggestName: spring-rest-users
     names:
-      ja: Web API（REST）とユニットテスト
-      en: Web API (REST) with unit tests
+      ja: Web APIとユニットテストを動かす
+      en: Run a Web API and its unit tests
     descriptions:
       ja: >-
-        /api/users の CRUD を返す REST API です。「Gradle: test」でテスト結果タブに
-        メソッド単位の成否とカバレッジが出ます。
+        /api/users の CRUD を返す REST API です。まず「Gradle: test」でテスト結果タブを確かめ、
+        次に「Gradle: bootRun」で起動してターミナルから curl を叩いてみてください
+        （コマンド例は UserController のコメントにあります）。
       en: >-
-        A REST API serving CRUD on /api/users. "Gradle: test" fills the Tests tab with
-        per-method results and coverage.
+        A REST API serving CRUD on /api/users. First run "Gradle: test" and look at the
+        Tests tab, then run "Gradle: bootRun" and call it with curl from the terminal
+        (example commands are in the comments of UserController).
     openFiles:
       - src/main/java/pro/kensait/spring/users/UserController.java
       - src/test/java/pro/kensait/spring/users/UserServiceTest.java
 
   - id: react-spa
-    chapter: 'Ch.10'
-    kind: react
+    chapter: 10
+    lesson: '10.1 ReactjsによるSPA'
+    runtime: react
+    # 初回は npm: install を選んでから npm: dev に切り替える
+    run: 'npm:dev'
     suggestName: react-spa
     names:
-      ja: React による SPA
-      en: React SPA
+      ja: ReactのSPAを動かす
+      en: Run a React SPA
     descriptions:
       ja: >-
-        Vite + React + TypeScript の最小構成です。「npm: install」→「npm: dev」の順に実行すると
-        プレビュータブが自動で開きます。
+        Vite + React + TypeScript の名簿管理です。初回だけ実行対象を「npm: install」にして
+        実行し、そのあと「npm: dev」に戻すとプレビュータブが自動で開きます。
+        チャプター3の静的ページと同じ題材なので、作り方の違いを見比べてください。
       en: >-
-        A minimal Vite + React + TypeScript setup. Run "npm: install" then "npm: dev" and the
-        preview tab opens by itself.
+        A Vite + React + TypeScript roster. On the first run choose "npm: install", then
+        switch back to "npm: dev" and the preview tab opens by itself.
+        It is the same subject as the static page in chapter 3, so compare the approaches.
     openFiles:
       - src/App.tsx

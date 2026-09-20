@@ -47,6 +47,25 @@ Java の言語サーバーを同梱している。
   上書きし、`scripts` / `devDependencies` が消える
 - **Gradle スクリプトは BOM なし UTF-8** で保存する（BOM 付きだと Gradle が起動しない）
 
+## 演習（`courses/*/course.yaml` の `exercises[]`）を追加・修正するとき
+
+演習は「動かして確かめる 1 単位」で、講座のレッスンと 1 対 1 に対応させる。
+サイドバー上段の一覧に出て、選ぶだけで作業用プロジェクトの用意・ファイルを開く・
+実行対象の選択（= 実行環境の切り替え）まで済む。
+
+- **`chapter` / `lesson` は実際の講座に合わせる**。`lesson` は一覧の副題に出るので、
+  受講者が動画のどこと対応するか迷わない粒度（番号 + 名前）にする
+- **`runtime`** は `java` / `spring` / `node` / `react` / `python` / `static` /
+  `sql` / `shell` のいずれか。アイコンとタグになる。増やすときは
+  `renderer.js` の `RUNTIME_ICONS` と `i18n.js` の `runtime_*` を両方足す
+- **`run` は実行対象セレクトと同じ書式**（`file:<パス>` / `gradle:<タスク>` /
+  `npm:<スクリプト>` / `static:<ルート>` / `java`）。ここで指定した選択肢が
+  実際に出るかは `workspace.js` の `detectProject` が決めるので、
+  雛形の構成（`build.gradle` の有無、`package.json` の `scripts`、`index.html`）と
+  食い違わせない。選択肢が無いときは黙って無視される
+- **問いを立てない**。`descriptions` は「何をどう動かすか」に徹し、
+  正解・採点・完了といった語を持ち込まない
+
 ## 雛形（`courses/*/templates/`）を追加・修正するとき
 
 - **同梱ランタイムで動くことが条件**。Java は **Java 25 / Spring Boot 4**、
@@ -56,17 +75,17 @@ Java の言語サーバーを同梱している。
   `spring-boot-starter-webmvc`、`@WebMvcTest` は `spring-boot-webmvc-test` へ移動
 - `gradlew` は同梱しなくてよい（無ければ `runner.js` が
   `resources/gradle-wrapper/` から補う）
-- 雛形を増やしたら `course.yaml` の `templates[]` に追記し、`openFiles` に
+- 雛形を増やしたら `course.yaml` の `exercises[]` に追記し、`openFiles` に
   実在するパスを書く。次のコマンドで両方を確かめられる
 
 ```bash
 cd desktop && node -e "
 const yaml=require('js-yaml'),fs=require('fs'),path=require('path');
 const dir='../courses/<講座ID>';
-for (const t of yaml.load(fs.readFileSync(dir+'/course.yaml','utf8')).templates) {
-  const d=path.join(dir,'templates',t.dir||t.id);
-  const miss=(t.openFiles||[]).filter(f=>!fs.existsSync(path.join(d,f)));
-  console.log((fs.existsSync(d)?'OK ':'NG ')+(t.dir||t.id), miss.join(', '));
+for (const e of yaml.load(fs.readFileSync(dir+'/course.yaml','utf8')).exercises) {
+  const d=path.join(dir,'templates',e.dir||e.id);
+  const miss=(e.openFiles||[]).filter(f=>!fs.existsSync(path.join(d,f)));
+  console.log((fs.existsSync(d)?'OK ':'NG ')+(e.dir||e.id), miss.join(', '));
 }"
 ```
 

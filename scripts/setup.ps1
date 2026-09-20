@@ -88,8 +88,10 @@ Step "java" (Join-Path $runtime "java\bin\javac.exe") {
   Remove-Item -Recurse -Force (Join-Path $work "jdk") -ErrorAction SilentlyContinue
 }
 
-# ---- Node.js (node.exe のみ抽出。TypeScript は type stripping で直接実行する) ----
-Step "node" (Join-Path $runtime "node\node.exe") {
+# ---- Node.js (node.exe + npm。TypeScript は type stripping で直接実行する) ----
+# marker は npm.cmd にする。node.exe だと「npm を足す前の runtime/」を
+# 完成済みと誤判定して skip してしまう (= npm スクリプトが動かない状態で止まる)。
+Step "node" (Join-Path $runtime "node\npm.cmd") {
   $nodeZip = Join-Path $work "node.zip"
   Invoke-WebRequest -Uri $nodeUrl -OutFile $nodeZip -UseBasicParsing
   Expand-Archive -Path $nodeZip -DestinationPath (Join-Path $work "node") -Force

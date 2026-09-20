@@ -179,8 +179,24 @@
   <!-- ════ メイン ════ -->
   <div class="app-main">
 
-    <!-- ── 左: ファイルエクスプローラ ── -->
+    <!-- ── 左: 演習一覧 + ファイルエクスプローラ ── -->
     <aside class="sidebar explorer" id="sidebar">
+
+      <!-- 演習 = 講座のレッスンに対応する「動かして確かめる 1 単位」。
+           選ぶだけでプロジェクトが用意され、実行環境（実行対象）も決まる。 -->
+      <div class="side-header exercise-header">
+        <span data-i18n="exerciseTitle">📚 演習</span>
+        <span class="badge" id="exercise-count">0</span>
+      </div>
+      <select class="exercise-course-select" id="exercise-course-select"
+              data-i18n-title="exerciseCourseTitle" title="講座を選びます"></select>
+      <div class="exercise-list" id="exercise-list">
+        <div class="tree-placeholder" data-i18n="exerciseEmpty">演習がありません</div>
+      </div>
+
+      <div class="explorer-resize-handle" id="exercise-resize-handle"
+           data-i18n-title="dragToResizeHeight" title="ドラッグで高さを調整"></div>
+
       <div class="side-header explorer-header">
         <span data-i18n="explorerTitle">📁 ファイル</span>
         <span class="explorer-actions">
