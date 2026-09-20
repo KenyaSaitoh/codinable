@@ -741,6 +741,7 @@ function renderExercises() {
     const item = document.createElement('button');
     item.type  = 'button';
     item.className = 'q-item exercise-item';
+    item.dataset.exerciseId = exercise.id;
     // created = 作業用プロジェクトが既にある (進捗ではなく、作ったかどうか)
     item.classList.toggle('created', !!created);
     item.classList.toggle('active', !!created && created.name === project);

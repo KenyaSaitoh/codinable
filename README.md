@@ -101,6 +101,9 @@ IntelliJ で開いても成立する。
 1 つの演習に複数のファイル（`01_…` `02_…` のような連番）がある場合は、
 ここで選び替えて順に動かす。エディタで別のファイルを開いても選択は変わらない。
 
+書き換えて動かなくなったら、画面右上の **「↺ 初期化」** でその演習のファイルを
+配布時の状態に戻せる。自分で増やしたファイルは残るので、雛形のファイルだけが書き戻る。
+
 ## 複数の講座を 1 つの Codinable で使う
 
 講座（コース）は 1 つずつ足せる。2 つ目の講座を受けるときにアプリを入れ直す必要はなく、
@@ -137,7 +140,23 @@ courses/<講座ID>/
 
 | 講座ID | 対応する Udemy 講座 | 演習 |
 |---|---|---|
-| `webapp-archi-overview` | Web システム＋生成AI 技術概要編 | 静的 Web ページ / HTTP（curl）/ SQL / JavaScript・TypeScript / Spring MVC / Flask / Express / REST API + JUnit / React SPA |
+| `webapp-archi-overview` | Web システム＋生成AI 技術概要編 | 全 26 件（下記） |
+
+`webapp-archi-overview` の演習は次のとおり。チャプター 3 と 6 は、
+Web ブラウザと DB の仕組みをその場で動かして確かめられるよう細かく分けてある。
+
+| チャプター | 演習 |
+|---|---|
+| 3 HTML | 基本構造 / リストとテーブル / セマンティック要素 / フォーム |
+| 3 JavaScript | DOM 操作 / イベント / フォーム処理 / fetch |
+| 3 CSS | セレクタと色 / ボックスモデル / 配置と重なり / Flexbox・Grid / レスポンシブ |
+| 3 まとめ | HTML・CSS・JavaScript を組み合わせた名簿管理ページ |
+| 4 HTTP | curl でリクエストを送る |
+| 6 SQL | 検索（SELECT・WHERE）/ CRUD / 集計と整形 / DDL と制約 / 結合・サブクエリ・ビュー |
+| 7 言語 | JavaScript・TypeScript |
+| 8 サーバーサイド | Spring MVC / Flask / Express |
+| 9 REST API | Spring REST + JUnit |
+| 10 SPA | React |
 
 ## 注意事項
 

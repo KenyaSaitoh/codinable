@@ -30,6 +30,8 @@ function loadConfig() {
 
 function saveConfig(config) {
   try {
+    // 初回起動や userData を差し替えたときは、置き場がまだ無い
+    fs.mkdirSync(path.dirname(getConfigPath()), { recursive: true });
     fs.writeFileSync(getConfigPath(), JSON.stringify(config, null, 2), 'utf8');
     return true;
   } catch (err) {
