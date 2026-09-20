@@ -615,7 +615,6 @@ async function refreshProjectInfo() {
     $('project-kinds').innerHTML  = '';
     $('project-path').textContent = '';
     $('btn-restore-template').classList.add('hidden');
-    $('btn-delete-project').classList.add('hidden');
     $('hsqldb-badge').classList.add('hidden');
     updateRunTargets();
     return;
@@ -630,22 +629,9 @@ async function refreshProjectInfo() {
   $('project-kinds').innerHTML = (info.kinds || [])
     .map(k => `<span class="project-kind">${escapeHtml(k)}</span>`).join('');
   $('btn-restore-template').classList.toggle('hidden', !(info.ok && info.template));
-  $('btn-delete-project').classList.remove('hidden');
   $('hsqldb-badge').classList.toggle('hidden', !(info.kinds || []).includes('sql'));
 
   updateRunTargets();
-}
-
-async function deleteCurrentProject() {
-  if (!project) return;
-  if (!await confirmDialog(tf('confirmDeleteProject', { name: project }))) return;
-  const name = project;
-  await selectProject(null);
-  const res = await window.api.wsDeleteProject(name);
-  if (!res.ok) { await alertDialog(res.error || ''); return; }
-  await reloadProjects();
-  const next = projects[0]?.name || null;
-  if (next) await selectProject(next);
 }
 
 async function restoreTemplate() {
@@ -800,9 +786,10 @@ async function applyExerciseRunTarget(exercise) {
   if (!exercise.run) return;
   const [kind, arg = ''] = exercise.run.split(/:(.*)/s);
 
-  if (kind === 'file') {
+  // file: と sql: はどちらも「いま開いているファイル」を実行するので、先に開く
+  if (kind === 'file' || kind === 'sql') {
     if (arg) await openFile(arg);
-    selectRunTarget('file');
+    selectRunTarget(kind);
     return;
   }
   selectRunTarget(exercise.run);
@@ -944,6 +931,10 @@ function updateRunTargets() {
   if (activeFile && /\.(java|py|ts|js|mjs|cjs|sh|bash)$/i.test(activeFile)) {
     options.push(['file', tf('runTargetFile', { name: activeFile.split('/').pop() })]);
   }
+  // .sql は子プロセスではなく常駐の HSQLDB へ流す (SQL タブに結果が出る)
+  if (activeFile && /\.sql$/i.test(activeFile)) {
+    options.push(['sql', tf('runTargetSql', { name: activeFile.split('/').pop() })]);
+  }
   for (const task of projectInfo?.gradleTasks || []) {
     options.push([`gradle:${task}`, tf('runTargetGradle', { task })]);
   }
@@ -969,11 +960,13 @@ function updateRunTargets() {
   $('btn-run').disabled = !project || !select.value;
 }
 
-function setRunning(state) {
+function setRunning(state, interactive = false) {
   running = state;
   $('btn-run').disabled      = state || !project || !$('run-target-select').value;
   $('btn-run-stop').disabled = !state;
-  $('run-stdin-row').classList.toggle('hidden', !state);
+  // 標準入力欄は「実際に届く実行」のときだけ出す。gradlew は shell 経由で
+  // 起動するため届かず、出しておくと押しても何も起きない UI になる。
+  $('run-stdin-row').classList.toggle('hidden', !state || !interactive);
 }
 
 function clearRunOutput() {
@@ -1001,6 +994,11 @@ async function runSelected() {
   // 静的ページは子プロセスを起こさず、内蔵の静的サーバーで配信する
   if (kind === 'static') { await servePreview(arg); return; }
 
+  // SQL は子プロセスではなく常駐の HSQLDB へ流す。
+  // 開いている .sql を編集してそのまま実行できるように、DB が止まっていれば
+  // ここで起こしてから流す (受講者に「DB起動」を先に押させない)。
+  if (kind === 'sql') { await runSqlFromEditor(); return; }
+
   // 保存していない内容で動かして混乱しないよう、先に全部書き出す
   for (const relPath of openFiles.keys()) await saveFile(relPath);
 
@@ -1018,7 +1016,9 @@ async function runSelected() {
   if (!res.ok) {
     setRunning(false);
     appendRunOutput(`\n${tf('runFailed', { error: res.error || '' })}\n`);
+    return;
   }
+  setRunning(true, res.interactive);
 }
 
 /** ツリーの右クリックから直接ファイルを実行する */
@@ -1291,6 +1291,25 @@ async function runSql() {
   if (!sql) { setSqlMessage(escapeHtml(t('sqlNoSql')), 'sql-error'); return; }
   const res = await window.api.sqlRun(sql);
   renderSqlResult(res);
+}
+
+/**
+ * 「実行」ボタンから SQL を流す。
+ * SQL タブを見せ、DB が止まっていれば起こし、開いているファイル
+ * (選択範囲があればそこだけ) を流す。編集 → 実行をボタン 1 つで回せるようにする。
+ */
+async function runSqlFromEditor() {
+  for (const relPath of openFiles.keys()) await saveFile(relPath);
+  showRunPane('tab-sql');
+
+  const sql = currentSqlText().trim();
+  if (!sql) { setSqlMessage(escapeHtml(t('sqlNoSql')), 'sql-error'); return; }
+
+  if (!sqlRunning) {
+    await startSql();
+    if (!sqlRunning) return;   // 起動に失敗した (理由は startSql が出している)
+  }
+  renderSqlResult(await window.api.sqlRun(sql));
 }
 
 function renderSqlResult(res) {
@@ -1770,7 +1789,20 @@ function closeSettings({ revert = false } = {}) {
 async function renderRuntimeInfo() {
   const wrap = $('runtime-info');
   wrap.innerHTML = `<div class="runtime-info-row">${escapeHtml(t('loading'))}</div>`;
-  const status = await window.api.runtimeStatus();
+
+  // 観測に失敗しても「読み込み中」で固まらせない。
+  // どれが取れなかったのかが分かるほうが原因に近づける。
+  let status;
+  try {
+    status = await window.api.runtimeStatus();
+  } catch (err) {
+    wrap.innerHTML =
+      `<div class="runtime-info-row"><span>${escapeHtml(t('runtimeLabel'))}</span>` +
+      `<span>${escapeHtml(err?.message || String(err))}</span></div>`;
+    return;
+  }
+  status = status || {};
+
   const rows = [
     ['Java',    status.java],
     ['Node.js', status.node],
@@ -1890,9 +1922,7 @@ function wireEvents() {
   // ── ヘッダー ──
   $('project-select').addEventListener('change', ev => selectProject(ev.target.value));
   $('btn-new-project').addEventListener('click', openNewProjectDialog);
-  $('btn-reveal-project').addEventListener('click', () => project && window.api.wsReveal(project, ''));
   $('btn-restore-template').addEventListener('click', restoreTemplate);
-  $('btn-delete-project').addEventListener('click', deleteCurrentProject);
   $('llm-model-select').addEventListener('change', async ev => {
     appInfo.llmSelection = await window.api.setLlmSelection({
       modelId: ev.target.value, override: appInfo.llmSelection.override,

@@ -37,7 +37,6 @@ contextBridge.exposeInMainWorld('api', {
   wsPickDir:        ()            => ipcRenderer.invoke('ws-pick-dir'),
   wsListProjects:   ()            => ipcRenderer.invoke('ws-list-projects'),
   wsCreateProject:  payload       => ipcRenderer.invoke('ws-create-project', payload),
-  wsDeleteProject:  name          => ipcRenderer.invoke('ws-delete-project', { name }),
   wsRestoreTemplate:(name, lang)  => ipcRenderer.invoke('ws-restore-template', { name, lang }),
   wsProjectInfo:    name          => ipcRenderer.invoke('ws-project-info', { name }),
   wsTree:           name          => ipcRenderer.invoke('ws-tree', { name }),

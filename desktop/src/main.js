@@ -105,7 +105,6 @@ ipcMain.handle('ws-create-project', (_event, { name, courseId, templateId, lang 
   return workspace.createProject({ name, templateDir, courseId, template: templateId });
 });
 
-ipcMain.handle('ws-delete-project', (_event, { name } = {}) => workspace.deleteProject(name));
 
 ipcMain.handle('ws-restore-template', (_event, { name, lang } = {}) => {
   const dir = workspace.resolveProjectDir(name);

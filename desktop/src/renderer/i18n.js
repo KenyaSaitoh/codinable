@@ -17,13 +17,9 @@ const UI_STRINGS = {
     projectSelectTitle:  '開くプロジェクトを選びます',
     btnNewProject:       '＋ 新規プロジェクト',
     btnNewProjectTitle:  '講座のサンプルまたは空のプロジェクトを作ります',
-    btnReveal:           '📂 フォルダを開く',
-    btnRevealTitle:      'プロジェクトのフォルダをエクスプローラで開きます',
     btnRestoreTemplate:  '雛形を復元',
     btnRestoreTemplateTitle:
       '雛形のファイルのうち、消してしまったものを復元します（既存ファイルは上書きしません）',
-    btnDeleteProject:    '削除',
-    btnDeleteProjectTitle: 'このプロジェクトをワークスペースから削除します',
     llmPickerTitle:      'チャットに使うモデル（API キーは自分で設定します）',
     btnSettings:         '⚙ 設定',
     settings:            '設定',
@@ -92,8 +88,6 @@ const UI_STRINGS = {
     ctxPreview:          '🌐 プレビュー',
     ctxRun:              '▶ このファイルを実行',
     confirmDeleteEntry:  '「{name}」を削除しますか？ この操作は取り消せません。',
-    confirmDeleteProject:
-      'プロジェクト「{name}」を削除しますか？ フォルダごと消えるため、この操作は取り消せません。',
 
     // ── エディタ ──
     editorTitle:         '💻 エディタ',
@@ -115,6 +109,7 @@ const UI_STRINGS = {
     // ── 実行 ──
     runTargetTitle:      '実行する内容を選びます',
     runTargetFile:       '▶ 開いているファイル ({name})',
+    runTargetSql:        '🗄 SQL を実行 ({name})',
     runTargetGradle:     'Gradle: {task}',
     runTargetNpm:        'npm: {script}',
     runTargetJava:       '▶ Java (main を探して実行)',
@@ -241,13 +236,9 @@ const UI_STRINGS = {
     projectSelectTitle:  'Choose the project to open',
     btnNewProject:       '＋ New project',
     btnNewProjectTitle:  'Create a project from a course template, or an empty one',
-    btnReveal:           '📂 Open folder',
-    btnRevealTitle:      'Show the project folder in the file manager',
     btnRestoreTemplate:  'Restore template',
     btnRestoreTemplateTitle:
       'Bring back template files you deleted (existing files are never overwritten)',
-    btnDeleteProject:    'Delete',
-    btnDeleteProjectTitle: 'Remove this project from the workspace',
     llmPickerTitle:      'Model used for chat (you supply the API key)',
     btnSettings:         '⚙ Settings',
     settings:            'Settings',
@@ -311,8 +302,6 @@ const UI_STRINGS = {
     ctxPreview:          '🌐 Preview',
     ctxRun:              '▶ Run this file',
     confirmDeleteEntry:  'Delete "{name}"? This cannot be undone.',
-    confirmDeleteProject:
-      'Delete the project "{name}"? The whole folder is removed and this cannot be undone.',
 
     editorTitle:         '💻 Editor',
     editorEmpty:         'Open a file from the tree on the left',
@@ -332,6 +321,7 @@ const UI_STRINGS = {
 
     runTargetTitle:      'Choose what to run',
     runTargetFile:       '▶ Current file ({name})',
+    runTargetSql:        '🗄 Run SQL ({name})',
     runTargetGradle:     'Gradle: {task}',
     runTargetNpm:        'npm: {script}',
     runTargetJava:       '▶ Java (find and run main)',

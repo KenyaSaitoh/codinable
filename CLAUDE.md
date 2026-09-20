@@ -58,11 +58,17 @@ Java の言語サーバーを同梱している。
 - **`runtime`** は `java` / `spring` / `node` / `react` / `python` / `static` /
   `sql` / `shell` のいずれか。アイコンとタグになる。増やすときは
   `renderer.js` の `RUNTIME_ICONS` と `i18n.js` の `runtime_*` を両方足す
-- **`run` は実行対象セレクトと同じ書式**（`file:<パス>` / `gradle:<タスク>` /
-  `npm:<スクリプト>` / `static:<ルート>` / `java`）。ここで指定した選択肢が
-  実際に出るかは `workspace.js` の `detectProject` が決めるので、
-  雛形の構成（`build.gradle` の有無、`package.json` の `scripts`、`index.html`）と
-  食い違わせない。選択肢が無いときは黙って無視される
+- **`run` は実行対象セレクトと同じ書式**（`file:<パス>` / `sql:<パス>` /
+  `gradle:<タスク>` / `npm:<スクリプト>` / `static:<ルート>` / `java`）。
+  ここで指定した選択肢が実際に出るかは `workspace.js` の `detectProject` が
+  決めるので、雛形の構成（`build.gradle` の有無、`package.json` の `scripts`、
+  `index.html`）と食い違わせない。選択肢が無いときは黙って無視される。
+  `file:` と `sql:` は「開いているファイル」を実行するので、パスを書くと
+  そのファイルを先に開く
+- **依存の用意は受講者に踏ませない**。`package.json` があって依存が
+  揃っていなければ実行前に `npm install` が、`requirements.txt` があれば
+  `pip install -r` が自動で走る（`runner.js` の `needsNpmInstall` /
+  `pipInstallStep`）。雛形に「最初に install してください」と書く必要はない
 - **問いを立てない**。`descriptions` は「何をどう動かすか」に徹し、
   正解・採点・完了といった語を持ち込まない
 

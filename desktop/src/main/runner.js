@@ -20,7 +20,8 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 const {
-  IS_WIN, resolveJavaTool, resolveNode, resolveNpm, resolvePython, resolveBash,
+  IS_WIN, resolveJavaTool, resolveNode, resolveNpm, resolveNpmCli,
+  resolvePython, resolveBash,
   resolveHsqldb, resolveGradleWrapperJar, resolveRuntimeDir, getDevEnv,
   getJavaRuntimeOptions, getJavacRuntimeOptions,
 } = require('./runtimes');
@@ -173,18 +174,28 @@ function findJavaMain(projectDir, preferred) {
 // npm install / pip install は受講者に踏ませず、実行の前段として自動で通す。
 // 一度用意できたら次回は飛ばすので、待たされるのは初回だけである。
 
-/** node_modules が無い / package.json のほうが新しいなら npm install が要る */
+/**
+ * npm install が要るかを判定する。
+ * node_modules の有無だけで見ると、install が途中で切れた木 (ディレクトリは
+ * あるが vite などが入っていない) を「用意済み」と誤判定し、
+ * 「'vite' は認識されていません」から永久に抜け出せなくなる。
+ * そのため宣言された依存が実際に置かれているかまで見る。
+ */
 function needsNpmInstall(projectDir) {
   const pkg = path.join(projectDir, 'package.json');
   if (!fs.existsSync(pkg)) return false;
+
+  let deps;
   try {
     const parsed = JSON.parse(fs.readFileSync(pkg, 'utf8'));
-    const deps = { ...(parsed.dependencies || {}), ...(parsed.devDependencies || {}) };
-    if (!Object.keys(deps).length) return false;
+    deps = Object.keys({ ...(parsed.dependencies || {}), ...(parsed.devDependencies || {}) });
   } catch { return false; }
+  if (!deps.length) return false;
 
   const modules = path.join(projectDir, 'node_modules');
   if (!fs.existsSync(modules)) return true;
+  if (deps.some(name => !fs.existsSync(path.join(modules, ...name.split('/'))))) return true;
+
   try {
     // 依存を足した後は package.json のほうが新しくなる
     return fs.statSync(pkg).mtimeMs > fs.statSync(modules).mtimeMs;
@@ -192,13 +203,23 @@ function needsNpmInstall(projectDir) {
 }
 
 function npmInstallStep(projectDir, env) {
+  const spec = npmSpec(['install', '--no-audit', '--no-fund'], projectDir, env);
+  if (!spec) return null;
+  return { label: 'npm install', ...spec };
+}
+
+/**
+ * npm の起動仕様を作る。node で npm-cli.js を直接動かすのが既定で、
+ * それが見つからないときだけ npm.cmd + shell に落とす。
+ */
+function npmSpec(args, projectDir, env) {
+  const cli = resolveNpmCli();
+  if (cli) {
+    return { exe: resolveNode(), args: [cli, ...args], cwd: projectDir, env };
+  }
   const npm = resolveNpm();
   if (!npm) return null;
-  return {
-    label: 'npm install',
-    command: `"${npm}" install --no-audit --no-fund`,
-    shell: true, cwd: projectDir, env,
-  };
+  return { command: `"${npm}" ${args.join(' ')}`, shell: true, cwd: projectDir, env };
 }
 
 /**
@@ -281,23 +302,20 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
 
     // ── npm スクリプト ──
     case 'npm': {
-      const npm = resolveNpm();
-      if (!npm) throw new Error('npm が見つかりません (runtime/node が未セットアップです)');
       const script = String(task || '').trim();
       if (!/^[\w:@./-]{1,64}$/.test(script)) throw new Error(`不正な npm スクリプト名: ${script}`);
       // install / ci は run を付けずに呼ぶ
       const args = ['install', 'ci', 'test', 'start'].includes(script)
         ? [script] : ['run', script];
+      const run = npmSpec(args, projectDir, env);
+      if (!run) throw new Error('npm が見つかりません (runtime/node が未セットアップです)');
+
       const steps = [];
       if (script !== 'install' && script !== 'ci' && needsNpmInstall(projectDir)) {
         const install = npmInstallStep(projectDir, env);
         if (install) steps.push(install);
       }
-      return {
-        label: `npm ${args.join(' ')}`,
-        steps,
-        run:   { command: `"${npm}" ${args.join(' ')}`, shell: true, cwd: projectDir, env },
-      };
+      return { label: `npm ${args.join(' ')}`, steps, run };
     }
 
     // ── 単体 Java (Gradle を使わないプロジェクト) ──
@@ -507,7 +525,9 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
     send('run-exit', { code });
   });
 
-  return { ok: true, interactive: true, label: spec.label };
+  // shell 経由の実行 (gradlew.bat など) は標準入力が cmd.exe に吸われて
+  // 子プロセスに届かない。届かないのに入力欄を出すと壊れて見えるので伝える。
+  return { ok: true, interactive: !spec.run.shell, label: spec.label };
 }
 
 /** 実行中プロセスの標準入力へ書き込む (Scanner / input() の対話実行用) */

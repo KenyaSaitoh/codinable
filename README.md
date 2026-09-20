@@ -15,12 +15,12 @@ LLM とのチャットも使えるが、これは任意機能である（API キ
 |------|------|
 | 演習 | 講座のレッスンに対応する実行単位。サイドバー上段の一覧から選ぶと、ファイルの用意から実行環境の選択までが済む |
 | エディタ | CodeMirror 6。Java は言語サーバー（Eclipse JDT LS）による補完・定義ジャンプ・診断つき |
-| 実行 | Gradle タスク / npm スクリプト / 単体の Java・Python・Node.js・Bash ファイル |
+| 実行 | Gradle タスク / npm スクリプト / 単体の Java・Python・Node.js・Bash ファイル。依存が足りなければ実行前に `npm install` / `pip install -r requirements.txt` を自動で通す |
 | Spring Boot | `bootRun` でアプリを起動し、出力の URL を検知してプレビュータブを開く |
 | テスト | `test` 実行後、JUnit の結果をメソッド単位で表示。JaCoCo のカバレッジをエディタに色で反映 |
 | Web プレビュー | 開発サーバー（Spring Boot / Flask / Express / Vite）と静的 HTML の両方に対応 |
 | ターミナル | node-pty による本物の PTY。同梱ランタイムが PATH に入った状態で開く |
-| SQL | HSQLDB をインメモリで起動し、`.sql` を選択実行して結果を表で表示 |
+| SQL | `.sql` を開いて「実行」を押すと HSQLDB（インメモリ）へ流し、結果を表で表示。DB が止まっていれば自動で起動する。一部を選択すればその文だけ実行できる |
 | LLM チャット | Claude Haiku / GPT Luna / Gemini Flash から選択（BYOK） |
 
 表示言語は**日本語と英語**の 2 つ。インストーラの 1 ページ目で選び、

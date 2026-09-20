@@ -193,17 +193,6 @@ function createProject({ name, templateDir = null, courseId = null, template = n
   return { ok: true, name: safeName, path: dir, ...detectProject(dir) };
 }
 
-function deleteProject(name) {
-  const dir = resolveProjectDir(name);
-  if (!dir || !fs.existsSync(dir)) return { ok: false, error: 'not-found' };
-  try {
-    fs.rmSync(dir, { recursive: true, force: true });
-  } catch (err) {
-    return { ok: false, error: err.message };
-  }
-  return { ok: true };
-}
-
 /** テンプレートを再展開する (既存ファイルは壊さない) */
 function restoreTemplate({ name, templateDir }) {
   const dir = resolveProjectDir(name);
@@ -312,7 +301,6 @@ module.exports = {
   readProjectMeta,
   writeProjectMeta,
   createProject,
-  deleteProject,
   restoreTemplate,
   listTree,
   readFile,

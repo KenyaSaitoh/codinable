@@ -87,6 +87,23 @@ function resolveNpm() {
   return null;
 }
 
+/**
+ * npm 本体 (npm-cli.js) の場所。
+ * npm.cmd を shell 経由で起動すると (1) 標準入力が cmd.exe に吸われて
+ * 子プロセスに届かず、(2) Windows では .cmd の直接 spawn が EINVAL になる。
+ * node で npm-cli.js を直接動かせば両方とも起きない。
+ */
+function resolveNpmCli() {
+  const bundled = path.join(resolveRuntimeDir('node'),
+                            'node_modules', 'npm', 'bin', 'npm-cli.js');
+  if (fs.existsSync(bundled)) return bundled;
+  const npm = resolveNpm();
+  if (!npm) return null;
+  const sibling = path.join(path.dirname(npm),
+                            'node_modules', 'npm', 'bin', 'npm-cli.js');
+  return fs.existsSync(sibling) ? sibling : null;
+}
+
 // ── Python ─────────────────────────────────────────────────
 
 function resolvePython() {
@@ -160,6 +177,12 @@ const { applyJavaLocaleToEnv, getJavaRuntimeOptions, getJavacRuntimeOptions } =
  */
 function getDevEnv(uiLang = null, options = {}) {
   let env = { ...process.env };
+
+  // 開発時に npm 経由で Codinable を起動すると npm_config_* が子に継がれ、
+  // 同梱 npm が "Unknown env config" を警告する。受講者にはエラーに見えるので落とす。
+  for (const key of Object.keys(env)) {
+    if (key.toLowerCase().startsWith('npm_config_')) delete env[key];
+  }
 
   const prepend = [];
   const javaHome = resolveJavaHome();
@@ -248,6 +271,7 @@ module.exports = {
   resolveJavaTool,
   resolveNode,
   resolveNpm,
+  resolveNpmCli,
   resolvePython,
   resolveBash,
   resolveBashDir,

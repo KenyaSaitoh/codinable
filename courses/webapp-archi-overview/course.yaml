@@ -95,8 +95,9 @@ exercises:
     chapter: 6
     lesson: '6.1 データベースとSQLの基本'
     runtime: sql
-    # SQL は SQL タブから実行する。実行対象としては選ばない
-    run: null
+    # sql: は「開いている .sql を HSQLDB へ流す」実行対象。
+    # DB が止まっていれば実行時に起こすので、先に「DB起動」を押す必要はない
+    run: 'sql:01_create.sql'
     suggestName: sql-basics
     names:
       ja: SQLを実行して結果を見る
@@ -104,12 +105,14 @@ exercises:
     descriptions:
       ja: >-
         講義と同じ EMPLOYEE / DEPARTMENT テーブルです。
-        SQL タブで「DB起動」を押し、01_create.sql を流してから
-        02・03 の SELECT や結合を 1 文ずつ選択して実行してください。
+        「実行」を押すと開いている .sql が流れ、SQL タブに結果が出ます。
+        01_create.sql を流したあと 02・03 を開いて実行してください。
+        一部だけ選択して実行すればその文だけ流せます。
       en: >-
         The same EMPLOYEE / DEPARTMENT tables used in the lectures.
-        In the SQL tab press "Start DB", run 01_create.sql, then select statements
-        from 02 and 03 one at a time and run them.
+        Press Run and the open .sql file is executed against HSQLDB, with the
+        results in the SQL tab. Run 01_create.sql first, then open 02 and 03.
+        Select part of the file to run just that statement.
     openFiles:
       - 01_create.sql
 
