@@ -66,4 +66,81 @@ async function streamChat({ apiKey, model, messages, system, signal, onText, max
   });
 }
 
-module.exports = { streamChat, LABEL };
+// ── 道具つきの呼び出し (Agent モード) ──────────────────────
+
+/** 中立な履歴 → Responses API の input 項目 */
+function toToolInput(messages) {
+  const out = [];
+  for (const m of messages || []) {
+    if (m.role === 'tool') {
+      for (const r of m.results || []) {
+        out.push({ type: 'function_call_output', call_id: r.id, output: String(r.output ?? '') });
+      }
+      continue;
+    }
+    if (m.role === 'assistant' && m.toolCalls?.length) {
+      if (String(m.content ?? '').trim()) {
+        out.push({ role: 'assistant', content: [{ type: 'output_text', text: m.content }] });
+      }
+      for (const c of m.toolCalls) {
+        out.push({
+          type: 'function_call', call_id: c.id, name: c.name,
+          arguments: JSON.stringify(c.input || {}),
+        });
+      }
+      continue;
+    }
+    const text = String(m.content ?? '');
+    if (text.trim() === '') continue;
+    const role = m.role === 'assistant' ? 'assistant' : 'user';
+    out.push({
+      role,
+      content: [{ type: role === 'assistant' ? 'output_text' : 'input_text', text }],
+    });
+  }
+  return out;
+}
+
+async function callWithTools({ apiKey, model, messages, system, tools, signal, maxTokens = 8192 }) {
+  const body = {
+    model,
+    input: toToolInput(messages),
+    max_output_tokens: maxTokens,
+    reasoning: { effort: 'low' },
+    tools: (tools || []).map(t => ({
+      type: 'function', name: t.name, description: t.description, parameters: t.schema,
+    })),
+  };
+  if (system) body.instructions = system;
+
+  const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'authorization': `Bearer ${apiKey}` },
+    body: JSON.stringify(body),
+    signal,
+  });
+
+  if (!response.ok) {
+    throw toFriendlyHttpError(response.status, await readErrorDetail(response), LABEL);
+  }
+
+  const data  = await response.json();
+  const items = data.output || [];
+
+  const text = items
+    .filter(i => i.type === 'message')
+    .flatMap(i => (i.content || []).filter(c => c.type === 'output_text').map(c => c.text))
+    .join('');
+
+  const toolCalls = items
+    .filter(i => i.type === 'function_call')
+    .map(i => {
+      let input = {};
+      try { input = JSON.parse(i.arguments || '{}'); } catch { /* 壊れた引数は空扱い */ }
+      return { id: i.call_id || i.id, name: i.name, input };
+    });
+
+  return { text, toolCalls };
+}
+
+module.exports = { streamChat, callWithTools, LABEL };

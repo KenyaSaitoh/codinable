@@ -96,4 +96,15 @@ contextBridge.exposeInMainWorld('api', {
   onChatChunk:      handler       => subscribe('chat-chunk', handler),
   onChatEnd:        handler       => subscribe('chat-end', handler),
   onChatError:      handler       => subscribe('chat-error', handler),
+
+  // ── Agent (道具を使う書き換え) ──
+  agentSend:        payload       => ipcRenderer.send('agent-send', payload),
+  agentAbort:       ()            => ipcRenderer.invoke('agent-abort'),
+  onAgentStart:     handler       => subscribe('agent-start', handler),
+  onAgentText:      handler       => subscribe('agent-text', handler),
+  onAgentTool:      handler       => subscribe('agent-tool', handler),
+  onAgentEdit:      handler       => subscribe('agent-edit', handler),
+  onAgentLimit:     handler       => subscribe('agent-limit', handler),
+  onAgentEnd:       handler       => subscribe('agent-end', handler),
+  onAgentError:     handler       => subscribe('agent-error', handler),
 });

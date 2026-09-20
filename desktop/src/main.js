@@ -36,6 +36,7 @@ const runner     = require('./main/runner');
 const terminal   = require('./main/terminal');
 const staticSrv  = require('./main/static-server');
 const sqlEngine  = require('./main/sql');
+const agent      = require('./main/agent');
 const lspServer  = require('./lsp-server');
 const llm        = require('./llm');
 const { buildSystemPrompt, buildContextMessage } = require('./llm/prompt');
@@ -282,6 +283,46 @@ ipcMain.on('chat-send', async (event, { messages, context } = {}) => {
     else send('chat-error', err.message, { code: err.code || null, keyField: err.keyField || null });
   } finally {
     chatAbort = null;
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+//  Agent (道具を使う書き換え)
+//
+//  Ask との違いは道具を持つかどうかだけなので、キーの扱いも選択中モデルも
+//  チャットと同じものを使う。経過は agent-* で画面へ流す。
+// ═══════════════════════════════════════════════════════════
+
+let agentAbort = null;
+
+ipcMain.handle('agent-abort', () => {
+  try { agentAbort?.abort(); } catch { /* すでに終了している */ }
+  return true;
+});
+
+ipcMain.on('agent-send', async (event, { messages, context } = {}) => {
+  const send = (channel, ...args) => {
+    if (!event.sender.isDestroyed()) event.sender.send(channel, ...args);
+  };
+
+  agentAbort = new AbortController();
+  try {
+    send('agent-start');
+    await agent.runAgent({
+      event,
+      messages:  Array.isArray(messages) ? messages : [],
+      context:   context || {},
+      selection: config.getLlmSelection(),
+      apiKeys:   config.loadApiKeys(),
+      uiLang:    config.getUiLang(),
+      signal:    agentAbort.signal,
+    });
+    send('agent-end');
+  } catch (err) {
+    if (err.name === 'AbortError') send('agent-end');
+    else send('agent-error', err.message, { code: err.code || null, keyField: err.keyField || null });
+  } finally {
+    agentAbort = null;
   }
 });
 

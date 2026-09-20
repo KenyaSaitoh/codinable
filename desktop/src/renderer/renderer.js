@@ -1497,8 +1497,10 @@ let chatMessages  = [];     // [{ role, content }] API へ送る履歴
 let chatStreaming = false;
 let chatBubble    = null;   // ストリーミング中の吹き出し
 let chatBuffer    = '';
-let chatEditMode  = false;  // 応答を変更案として解釈するか
-const attachments = [];     // [{ kind: 'file' | 'log', path?, content }]
+let chatMode      = 'ask';  // 'ask' (読むだけ) / 'agent' (書き換えと実行までする)
+let agentCard     = null;   // Agent の経過を出しているカード
+// チャットに渡すものの控え。ファイルは 1 件のチップにまとめる (送信時に集め直す)
+const attachments = [];     // [{ kind: 'project', project, count } | { kind: 'log', content }]
 
 function currentModel() {
   const id = appInfo?.llmSelection?.modelId;
@@ -1540,9 +1542,25 @@ function addChatMessage(role, content, { streaming = false } = {}) {
 function setChatStreaming(state) {
   chatStreaming = state;
   $('btn-chat-send').disabled = state;
-  $('btn-chat-edit').disabled = state;
   $('btn-chat-abort').classList.toggle('hidden', !state);
   $('chat-actions').classList.toggle('hidden', state);
+}
+
+// ── Ask / Agent の切り替え ─────────────────────────────────
+//
+// Ask は読むだけ。Agent はファイルを書き換えて実行まで試す。
+// どちらを使うかは覚えておく (毎回選び直させない)。
+
+function setChatMode(mode, { persist = true } = {}) {
+  chatMode = mode === 'agent' ? 'agent' : 'ask';
+  for (const btn of document.querySelectorAll('.chat-mode-btn')) {
+    const active = btn.dataset.mode === chatMode;
+    btn.classList.toggle('is-active', active);
+    btn.setAttribute('aria-checked', active ? 'true' : 'false');
+  }
+  $('chat-mode').classList.toggle('is-agent', chatMode === 'agent');
+  $('chat-input').placeholder = t(chatMode === 'agent' ? 'chatInputAgent' : 'chatInputAsk');
+  if (persist) window.api.setLlmSelection({ chatMode });
 }
 
 function renderAttachments() {
@@ -1597,7 +1615,7 @@ function attachRunLog() {
   renderAttachments();
 }
 
-async function sendChat({ editMode = false } = {}) {
+async function sendChat() {
   const input = $('chat-input');
   const text  = input.value.trim();
   if (!text || chatStreaming) return;
@@ -1610,53 +1628,158 @@ async function sendChat({ editMode = false } = {}) {
     return;
   }
 
-  // 書き換えはプロジェクトのファイルが対象。中身を渡さないと書き換えられない
-  if (editMode && !project) { await alertDialog(t('editNoProject')); return; }
+  // Agent はプロジェクトのファイルを書き換えて実行する。対象が無いと何もできない
+  if (chatMode === 'agent' && !project) { await alertDialog(t('agentNoProject')); return; }
 
-  // 相談でも書き換えでも、開いているプロジェクトの中身はそのまま渡す
+  // どちらのモードでも、開いているプロジェクトの中身はそのまま渡す
   const { files } = await collectProjectContext();
-  if (editMode && !files.length) { await alertDialog(t('editNoFile')); return; }
 
   input.value = '';
   addChatMessage('user', text);
   chatMessages.push({ role: 'user', content: text });
 
+  const context = {
+    project,
+    kinds: projectInfo?.kinds || [],
+    files,
+    log:   attachments.find(a => a.kind === 'log')?.content || null,
+    courseName: currentCourse()?.name || null,
+  };
+
+  if (chatMode === 'agent') {
+    startAgent(context);
+    return;
+  }
+
   chatBuffer = '';
-  chatEditMode = editMode;
   chatBubble = addChatMessage('assistant', '', { streaming: true });
   setChatStreaming(true);
-
-  window.api.chatSend({
-    messages: chatMessages,
-    context: {
-      project,
-      kinds: projectInfo?.kinds || [],
-      files,
-      log:   attachments.find(a => a.kind === 'log')?.content || null,
-      editMode,
-    },
-  });
+  window.api.chatSend({ messages: chatMessages, context });
 }
 
 // ═══════════════════════════════════════════
-//  コードの書き換え (AI駆動開発)
+//  Agent モード
 //
-//  応答に含まれる ```codinable-edit path=… ブロックを変更案として取り出し、
-//  差分を見せてから適用する。勝手に書き換えることはしない。
+//  道具 (ファイルを読む / 書く / 実行する) を使いながら、モデルが自分で
+//  数手すすめる。何をしたかは経過カードに残し、書き換えは差分で見せて
+//  「元に戻す」で戻せるようにする (勝手に消えたように見せないため)。
 // ═══════════════════════════════════════════
 
-const EDIT_BLOCK_RE = /^[ \t]*```+[ \t]*codinable-edit[ \t]+path=([^\n`]+)\n([\s\S]*?)\n[ \t]*```+[ \t]*$/gm;
+function startAgent(context) {
+  chatBuffer = '';
+  chatBubble = addChatMessage('assistant', '', { streaming: true });
 
-/** 応答テキストから変更案を取り出す。取り出した部分は本文から取り除く。 */
-function extractEditProposals(text) {
-  const proposals = [];
-  const body = text.replace(EDIT_BLOCK_RE, (_all, rawPath, content) => {
-    const relPath = rawPath.trim().replace(/^["'`]|["'`]$/g, '').replace(/\\/g, '/');
-    if (relPath) proposals.push({ relPath, content });
-    return '';
-  });
-  return { body: body.replace(/\n{3,}/g, '\n\n').trim(), proposals };
+  agentCard = document.createElement('div');
+  agentCard.className = 'agent-steps';
+  chatBubble.appendChild(agentCard);
+
+  setChatStreaming(true);
+  window.api.agentSend({ messages: chatMessages, context });
 }
+
+// Agent が持つ道具はこの 3 つだけ (実行はしない。main/agent.js の TOOLS と対応)
+const TOOL_LABEL = {
+  list_files: 'agentToolList',
+  read_file:  'agentToolRead',
+  write_file: 'agentToolWrite',
+};
+
+/** 道具 1 回分の行を出す (開始で出して、終了で結果を足す) */
+function renderAgentTool({ name, input, state, output }) {
+  if (!agentCard) return;
+
+  if (state === 'start') {
+    const row = document.createElement('div');
+    row.className = 'agent-step running';
+    row.dataset.tool = name;
+    const arg = input?.path || input?.target || '';
+    row.innerHTML =
+      '<span class="agent-step-spinner">⏳</span>' +
+      `<span class="agent-step-label">${escapeHtml(t(TOOL_LABEL[name] || 'agentToolOther'))}</span>` +
+      (arg ? `<code class="agent-step-arg">${escapeHtml(arg)}</code>` : '');
+    agentCard.appendChild(row);
+    scrollChatToBottom();
+    return;
+  }
+
+  const row = [...agentCard.querySelectorAll('.agent-step.running')].pop();
+  if (!row) return;
+  row.classList.remove('running');
+
+  // 断られた (演習の外を触ろうとした等) ときは、その理由を出す。
+  // 書き換えの結果は差分カードで見えるので、ここには出さない
+  const refused = /^(演習|生成物|絶対パス|パスが空|使えない道具|エラー)/.test(String(output || ''));
+  row.querySelector('.agent-step-spinner').textContent = refused ? '⚠️' : '✓';
+  if (refused) {
+    row.classList.add('is-refused');
+    const note = document.createElement('span');
+    note.className = 'agent-step-note';
+    note.textContent = String(output);
+    row.appendChild(note);
+  }
+  scrollChatToBottom();
+}
+
+/** Agent が書き換えたファイルを差分カードで見せる (元に戻せる) */
+function renderAgentEdit(edit) {
+  if (!agentCard) return;
+
+  const rows = edit.before === null
+    ? String(edit.after).split('\n').map(text => ({ kind: 'add', text }))
+    : diffLines(edit.before, edit.after);
+  const added   = rows.filter(r => r.kind === 'add').length;
+  const removed = rows.filter(r => r.kind === 'del').length;
+
+  const diffHtml = collapseDiff(rows).map(row => row.kind === 'skip'
+    ? `<div class="diff-row skip">${escapeHtml(tf('editDiffSkipped', { n: row.count }))}</div>`
+    : `<div class="diff-row ${row.kind}"><span class="diff-mark">${DIFF_MARK[row.kind]}</span>` +
+      `<span class="diff-text">${escapeHtml(row.text)}</span></div>`).join('');
+
+  const card = document.createElement('div');
+  card.className = 'edit-proposal is-applied';
+  card.innerHTML =
+    '<div class="edit-proposal-head">' +
+      `<span class="edit-proposal-path">${escapeHtml(edit.path)}</span>` +
+      `<span class="edit-proposal-stat">${edit.isNew ? escapeHtml(t('editNewFile')) + ' ' : ''}` +
+        `<span class="diff-added">+${added}</span> <span class="diff-removed">-${removed}</span></span>` +
+    '</div>' +
+    `<div class="edit-diff">${diffHtml}</div>` +
+    '<div class="edit-proposal-actions">' +
+      `<span class="edit-proposal-done">${escapeHtml(t('editApplied'))}</span>` +
+      `<button class="btn" data-act="undo">${escapeHtml(t('editUndo'))}</button>` +
+    '</div>';
+
+  const actions = card.querySelector('.edit-proposal-actions');
+  card.querySelector('[data-act="undo"]').addEventListener('click', async () => {
+    // 新規作成だったものは空にはできないので、消して元の状態へ戻す
+    const res = edit.isNew
+      ? await window.api.wsDeleteEntry(project, edit.path)
+      : await window.api.wsWriteFile(project, edit.path, edit.before);
+    if (!res.ok) { await alertDialog(tf('saveFailed', { error: res.error || '' })); return; }
+    if (edit.isNew) await closeFile(edit.path);
+    else await reopenFileFromDisk(edit.path);
+    await reloadTree();
+    actions.innerHTML = `<span class="edit-proposal-done">${escapeHtml(t('editUndone'))}</span>`;
+  });
+
+  agentCard.appendChild(card);
+  scrollChatToBottom();
+
+  // エディタに開いているものは、書き換わった内容に入れ替える
+  reopenFileFromDisk(edit.path).then(() => reloadTree());
+}
+
+function scrollChatToBottom() {
+  const history = $('chat-history');
+  history.scrollTop = history.scrollHeight;
+}
+
+// ═══════════════════════════════════════════
+//  差分の表示 (Agent が書き換えたものを見せる)
+//
+//  Agent はファイルを直接書き換える。勝手に消えたように見えないよう、
+//  変更は必ず差分として出し、「元に戻す」で戻せるようにする。
+// ═══════════════════════════════════════════
 
 /** 行単位の差分 (LCS)。戻りは [{ kind: 'keep'|'add'|'del', text }] */
 function diffLines(before, after) {
@@ -1716,63 +1839,7 @@ function collapseDiff(rows, context = 2) {
 
 const DIFF_MARK = { add: '+', del: '-', keep: ' ' };
 
-/** 変更案 1 件をカードとして描く */
-async function renderEditProposal(proposal, container) {
-  const current = await window.api.wsReadFile(project, proposal.relPath);
-  const before  = current.ok ? String(current.content ?? '') : null;
-  const after   = proposal.content;
-
-  const card = document.createElement('div');
-  card.className = 'edit-proposal';
-
-  if (before !== null && before === after) {
-    card.innerHTML =
-      `<div class="edit-proposal-head"><span class="edit-proposal-path">` +
-      `${escapeHtml(proposal.relPath)}</span>` +
-      `<span class="edit-proposal-stat">${escapeHtml(t('editNoChange'))}</span></div>`;
-    container.appendChild(card);
-    return;
-  }
-
-  const rows    = before === null
-    ? after.split('\n').map(text => ({ kind: 'add', text }))
-    : diffLines(before, after);
-  const added   = rows.filter(r => r.kind === 'add').length;
-  const removed = rows.filter(r => r.kind === 'del').length;
-
-  const diffHtml = collapseDiff(rows).map(row => row.kind === 'skip'
-    ? `<div class="diff-row skip">${escapeHtml(tf('editDiffSkipped', { n: row.count }))}</div>`
-    : `<div class="diff-row ${row.kind}"><span class="diff-mark">${DIFF_MARK[row.kind]}</span>` +
-      `<span class="diff-text">${escapeHtml(row.text)}</span></div>`).join('');
-
-  card.innerHTML =
-    '<div class="edit-proposal-head">' +
-      `<span class="edit-proposal-path">${escapeHtml(proposal.relPath)}</span>` +
-      `<span class="edit-proposal-stat">${before === null ? escapeHtml(t('editNewFile')) + ' ' : ''}` +
-        `<span class="diff-added">+${added}</span> <span class="diff-removed">-${removed}</span></span>` +
-    '</div>' +
-    `<div class="edit-diff">${diffHtml}</div>` +
-    '<div class="edit-proposal-actions">' +
-      `<button class="btn btn-apply" data-act="apply">${escapeHtml(t('editApply'))}</button>` +
-      `<button class="btn" data-act="discard">${escapeHtml(t('editDiscard'))}</button>` +
-    '</div>';
-
-  const actions = card.querySelector('.edit-proposal-actions');
-  card.querySelector('[data-act="apply"]').addEventListener('click', async () => {
-    const res = await window.api.wsWriteFile(project, proposal.relPath, after);
-    if (!res.ok) { await alertDialog(tf('saveFailed', { error: res.error || '' })); return; }
-    await reopenFileFromDisk(proposal.relPath);
-    await reloadTree();
-    actions.innerHTML = `<span class="edit-proposal-done">${escapeHtml(t('editApplied'))}</span>`;
-  });
-  card.querySelector('[data-act="discard"]').addEventListener('click', () => {
-    actions.innerHTML = `<span class="edit-proposal-done">${escapeHtml(t('editDiscarded'))}</span>`;
-  });
-
-  container.appendChild(card);
-}
-
-/** 適用後、開いているタブを disk の内容に入れ替える */
+/** 書き換えのあと、開いているタブを disk の内容に入れ替える */
 async function reopenFileFromDisk(relPath) {
   if (!openFiles.has(relPath)) { await openFile(relPath); return; }
   const res = await window.api.wsReadFile(project, relPath);
@@ -1781,20 +1848,6 @@ async function reopenFileFromDisk(relPath) {
   entry.cm.setValue(String(res.content ?? ''));
   entry.dirty = false;
   renderTabs();
-}
-
-/** 応答の描画。書き換えモードなら変更案をカードにして本文の下に並べる */
-async function renderChatResponse(bubble, text, { editMode }) {
-  if (!editMode) { bubble.innerHTML = renderMarkdown(text); return; }
-
-  const { body, proposals } = extractEditProposals(text);
-  bubble.innerHTML = renderMarkdown(body || text);
-  if (!proposals.length) return;
-
-  const wrap = document.createElement('div');
-  wrap.className = 'edit-proposals';
-  bubble.appendChild(wrap);
-  for (const proposal of proposals) await renderEditProposal(proposal, wrap);
 }
 
 function clearChat() {
@@ -2024,6 +2077,7 @@ async function changeWorkspaceRoot() {
 /** 言語を切り替えたとき、JS が作った部分を作り直す */
 function retranslateDynamicUi() {
   updateLlmBadge();
+  setChatMode(chatMode, { persist: false });
   updateModelHint();
   renderTabs();
   renderTree();
@@ -2159,8 +2213,13 @@ function wireEvents() {
 
   // ── チャット ──
   $('btn-chat-send').addEventListener('click', () => sendChat());
-  $('btn-chat-edit').addEventListener('click', () => sendChat({ editMode: true }));
-  $('btn-chat-abort').addEventListener('click', () => window.api.chatAbort());
+  for (const btn of document.querySelectorAll('.chat-mode-btn')) {
+    btn.addEventListener('click', () => { if (!chatStreaming) setChatMode(btn.dataset.mode); });
+  }
+  $('btn-chat-abort').addEventListener('click', () => {
+    if (chatMode === 'agent') window.api.agentAbort();
+    else window.api.chatAbort();
+  });
   $('btn-chat-clear').addEventListener('click', clearChat);
   $('chat-input').addEventListener('keydown', ev => {
     if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) {
@@ -2250,24 +2309,19 @@ function wireIpc() {
   window.api.onChatChunk(text => {
     if (!chatBubble) return;
     chatBuffer += text;
-    // 途中では本文だけ描く (書き換えブロックは閉じるまで差分を出せない)
-    chatBubble.innerHTML = renderMarkdown(
-      chatEditMode ? extractEditProposals(chatBuffer).body || chatBuffer : chatBuffer);
-    const history = $('chat-history');
-    history.scrollTop = history.scrollHeight;
+    chatBubble.innerHTML = renderMarkdown(chatBuffer);
+    scrollChatToBottom();
   });
-  window.api.onChatEnd(async () => {
+  window.api.onChatEnd(() => {
     const bubble = chatBubble;
     const text   = chatBuffer;
-    const editMode = chatEditMode;
     chatBubble = null;
     setChatStreaming(false);
     if (!bubble) return;
     bubble.classList.remove('streaming');
     chatMessages.push({ role: 'assistant', content: text });
-    await renderChatResponse(bubble, text, { editMode });
-    const history = $('chat-history');
-    history.scrollTop = history.scrollHeight;
+    bubble.innerHTML = renderMarkdown(text);
+    scrollChatToBottom();
   });
   window.api.onChatError(async (message, info) => {
     if (chatBubble) {
@@ -2277,6 +2331,51 @@ function wireIpc() {
     chatBubble = null;
     setChatStreaming(false);
     // 直前のユーザー発言は履歴から外す (同じ内容でもう一度送れるようにする)
+    if (chatMessages.at(-1)?.role === 'user') chatMessages.pop();
+    if (info?.code === 'API_KEY_NOT_CONFIGURED') openSettings();
+  });
+
+  // ── Agent モード ──
+  window.api.onAgentStart(() => { /* 吹き出しは送信時に用意してある */ });
+  window.api.onAgentText(text => {
+    if (!chatBubble || !text.trim()) return;
+    // 経過カードより前に本文を積む (何をするつもりかが上に並ぶ)
+    const block = document.createElement('div');
+    block.className = 'agent-say';
+    block.innerHTML = renderMarkdown(text);
+    chatBubble.insertBefore(block, agentCard);
+    chatBuffer += `${text}\n`;
+    scrollChatToBottom();
+  });
+  window.api.onAgentTool(info => renderAgentTool(info));
+  window.api.onAgentEdit(edit => renderAgentEdit(edit));
+  window.api.onAgentLimit(({ steps }) => {
+    if (agentCard) {
+      const note = document.createElement('div');
+      note.className = 'agent-note';
+      note.textContent = tf('agentLimit', { n: steps });
+      agentCard.appendChild(note);
+    }
+  });
+  window.api.onAgentEnd(() => {
+    chatBubble?.classList.remove('streaming');
+    if (chatBuffer.trim()) chatMessages.push({ role: 'assistant', content: chatBuffer });
+    chatBubble = null;
+    agentCard  = null;
+    setChatStreaming(false);
+    scrollChatToBottom();
+  });
+  window.api.onAgentError(async (message, info) => {
+    if (chatBubble) {
+      chatBubble.classList.remove('streaming');
+      const note = document.createElement('div');
+      note.className = 'agent-note is-error';
+      note.textContent = tf('chatError', { error: message });
+      chatBubble.appendChild(note);
+    }
+    chatBubble = null;
+    agentCard  = null;
+    setChatStreaming(false);
     if (chatMessages.at(-1)?.role === 'user') chatMessages.pop();
     if (info?.code === 'API_KEY_NOT_CONFIGURED') openSettings();
   });
@@ -2294,6 +2393,7 @@ async function boot() {
   loadLocalSettings();
   buildLlmSettings();
   updateLlmBadge();
+  setChatMode(appInfo.llmSelection?.chatMode || 'ask', { persist: false });
   clearChat();
   clearTestResults();
   clearRunOutput();

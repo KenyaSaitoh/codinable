@@ -4134,10 +4134,72 @@ body.theme-dark .exercise-item.active {
 .api-key-hint a { color: var(--accent-blue); text-decoration: none; }
 .api-key-hint a:hover { text-decoration: underline; }
 
+/* ── Ask / Agent の切り替え ──
+   送信ボタンの隣に置く 2 択。押せる見た目にはするが、送信より目立たせない */
+.chat-mode {
+  display: flex;
+  margin-right: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.chat-mode-btn {
+  background: none;
+  border: none;
+  padding: 3px 10px;
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.chat-mode-btn:hover:not(.is-active) { background: var(--bg-overlay); color: var(--text-main); }
+.chat-mode-btn.is-active {
+  background: var(--bg-overlay);
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+.chat-mode.is-agent .chat-mode-btn.is-active { color: var(--accent-green); }
+
+/* ── Agent の経過 ──
+   何をしたかを 1 行ずつ残す。実行の出力は畳んで置く */
+.agent-say { margin-bottom: 6px; }
+.agent-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+.agent-step {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--text-muted);
+}
+.agent-step-spinner { flex-shrink: 0; }
+.agent-step.running .agent-step-label { color: var(--text-main); }
+.agent-step-arg {
+  font-family: var(--editor-font-family);
+  color: var(--accent-blue);
+  word-break: break-all;
+}
+/* 演習の外を触ろうとして断られたときの理由 */
+.agent-step.is-refused .agent-step-label { color: var(--accent-red); }
+.agent-step-note {
+  flex-basis: 100%;
+  padding-left: 22px;
+  color: var(--accent-red);
+}
+.agent-note {
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--text-muted);
+}
+.agent-note.is-error { color: var(--accent-red); }
+
 /* ── コードの書き換え (AI駆動開発) ──
-   チャットの応答に混ざる ```codinable-edit ブロックを、差分つきの
-   「変更案カード」として吹き出しの中に並べる。適用は必ず手動。 */
-.chat-mini-edit { color: var(--accent-blue); }
+   Ask の応答に混ざる ```codinable-edit ブロックは「適用」を押してから反映する。
+   Agent は自分で書き換えるので、同じカードを適用済みの形で出して元に戻せるようにする。 */
+.edit-proposal.is-applied { border-color: color-mix(in srgb, var(--accent-green) 40%, var(--border-color)); }
 
 .edit-proposals {
   display: flex;

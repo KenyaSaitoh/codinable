@@ -29,6 +29,31 @@ const PROVIDERS = {
  * @param {(text: string) => void} opts.onText
  */
 async function streamChat({ modelId, modelOverride, apiKeys, messages, system, signal, onText }) {
+  const { provider, apiKey, model } = resolve(modelId, modelOverride, apiKeys);
+  await provider.streamChat({ apiKey, model, messages, system, signal, onText });
+}
+
+/**
+ * 道具つきで 1 回呼ぶ (Agent モードのループ 1 周分)。
+ *
+ * 道具の宣言と結果の返し方の JSON の形は 3 社で違うが、ここから上は
+ * 中立な形 ({ text, toolCalls: [{ id, name, input }] }) だけを扱う。
+ *
+ * @param {Array}  opts.messages [{ role, content }] / { role:'assistant', toolCalls }
+ *                               / { role:'tool', results: [{ id, name, output }] }
+ * @param {Array}  opts.tools    [{ name, description, schema }]
+ * @returns {Promise<{ text: string, toolCalls: Array }>}
+ */
+async function callWithTools({ modelId, modelOverride, apiKeys, messages, system, tools, signal }) {
+  const { provider, apiKey, model } = resolve(modelId, modelOverride, apiKeys);
+  if (typeof provider.callWithTools !== 'function') {
+    throw new Error(`${provider.LABEL} は道具つきの呼び出しに対応していません`);
+  }
+  return provider.callWithTools({ apiKey, model, messages, system, tools, signal });
+}
+
+/** モデル ID からプロバイダとキーを決める (未設定なら分かる形で失敗させる) */
+function resolve(modelId, modelOverride, apiKeys) {
   const spec     = getLlmModel(modelId);
   const provider = PROVIDERS[spec.provider];
   if (!provider) throw new Error(`未対応の LLM プロバイダ: ${spec.provider}`);
@@ -40,15 +65,7 @@ async function streamChat({ modelId, modelOverride, apiKeys, messages, system, s
       { code: 'API_KEY_NOT_CONFIGURED', keyField: spec.keyField },
     );
   }
-
-  await provider.streamChat({
-    apiKey,
-    model: String(modelOverride || '').trim() || spec.model,
-    messages,
-    system,
-    signal,
-    onText,
-  });
+  return { provider, apiKey, model: String(modelOverride || '').trim() || spec.model };
 }
 
 /** 選択中モデルの表示用情報 (キー本体は含めない) */
@@ -64,4 +81,4 @@ function describeModel(modelId, modelOverride) {
   };
 }
 
-module.exports = { streamChat, describeModel };
+module.exports = { streamChat, callWithTools, describeModel };

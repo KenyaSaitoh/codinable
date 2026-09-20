@@ -84,4 +84,77 @@ async function streamChat(opts) {
   }
 }
 
-module.exports = { streamChat, LABEL };
+// ── 道具つきの呼び出し (Agent モード) ──────────────────────
+//
+// Gemini の functionCall には ID が無いので、こちら側で名前から作る
+// (結果は functionResponse の name で対応づけられる)。
+
+/** 中立な履歴 → Gemini の contents */
+function toToolContents(messages) {
+  const out = [];
+  for (const m of messages || []) {
+    if (m.role === 'tool') {
+      out.push({
+        role: 'user',
+        parts: (m.results || []).map(r => ({
+          functionResponse: { name: r.name, response: { output: String(r.output ?? '') } },
+        })),
+      });
+      continue;
+    }
+    if (m.role === 'assistant' && m.toolCalls?.length) {
+      const parts = [];
+      if (String(m.content ?? '').trim()) parts.push({ text: m.content });
+      for (const c of m.toolCalls) {
+        parts.push({ functionCall: { name: c.name, args: c.input || {} } });
+      }
+      out.push({ role: 'model', parts });
+      continue;
+    }
+    const text = String(m.content ?? '');
+    if (text.trim() === '') continue;
+    out.push({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text }] });
+  }
+  return out;
+}
+
+async function callWithTools({ apiKey, model, messages, system, tools, signal, maxTokens = 8192 }) {
+  const body = {
+    contents: toToolContents(messages),
+    generationConfig: { maxOutputTokens: maxTokens },
+    tools: [{
+      functionDeclarations: (tools || []).map(t => ({
+        name: t.name, description: t.description, parameters: t.schema,
+      })),
+    }],
+  };
+  if (system) body.systemInstruction = { parts: [{ text: system }] };
+
+  const url = `${BASE_URL}/models/${encodeURIComponent(model)}:generateContent`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
+    body: JSON.stringify(body),
+    signal,
+  });
+
+  if (!response.ok) {
+    throw toFriendlyHttpError(response.status, await readErrorDetail(response), LABEL);
+  }
+
+  const data  = await response.json();
+  const parts = data.candidates?.[0]?.content?.parts || [];
+
+  const text = parts.filter(p => typeof p.text === 'string').map(p => p.text).join('');
+  const toolCalls = parts
+    .filter(p => p.functionCall)
+    .map((p, index) => ({
+      id:    `${p.functionCall.name}-${index}`,
+      name:  p.functionCall.name,
+      input: p.functionCall.args || {},
+    }));
+
+  return { text, toolCalls };
+}
+
+module.exports = { streamChat, callWithTools, LABEL };

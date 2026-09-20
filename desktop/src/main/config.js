@@ -155,13 +155,16 @@ function getLlmSelection() {
     modelId:  config.llmModelId || DEFAULT_LLM_ID,
     // 空文字なら app-config.js の既定モデル ID を使う
     override: String(config.llmModelOverride || '').trim(),
+    // 'ask' (読むだけ) / 'agent' (書き換えと実行までする)
+    chatMode: config.chatMode === 'agent' ? 'agent' : 'ask',
   };
 }
 
-function setLlmSelection({ modelId, override }) {
+function setLlmSelection({ modelId, override, chatMode }) {
   const patch = {};
   if (modelId !== undefined) patch.llmModelId = modelId;
   if (override !== undefined) patch.llmModelOverride = String(override || '').trim();
+  if (chatMode !== undefined) patch.chatMode = chatMode === 'agent' ? 'agent' : 'ask';
   patchConfig(patch);
   return getLlmSelection();
 }
