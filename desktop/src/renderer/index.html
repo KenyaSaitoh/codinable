@@ -350,6 +350,8 @@
                   placeholder="質問を入力... (Enter で送信 / Shift+Enter で改行)"></textarea>
         <div class="chat-actions" id="chat-actions">
           <button class="chat-mini-btn" id="btn-attach-file" data-i18n="btnAttachFile" data-i18n-title="btnAttachFileTitle" title="開いているファイルを添付します">📎 現在のファイル</button>
+          <!-- 書き換え: 開いているファイルを渡して、差分つきの変更案を返させる -->
+          <button class="chat-mini-btn chat-mini-edit" id="btn-chat-edit" data-i18n="btnChatEdit" data-i18n-title="btnChatEditTitle" title="開いているファイルの書き換え案を、差分で受け取ります">✏️ 書き換え</button>
           <button class="chat-mini-btn chat-mini-send" id="btn-chat-send" data-i18n="btnSend" data-i18n-title="btnSendTitle" title="送信">➤ 送信</button>
         </div>
         <button class="chat-abort-btn hidden" id="btn-chat-abort" data-i18n="btnAbort" data-i18n-title="btnAbortTitle" title="応答を中断します">⏹ 中断</button>
