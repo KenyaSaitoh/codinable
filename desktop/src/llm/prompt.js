@@ -101,4 +101,4 @@ function buildContextMessage(context = {}) {
   return `参考情報 (現在の作業内容です。質問への回答に必要な範囲で使ってください):\n\n${blocks.join('\n\n')}`;
 }
 
-module.exports = { buildSystemPrompt, buildContextMessage };
+module.exports = { buildSystemPrompt, buildContextMessage, EDIT_BLOCK_MARKER };
