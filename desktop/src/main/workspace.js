@@ -264,6 +264,47 @@ function resetToTemplate({ name, templateDir }) {
   return { ok: true, written };
 }
 
+/**
+ * チャットに渡すため、プロジェクトのテキストファイルを集める。
+ *
+ * 受講者に添付の操作をさせない代わりに、開いているプロジェクトの中身をそのまま渡す。
+ * ただしモデルに渡せる量には限りがあるので、次の順で落とす。
+ *   1. 生成物・巨大ファイル・機械が作るもの (SKIP_DIRS / EXCLUDE_NAMES / サイズ上限)
+ *   2. 入りきらない分 (件数・合計バイトの上限)
+ * 落とした件数を返すので、画面には「何件渡したか」を出せる。
+ */
+const CONTEXT_EXCLUDE = [
+  /^package-lock\.json$/, /^yarn\.lock$/, /^pnpm-lock\.yaml$/,
+  /^gradlew(\.bat)?$/, /^gradle\/wrapper\//, /\.min\.(js|css)$/,
+];
+
+function collectContextFiles(name, { maxFiles = 60, maxBytes = 300_000, maxFileBytes = 60_000 } = {}) {
+  const dir = resolveProjectDir(name);
+  if (!dir || !fs.existsSync(dir)) return { ok: false, files: [], skipped: 0 };
+
+  const candidates = walkTree(dir)
+    .filter(e => !e.dir && e.text)
+    .filter(e => !CONTEXT_EXCLUDE.some(re => re.test(e.path)));
+
+  const files = [];
+  let bytes = 0;
+  let skipped = 0;
+  for (const entry of candidates) {
+    const full = path.join(dir, entry.path);
+    let stat;
+    try { stat = fs.statSync(full); } catch { skipped++; continue; }
+    if (stat.size > maxFileBytes || files.length >= maxFiles || bytes + stat.size > maxBytes) {
+      skipped++;
+      continue;
+    }
+    try {
+      files.push({ path: entry.path, content: fs.readFileSync(full, 'utf8') });
+      bytes += stat.size;
+    } catch { skipped++; }
+  }
+  return { ok: true, files, skipped };
+}
+
 // ── ファイル操作 ───────────────────────────────────────────
 
 function listTree(name) {
@@ -364,6 +405,7 @@ module.exports = {
   writeProjectMeta,
   createProject,
   resetToTemplate,
+  collectContextFiles,
   listTree,
   readFile,
   writeFile,

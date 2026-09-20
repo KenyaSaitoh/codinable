@@ -42,6 +42,7 @@ contextBridge.exposeInMainWorld('api', {
   wsCreateProject:  payload       => ipcRenderer.invoke('ws-create-project', payload),
   wsResetTemplate:  (name, lang)  => ipcRenderer.invoke('ws-reset-template', { name, lang }),
   wsProjectInfo:    name          => ipcRenderer.invoke('ws-project-info', { name }),
+  wsProjectContext: name          => ipcRenderer.invoke('ws-project-context', { name }),
   wsTree:           name          => ipcRenderer.invoke('ws-tree', { name }),
   wsReadFile:       (name, relPath) => ipcRenderer.invoke('ws-read-file', { name, relPath }),
   wsWriteFile:      (name, relPath, content) =>

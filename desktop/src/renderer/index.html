@@ -36,10 +36,8 @@
         <span class="course-picker-icon" aria-hidden="true">🎓</span>
         <select class="course-select" id="active-course-select"></select>
       </label>
-      <select class="project-select" id="project-select" data-i18n-title="projectSelectTitle" title="開くプロジェクトを選びます">
-        <option value="" data-i18n="noProject">プロジェクト未選択</option>
-      </select>
-      <button class="btn-course-entry" id="btn-new-project" data-i18n="btnNewProject" data-i18n-title="btnNewProjectTitle" title="講座のサンプルまたは空のプロジェクトを作ります">＋ 新規プロジェクト</button>
+      <!-- プロジェクトは演習から作って開くので、ここに選択や新規作成の口は置かない
+           (左の演習一覧が唯一の入口。2 か所から選べると、どちらが正か分からなくなる) -->
     </div>
     <div class="header-right">
       <!-- LLM は任意機能。キーが未設定なら未設定と出るだけで他の機能には影響しない -->
@@ -57,12 +55,14 @@
     <span class="current-course-icon" id="project-icon">📁</span>
     <span class="current-course-name" id="project-name" data-i18n="noProject">プロジェクト未選択</span>
     <span class="project-kinds" id="project-kinds"></span>
-    <span class="project-path" id="project-path"></span>
     <span class="project-bar-actions">
       <!-- 1 プロジェクト = 1 演習なので、ここが「この演習をやり直す」口になる。
-           雛形にあるファイルを上書きして戻す (自分で足したファイルは残す) -->
+           雛形にあるファイルを上書きして戻す (自分で足したファイルは残す)。
+           何が初期化されるのかが読めるよう、対象のプロジェクト名の隣に置く
+           (右端に置くと、アプリ全体を初期化するように見える) -->
       <button class="btn-lesson-list" id="btn-reset-exercise" data-i18n="btnResetExercise" data-i18n-title="btnResetExerciseTitle" title="この演習のファイルを配布時の状態に戻します">↺ 初期化</button>
     </span>
+    <span class="project-path" id="project-path"></span>
   </div>
 
   <!-- ════ 設定 ════ -->
@@ -226,7 +226,7 @@
            data-i18n-title="dragToResizeHeight" title="ドラッグで高さを調整"></div>
 
       <div class="side-header explorer-header">
-        <span data-i18n="explorerTitle">📁 ファイル</span>
+        <span data-i18n="explorerTitle">📁 プロジェクト</span>
         <span class="explorer-actions">
           <button class="explorer-action" id="btn-new-file" data-i18n-title="btnNewFile" title="新しいファイル">＋F</button>
           <button class="explorer-action" id="btn-new-dir"  data-i18n-title="btnNewDir"  title="新しいフォルダ">＋D</button>
@@ -366,7 +366,7 @@
       <div class="chat-history" id="chat-history">
         <div class="chat-welcome">
           <p data-i18n="chatWelcome1">🤖 コードの相談相手です。使うかどうかは自由です。</p>
-          <p data-i18n="chatWelcome2">📄 「＋ チャットに渡す」で開いているファイルや実行ログを添付できます。</p>
+          <p data-i18n="chatWelcome2">📄 開いているプロジェクトのファイルは、送信時に自動で渡します。</p>
           <p data-i18n="chatWelcome3">🔑 使う前に ⚙ 設定で API キーを登録してください。</p>
         </div>
       </div>
@@ -379,8 +379,8 @@
                   data-i18n-placeholder="chatPlaceholder"
                   placeholder="質問を入力... (Enter で送信 / Shift+Enter で改行)"></textarea>
         <div class="chat-actions" id="chat-actions">
-          <button class="chat-mini-btn" id="btn-attach-file" data-i18n="btnAttachFile" data-i18n-title="btnAttachFileTitle" title="開いているファイルを添付します">📎 現在のファイル</button>
-          <!-- 書き換え: 開いているファイルを渡して、差分つきの変更案を返させる -->
+          <!-- 開いているプロジェクトのファイルは送信時に自動で渡すので、添付の操作は置かない -->
+          <!-- 書き換え: プロジェクトのファイルを渡して、差分つきの変更案を返させる -->
           <button class="chat-mini-btn chat-mini-edit" id="btn-chat-edit" data-i18n="btnChatEdit" data-i18n-title="btnChatEditTitle" title="開いているファイルの書き換え案を、差分で受け取ります">✏️ 書き換え</button>
           <button class="chat-mini-btn chat-mini-send" id="btn-chat-send" data-i18n="btnSend" data-i18n-title="btnSendTitle" title="送信">➤ 送信</button>
         </div>
@@ -390,29 +390,6 @@
 
   </div><!-- /app-main -->
 </div><!-- /app-layout -->
-
-<!-- ════ 新規プロジェクト ════ -->
-<div class="modal-overlay hidden" id="new-project-overlay">
-  <div class="course-dialog" role="dialog" aria-modal="true">
-    <div class="course-dialog-header">
-      <span class="course-dialog-title" data-i18n="btnNewProject">＋ 新規プロジェクト</span>
-      <button class="course-dialog-close" id="new-project-close" data-i18n-title="close" title="閉じる">✕</button>
-    </div>
-    <div class="course-dialog-sub" data-i18n="newProjectSub">受講中の講座を選ぶと、その講座で使う雛形が出ます。空のプロジェクトも作れます。</div>
-    <div class="course-dialog-lang-row">
-      <label for="course-select" data-i18n="courseLabel">📚 講座</label>
-      <select class="lang-select" id="course-select"></select>
-    </div>
-    <div class="course-dialog-body" id="template-list"></div>
-    <div class="new-project-footer">
-      <label class="new-project-name-label" for="new-project-name" data-i18n="projectNameLabel">プロジェクト名</label>
-      <input type="text" id="new-project-name" class="api-key-input" spellcheck="false" autocomplete="off"
-             placeholder="my-project">
-      <span class="new-project-error hidden" id="new-project-error"></span>
-      <button class="btn btn-apply" id="btn-create-project" data-i18n="btnCreate" disabled>作成</button>
-    </div>
-  </div>
-</div>
 
 <!-- ════ 汎用ダイアログ (alert / confirm / prompt) ════ -->
 <div class="modal-overlay hidden" id="simple-dialog-overlay">

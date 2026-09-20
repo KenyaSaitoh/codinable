@@ -557,23 +557,6 @@ async function deleteEntry(relPath) {
 
 async function reloadProjects() {
   projects = await window.api.wsListProjects();
-  const select = $('project-select');
-  select.innerHTML = '';
-
-  if (!projects.length) {
-    const opt = document.createElement('option');
-    opt.value = '';
-    opt.textContent = t('noProject');
-    select.appendChild(opt);
-  }
-  for (const p of projects) {
-    const opt = document.createElement('option');
-    opt.value = p.name;
-    opt.textContent = p.name;
-    select.appendChild(opt);
-  }
-  if (project) select.value = project;
-
   // 「作成済み」の印が付く演習が変わるので、一覧を描き直す
   if (courses.length) renderExercises();
 }
@@ -593,7 +576,6 @@ async function selectProject(name, { openInitial = [] } = {}) {
 
   project = name || null;
   localStorage.setItem('lastProject', project || '');
-  $('project-select').value = project || '';
   // どの演習を開いているかの ▶ 印を付け替える
   if (courses.length) renderExercises();
 
@@ -820,119 +802,6 @@ function selectRunTarget(value) {
   if (![...select.options].some(opt => opt.value === value)) return;
   select.value = value;
   $('btn-run').disabled = running || !project;
-}
-
-// ═══════════════════════════════════════════
-//  新規プロジェクトダイアログ
-// ═══════════════════════════════════════════
-
-let selectedTemplate = null;   // { courseId, templateId, openFiles } / null = 空プロジェクト
-
-async function openNewProjectDialog() {
-  courses = await window.api.loadCourses(getLang());
-
-  const select = $('course-select');
-  select.innerHTML = '';
-  const none = document.createElement('option');
-  none.value = '';
-  none.textContent = t('courseNone');
-  select.appendChild(none);
-  for (const course of courses) {
-    const opt = document.createElement('option');
-    opt.value = course.id;
-    opt.textContent = course.name;
-    select.appendChild(opt);
-  }
-  // ヘッダーで選んでいる講座を既定にする (講座を使う人のほうが多いため)
-  const active = $('active-course-select').value;
-  select.value = courses.some(c => c.id === active) ? active : (courses[0]?.id || '');
-
-  $('new-project-name').value = '';
-  $('new-project-error').classList.add('hidden');
-  renderTemplateList();
-  $('new-project-overlay').classList.remove('hidden');
-}
-
-function renderTemplateList() {
-  const courseId = $('course-select').value;
-  const list = $('template-list');
-  list.innerHTML = '';
-  selectedTemplate = null;
-
-  const cards = [];
-  if (!courseId) {
-    cards.push({ id: null, name: t('templateBlank'), description: t('templateBlankDesc'), tags: [] });
-  } else {
-    const course = courses.find(c => c.id === courseId);
-    for (const exercise of course?.exercises || []) {
-      cards.push({
-        id: exercise.id, name: exercise.name, description: exercise.description,
-        suggestName: exercise.suggestName, openFiles: exercise.openFiles,
-        tags: [exercise.lesson, t(`runtime_${exercise.runtime}`)].filter(Boolean),
-      });
-    }
-    if (!cards.length) {
-      list.innerHTML = `<div class="tree-placeholder">${escapeHtml(t('templateEmpty'))}</div>`;
-    }
-    // 講座を選んでいても空から始めたい人はいるので、最後に必ず置く
-    cards.push({ id: null, name: t('templateBlank'), description: t('templateBlankDesc'), tags: [] });
-  }
-
-  cards.forEach((card, index) => {
-    const el = document.createElement('button');
-    el.type = 'button';
-    el.className = 'template-card';
-    el.innerHTML =
-      `<div class="template-card-title">${escapeHtml(card.name)}</div>` +
-      (card.description ? `<div class="template-card-desc">${escapeHtml(card.description)}</div>` : '') +
-      (card.tags.length
-        ? `<div class="template-card-tags">${card.tags
-            .map(tag => `<span class="template-card-tag">${escapeHtml(tag)}</span>`).join('')}</div>`
-        : '');
-    el.addEventListener('click', () => {
-      list.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
-      el.classList.add('selected');
-      selectedTemplate = card.id
-        ? { courseId, templateId: card.id, openFiles: card.openFiles || [] }
-        : null;
-      if (!$('new-project-name').value.trim()) {
-        $('new-project-name').value = card.suggestName || 'my-project';
-      }
-      $('btn-create-project').disabled = false;
-    });
-    list.appendChild(el);
-    if (index === 0) el.click();
-  });
-}
-
-async function createProject() {
-  const name = $('new-project-name').value.trim();
-  const error = $('new-project-error');
-  error.classList.add('hidden');
-
-  if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(name)) {
-    error.textContent = t('errNameInvalid');
-    error.classList.remove('hidden');
-    return;
-  }
-
-  const res = await window.api.wsCreateProject({
-    name,
-    courseId:   selectedTemplate?.courseId,
-    templateId: selectedTemplate?.templateId,
-    lang:       getLang(),
-  });
-  if (!res.ok) {
-    error.textContent = res.error === 'already-exists' ? t('errNameExists')
-                      : res.error === 'invalid-name'   ? t('errNameInvalid')
-                      : tf('errCreateFailed', { error: res.error || '' });
-    error.classList.remove('hidden');
-    return;
-  }
-
-  $('new-project-overlay').classList.add('hidden');
-  await reloadProjects();
-  await selectProject(name, { openInitial: selectedTemplate?.openFiles || [] });
 }
 
 // ═══════════════════════════════════════════
@@ -1684,7 +1553,9 @@ function renderAttachments() {
     const chip = document.createElement('span');
     chip.className = 'ai-context-chip';
     chip.innerHTML =
-      escapeHtml(item.kind === 'file' ? tf('chipFile', { name: item.path }) : t('chipLog')) +
+      escapeHtml(item.kind === 'project'
+        ? tf('chipProject', { name: item.project, n: item.count })
+        : t('chipLog')) +
       `<button class="ai-context-chip-remove" title="${escapeHtml(t('chipRemove'))}">✕</button>`;
     chip.querySelector('button').addEventListener('click', () => {
       attachments.splice(index, 1);
@@ -1694,14 +1565,28 @@ function renderAttachments() {
   });
 }
 
-function attachCurrentFile() {
-  if (!activeFile) return;
-  const entry = openFiles.get(activeFile);
-  if (!entry) return;
-  const existing = attachments.find(a => a.kind === 'file' && a.path === activeFile);
-  if (existing) existing.content = entry.cm.getValue();
-  else attachments.push({ kind: 'file', path: activeFile, content: entry.cm.getValue() });
+/**
+ * 開いているプロジェクトのファイルを、送信のたびに集め直す。
+ *
+ * 受講者に「どれを渡すか」を選ばせない。演習のファイルは短く、
+ * 相談したい内容もプロジェクト全体にまたがるため、まとめて渡すほうが早い。
+ * 編集中の内容を渡すので、先に保存する。
+ */
+async function collectProjectContext() {
+  if (!project) return { files: [], skipped: 0 };
+  for (const relPath of openFiles.keys()) await saveFile(relPath);
+
+  const res = await window.api.wsProjectContext(project);
+  const files = res.ok ? res.files : [];
+
+  // チップは「何を渡したか」の控え。ファイル分は 1 つにまとめる
+  const index = attachments.findIndex(a => a.kind === 'project');
+  const chip  = { kind: 'project', project, count: files.length };
+  if (index >= 0) attachments[index] = chip;
+  else attachments.unshift(chip);
   renderAttachments();
+
+  return { files, skipped: res.skipped || 0 };
 }
 
 function attachRunLog() {
@@ -1725,19 +1610,12 @@ async function sendChat({ editMode = false } = {}) {
     return;
   }
 
-  // 書き換えは「いま開いているファイル」が対象。中身を渡さないと書き換えられないので、
-  // 添付し忘れても成立するようにここで開いているファイルを全部積む。
-  if (editMode) {
-    if (!project)     { await alertDialog(t('editNoProject')); return; }
-    if (!openFiles.size) { await alertDialog(t('editNoFile')); return; }
-    for (const relPath of openFiles.keys()) await saveFile(relPath);
-    for (const [relPath, entry] of openFiles) {
-      const existing = attachments.find(a => a.kind === 'file' && a.path === relPath);
-      if (existing) existing.content = entry.cm.getValue();
-      else attachments.push({ kind: 'file', path: relPath, content: entry.cm.getValue() });
-    }
-    renderAttachments();
-  }
+  // 書き換えはプロジェクトのファイルが対象。中身を渡さないと書き換えられない
+  if (editMode && !project) { await alertDialog(t('editNoProject')); return; }
+
+  // 相談でも書き換えでも、開いているプロジェクトの中身はそのまま渡す
+  const { files } = await collectProjectContext();
+  if (editMode && !files.length) { await alertDialog(t('editNoFile')); return; }
 
   input.value = '';
   addChatMessage('user', text);
@@ -1753,7 +1631,7 @@ async function sendChat({ editMode = false } = {}) {
     context: {
       project,
       kinds: projectInfo?.kinds || [],
-      files: attachments.filter(a => a.kind === 'file').map(a => ({ path: a.path, content: a.content })),
+      files,
       log:   attachments.find(a => a.kind === 'log')?.content || null,
       editMode,
     },
@@ -2203,8 +2081,6 @@ function wireEvents() {
     localStorage.setItem('lastCourse', ev.target.value);
     renderExercises();
   });
-  $('project-select').addEventListener('change', ev => selectProject(ev.target.value));
-  $('btn-new-project').addEventListener('click', openNewProjectDialog);
   $('btn-reset-exercise').addEventListener('click', resetExercise);
   $('llm-model-select').addEventListener('change', async ev => {
     appInfo.llmSelection = await window.api.setLlmSelection({
@@ -2237,18 +2113,6 @@ function wireEvents() {
   $('keymap-select').addEventListener('change', ev => applyKeymap(ev.target.value));
   $('llm-model-override').addEventListener('input', updateModelHint);
   $('llm-model-select').addEventListener('change', updateModelHint);
-
-  // ── 新規プロジェクト ──
-  $('new-project-close').addEventListener('click', () =>
-    $('new-project-overlay').classList.add('hidden'));
-  $('new-project-overlay').addEventListener('click', ev => {
-    if (ev.target === $('new-project-overlay')) $('new-project-overlay').classList.add('hidden');
-  });
-  $('course-select').addEventListener('change', renderTemplateList);
-  $('btn-create-project').addEventListener('click', createProject);
-  $('new-project-name').addEventListener('keydown', ev => {
-    if (ev.key === 'Enter') createProject();
-  });
 
   // ── ファイルツリー ──
   $('btn-new-file').addEventListener('click', () => createEntry('file'));
@@ -2298,7 +2162,6 @@ function wireEvents() {
   $('btn-chat-edit').addEventListener('click', () => sendChat({ editMode: true }));
   $('btn-chat-abort').addEventListener('click', () => window.api.chatAbort());
   $('btn-chat-clear').addEventListener('click', clearChat);
-  $('btn-attach-file').addEventListener('click', attachCurrentFile);
   $('chat-input').addEventListener('keydown', ev => {
     if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) {
       ev.preventDefault();
@@ -2324,9 +2187,7 @@ function wireEvents() {
   document.addEventListener('keydown', ev => {
     if (ev.key === 'Escape') {
       if (!$('simple-dialog-overlay').classList.contains('hidden')) closeSimpleDialog(false);
-      else if (!$('new-project-overlay').classList.contains('hidden')) {
-        $('new-project-overlay').classList.add('hidden');
-      } else if (!$('settings-overlay').classList.contains('hidden')) {
+      else if (!$('settings-overlay').classList.contains('hidden')) {
         closeSettings({ revert: true });
       }
       return;

@@ -14,9 +14,6 @@ const UI_STRINGS = {
   ja: {
     // ── ヘッダー / プロジェクト ──
     noProject:           'プロジェクト未選択',
-    projectSelectTitle:  '開くプロジェクトを選びます',
-    btnNewProject:       '＋ 新規プロジェクト',
-    btnNewProjectTitle:  '講座のサンプルまたは空のプロジェクトを作ります',
     btnResetExercise:    '↺ 初期化',
     btnResetExerciseTitle:
       'この演習のファイルを配布時の状態に戻します（自分で足したファイルは残ります）',
@@ -86,7 +83,7 @@ const UI_STRINGS = {
     runtime_other:       'その他',
 
     // ── ファイルツリー ──
-    explorerTitle:       '📁 ファイル',
+    explorerTitle:       '📁 プロジェクト',
     explorerEmpty:       'プロジェクトを選択してください',
     btnNewFile:          '新しいファイル',
     btnNewDir:           '新しいフォルダ',
@@ -202,17 +199,7 @@ const UI_STRINGS = {
     previewNoTarget:     'プレビューできる対象が見つかりません（index.html があるか、アプリが起動しているか確認してください）。',
     previewServeFailed:  '静的ページを配信できませんでした: {error}',
 
-    // ── 新規プロジェクト ──
-    newProjectSub:       '受講中の講座を選ぶと、その講座で使う雛形が出ます。空のプロジェクトも作れます。',
-    courseLabel:         '📚 講座',
-    courseNone:          '講座を使わない（空のプロジェクト）',
-    templateBlank:       '空のプロジェクト',
-    templateBlankDesc:   '何も入っていないフォルダを作ります。ファイルは自分で追加します。',
-    templateEmpty:       'この講座には雛形が登録されていません。',
-    projectNameLabel:    'プロジェクト名',
-    btnCreate:           '作成',
-    errNameInvalid:      '半角英数字と . _ - だけが使えます（先頭は英数字）。',
-    errNameExists:       '同じ名前のプロジェクトが既にあります。',
+    // ── プロジェクト (演習から作る) ──
     errCreateFailed:     'プロジェクトを作成できませんでした: {error}',
     resetNoTemplate:     'このプロジェクトは演習の雛形から作られていないため、戻す先がありません。',
     confirmResetExercise:
@@ -222,20 +209,18 @@ const UI_STRINGS = {
     // ── チャット ──
     chatTitle:           '🤖 チャット',
     chatWelcome1:        '🤖 コードの相談相手です。使うかどうかは自由です。',
-    chatWelcome2:        '📄 「＋ チャットに渡す」で開いているファイルや実行ログを添付できます。',
+    chatWelcome2:        '📄 開いているプロジェクトのファイルは、送信時に自動で渡します。',
     chatWelcome3:        '🔑 使う前に ⚙ 設定で API キーを登録してください。',
     chatPlaceholder:     '質問を入力... (Enter で送信 / Shift+Enter で改行)',
     btnChatClear:        '⌫ クリア',
     btnChatClearTitle:   '会話履歴を消します',
-    btnAttachFile:       '📎 現在のファイル',
-    btnAttachFileTitle:  '開いているファイルを添付します',
 
     // ── コードの書き換え (AI駆動開発) ──
     // 勝手に書き換えず、必ず差分を見せてから適用する
     btnChatEdit:         '✏️ 書き換え',
-    btnChatEditTitle:    '開いているファイルの書き換え案を、差分で受け取ります',
-    editNoProject:       'プロジェクトを開いてから書き換えを依頼してください。',
-    editNoFile:          '書き換える対象がありません。先にファイルを開いてください。',
+    btnChatEditTitle:    'このプロジェクトの書き換え案を、差分で受け取ります',
+    editNoProject:       '演習を選んでから書き換えを依頼してください。',
+    editNoFile:          '書き換える対象がありません（このプロジェクトに渡せるファイルがありません）。',
     editApply:           '適用',
     editDiscard:         '破棄',
     editApplied:         '適用しました',
@@ -251,7 +236,7 @@ const UI_STRINGS = {
     roleAssistant:       '{model}',
     chatNoKey:           '{label} の API キーが未設定です。⚙ 設定から登録してください。',
     chatError:           'エラー: {error}',
-    chipFile:            '📄 {name}',
+    chipProject:         '📁 {name} のファイル {n} 件',
     chipLog:             '📋 実行ログ',
     chipRemove:          'この添付を外す',
 
@@ -265,9 +250,6 @@ const UI_STRINGS = {
 
   en: {
     noProject:           'No project selected',
-    projectSelectTitle:  'Choose the project to open',
-    btnNewProject:       '＋ New project',
-    btnNewProjectTitle:  'Create a project from a course template, or an empty one',
     btnResetExercise:    '↺ Reset',
     btnResetExerciseTitle:
       'Put this exercise back to the state it shipped in (files you added are kept)',
@@ -331,7 +313,7 @@ const UI_STRINGS = {
     runtime_shell:       'Shell',
     runtime_other:       'Other',
 
-    explorerTitle:       '📁 Files',
+    explorerTitle:       '📁 Project',
     explorerEmpty:       'Select a project first',
     btnNewFile:          'New file',
     btnNewDir:           'New folder',
@@ -440,16 +422,6 @@ const UI_STRINGS = {
     previewNoTarget:     'Nothing to preview (check that an index.html exists, or that the app is running).',
     previewServeFailed:  'Could not serve the static page: {error}',
 
-    newProjectSub:       'Pick your course to see its templates. You can also start from an empty project.',
-    courseLabel:         '📚 Course',
-    courseNone:          'No course (empty project)',
-    templateBlank:       'Empty project',
-    templateBlankDesc:   'Creates an empty folder. You add the files yourself.',
-    templateEmpty:       'This course has no templates registered.',
-    projectNameLabel:    'Project name',
-    btnCreate:           'Create',
-    errNameInvalid:      'Use only letters, digits and . _ - (must start with a letter or digit).',
-    errNameExists:       'A project with that name already exists.',
     errCreateFailed:     'Could not create the project: {error}',
     resetNoTemplate:     'This project was not created from an exercise template, so there is nothing to reset to.',
     confirmResetExercise:
@@ -458,18 +430,16 @@ const UI_STRINGS = {
 
     chatTitle:           '🤖 Chat',
     chatWelcome1:        '🤖 A coding sounding board. Using it is entirely optional.',
-    chatWelcome2:        '📄 Use "＋ Send to chat" to attach the open file or the run log.',
+    chatWelcome2:        '📄 The files of the open project are sent along automatically.',
     chatWelcome3:        '🔑 Register an API key in ⚙ Settings before your first message.',
     chatPlaceholder:     'Ask something... (Enter to send / Shift+Enter for a new line)',
     btnChatClear:        '⌫ Clear',
     btnChatClearTitle:   'Erase the conversation',
-    btnAttachFile:       '📎 Current file',
-    btnAttachFileTitle:  'Attach the file open in the editor',
 
     btnChatEdit:         '✏️ Rewrite',
-    btnChatEditTitle:    'Get a rewrite of the open files, shown as a diff',
-    editNoProject:       'Open a project before asking for a rewrite.',
-    editNoFile:          'Nothing to rewrite. Open a file first.',
+    btnChatEditTitle:    'Get a rewrite of this project, shown as a diff',
+    editNoProject:       'Pick an exercise before asking for a rewrite.',
+    editNoFile:          'Nothing to rewrite (this project has no files to send).',
     editApply:           'Apply',
     editDiscard:         'Discard',
     editApplied:         'Applied',
@@ -485,7 +455,7 @@ const UI_STRINGS = {
     roleAssistant:       '{model}',
     chatNoKey:           'No API key for {label} yet. Register one in ⚙ Settings.',
     chatError:           'Error: {error}',
-    chipFile:            '📄 {name}',
+    chipProject:         '📁 {n} file(s) from {name}',
     chipLog:             '📋 Run log',
     chipRemove:          'Remove this attachment',
 

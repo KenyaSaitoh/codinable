@@ -140,6 +140,10 @@ ipcMain.handle('ws-project-info', (_event, { name } = {}) => {
            ...workspace.readProjectMeta(dir) };
 });
 
+// チャットへ渡すプロジェクトの中身 (添付操作の代わりに、送信時にまとめて渡す)
+ipcMain.handle('ws-project-context', (_event, { name } = {}) =>
+  workspace.collectContextFiles(name));
+
 ipcMain.handle('ws-tree',         (_event, { name } = {}) => workspace.listTree(name));
 ipcMain.handle('ws-read-file',    (_event, { name, relPath } = {}) => workspace.readFile(name, relPath));
 ipcMain.handle('ws-write-file',   (_event, { name, relPath, content } = {}) =>
