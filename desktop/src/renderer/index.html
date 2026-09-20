@@ -227,11 +227,6 @@
 
       <div class="side-header explorer-header">
         <span data-i18n="explorerTitle">📁 プロジェクト</span>
-        <span class="explorer-actions">
-          <button class="explorer-action" id="btn-new-file" data-i18n-title="btnNewFile" title="新しいファイル">＋F</button>
-          <button class="explorer-action" id="btn-new-dir"  data-i18n-title="btnNewDir"  title="新しいフォルダ">＋D</button>
-          <button class="explorer-action" id="btn-refresh-tree" data-i18n-title="btnRefreshTree" title="再読み込み">⟳</button>
-        </span>
       </div>
       <div class="file-tree" id="file-tree">
         <div class="tree-placeholder" data-i18n="explorerEmpty">プロジェクトを選択してください</div>
@@ -381,9 +376,10 @@
         <div class="chat-actions" id="chat-actions">
           <!-- 開いているプロジェクトのファイルは送信時に自動で渡すので、添付の操作は置かない -->
           <!-- Ask: 読むだけ / Agent: 開いている演習の中だけを書き換える (実行はしない) -->
+          <span class="chat-mode-label" data-i18n="chatModeLabel">AIモード</span>
           <div class="chat-mode" id="chat-mode" role="radiogroup" data-i18n-title="chatModeTitle" title="Ask は読むだけ。Agent は開いている演習のファイルを書き換えます（実行はしません）">
-            <button class="chat-mode-btn is-active" id="btn-mode-ask" data-mode="ask" role="radio" aria-checked="true" data-i18n="modeAsk">Ask</button>
-            <button class="chat-mode-btn" id="btn-mode-agent" data-mode="agent" role="radio" aria-checked="false" data-i18n="modeAgent">Agent</button>
+            <button class="chat-mode-btn is-active" id="btn-mode-ask" data-mode="ask" role="radio" aria-checked="true" aria-pressed="true"><span class="chat-mode-check" aria-hidden="true">✓</span><span data-i18n="modeAsk">Ask（質問）</span></button>
+            <button class="chat-mode-btn" id="btn-mode-agent" data-mode="agent" role="radio" aria-checked="false" aria-pressed="false"><span class="chat-mode-check" aria-hidden="true">✓</span><span data-i18n="modeAgent">Agent（編集）</span></button>
           </div>
           <button class="chat-mini-btn chat-mini-send" id="btn-chat-send" data-i18n="btnSend" data-i18n-title="btnSendTitle" title="送信">➤ 送信</button>
         </div>

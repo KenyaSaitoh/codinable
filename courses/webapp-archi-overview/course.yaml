@@ -613,7 +613,7 @@ exercises:
     chapter: 10
     lesson: '10.1 ReactjsによるSPA'
     runtime: react
-    # 初回は npm: install を選んでから npm: dev に切り替える
+    # 依存パッケージは初回実行時に runner が自動で用意する
     run: 'npm:dev'
     suggestName: react-spa
     names:
@@ -621,12 +621,12 @@ exercises:
       en: Run a React SPA
     descriptions:
       ja: >-
-        Vite + React + TypeScript の名簿管理です。初回だけ実行対象を「npm: install」にして
-        実行し、そのあと「npm: dev」に戻すとプレビュータブが自動で開きます。
+        Vite + React + TypeScript の名簿管理です。「実行」を押すと、初回だけ依存パッケージを
+        自動で準備してから起動し、プレビュータブが開きます（初回は数分かかることがあります）。
         チャプター3の静的ページと同じ題材なので、作り方の違いを見比べてください。
       en: >-
-        A Vite + React + TypeScript roster. On the first run choose "npm: install", then
-        switch back to "npm: dev" and the preview tab opens by itself.
+        A Vite + React + TypeScript roster. Run it to install dependencies automatically
+        on the first launch, start Vite, and open the Preview tab (the first run may take a few minutes).
         It is the same subject as the static page in chapter 3, so compare the approaches.
     openFiles:
       - src/App.tsx

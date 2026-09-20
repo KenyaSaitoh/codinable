@@ -3714,19 +3714,6 @@ body.agent-course #spec-resize-handle { display: none; }
 body:not(.sidebar-open) .sidebar.explorer { display: flex; }
 
 .explorer-header { justify-content: space-between; gap: 8px; }
-.explorer-actions { display: inline-flex; gap: 2px; flex-shrink: 0; }
-.explorer-action {
-  border: 1px solid var(--border-color);
-  background: var(--bg-overlay);
-  color: var(--text-sub);
-  font: inherit;
-  font-size: calc(var(--editor-font-size) - 4px);
-  padding: 1px 6px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.explorer-action:hover { background: var(--bg-hover); color: var(--text-main); }
-
 /* サイドバーの幅を変えるつまみ。上下方向の .resize-handle と対になる部品 */
 .sidebar-resize-handle {
   width: 4px;
@@ -3741,7 +3728,7 @@ body:not(.sidebar-open) .sidebar.explorer { display: flex; }
 /* ═══ 演習一覧 (サイドバー上段) ═══
    Chatinable のレッスン一覧と同じ「上からフラットに並ぶリスト」を踏襲する。
    違うのは、ここに並ぶのが設問ではなく実行単位だという点で、
-   採点や完了の概念を持たないぶん ○/✓ の意味づけも変えてある。 */
+   採点や完了の概念を持たないため、状態記号は置かない。 */
 .exercise-list {
   /* 高さはつまみで変えられる。既定はファイルツリーと半々くらい。
      縮むのは許す (背の低いウィンドウでファイルツリーが潰れないように) */
@@ -3834,23 +3821,6 @@ body.theme-dark .exercise-item.active {
   border-color: var(--accent-blue);
   color: var(--accent-blue);
 }
-/* 状態アイコンは「作業用プロジェクトを用意したか」だけを表す。
-   進捗ではないので、Chatinable の ✓ (完了) は使わず ● に留める。
-   クリックで切り替えるものでもないため、押せる見た目にもしない。 */
-.exercise-item .q-status { cursor: inherit; margin-top: 3px; }
-.exercise-item .q-status:hover { background: transparent; }
-.exercise-item.created .q-status::before {
-  content: '●';
-  color: var(--accent-blue);
-  opacity: 0.75;
-}
-.exercise-item.active .q-status::before {
-  content: '▶';
-  color: var(--accent-blue);
-  font-size: calc(var(--editor-font-size) - 6px);
-  opacity: 1;
-}
-
 /* 演習一覧とファイルツリーの境目。上下方向なので .resize-handle と同じ作り */
 .explorer-resize-handle {
   height: 4px;
@@ -4134,30 +4104,47 @@ body.theme-dark .exercise-item.active {
 .api-key-hint a { color: var(--accent-blue); text-decoration: none; }
 .api-key-hint a:hover { text-decoration: underline; }
 
-/* ── Ask / Agent の切り替え ──
-   送信ボタンの隣に置く 2 択。押せる見た目にはするが、送信より目立たせない */
+/* ── Ask / Agent の切り替え ── */
+.chat-mode-label {
+  flex-shrink: 0;
+  color: var(--text-sub);
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-weight: 700;
+}
 .chat-mode {
   display: flex;
   margin-right: auto;
   border: 1px solid var(--border-color);
-  border-radius: 5px;
+  border-radius: 7px;
   overflow: hidden;
+  background: var(--bg-input);
 }
 .chat-mode-btn {
-  background: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
   border: none;
-  padding: 3px 10px;
+  border-right: 1px solid var(--border-color);
+  padding: 4px 9px;
   font-size: calc(var(--editor-font-size) - 3px);
   color: var(--text-muted);
   cursor: pointer;
 }
+.chat-mode-btn:last-child { border-right: none; }
+.chat-mode-check { visibility: hidden; width: 0.8em; font-weight: 900; }
+.chat-mode-btn.is-active .chat-mode-check { visibility: visible; }
 .chat-mode-btn:hover:not(.is-active) { background: var(--bg-overlay); color: var(--text-main); }
 .chat-mode-btn.is-active {
-  background: var(--bg-overlay);
-  color: var(--accent-blue);
-  font-weight: 600;
+  background: var(--accent-blue);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #fff 20%, transparent);
 }
-.chat-mode.is-agent .chat-mode-btn.is-active { color: var(--accent-green); }
+.chat-mode.is-agent .chat-mode-btn.is-active {
+  background: color-mix(in srgb, var(--accent-green) 78%, #087f5b);
+  color: #fff;
+}
 
 /* ── Agent の経過 ──
    何をしたかを 1 行ずつ残す。実行の出力は畳んで置く */

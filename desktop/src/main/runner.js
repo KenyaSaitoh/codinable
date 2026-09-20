@@ -17,6 +17,7 @@
 const fs   = require('fs');
 const os   = require('os');
 const path = require('path');
+const net  = require('net');
 const { spawn } = require('child_process');
 
 const {
@@ -59,6 +60,51 @@ function detectUrl(text) {
     return `http://localhost:${port}`;
   }
   return null;
+}
+
+/**
+ * stdout/stderr の data イベントは URL の途中でも分割される。
+ * 直近の出力をつないでから調べ、`http://local` / `host:5173` のような
+ * 境界で分かれても Web プレビューを開けるようにする。
+ */
+function createUrlDetector() {
+  let tail = '';
+  return text => {
+    tail = (tail + String(text || '')).slice(-8192);
+    return detectUrl(tail);
+  };
+}
+
+/**
+ * ログの文面がフレームワークの更新で変わっても、既定ポートが実際に
+ * 待ち受けを始めたらプレビューへ進めるための予備検出。
+ */
+function waitForPort(port, { token, proc, onReady, timeoutMs = 300_000 }) {
+  const deadline = Date.now() + timeoutMs;
+
+  const probe = () => {
+    if (token !== runToken || !current || current.proc !== proc || Date.now() >= deadline) return;
+
+    const socket = net.createConnection({ host: '127.0.0.1', port });
+    let settled = false;
+    const retry = () => {
+      if (settled) return;
+      settled = true;
+      socket.destroy();
+      setTimeout(probe, 350);
+    };
+    socket.setTimeout(500);
+    socket.once('connect', () => {
+      if (settled) return;
+      settled = true;
+      socket.destroy();
+      if (token === runToken && current && current.proc === proc) onReady();
+    });
+    socket.once('timeout', retry);
+    socket.once('error', retry);
+  };
+
+  probe();
 }
 
 // ── Gradle Wrapper ─────────────────────────────────────────
@@ -275,6 +321,7 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
       const safeTask = /^[\w:. -]+$/.test(String(task || '').trim())
         ? String(task).trim() : 'build';
       const isTest = safeTask.split(/\s+/).includes('test');
+      const isBootRun = safeTask.split(/\s+/).includes('bootRun');
 
       let extra = '';
       if (isTest) {
@@ -295,8 +342,15 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
         label:   `gradle ${safeTask}`,
         isTest,
         // ポート占有はプレビューを伴うタスクのときだけ掃除する
-        freePort: /bootRun|^run$/.test(safeTask) ? 8080 : null,
-        run: { command: `"${gradlew}" ${safeTask}${extra}`, shell: true, cwd: projectDir, env },
+        freePort: isBootRun ? 8080 : null,
+        previewUrl: isBootRun ? 'http://localhost:8080' : null,
+        interactive: false,
+        run: {
+          command: `"${gradlew}" ${safeTask}${extra} --console=plain`,
+          shell: true,
+          cwd: projectDir,
+          env,
+        },
       };
     }
 
@@ -310,12 +364,29 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
       const run = npmSpec(args, projectDir, env);
       if (!run) throw new Error('npm が見つかりません (runtime/node が未セットアップです)');
 
+      let scriptBody = '';
+      try {
+        const pkg = JSON.parse(fs.readFileSync(path.join(projectDir, 'package.json'), 'utf8'));
+        scriptBody = String(pkg.scripts?.[script] || '');
+      } catch { /* 壊れた package.json は npm 自身のエラーとして表示する */ }
+      const isVite = /(^|\s|&&)vite(?:\s|$)/.test(scriptBody) && !/\bvite\s+build\b/.test(scriptBody);
+      const vitePort = isVite ? (script === 'preview' ? 4173 : 5173) : null;
+
       const steps = [];
       if (script !== 'install' && script !== 'ci' && needsNpmInstall(projectDir)) {
         const install = npmInstallStep(projectDir, env);
         if (install) steps.push(install);
       }
-      return { label: `npm ${args.join(' ')}`, steps, run };
+      return {
+        label: `npm ${args.join(' ')}`,
+        steps,
+        run,
+        freePort: vitePort,
+        previewUrl: vitePort ? `http://localhost:${vitePort}` : null,
+        // npm スクリプトはサーバーやビルドが中心。stdin 欄を出すと、Vite に
+        // 入力を送るための UI に見えてしまうので対話実行とは扱わない。
+        interactive: false,
+      };
     }
 
     // ── 単体 Java (Gradle を使わないプロジェクト) ──
@@ -330,6 +401,7 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
                          resolveHsqldb()].filter(Boolean).join(CP_SEP);
       return {
         label: `java ${path.relative(projectDir, mainFile).replace(/\\/g, '/')}`,
+        interactive: true,
         steps: [{
           exe:  resolveJavaTool('javac'),
           args: [...getJavacRuntimeOptions(uiLang), '-encoding', 'UTF-8',
@@ -357,6 +429,7 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
         const pip = pipInstallStep(projectDir, env);
         return {
           label: `python ${relPath}`,
+          interactive: true,
           steps: pip ? [pip] : [],
           // -u: 対話入力でプロンプトが先に届くようバッファリングを切る
           run: { exe: resolvePython(), args: ['-X', 'utf8', '-u', full], cwd: projectDir, env },
@@ -371,6 +444,7 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
         // Node.js 24 以降は type stripping で .ts をそのまま実行できる
         return {
           label: `node ${relPath}`,
+          interactive: true,
           steps,
           run: { exe: resolveNode(), args: ['--no-warnings', full], cwd: projectDir, env },
         };
@@ -380,6 +454,7 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
         if (!bash) throw new Error('bash が見つかりません (runtime/bash が未セットアップです)');
         return {
           label: `bash ${relPath}`,
+          interactive: true,
           run: { exe: bash, args: ['--noprofile', '--norc', full], cwd: projectDir, env },
         };
       }
@@ -469,6 +544,11 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
   }
 
   send('run-output', `▶ ${spec.label}\n\n`);
+  if (spec.previewUrl) {
+    send('run-output', uiLang === 'en'
+      ? '⏳ Preparing the web app. The first run may take a few minutes.\n\n'
+      : '⏳ Webアプリを準備しています。初回は依存関係の準備に数分かかることがあります。\n\n');
+  }
 
   // 前処理 (javac / npm install / pip install)。失敗したらそこで終わる
   for (const step of spec.steps || []) {
@@ -498,12 +578,18 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
   current = { proc, projectDir, kind, task, isTest: !!spec.isTest };
 
   let urlSent = false;
+  const detectRunUrl = createUrlDetector();
+  const announceUrl = url => {
+    if (urlSent) return;
+    urlSent = true;
+    send('run-url', { url });
+  };
   const onData = chunk => {
     const text = decodeOutput(chunk);
     send('run-output', text);
     if (!urlSent) {
-      const url = detectUrl(text);
-      if (url) { urlSent = true; send('run-url', { url }); }
+      const url = detectRunUrl(text);
+      if (url) announceUrl(url);
     }
   };
   proc.stdout.on('data', onData);
@@ -525,9 +611,12 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
     send('run-exit', { code });
   });
 
-  // shell 経由の実行 (gradlew.bat など) は標準入力が cmd.exe に吸われて
-  // 子プロセスに届かない。届かないのに入力欄を出すと壊れて見えるので伝える。
-  return { ok: true, interactive: !spec.run.shell, label: spec.label };
+  if (spec.previewUrl) {
+    const port = Number(new URL(spec.previewUrl).port);
+    if (port) waitForPort(port, { token, proc, onReady: () => announceUrl(spec.previewUrl) });
+  }
+
+  return { ok: true, interactive: !!spec.interactive, label: spec.label };
 }
 
 /** 実行中プロセスの標準入力へ書き込む (Scanner / input() の対話実行用) */
@@ -549,5 +638,5 @@ module.exports = {
   start, stop, writeStdin, isRunning, disposeAll,
   ensureGradleWrapper, detectUrl, detectProject,
   // テスト用に公開
-  buildSpec,
+  buildSpec, createUrlDetector,
 };

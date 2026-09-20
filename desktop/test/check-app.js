@@ -104,6 +104,14 @@ async function run(cdp) {
                 20000, '静的ページの実行対象が static: にならない');
   const opened = await cdp.eval(`[...document.querySelectorAll('.editor-tab')].map(t => t.title || t.textContent).join(',')`);
   check(/index\.html/.test(opened), `openFiles が開かれていない: ${opened}`);
+  const selectedExerciseName = await cdp.eval(`document.querySelector('.exercise-item.active .exercise-title')?.textContent`);
+  const headerExerciseName = await cdp.eval(`document.getElementById('project-name').textContent`);
+  check(headerExerciseName === selectedExerciseName,
+        `上部の演習名が一覧と一致しない: 上部=${headerExerciseName} / 一覧=${selectedExerciseName}`);
+  check(await cdp.eval(`document.querySelectorAll('.exercise-item .q-status').length`) === 0,
+        '演習一覧に意味の分からない状態記号が残っている');
+  check(await cdp.eval(`['btn-new-file','btn-new-dir','btn-refresh-tree'].some(id => document.getElementById(id))`) === false,
+        'プロジェクト欄に +F / +D / 再読み込みが残っている');
 
   // 3. 実行 → プレビューが活性になる
   check(await cdp.eval(`document.getElementById('btn-preview').disabled`) === true,
@@ -152,22 +160,49 @@ async function run(cdp) {
         '「書き換え」ボタンが残っている');
   check(await cdp.eval(`document.getElementById('btn-mode-ask').classList.contains('is-active')`),
         '既定が Ask になっていない');
+  check(await cdp.eval(`document.getElementById('btn-mode-ask').getAttribute('aria-pressed')`) === 'true',
+        'Ask が選択中であることを支援技術へ伝えていない');
   await cdp.eval(`document.getElementById('btn-mode-agent').click()`);
   await waitFor(cdp, `document.getElementById('btn-mode-agent').classList.contains('is-active')`,
                 5000, 'Agent に切り替わらない');
   check(await cdp.eval(`document.getElementById('chat-mode').classList.contains('is-agent')`),
         'Agent のときの見た目が変わらない');
+  check(await cdp.eval(`document.getElementById('btn-mode-agent').getAttribute('aria-pressed')`) === 'true',
+        'Agent が選択中であることを支援技術へ伝えていない');
   const placeholder = await cdp.eval(`document.getElementById('chat-input').placeholder`);
   check(/演習/.test(placeholder), `Agent の入力案内が変わらない: ${placeholder}`);
   await cdp.eval(`document.getElementById('btn-mode-ask').click()`);
   check(await cdp.eval(`document.getElementById('btn-mode-ask').classList.contains('is-active')`),
         'Ask に戻せない');
 
+  // 7. 任意の重い検査: 実ランタイムで React / Spring Boot の待受とプレビューを確認する。
+  // 初回は npm / Gradle の依存取得があるため、通常の画面検査では飛ばす。
+  if (process.env.CHECK_WEB_SERVERS) {
+    await checkWebServerExercise(cdp, 'react-spa', 'npm:dev', /localhost:5173/, 'React');
+    await checkWebServerExercise(cdp, 'spring-mvc-calc', 'gradle:bootRun', /localhost:8080/, 'Spring Boot');
+  }
+
   if (process.env.SHOTS) {
     fs.mkdirSync(process.env.SHOTS, { recursive: true });
     const png = await cdp.screenshot();
     fs.writeFileSync(path.join(process.env.SHOTS, 'app-sql.png'), Buffer.from(png, 'base64'));
   }
+}
+
+async function checkWebServerExercise(cdp, exerciseId, target, urlPattern, label) {
+  await clickExercise(cdp, exerciseId);
+  await waitFor(cdp, `document.getElementById('run-target-select').value === ${JSON.stringify(target)}`,
+                20000, `${label} の実行対象が ${target} にならない`);
+  await cdp.eval(`document.getElementById('btn-run').click()`);
+  await waitFor(cdp, `document.getElementById('btn-preview').disabled === false`, 360000,
+                `${label} を実行してもプレビューが有効にならない`);
+  const url = await cdp.eval(`document.getElementById('browser-url').value`);
+  check(urlPattern.test(url), `${label} のプレビュー URL が想定と違う: ${url}`);
+  check(await cdp.eval(`document.getElementById('run-stdin-row').classList.contains('hidden')`) === true,
+        `${label} の実行中に標準入力欄が出ている`);
+  await cdp.eval(`document.getElementById('btn-run-stop').click()`);
+  await waitFor(cdp, `document.getElementById('btn-run-stop').disabled === true`, 30000,
+                `${label} を停止できない`);
 }
 
 async function clickExercise(cdp, id) {

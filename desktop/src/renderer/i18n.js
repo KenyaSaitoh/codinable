@@ -217,8 +217,9 @@ const UI_STRINGS = {
     btnChatClearTitle:   '会話履歴を消します',
 
     // ── Ask / Agent の切り替え ──
-    modeAsk:             'Ask',
-    modeAgent:           'Agent',
+    chatModeLabel:       'AIモード',
+    modeAsk:             'Ask（質問）',
+    modeAgent:           'Agent（編集）',
     chatModeTitle:       'Ask は読むだけ。Agent は開いている演習のファイルを書き換えます（実行はしません）',
 
     // ── コードの書き換え (AI駆動開発) ──
@@ -444,8 +445,9 @@ const UI_STRINGS = {
     btnChatClear:        '⌫ Clear',
     btnChatClearTitle:   'Erase the conversation',
 
-    modeAsk:             'Ask',
-    modeAgent:           'Agent',
+    chatModeLabel:       'AI mode',
+    modeAsk:             'Ask (read)',
+    modeAgent:           'Agent (edit)',
     chatModeTitle:       'Ask only reads. Agent edits files in the open exercise (it never runs them).',
 
     agentNoProject:      'Pick an exercise before asking the Agent.',

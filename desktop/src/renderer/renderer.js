@@ -576,7 +576,7 @@ async function selectProject(name, { openInitial = [] } = {}) {
 
   project = name || null;
   localStorage.setItem('lastProject', project || '');
-  // どの演習を開いているかの ▶ 印を付け替える
+  // どの演習を開いているかの選択背景を付け替える
   if (courses.length) renderExercises();
 
   await refreshProjectInfo();
@@ -595,6 +595,7 @@ async function refreshProjectInfo() {
     projectInfo = null;
     $('project-icon').textContent = '📁';
     $('project-name').textContent = t('noProject');
+    $('project-name').title = '';
     $('project-kinds').innerHTML  = '';
     $('project-path').textContent = '';
     $('btn-reset-exercise').classList.add('hidden');
@@ -605,9 +606,11 @@ async function refreshProjectInfo() {
 
   const info = await window.api.wsProjectInfo(project);
   projectInfo = info.ok ? info : null;
+  const exercise = exerciseForProject(projectInfo);
 
-  $('project-icon').textContent = '📁';
-  $('project-name').textContent = project;
+  $('project-icon').textContent = exercise ? '📘' : '📁';
+  $('project-name').textContent = exercise?.name || project;
+  $('project-name').title = exercise ? `${exercise.name} (${project})` : project;
   $('project-path').textContent = info.ok ? info.path : '';
   $('project-kinds').innerHTML = (info.kinds || [])
     .map(k => `<span class="project-kind">${escapeHtml(k)}</span>`).join('');
@@ -627,7 +630,8 @@ async function refreshProjectInfo() {
 async function resetExercise() {
   if (!project) return;
   if (!projectInfo?.template) { await alertDialog(t('resetNoTemplate')); return; }
-  if (!await confirmDialog(tf('confirmResetExercise', { name: project }))) return;
+  const displayName = exerciseForProject()?.name || project;
+  if (!await confirmDialog(tf('confirmResetExercise', { name: displayName }))) return;
 
   const res = await window.api.wsResetTemplate(project, getLang());
   if (!res.ok) {
@@ -691,7 +695,15 @@ function currentCourse() {
 
 /** 演習に対応する作業用プロジェクト (まだ作っていなければ null) */
 function projectForExercise(course, exercise) {
-  return projects.find(p => p.courseId === course.id && p.template === exercise.id) || null;
+  const matches = projects.filter(p => p.courseId === course.id && p.template === exercise.id);
+  return matches.find(p => p.name === project) || matches[0] || null;
+}
+
+/** 内部の作業フォルダ名ではなく、講座で見えている演習名を引く。 */
+function exerciseForProject(info = projectInfo) {
+  if (!info?.courseId || !info?.template) return null;
+  const course = courses.find(c => c.id === info.courseId);
+  return course?.exercises.find(e => e.id === info.template) || null;
 }
 
 function renderExercises() {
@@ -724,12 +736,9 @@ function renderExercises() {
     item.type  = 'button';
     item.className = 'q-item exercise-item';
     item.dataset.exerciseId = exercise.id;
-    // created = 作業用プロジェクトが既にある (進捗ではなく、作ったかどうか)
-    item.classList.toggle('created', !!created);
     item.classList.toggle('active', !!created && created.name === project);
     item.title = exercise.description || exercise.name;
     item.innerHTML =
-      '<span class="q-status"></span>' +
       '<span class="exercise-runtime-icon" aria-hidden="true">' +
         `${RUNTIME_ICONS[exercise.runtime] || RUNTIME_ICONS.other}</span>` +
       '<span class="exercise-body">' +
@@ -1557,6 +1566,7 @@ function setChatMode(mode, { persist = true } = {}) {
     const active = btn.dataset.mode === chatMode;
     btn.classList.toggle('is-active', active);
     btn.setAttribute('aria-checked', active ? 'true' : 'false');
+    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
   }
   $('chat-mode').classList.toggle('is-agent', chatMode === 'agent');
   $('chat-input').placeholder = t(chatMode === 'agent' ? 'chatInputAgent' : 'chatInputAsk');
@@ -2169,9 +2179,6 @@ function wireEvents() {
   $('llm-model-select').addEventListener('change', updateModelHint);
 
   // ── ファイルツリー ──
-  $('btn-new-file').addEventListener('click', () => createEntry('file'));
-  $('btn-new-dir').addEventListener('click',  () => createEntry('dir'));
-  $('btn-refresh-tree').addEventListener('click', reloadTree);
   document.addEventListener('click', closeTreeMenu);
 
   // ── エディタ ──
