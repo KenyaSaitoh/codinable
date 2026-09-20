@@ -146,6 +146,23 @@ async function run(cdp) {
   const activePane = await cdp.eval(`document.querySelector('.run-pane.active')?.id`);
   check(activePane === 'tab-sql', `SQL 実行後に SQL タブが出ていない: ${activePane}`);
 
+  // 6. チャットの Ask / Agent トグル
+  check(await cdp.eval(`!!document.getElementById('chat-mode')`), 'Ask/Agent のトグルが無い');
+  check(await cdp.eval(`!document.getElementById('btn-chat-edit')`),
+        '「書き換え」ボタンが残っている');
+  check(await cdp.eval(`document.getElementById('btn-mode-ask').classList.contains('is-active')`),
+        '既定が Ask になっていない');
+  await cdp.eval(`document.getElementById('btn-mode-agent').click()`);
+  await waitFor(cdp, `document.getElementById('btn-mode-agent').classList.contains('is-active')`,
+                5000, 'Agent に切り替わらない');
+  check(await cdp.eval(`document.getElementById('chat-mode').classList.contains('is-agent')`),
+        'Agent のときの見た目が変わらない');
+  const placeholder = await cdp.eval(`document.getElementById('chat-input').placeholder`);
+  check(/演習/.test(placeholder), `Agent の入力案内が変わらない: ${placeholder}`);
+  await cdp.eval(`document.getElementById('btn-mode-ask').click()`);
+  check(await cdp.eval(`document.getElementById('btn-mode-ask').classList.contains('is-active')`),
+        'Ask に戻せない');
+
   if (process.env.SHOTS) {
     fs.mkdirSync(process.env.SHOTS, { recursive: true });
     const png = await cdp.screenshot();

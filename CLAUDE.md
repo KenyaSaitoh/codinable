@@ -28,13 +28,24 @@ Java の言語サーバーを同梱している。
 - **実行は 1 本だけ**（`main/runner.js`）。新しく走らせるときは既存を止める。
   「今どれが走っているか」が常に 1 つに決まるようにしている
 - **LLM は任意機能**。API キーが無い状態でも他のすべてが動くことを壊さない
-- **コードの書き換えは「提示 → 人が適用」**。応答に含まれる
- ```` ```codinable-edit path=… ```` ブロック（ファイル全文）だけを変更案として扱い、
- 差分を見せてから書き込む。モデルの出力で勝手にファイルを書き換えてはいけない。
- 形式の指示は `src/llm/prompt.js` の `EDIT_INSTRUCTIONS`、取り出しと差分は
- `renderer.js` の `extractEditProposals` / `diffLines` にある。
- 部分差分（unified diff や検索置換）を採らないのは、少しのずれで適用不能になり、
- 教材のファイルはどれも短くて全文で足りるため
+- **チャットは Ask と Agent の 2 つ**（`src/renderer/renderer.js` の `chatMode`）。
+  Ask は読むだけ（`src/llm/index.js` の `streamChat`）。Agent は道具を使う
+  （`src/main/agent.js` の `runAgent`）。どちらもプロジェクトのファイルは
+  送信時に自動で渡す
+- **Agent の境界はプロンプトではなくコードで縛る**。`main/agent.js` の
+  `resolveInExercise` が、いま開いている演習のディレクトリの外
+  （`..` / ドライブ文字 / UNC / シンボリックリンク）と生成物のディレクトリを弾く。
+  対象の演習は IPC で渡る `context.project` に固定で、道具の引数では変えられない。
+  **道具を増やすときも「実行するもの」は足さない**。プロセスを起こすのは受講者の
+  「実行」ボタンだけにしてあり、そうすることで何が動いているかが常に操作と一致する。
+  この境界は `test/check-agent-bounds.js` と `test/check-agent-loop.js` で押さえている
+- **モデルの書き換えは必ず差分として見せ、「元に戻す」を付ける**
+  （`renderer.js` の `renderAgentEdit`）。書き込み自体は Agent が即座に行うが、
+  黙って変わったように見せてはいけない
+- **道具呼び出しは 3 社とも素の REST で扱う**（`src/llm/*.js` の `callWithTools`）。
+  各社の Agent SDK は入れない。中立な形
+  `{ text, toolCalls: [{ id, name, input }] }` に変換して返すのが各アダプタの仕事で、
+  ループ側はプロバイダを知らない
 
 ## 触るときに気をつけること
 

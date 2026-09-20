@@ -123,9 +123,12 @@ async function callWithTools({ apiKey, model, messages, system, tools, signal, m
     contents: toToolContents(messages),
     generationConfig: { maxOutputTokens: maxTokens },
     tools: [{
-      functionDeclarations: (tools || []).map(t => ({
-        name: t.name, description: t.description, parameters: t.schema,
-      })),
+      functionDeclarations: (tools || []).map(t => {
+        const declaration = { name: t.name, description: t.description };
+        // 引数の無い道具に空の parameters を渡すと Gemini が受け付けないので落とす
+        if (Object.keys(t.schema?.properties || {}).length) declaration.parameters = t.schema;
+        return declaration;
+      }),
     }],
   };
   if (system) body.systemInstruction = { parts: [{ text: system }] };
