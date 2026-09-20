@@ -3782,9 +3782,37 @@ body:not(.sidebar-open) .sidebar.explorer { display: flex; }
   cursor: pointer;
   outline: none;
 }
+/* ── API キーのバッジ (ヘッダーと設定画面で共通) ──
+   Chatinable の元の規則 (.settings-label .api-key-badge) は accent 色で
+   塗りつぶした濃いバッジだった。ここで文字色だけを上書きすると、
+   同じ詳細度で後ろに書いたぶんが勝って「緑地に緑文字」になり読めなくなる。
+   そこで塗り・枠線・文字色をまとめて定義し直す。
+   見た目は .lsp-badge や .project-kind と同じ「枠線 + 薄い色混ぜ」に揃える
+   (べた塗りの濃い緑・赤はどのテーマでも浮くため)。 */
+.api-key-badge,
+.settings-label .api-key-badge {
+  font-size: calc(var(--editor-font-size) - 5px);
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 9px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
 /* キー未登録のあいだは赤系にして、チャットを押す前に気づけるようにする */
-.api-key-badge.unset { color: var(--accent-red); border-color: var(--accent-red); }
-.api-key-badge.set   { color: var(--accent-green); border-color: var(--accent-green); }
+.api-key-badge.unset,
+.settings-label .api-key-badge.unset {
+  border-color: color-mix(in srgb, var(--accent-red) 50%, transparent);
+  background: color-mix(in srgb, var(--accent-red) 12%, transparent);
+  color: var(--accent-red);
+}
+.api-key-badge.set,
+.settings-label .api-key-badge.set {
+  border-color: color-mix(in srgb, var(--accent-green) 50%, transparent);
+  background: color-mix(in srgb, var(--accent-green) 12%, transparent);
+  color: var(--accent-green);
+}
 
 /* ── プロジェクト情報バー ── */
 .project-kinds { display: inline-flex; gap: 4px; flex-shrink: 0; }
