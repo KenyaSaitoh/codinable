@@ -6,9 +6,39 @@
 
 const LANG_NAME = { ja: '日本語', en: 'English' };
 
+// 書き換え依頼のときに足す指示。
+//
+// 形式はファイル全体の差し替えに絞る。部分差分 (行番号つきの unified diff や
+// 検索置換) はモデルが少しずれるだけで適用できなくなるが、教材のファイルは
+// どれも短いので、全文を返してもらって差分は Codinable 側で計算するのが確実。
+const EDIT_BLOCK_MARKER = 'codinable-edit';
+
+const EDIT_INSTRUCTIONS = [
+  '',
+  '## コードを書き換えるとき',
+  '',
+  'ファイルを変更する提案は、**必ず**次の形式のコードブロックで返してください。',
+  'この形式で返されたものだけを、Codinable が「適用」ボタン付きの差分として見せます。',
+  '',
+  '````',
+  '```' + EDIT_BLOCK_MARKER + ' path=src/main/java/Example.java',
+  '(変更後のファイル全体)',
+  '```',
+  '````',
+  '',
+  '- `path` は参考情報に出ているプロジェクト内の相対パスをそのまま使ってください。',
+  '- 抜粋や「…省略…」は書かず、**そのファイルの全文**を書いてください。',
+  '  途中を省いたものを適用すると、そのファイルは壊れます。',
+  '- 変更するファイルごとに 1 ブロックにしてください。',
+  '- 変更が要らないファイルのブロックは作らないでください。',
+  '- ブロックの前に、何をなぜ変えるのかを数行で書いてください。',
+  '- 参考情報に中身が無いファイルは書き換えられません。中身を添付するよう促してください。',
+].join('\n');
+
 /**
  * @param {object} context
  * @param {string} [context.uiLang]     'ja' | 'en'
+ * @param {boolean} [context.editMode]  コード書き換えモード
  * @param {string} [context.courseName] 受講中の講座名 (任意)
  * @param {string} [context.project]    プロジェクト名
  * @param {string[]} [context.kinds]    プロジェクト種別 ('spring' / 'node' など)
@@ -41,6 +71,8 @@ function buildSystemPrompt(context = {}) {
       lines.push(`- 種別: ${context.kinds.join(', ')}`);
     }
   }
+
+  if (context.editMode) lines.push(EDIT_INSTRUCTIONS);
 
   return lines.join('\n');
 }
