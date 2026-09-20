@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja" id="html-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codinable</title>
+
+  <!-- CodeMirror 6 (テーマ・言語・キーバインド・LSP クライアントを 1 つに束ねたもの)。
+       CM6 は ESM でしか配布されず素の <script> から読めないため、
+       builder/build-editor.js が esbuild で vendor/cm6.js (IIFE / グローバル CM6) を生成する。 -->
+  <script src="vendor/cm6.js"></script>
+  <!-- PTY ターミナル (xterm.js) -->
+  <link rel="stylesheet" href="../../node_modules/@xterm/xterm/css/xterm.css">
+  <script src="../../node_modules/@xterm/xterm/lib/xterm.js"></script>
+  <script src="../../node_modules/@xterm/addon-fit/lib/addon-fit.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <!-- Markdown 描画 (チャット・.md プレビュー)。出力は必ず DOMPurify を通す -->
+  <script src="../../node_modules/marked/lib/marked.umd.js"></script>
+  <script src="../../node_modules/dompurify/dist/purify.min.js"></script>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ════ ヘッダー ════ -->
+  <header class="app-header">
+    <div class="header-left">
+      <span class="app-title" id="app-title">Codinable</span>
+      <select class="project-select" id="project-select" data-i18n-title="projectSelectTitle" title="開くプロジェクトを選びます">
+        <option value="" data-i18n="noProject">プロジェクト未選択</option>
+      </select>
+      <button class="btn-course-entry" id="btn-new-project" data-i18n="btnNewProject" data-i18n-title="btnNewProjectTitle" title="講座のサンプルまたは空のプロジェクトを作ります">＋ 新規プロジェクト</button>
+      <button class="btn-course-entry" id="btn-reveal-project" data-i18n="btnReveal" data-i18n-title="btnRevealTitle" title="プロジェクトのフォルダをエクスプローラで開きます">📂 フォルダを開く</button>
+    </div>
+    <div class="header-right">
+      <!-- LLM は任意機能。キーが未設定なら未設定と出るだけで他の機能には影響しない -->
+      <label class="llm-picker" data-i18n-title="llmPickerTitle" title="チャットに使うモデル（API キーは自分で設定します）">
+        <span class="llm-picker-icon" aria-hidden="true">🤖</span>
+        <select class="llm-select" id="llm-model-select"></select>
+        <span class="api-key-badge" id="llm-key-badge" data-i18n="apiKeyUnset">未設定</span>
+      </label>
+      <button class="btn-settings" id="btn-settings" data-i18n="btnSettings" data-i18n-title="settings" title="設定">⚙ 設定</button>
+    </div>
+  </header>
+
+  <!-- ════ プロジェクト情報バー ════ -->
+  <div class="current-course-bar" id="project-bar">
+    <span class="current-course-icon" id="project-icon">📁</span>
+    <span class="current-course-name" id="project-name" data-i18n="noProject">プロジェクト未選択</span>
+    <span class="project-kinds" id="project-kinds"></span>
+    <span class="project-path" id="project-path"></span>
+    <span class="project-bar-actions">
+      <button class="btn-lesson-list" id="btn-restore-template" data-i18n="btnRestoreTemplate" data-i18n-title="btnRestoreTemplateTitle" title="雛形のファイルのうち、消してしまったものを復元します（既存ファイルは上書きしません）">雛形を復元</button>
+      <button class="btn-lesson-list" id="btn-delete-project" data-i18n="btnDeleteProject" data-i18n-title="btnDeleteProjectTitle" title="このプロジェクトをワークスペースから削除します">削除</button>
+    </span>
+  </div>
+
+  <!-- ════ 設定 ════ -->
+  <div class="modal-overlay hidden" id="settings-overlay">
+   <div class="settings-panel" id="settings-panel" role="dialog" aria-modal="true">
+    <div class="settings-header">
+      <span class="settings-title" data-i18n="settingsTitle">⚙ 設定</span>
+      <button class="settings-close" id="settings-close" data-i18n-title="close" title="閉じる">✕</button>
+    </div>
+    <div class="settings-body">
+
+    <div class="settings-group">
+      <div class="settings-label" data-i18n="uiLangLabel">表示言語</div>
+      <select class="font-select" id="ui-lang-select">
+        <option value="ja">日本語</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+
+    <div class="settings-sep"></div>
+
+    <div class="settings-group">
+      <div class="settings-label" data-i18n="theme">テーマ</div>
+      <!-- テーマ名は固有名詞のため i18n 対象外。一覧の正: renderer.js の THEMES -->
+      <div class="theme-btns theme-grid" id="theme-grid">
+        <button class="theme-btn" data-theme="github-dark"><span class="theme-swatch" style="background:#0d1117;border-color:#2f81f7"><span style="background:#2f81f7"></span></span>GitHub Dark Default</button>
+        <button class="theme-btn" data-theme="one-dark-pro"><span class="theme-swatch" style="background:#282c34;border-color:#61afef"><span style="background:#61afef"></span></span>One Dark Pro</button>
+        <button class="theme-btn" data-theme="tokyo-night"><span class="theme-swatch" style="background:#1a1b26;border-color:#7aa2f7"><span style="background:#7aa2f7"></span></span>Tokyo Night</button>
+        <button class="theme-btn" data-theme="dracula"><span class="theme-swatch" style="background:#282a36;border-color:#bd93f9"><span style="background:#bd93f9"></span></span>Dracula Official</button>
+        <button class="theme-btn" data-theme="github-light"><span class="theme-swatch" style="background:#ffffff;border-color:#0969da"><span style="background:#0969da"></span></span>GitHub Light Default</button>
+        <button class="theme-btn" data-theme="solarized-light"><span class="theme-swatch" style="background:#fdf6e3;border-color:#268bd2"><span style="background:#268bd2"></span></span>Solarized Light</button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-label">
+        <span data-i18n="fontSize">フォントサイズ</span>
+        <span id="font-size-display">15px</span>
+      </div>
+      <input type="range" class="font-range" id="font-size-range" min="11" max="22" value="15" step="1">
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-label" data-i18n="keybinding">キーバインド</div>
+      <select class="font-select" id="keymap-select">
+        <option value="default" data-i18n="keybindingDefault">標準</option>
+        <option value="vim">Vim</option>
+        <option value="emacs">Emacs</option>
+        <option value="sublime">Sublime Text</option>
+      </select>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-label" data-i18n="fontFamily">フォント</div>
+      <select class="font-select" id="font-family-select">
+        <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+        <option value="'Cascadia Code', Consolas, monospace">Cascadia Code</option>
+        <option value="Consolas, monospace">Consolas</option>
+        <option value="'Fira Code', monospace">Fira Code</option>
+        <option value="'Source Code Pro', monospace">Source Code Pro</option>
+        <option value="'Courier New', monospace">Courier New</option>
+      </select>
+    </div>
+
+    <div class="settings-sep"></div>
+
+    <!-- ── LLM (BYOK) ──
+         3 社のうち使いたいものだけキーを登録すればよい。
+         欄は renderer.js が LLM_MODELS から組み立てる。 -->
+    <div class="settings-group">
+      <div class="settings-label" data-i18n="llmSectionLabel">LLM チャット (任意)</div>
+      <div class="api-key-hint" data-i18n="llmSectionHint">
+        チャットは補助機能です。キーを登録しなくても、開発環境としてはすべて動きます。
+      </div>
+      <div id="llm-key-groups"></div>
+      <div class="settings-label" data-i18n="llmOverrideLabel">モデル ID の上書き (空欄なら既定値)</div>
+      <div class="api-key-wrap">
+        <input type="text" id="llm-model-override" class="api-key-input" placeholder="" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="api-key-hint" id="llm-model-default-hint"></div>
+    </div>
+
+    <div class="settings-sep"></div>
+
+    <div class="settings-group">
+      <div class="settings-label" data-i18n="wsLabel">ワークスペース (作業ファイルの保存先)</div>
+      <div class="ws-root-wrap">
+        <input type="text" id="ws-root-input" class="ws-root-input" placeholder="~/codinable" readonly>
+        <button class="btn btn-apply" id="btn-ws-browse" data-i18n="btnChange">変更</button>
+      </div>
+      <div class="api-key-hint" data-i18n="wsHint">このフォルダ直下のディレクトリが 1 つのプロジェクトになります</div>
+    </div>
+
+    <div class="settings-sep"></div>
+
+    <div class="settings-group">
+      <div class="settings-label" data-i18n="runtimeLabel">同梱ランタイム</div>
+      <div class="runtime-info" id="runtime-info">
+        <div class="runtime-info-row" data-i18n="loading">読み込み中...</div>
+      </div>
+    </div>
+
+    <div class="settings-sep"></div>
+
+    <div class="settings-group">
+      <div class="settings-label">
+        <span data-i18n="versionLabel">バージョン</span>
+        <span class="api-key-badge" id="version-badge">v0.0.0</span>
+      </div>
+    </div>
+
+    </div><!-- /settings-body -->
+    <div class="teacher-dialog-actions">
+      <button class="btn btn-answer" id="settings-cancel" data-i18n="btnCancel">キャンセル</button>
+      <button class="btn btn-apply" id="settings-save" data-i18n="btnSave">保存</button>
+    </div>
+   </div>
+  </div>
+
+  <!-- ════ メイン ════ -->
+  <div class="app-main">
+
+    <!-- ── 左: ファイルエクスプローラ ── -->
+    <aside class="sidebar explorer" id="sidebar">
+      <div class="side-header explorer-header">
+        <span data-i18n="explorerTitle">📁 ファイル</span>
+        <span class="explorer-actions">
+          <button class="explorer-action" id="btn-new-file" data-i18n-title="btnNewFile" title="新しいファイル">＋F</button>
+          <button class="explorer-action" id="btn-new-dir"  data-i18n-title="btnNewDir"  title="新しいフォルダ">＋D</button>
+          <button class="explorer-action" id="btn-refresh-tree" data-i18n-title="btnRefreshTree" title="再読み込み">⟳</button>
+        </span>
+      </div>
+      <div class="file-tree" id="file-tree">
+        <div class="tree-placeholder" data-i18n="explorerEmpty">プロジェクトを選択してください</div>
+      </div>
+    </aside>
+
+    <div class="sidebar-resize-handle" id="sidebar-resize-handle" data-i18n-title="dragToResizeWidth" title="ドラッグで幅を調整"></div>
+
+    <!-- ── 中央: エディタ + 実行結果 ── -->
+    <div class="content-area" id="content-area">
+      <div class="editor-pane" id="editor-pane">
+
+        <div class="editor-section">
+          <div class="side-header editor-header">
+            <span data-i18n="editorTitle">💻 エディタ</span>
+            <span class="editor-filepath" id="editor-filepath"></span>
+            <!-- Java 言語サーバー (jdtls) の状態。接続していないときは出さない -->
+            <span class="lsp-badge hidden" id="lsp-badge" title="Java 言語サーバー">LSP</span>
+            <div class="editor-history-controls">
+              <button class="btn-editor-history" id="btn-editor-undo" data-i18n="btnUndo" data-i18n-title="btnUndoTitle" title="直前の編集を元に戻します（Ctrl/Cmd+Z）" disabled>↺ 元に戻す</button>
+              <button class="btn-editor-history" id="btn-editor-redo" data-i18n="btnRedo" data-i18n-title="btnRedoTitle" title="元に戻した編集をやり直します（Ctrl/Cmd+Y）" disabled>↻ やり直す</button>
+              <button class="btn-editor-history hidden" id="btn-md-preview" data-i18n="btnMdPreview" data-i18n-title="btnMdPreviewTitle" title="Markdown のプレビューと編集を切り替えます">👁 プレビュー</button>
+            </div>
+          </div>
+
+          <!-- 開いているファイルのタブ -->
+          <div class="editor-tabs" id="editor-tabs"></div>
+
+          <!-- CodeMirror のインスタンスを開いたファイルごとに置く (表示は 1 つだけ) -->
+          <div class="editor-hosts" id="editor-hosts">
+            <div class="editor-empty" id="editor-empty" data-i18n="editorEmpty">
+              左のファイルツリーからファイルを開いてください
+            </div>
+          </div>
+          <div class="md-preview hidden" id="md-preview"></div>
+        </div>
+
+        <!-- ツールバー (実行系) -->
+        <div class="toolbar" id="toolbar">
+          <div class="gradle-task-group">
+            <select class="gradle-task-select" id="run-target-select" data-i18n-title="runTargetTitle" title="実行する内容を選びます"></select>
+            <button class="btn btn-run" id="btn-run" data-i18n="btnRun">実行</button>
+          </div>
+          <button class="btn btn-stop" id="btn-run-stop" data-i18n="btnStop" disabled>停止</button>
+          <button class="btn btn-browser" id="btn-preview" data-i18n="btnPreview" data-i18n-title="btnPreviewTitle" title="Web プレビュータブで開きます">🌐 プレビュー</button>
+          <div class="toolbar-spacer"></div>
+          <span class="hsqldb-badge hidden" id="hsqldb-badge" data-i18n-title="hsqldbAvailable" title="HSQLDB が利用可能です">🗄️ HSQLDB</span>
+        </div>
+
+        <div class="resize-handle" id="run-log-handle" data-i18n-title="dragToResizeHeight" title="ドラッグで高さを調整"></div>
+
+        <!-- 実行結果 / テスト結果 / SQL / ターミナル / プレビュー -->
+        <div class="run-output-section" id="run-output-wrap">
+          <div class="run-output-header">
+            <button class="run-tab active" id="run-tab-output" data-pane="tab-result" data-i18n="tabOutput">実行結果</button>
+            <button class="run-tab" id="run-tab-tests" data-pane="tab-test-results" data-i18n="tabTests" data-i18n-title="tabTestsTitle" title="テストメソッド単位の成否・失敗内容・カバレッジ">テスト結果</button>
+            <button class="run-tab" id="run-tab-sql" data-pane="tab-sql" data-i18n="tabSql" data-i18n-title="tabSqlTitle" title="HSQLDB に SQL を実行します">🗄 SQL</button>
+            <button class="run-tab" id="run-tab-terminal" data-pane="tab-terminal" data-i18n="tabTerminal" data-i18n-title="tabTerminalTitle" title="プロジェクトのフォルダで動くターミナル (bash)">🖥 ターミナル</button>
+            <button class="run-tab" id="run-tab-browser" data-pane="tab-browser" data-i18n="tabBrowser" data-i18n-title="tabBrowserTitle" title="Web アプリ・静的ページの動作確認">🌐 プレビュー</button>
+          </div>
+          <div class="run-output-body">
+            <button class="btn-add-context" id="btn-add-log-context" data-i18n="btnAddContext"
+                    data-i18n-title="btnAddContextTitle" title="この実行結果をチャットの参考情報に追加します">＋ チャットに渡す</button>
+
+            <!-- 実行結果 -->
+            <div class="run-pane active" id="tab-result">
+              <pre class="output-pre" id="output-result" data-i18n="outputPlaceholder">ここに実行結果が表示されます。</pre>
+              <!-- 標準入力 (実行中のみ表示): Scanner / input() 対応 -->
+              <div class="run-stdin-row hidden" id="run-stdin-row">
+                <span class="run-stdin-mark">›</span>
+                <input type="text" id="run-stdin-input" class="run-stdin-input"
+                       data-i18n-placeholder="runStdinPlaceholder"
+                       placeholder="標準入力へ送信（Enter）" spellcheck="false"
+                       autocorrect="off" autocapitalize="off">
+                <button class="btn btn-apply" id="run-stdin-send" data-i18n="runStdinSend">送信</button>
+              </div>
+            </div>
+
+            <!-- テスト結果 (JUnit XML + JaCoCo) -->
+            <div class="run-pane" id="tab-test-results">
+              <div class="test-results-wrap" id="test-results-wrap">
+                <div class="test-results-placeholder" data-i18n="testResultsPlaceholder">Gradle の test タスクを実行すると、テストメソッド単位の結果がここに出ます。</div>
+              </div>
+            </div>
+
+            <!-- SQL (HSQLDB インメモリ) -->
+            <div class="run-pane" id="tab-sql">
+              <div class="sql-toolbar">
+                <button class="btn btn-run"  id="btn-sql-start" data-i18n="btnSqlStart">DB起動</button>
+                <button class="btn btn-stop" id="btn-sql-stop"  data-i18n="btnSqlStop" disabled>DB停止</button>
+                <button class="btn btn-run"  id="btn-sql-run"   data-i18n="btnSqlRun" disabled>SQL実行</button>
+                <span class="sql-hint" data-i18n="sqlHint">エディタで開いている .sql の内容（選択中ならその部分）を実行します</span>
+              </div>
+              <div class="sql-result-wrap" id="sql-result-wrap">
+                <div class="sql-placeholder" data-i18n="sqlPlaceholder">「DB起動」してから「SQL実行」を押してください。</div>
+              </div>
+            </div>
+
+            <!-- ターミナル (node-pty + xterm.js) -->
+            <div class="run-pane terminal-pane" id="tab-terminal">
+              <div class="xterm-wrap" id="xterm-wrap"></div>
+            </div>
+
+            <!-- Web プレビュー -->
+            <div class="run-pane browser-pane" id="tab-browser">
+              <div class="browser-toolbar">
+                <button class="browser-btn" id="browser-back"    data-i18n-title="browserBack" title="戻る">←</button>
+                <button class="browser-btn" id="browser-forward" data-i18n-title="browserForward" title="進む">→</button>
+                <button class="browser-btn" id="browser-reload"  data-i18n-title="browserReload" title="再読み込み">⟳</button>
+                <input type="text" class="browser-url" id="browser-url"
+                       value="" spellcheck="false" placeholder="http://localhost:8080">
+                <button class="browser-btn" id="browser-go"       data-i18n-title="browserGo" title="開く">▶</button>
+                <button class="browser-btn" id="browser-external" data-i18n-title="browserExternal" title="外部ブラウザで開く">↗</button>
+              </div>
+              <webview id="mini-browser" class="mini-browser" src="about:blank"></webview>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /editor-pane -->
+    </div><!-- /content-area -->
+
+    <div class="ai-resize-handle" id="ai-resize-handle" data-i18n-title="dragToResizeWidth" title="ドラッグで幅を調整"></div>
+
+    <!-- ── 右: チャット ── -->
+    <aside class="ai-panel" id="ai-panel">
+      <div class="side-header ai-panel-header">
+        <span class="ai-panel-title" id="chat-title">🤖 チャット</span>
+        <button class="btn-ai-clear" id="btn-chat-clear" data-i18n="btnChatClear" data-i18n-title="btnChatClearTitle" title="会話履歴を消します">⌫ クリア</button>
+      </div>
+
+      <div class="chat-history" id="chat-history">
+        <div class="chat-welcome">
+          <p data-i18n="chatWelcome1">🤖 コードの相談相手です。使うかどうかは自由です。</p>
+          <p data-i18n="chatWelcome2">📄 「＋ チャットに渡す」で開いているファイルや実行ログを添付できます。</p>
+          <p data-i18n="chatWelcome3">🔑 使う前に ⚙ 設定で API キーを登録してください。</p>
+        </div>
+      </div>
+
+      <!-- 添付 (ファイル・実行ログ) のチップ -->
+      <div class="ai-context-chips hidden" id="ai-context-chips"></div>
+
+      <div class="chat-input-wrap">
+        <textarea id="chat-input" class="chat-input" rows="3"
+                  data-i18n-placeholder="chatPlaceholder"
+                  placeholder="質問を入力... (Enter で送信 / Shift+Enter で改行)"></textarea>
+        <div class="chat-actions" id="chat-actions">
+          <button class="chat-mini-btn" id="btn-attach-file" data-i18n="btnAttachFile" data-i18n-title="btnAttachFileTitle" title="開いているファイルを添付します">📎 現在のファイル</button>
+          <button class="chat-mini-btn chat-mini-send" id="btn-chat-send" data-i18n="btnSend" data-i18n-title="btnSendTitle" title="送信">➤ 送信</button>
+        </div>
+        <button class="chat-abort-btn hidden" id="btn-chat-abort" data-i18n="btnAbort" data-i18n-title="btnAbortTitle" title="応答を中断します">⏹ 中断</button>
+      </div>
+    </aside>
+
+  </div><!-- /app-main -->
+</div><!-- /app-layout -->
+
+<!-- ════ 新規プロジェクト ════ -->
+<div class="modal-overlay hidden" id="new-project-overlay">
+  <div class="course-dialog" role="dialog" aria-modal="true">
+    <div class="course-dialog-header">
+      <span class="course-dialog-title" data-i18n="btnNewProject">＋ 新規プロジェクト</span>
+      <button class="course-dialog-close" id="new-project-close" data-i18n-title="close" title="閉じる">✕</button>
+    </div>
+    <div class="course-dialog-sub" data-i18n="newProjectSub">受講中の講座を選ぶと、その講座で使う雛形が出ます。空のプロジェクトも作れます。</div>
+    <div class="course-dialog-lang-row">
+      <label for="course-select" data-i18n="courseLabel">📚 講座</label>
+      <select class="lang-select" id="course-select"></select>
+    </div>
+    <div class="course-dialog-body" id="template-list"></div>
+    <div class="new-project-footer">
+      <label class="new-project-name-label" for="new-project-name" data-i18n="projectNameLabel">プロジェクト名</label>
+      <input type="text" id="new-project-name" class="api-key-input" spellcheck="false" autocomplete="off"
+             placeholder="my-project">
+      <span class="new-project-error hidden" id="new-project-error"></span>
+      <button class="btn btn-apply" id="btn-create-project" data-i18n="btnCreate" disabled>作成</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ 汎用ダイアログ (alert / confirm / prompt) ════ -->
+<div class="modal-overlay hidden" id="simple-dialog-overlay">
+  <div class="simple-dialog" role="alertdialog" aria-modal="true">
+    <div class="simple-dialog-message" id="simple-dialog-message"></div>
+    <input type="text" class="simple-dialog-input hidden" id="simple-dialog-input">
+    <div class="simple-dialog-actions">
+      <button class="btn btn-answer hidden" id="simple-dialog-cancel" data-i18n="btnCancel">キャンセル</button>
+      <button class="btn btn-apply" id="simple-dialog-ok">OK</button>
+    </div>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script src="renderer.js"></script>
+</body>
+</html>

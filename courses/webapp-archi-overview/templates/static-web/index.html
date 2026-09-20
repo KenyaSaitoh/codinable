@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>名簿管理</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 構造は HTML、装飾は style.css、振る舞いは app.js が担当する -->
+  <header>
+    <h1>名簿管理</h1>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>登録</h2>
+      <!-- フォームは送信せず JavaScript で扱うので action は書かない -->
+      <form id="person-form">
+        <label for="name">名前</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="department">部署</label>
+        <select id="department" name="department">
+          <option value="営業部">営業部</option>
+          <option value="企画部">企画部</option>
+          <option value="人事部">人事部</option>
+        </select>
+
+        <button type="submit">追加する</button>
+      </form>
+      <p class="message" id="message"></p>
+    </section>
+
+    <section class="panel">
+      <h2>一覧 <span class="count" id="count">0 件</span></h2>
+      <table>
+        <thead>
+          <tr><th>名前</th><th>部署</th><th></th></tr>
+        </thead>
+        <!-- 行は app.js が組み立てる -->
+        <tbody id="person-list"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

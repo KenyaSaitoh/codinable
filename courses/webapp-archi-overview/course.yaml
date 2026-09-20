@@ -1,0 +1,195 @@
+# ═══════════════════════════════════════════════════════════
+#  Udemy「Webシステム＋生成AI 技術概要編」の雛形
+#
+#  講義そのものは動画側にあるため、ここには「開いてすぐ動く最小構成」だけを置く。
+#  受講者は雛形からプロジェクトを作り、動画を見ながら自分で書き換えていく。
+#
+#  講座を追加するときは courses/ にディレクトリを 1 つ増やして
+#  この形式の course.yaml と templates/ を置くだけでよい (アプリ側の変更は不要)。
+#
+#  templates[] の項目:
+#    id           プロジェクト作成時に main へ渡す識別子 (dir 省略時はディレクトリ名)
+#    dir          templates/ 配下のディレクトリ名 (省略時は id)
+#    chapter      カード上のタグ。対応する講義チャプター
+#    kind         カード上のタグ。何の雛形か
+#    suggestName  プロジェクト名の既定値
+#    names        表示名 (言語ごと)
+#    descriptions 説明 (言語ごと)
+#    openFiles    作成直後に開くファイル (プロジェクト相対パス)
+# ═══════════════════════════════════════════════════════════
+id: webapp-archi-overview
+order: 1
+
+names:
+  ja: Webシステム＋生成AI 技術概要編
+  en: 'Web Systems + Generative AI: Technology Overview'
+
+descriptions:
+  ja: >-
+    HTML・CSS・JavaScript から HTTP、SQL、サーバーサイド MVC（Spring / Flask / Express）、
+    Web API、React による SPA までを一通り扱う講座の雛形です。
+    講座本編は PostgreSQL と Maven を前提にしていますが、ここでは Codinable に同梱の
+    HSQLDB と Gradle Wrapper で動くように調整してあります。
+  en: >-
+    Templates for the course covering HTML/CSS/JavaScript, HTTP, SQL, server-side MVC
+    (Spring / Flask / Express), Web APIs and React SPAs.
+    The course itself assumes PostgreSQL and Maven; these templates are adjusted to run
+    on the HSQLDB and Gradle Wrapper bundled with Codinable.
+
+udemy:
+  url: https://github.com/KenyaSaitoh/learn_webapp_archi_overview
+
+templates:
+  - id: static-web
+    chapter: 'Ch.3'
+    kind: static
+    suggestName: static-web
+    names:
+      ja: 静的Webページ（HTML / CSS / JavaScript）
+      en: Static web page (HTML / CSS / JavaScript)
+    descriptions:
+      ja: >-
+        HTML で構造、CSS で装飾、JavaScript で振る舞いを書く最小構成です。
+        「実行」を押すとプレビュータブに表示されます。
+      en: >-
+        A minimal page with structure in HTML, styling in CSS and behaviour in JavaScript.
+        Press Run and it opens in the preview tab.
+    openFiles:
+      - index.html
+
+  - id: http-curl
+    chapter: 'Ch.4'
+    kind: shell
+    suggestName: http-curl
+    names:
+      ja: HTTP の観察（curl スクリプト）
+      en: Observing HTTP (curl scripts)
+    descriptions:
+      ja: >-
+        リクエストライン・ヘッダー・ステータスコードを curl で確かめるスクリプト集です。
+        ターミナルタブからも同じコマンドを打てます。
+      en: >-
+        Scripts that use curl to inspect request lines, headers and status codes.
+        You can type the same commands in the terminal tab.
+    openFiles:
+      - 01_get.sh
+
+  - id: sql-basics
+    chapter: 'Ch.6'
+    kind: sql
+    suggestName: sql-basics
+    names:
+      ja: SQL の基本（EMPLOYEE / DEPARTMENT）
+      en: SQL basics (EMPLOYEE / DEPARTMENT)
+    descriptions:
+      ja: >-
+        講義と同じ EMPLOYEE / DEPARTMENT テーブルです。
+        SQL タブで「DB起動」→「SQL実行」の順に押してください。
+      en: >-
+        The same EMPLOYEE / DEPARTMENT tables used in the lectures.
+        In the SQL tab, press "Start DB" and then "Run SQL".
+    openFiles:
+      - 01_create.sql
+
+  - id: javascript-basics
+    chapter: 'Ch.7'
+    kind: node
+    suggestName: javascript-basics
+    names:
+      ja: JavaScript と TypeScript の基本
+      en: JavaScript and TypeScript basics
+    descriptions:
+      ja: >-
+        Node.js で直接動かせるスクリプト集です。.ts も型を書いたままそのまま実行できます
+        （Node.js 24 の type stripping）。
+      en: >-
+        Scripts you can run directly with Node.js. The .ts files run as-is, types included
+        (Node.js 24 type stripping).
+    openFiles:
+      - 01_basics.js
+
+  - id: spring-mvc-calc
+    chapter: 'Ch.8.2'
+    kind: spring
+    suggestName: spring-mvc-calc
+    names:
+      ja: Spring MVC の計算アプリケーション
+      en: Spring MVC calculator application
+    descriptions:
+      ja: >-
+        Controller + Thymeleaf の最小構成です。実行対象で「Gradle: bootRun」を選んでください
+        （初回は Gradle の取得に数分かかります）。
+      en: >-
+        A minimal Controller + Thymeleaf setup. Choose "Gradle: bootRun" as the run target
+        (the first run downloads Gradle and takes a few minutes).
+    openFiles:
+      - src/main/java/pro/kensait/spring/calc/CalcController.java
+
+  - id: flask-calc
+    chapter: 'Ch.8.3'
+    kind: python
+    suggestName: flask-calc
+    names:
+      ja: Flask の計算アプリケーション
+      en: Flask calculator application
+    descriptions:
+      ja: >-
+        Spring MVC と同じ計算アプリケーションを Flask で書いたものです。
+        先にターミナルで pip install -r requirements.txt を実行してください。
+      en: >-
+        The same calculator written with Flask.
+        Run pip install -r requirements.txt in the terminal first.
+    openFiles:
+      - app.py
+
+  - id: express-calc
+    chapter: 'Ch.8.4'
+    kind: node
+    suggestName: express-calc
+    names:
+      ja: Express の計算アプリケーション
+      en: Express calculator application
+    descriptions:
+      ja: >-
+        同じ計算アプリケーションを Express + EJS で書いたものです。
+        実行対象で「npm: install」→「npm: start」の順に選んでください。
+      en: >-
+        The same calculator written with Express + EJS.
+        Choose "npm: install" and then "npm: start" as the run target.
+    openFiles:
+      - app.js
+
+  - id: spring-rest-users
+    chapter: 'Ch.9'
+    kind: spring
+    suggestName: spring-rest-users
+    names:
+      ja: Web API（REST）とユニットテスト
+      en: Web API (REST) with unit tests
+    descriptions:
+      ja: >-
+        /api/users の CRUD を返す REST API です。「Gradle: test」でテスト結果タブに
+        メソッド単位の成否とカバレッジが出ます。
+      en: >-
+        A REST API serving CRUD on /api/users. "Gradle: test" fills the Tests tab with
+        per-method results and coverage.
+    openFiles:
+      - src/main/java/pro/kensait/spring/users/UserController.java
+      - src/test/java/pro/kensait/spring/users/UserServiceTest.java
+
+  - id: react-spa
+    chapter: 'Ch.10'
+    kind: react
+    suggestName: react-spa
+    names:
+      ja: React による SPA
+      en: React SPA
+    descriptions:
+      ja: >-
+        Vite + React + TypeScript の最小構成です。「npm: install」→「npm: dev」の順に実行すると
+        プレビュータブが自動で開きます。
+      en: >-
+        A minimal Vite + React + TypeScript setup. Run "npm: install" then "npm: dev" and the
+        preview tab opens by itself.
+    openFiles:
+      - src/App.tsx

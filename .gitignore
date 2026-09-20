@@ -1,0 +1,27 @@
+node_modules/
+dist/
+dist-installer/
+*.log
+*.stackdump
+
+# 資格情報・ローカル設定
+.env
+.env.*
+!.env.example
+
+# 同梱ランタイム (scripts/setup.ps1 で再取得できる。合計 300MB 超のため追跡しない)
+runtime/
+hsqldb/
+resources/jdtls/
+resources/gradle-wrapper/
+
+# エディタバンドル (desktop/builder/build-editor.js が esbuild で生成)
+desktop/src/renderer/vendor/
+
+# Java / Gradle のビルド成果物 (courses/ の雛形配下も含む)
+# ※ electron-builder の設定は desktop/builder/ に置くこと (build/ だとここで除外される)
+**/build/
+**/bin/
+**/.gradle/
+**/__pycache__/
+*.pyc

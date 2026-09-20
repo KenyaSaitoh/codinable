@@ -1,0 +1,3968 @@
+/* ═══════════════════════════════════════════
+   テーマ (6 種)
+   VS Code で親しまれている GitHub Dark/Light, One Dark Pro, Tokyo Night,
+   Dracula Official, Solarized Light に準拠する。
+   テーマ一覧の正: renderer.js の THEMES。適用は body[data-theme='<id>'] +
+   ダーク系では body.theme-dark クラス (構造系ルールの互換用) を併用する。
+   標準はダークの GitHub Dark Default (:root がその値)。
+
+   --accent-blue は歴史的な変数名。値はテーマのプライマリアクセント。
+   ═══════════════════════════════════════════ */
+:root {
+  /* ── GitHub Dark Default（標準） ── */
+  --bg-base:      #0d1117;   /* メイン背景 (editor.background) */
+  --bg-surface:   #161b22;   /* surface: パネル */
+  --bg-overlay:   #21262d;   /* surface2: セカンダリ */
+  --bg-hover:     #30363d;   /* surface3: ホバー */
+  --bg-input:     #010409;
+  --text-main:    #e6edf3;
+  --text-sub:     #c9d1d9;
+  --text-muted:   #8b949e;
+  --accent-blue:  #2f81f7;
+  --accent-green: #3fb950;
+  --accent-red:   #f85149;
+  --accent-yellow:#d29922;
+  --accent-mauve: #a371f7;
+  --accent-teal:  #39c5cf;
+  --border-color: #30363d;
+  --shadow:       rgba(0,0,0,0.6);
+
+  /* アクションボタン (実行/停止/AI 系) */
+  --btn-action-bg:    #1f6feb;
+  --btn-action-hover: #388bfd;
+
+  /* サイドバー折りたたみ時の開閉ピルボタン */
+  --sidebar-pill-collapsed-bg: #484f58;
+
+  /* Editor font settings (user-adjustable) */
+  --editor-font-size:   15px;
+  --editor-font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+}
+
+body[data-theme='github-dark'] {
+  /* :root と同値（明示選択用） */
+}
+
+body[data-theme='one-dark-pro'] {
+  --bg-base:      #282c34;
+  --bg-surface:   #21252b;
+  --bg-overlay:   #2c313c;
+  --bg-hover:     #3a3f4b;
+  --bg-input:     #1d2129;
+  --text-main:    #d7dae0;
+  --text-sub:     #abb2bf;
+  --text-muted:   #7f848e;
+  --accent-blue:  #61afef;
+  --accent-green: #98c379;
+  --accent-red:   #e06c75;
+  --accent-yellow:#e5c07b;
+  --accent-mauve: #c678dd;
+  --accent-teal:  #56b6c2;
+  --border-color: #3e4452;
+  --shadow:       rgba(0,0,0,0.5);
+  --btn-action-bg:    #4d78cc;
+  --btn-action-hover: #6087cf;
+  --sidebar-pill-collapsed-bg: #4b5263;
+}
+
+body[data-theme='tokyo-night'] {
+  --bg-base:      #1a1b26;
+  --bg-surface:   #16161e;
+  --bg-overlay:   #292e42;
+  --bg-hover:     #343a55;
+  --bg-input:     #14141b;
+  --text-main:    #c0caf5;
+  --text-sub:     #a9b1d6;
+  --text-muted:   #565f89;
+  --accent-blue:  #7aa2f7;
+  --accent-green: #9ece6a;
+  --accent-red:   #f7768e;
+  --accent-yellow:#e0af68;
+  --accent-mauve: #bb9af7;
+  --accent-teal:  #2ac3de;
+  --border-color: #363b54;
+  --shadow:       rgba(0,0,0,0.6);
+  --btn-action-bg:    #3d59a1;
+  --btn-action-hover: #4a6ac2;
+  --sidebar-pill-collapsed-bg: #4a4f6d;
+}
+
+body[data-theme='dracula'] {
+  --bg-base:      #282a36;
+  --bg-surface:   #21222c;
+  --bg-overlay:   #343746;
+  --bg-hover:     #44475a;
+  --bg-input:     #1e1f29;
+  --text-main:    #f8f8f2;
+  --text-sub:     #e2e2dc;
+  --text-muted:   #8b96bd;
+  --accent-blue:  #bd93f9;   /* Dracula のプライマリは紫 */
+  --accent-green: #50fa7b;
+  --accent-red:   #ff5555;
+  --accent-yellow:#f1fa8c;
+  --accent-mauve: #ff79c6;
+  --accent-teal:  #8be9fd;
+  --border-color: #191a21;
+  --shadow:       rgba(0,0,0,0.6);
+  --btn-action-bg:    #44475a;
+  --btn-action-hover: #6272a4;
+  --sidebar-pill-collapsed-bg: #44475a;
+}
+
+body[data-theme='github-light'] {
+  --bg-base:      #ffffff;
+  --bg-surface:   #f6f8fa;
+  --bg-overlay:   #eaeef2;
+  --bg-hover:     #dde4ea;
+  --bg-input:     #ffffff;
+  --text-main:    #1f2328;
+  --text-sub:     #424a53;
+  --text-muted:   #656d76;
+  --accent-blue:  #0969da;
+  --accent-green: #1a7f37;
+  --accent-red:   #cf222e;
+  --accent-yellow:#9a6700;
+  --accent-mauve: #8250df;
+  --accent-teal:  #1b7c83;
+  --border-color: #d0d7de;
+  --shadow:       rgba(31,35,40,0.12);
+  --btn-action-bg:    #0969da;
+  --btn-action-hover: #0757ba;
+  --sidebar-pill-collapsed-bg: #afb8c1;
+}
+
+body[data-theme='solarized-light'] {
+  --bg-base:      #fdf6e3;
+  --bg-surface:   #eee8d5;
+  --bg-overlay:   #e4dcc4;
+  --bg-hover:     #d8d0b8;
+  --bg-input:     #fffdf5;
+  --text-main:    #586e75;
+  --text-sub:     #657b83;
+  --text-muted:   #93a1a1;
+  --accent-blue:  #268bd2;
+  --accent-green: #859900;
+  --accent-red:   #dc322f;
+  --accent-yellow:#b58900;
+  --accent-mauve: #6c71c4;
+  --accent-teal:  #2aa198;
+  --border-color: #d3cbb7;
+  --shadow:       rgba(101,123,131,0.18);
+  --btn-action-bg:    #268bd2;
+  --btn-action-hover: #1e6ea7;
+  --sidebar-pill-collapsed-bg: #c5bda5;
+}
+
+/* ═══════════════════════════════════════════
+   Reset / Base
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+/* Markdown の `…`（インラインコード）・コードブロックは、指定しないとブラウザ既定の monospace
+   （Windows では Courier New）に落ちて周囲の文字と書体が食い違う。UI 全体で使うフォントへ明示的に揃える */
+code, pre, kbd, samp { font-family: var(--editor-font-family); font-size: inherit; }
+body {
+  font-family: var(--editor-font-family);
+  background: var(--bg-base);
+  color: var(--text-main);
+  font-size: 14px;
+  line-height: 1.5;
+  transition: background 0.2s, color 0.2s;
+}
+.hidden { display: none !important; }
+
+/* ═══════════════════════════════════════════
+   App Layout (column: header + main)
+   ═══════════════════════════════════════════ */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── App Header ── */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  height: 38px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  z-index: 100;
+}
+/* ダークテーマ: Lightroom 風のヘッダーグラデーション */
+body.theme-dark .app-header {
+  background: linear-gradient(#2a2a2a, #212121);
+  border-bottom-color: #101010;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.app-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-sub);
+  letter-spacing: 0.02em;
+  margin-right: 6px;
+}
+/* コース開始/再開の入り口ボタン (新規・既存で同じ配色に統一) */
+.btn-course-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-blue);
+  background: transparent;
+  color: var(--accent-blue);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.btn-course-entry:hover { background: var(--bg-overlay); }
+/* 編集履歴 (元に戻す / やり直す)。エディタのタイトル行に右寄せで置く */
+.editor-history-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.btn-editor-history {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-sub);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+.btn-editor-history:hover:not(:disabled) {
+  background: var(--bg-overlay);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+.btn-editor-history:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* 左右のブロックは自然幅を保ち、余った幅はすべてマーキーに渡す */
+.header-left, .header-right { flex: 0 0 auto; }
+
+/* ── 宣伝マーキー (Lite 版のみ) ──
+   ヘッダー左ブロックと右ボタン群のあいだの余白を横スクロールに使う。
+   幅は残り全部 (flex:1) だが min-width:0 なので、余白が無い狭いウィンドウでも
+   左右のボタンを押しつぶさない。両端はマスクでフェードさせ、
+   ヘッダーの枠線に文字がぶつかって見えないようにしている。 */
+.header-marquee {
+  flex: 1 1 auto;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  margin: 0 14px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+}
+/* 流れる中身。同じ内容を 2 周分並べ、-50% までずらして継ぎ目なくループさせる
+   (renderer.js の renderPromoMarquee が 2 セット描く) */
+.header-marquee-track {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  will-change: transform;
+  animation: header-marquee-scroll var(--marquee-duration, 32s) linear infinite;
+}
+@keyframes header-marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+/* 読みたいときに止められるように (リンクを狙ってクリックできる) */
+.header-marquee:hover .header-marquee-track,
+.header-marquee:focus-within .header-marquee-track { animation-play-state: paused; }
+
+/* 1 件分。クリックでリンク先を既定のブラウザで開く */
+.promo-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  /* 2 周を継ぎ目なく見せるため、項目の間隔は左右対称にする */
+  padding: 0 28px;
+  font-size: 12px;
+  color: var(--text-sub);
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: default;
+}
+.promo-item.promo-link { cursor: pointer; }
+.promo-item .promo-badge {
+  flex-shrink: 0;
+  padding: 1px 7px;
+  border: 1px solid var(--accent-blue);
+  border-radius: 999px;
+  color: var(--accent-blue);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.promo-item .promo-text { color: var(--text-sub); }
+.promo-item .promo-cta {
+  color: var(--accent-blue);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.promo-item.promo-link:hover .promo-text,
+.promo-item.promo-link:focus-visible .promo-text { color: var(--text-main); }
+
+/* アニメーションを嫌う設定では流さず、収まる分だけ静止表示する */
+@media (prefers-reduced-motion: reduce) {
+  .header-marquee-track { animation: none; }
+}
+
+/* ── クレジット残高バッジ (フル版のみ) ──
+   .btn-settings と同じ高さ・角丸・枠線でヘッダーのトーンを揃える。
+   色は CSS 変数のみを使い、ライト / ダークどちらのテーマでも破綻させない。 */
+.credit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 11px;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--editor-font-family);
+  color: var(--text-sub);
+  white-space: nowrap;
+  cursor: default;
+  transition: all 0.15s;
+}
+.credit-badge:hover { background: var(--bg-overlay); color: var(--text-main); }
+/* 残高わずか (既定 $0.50 未満) / 期限間近 */
+.credit-badge.low {
+  border-color: var(--accent-yellow);
+  color: var(--accent-yellow);
+}
+.credit-badge.low:hover { background: var(--bg-overlay); color: var(--accent-yellow); }
+/* 利用資格切れ・取得失敗 */
+.credit-badge.expired {
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+}
+.credit-badge.expired:hover { background: var(--bg-overlay); color: var(--accent-red); }
+.credit-badge.unknown {
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+/* ── 読み上げ音量のつまみ (ヘッダー右上) ──
+   .btn-settings と同じ高さ・角丸・枠線でヘッダーのトーンを揃える。 */
+.volume-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--editor-font-family);
+  color: var(--text-sub);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.volume-control:hover { background: var(--bg-overlay); color: var(--text-main); }
+.volume-icon { width: 14px; height: 14px; flex-shrink: 0; }
+.volume-icon-body { fill: currentColor; }
+.volume-icon-wave,
+.volume-icon-mute {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+/* 消音 (0) のときだけ音波を × に差し替える */
+.volume-icon-mute { display: none; }
+.volume-control.muted .volume-icon-wave { display: none; }
+.volume-control.muted .volume-icon-mute { display: inline; }
+
+/* スライダーはブラウザ既定の見た目 (太いバー + 丸いつまみ) を捨てて、
+   細いトラック + 縦長のフェーダー型つまみで描き直す。
+   トラックの塗り分け位置は renderer.js が --vol (0〜100%) で渡す。 */
+.volume-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 84px;
+  height: 14px;          /* つまみを掴める高さ。見た目のバーはトラック疑似要素側 */
+  background: transparent;
+  cursor: pointer;
+}
+.volume-range::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--accent-blue) 0 var(--vol, 100%),
+    var(--border-color) var(--vol, 100%) 100%
+  );
+}
+.volume-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 5px;
+  height: 13px;
+  margin-top: -5px;      /* (トラック 3px - つまみ 13px) / 2 */
+  border-radius: 1.5px;
+  background: var(--text-sub);
+  transition: background 0.15s;
+}
+.volume-range:hover::-webkit-slider-thumb,
+.volume-range:focus-visible::-webkit-slider-thumb { background: var(--text-main); }
+.volume-range:focus { outline: none; }
+.volume-value {
+  width: 24px;
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-sub);
+}
+/* 画面が狭いときはつまみを詰めて、ヘッダー右上のボタン群を押し出さない */
+@media (max-width: 1280px) {
+  .volume-range { width: 56px; }
+  .volume-value { display: none; }
+}
+
+.lang-select {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0 8px;
+  height: 26px;
+  font-size: 12px;
+  font-family: var(--editor-font-family);
+  color: var(--text-sub);
+  cursor: pointer;
+  outline: none;
+}
+.lang-select:hover { border-color: var(--accent-blue); }
+.btn-settings {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0 11px;
+  height: 28px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text-sub);
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+}
+.btn-settings:hover { background: var(--bg-overlay); color: var(--text-main); }
+
+/* ── Main Row ── */
+.app-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ═══════════════════════════════════════════
+   Settings Dialog (画面中央のモーダル)
+   ═══════════════════════════════════════════ */
+.settings-panel {
+  width: 520px;
+  max-width: 92vw;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 12px 48px var(--shadow);
+  overflow: hidden;
+  transition: background 0.2s;
+}
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 12px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.settings-title {
+  font-size: calc(var(--editor-font-size) + 2px);
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: 0.02em;
+}
+.settings-close {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 6px;
+  transition: all 0.12s;
+}
+.settings-close:hover { background: var(--bg-hover); color: var(--text-main); }
+.settings-body {
+  overflow-y: auto;
+  padding: 16px 20px 18px;
+}
+.settings-group {
+  margin-bottom: 14px;
+}
+.settings-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-sub);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.settings-label span { color: var(--accent-blue); font-weight: 700; }
+/* Theme buttons */
+.theme-btns { display: flex; gap: 6px; }
+.theme-btn {
+  flex: 1;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-overlay);
+  color: var(--text-sub);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.theme-btn:hover  { background: var(--bg-hover); }
+.theme-btn.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+
+/* テーマ選択 (6 種)。設定パネルと初回セットアップウィザードで共用 */
+.theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.theme-grid .theme-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 9px; font-size: 11px; text-align: left;
+}
+.theme-grid .theme-btn.active {
+  background: var(--bg-overlay); color: var(--text-main);
+  border-color: var(--accent-blue); box-shadow: 0 0 0 1px var(--accent-blue);
+}
+.theme-swatch {
+  flex-shrink: 0; width: 20px; height: 15px; border-radius: 3px;
+  border: 1px solid; position: relative; overflow: hidden;
+}
+.theme-swatch span { position: absolute; left: 3px; top: 3px; width: 8px; height: 3px; border-radius: 1px; }
+
+/* ── 初回セットアップウィザード ── */
+.setup-wizard { width: 430px; max-width: 92vw; }
+.wizard-steps {
+  display: flex; justify-content: center; gap: 10px;
+  padding: 12px 0 2px; background: var(--bg-surface);
+}
+.wizard-step-dot {
+  width: 24px; height: 24px; border-radius: 50%; display: grid; place-content: center;
+  font-size: 12px; font-weight: 700; border: 1px solid var(--border-color);
+  background: var(--bg-overlay); color: var(--text-muted);
+}
+.wizard-step-dot.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
+.wizard-step-dot.done { border-color: var(--accent-blue); color: var(--accent-blue); }
+.wizard-api-key-wrap { margin-top: 12px; }
+#wizard-custom-input { margin-top: 8px; }
+
+/* ── Teacher設定ダイアログ: 声の種類・Teacherタイプ ── */
+.voice-group-caption {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin: 6px 0 4px;
+  letter-spacing: 0.03em;
+}
+.voice-btns { margin-bottom: 2px; }
+.voice-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 4px;
+}
+.voice-btn .voice-desc {
+  font-size: 10px;
+  font-weight: 500;
+  color: inherit;
+  opacity: 0.75;
+}
+.custom-teacher-input {
+  width: 100%;
+  resize: vertical;
+  min-height: 72px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-overlay);
+  color: var(--text-main);
+  font-size: 12px;
+  font-family: inherit;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+.custom-teacher-input:focus { outline: none; border-color: var(--accent-blue); }
+.custom-teacher-group.inactive .settings-label,
+.custom-teacher-group.inactive .api-key-hint { opacity: 0.58; }
+.custom-teacher-input:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+  resize: none;
+  background: color-mix(in srgb, var(--bg-overlay) 72%, transparent);
+}
+.teacher-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px 14px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  flex-shrink: 0;
+}
+.teacher-dialog-actions .btn {
+  min-width: 88px;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Font size range */
+.font-range {
+  width: 100%;
+  accent-color: var(--accent-blue);
+  height: 4px;
+  margin-top: 4px;
+}
+/* Settings separator */
+.settings-sep {
+  height: 1px;
+  background: var(--border-color);
+  margin: 10px 0;
+}
+
+/* API key input */
+/* `.settings-label span { color: var(--accent-blue) }` の方が詳細度が高く
+   文字色を上書きしてしまうため、.settings-label を含めて詳細度を上げ、白文字を確定させる */
+.settings-label .api-key-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--accent-red);
+  color: #fff;
+}
+.settings-label .api-key-badge.set {
+  background: var(--accent-green);
+}
+.api-key-wrap {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.api-key-input {
+  flex: 1;
+  padding: 5px 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-main);
+  font-size: 12px;
+  font-family: var(--editor-font-family);
+  outline: none;
+  min-width: 0;
+}
+.api-key-input:focus { border-color: var(--accent-blue); }
+.api-key-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+/* API キーの取得ページを開くリンク (設定パネル / 初回起動ダイアログの両方で使う) */
+.api-key-link {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 11px;
+  color: var(--accent-blue);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+}
+.api-key-link:hover { border-bottom-color: var(--accent-blue); }
+
+/* Font family select */
+.font-select {
+  width: 100%;
+  padding: 5px 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-main);
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+}
+.font-select:focus { border-color: var(--accent-blue); }
+
+/* ═══════════════════════════════════════════
+   Sidebar
+   ═══════════════════════════════════════════ */
+/* サイドバー(レッスン一覧)は、コース名の左にある「レッスン一覧」ボタンから
+   開く左側ドロワー。画面左端に重ねて表示し、エリア内右上の × ボタン / Esc /
+   背景クリック / Ctrl+B で閉じる。
+   閉じている間はレイアウトから完全に外れるため、画面の一番左は常にレッスン
+   (問題ペイン) になる。
+   プロジェクト構成はエディタの一番左のタブへ移した (2026-08-22)。 */
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 400;
+  /* 320px だとレッスンのタイトルが途中で切れるため 1.5 倍にした (2026-08-30) */
+  width: 480px;
+  max-width: 80vw;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-color);
+  box-shadow: 4px 0 18px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 399;
+  background: rgba(0, 0, 0, 0.35);
+}
+/* 既定は閉じた状態。body.sidebar-open のときだけ表示する */
+body:not(.sidebar-open) .sidebar,
+body:not(.sidebar-open) .drawer-backdrop { display: none; }
+
+/* ドロワーを開く「レッスン一覧」ボタン (コース名の左)。
+   帯の高さではハンバーガーのアイコンだと潰れるため、文字ラベルにしている。 */
+.btn-lesson-list {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 3px 12px;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: 13px;
+  font-size: calc(var(--editor-font-size) - 3px);
+  font-weight: 700;
+  font-family: var(--editor-font-family);
+  line-height: 1.6;
+  white-space: nowrap;
+  cursor: pointer;
+  /* 色は帯と同系のまま、縁取りと薄い影だけでボタンだと分かるようにする */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
+}
+/* ラベル左の 3 本線。ボタンだと一目で分かるようにする */
+.btn-lesson-list::before {
+  content: '';
+  display: block;
+  width: 11px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  box-shadow: 0 4px 0 currentColor, 0 -4px 0 currentColor;
+}
+.btn-lesson-list:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-blue);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.22);
+}
+.btn-lesson-list:active { box-shadow: none; }
+.btn-lesson-list[aria-expanded="true"] {
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+/* ドロワーを閉じる × ボタン (エリア内右上に重ねる) */
+.drawer-close {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  z-index: 2;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 15px;
+  font-family: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+.drawer-close:hover { background: var(--accent-blue); color: #fff; }
+/* × ボタンと見出し内のバッジが重ならないよう、見出し右側に余白を確保する */
+.sidebar .side-panel > .side-header:first-child { padding-right: 36px; }
+
+/* ── Current course indicator ──
+   ヘッダー直下・画面全幅の帯。sidebar/content-area の外（app-layout の直接の子）に
+   置くことで、左右の可変バー（サイドバー幅・問題パネル幅の調整ハンドル）を横切らず、
+   かつ背景色が画面右端まで途切れなく伸びる。
+   結果として「レッスン一覧」「📋 設問内容」「💻 エディタ」の見出しの開始位置も自然に揃う。
+   帯の左端にはドロワーを開く「レッスン一覧」ボタンを置く。 */
+.current-course-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  background: var(--bg-overlay);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.current-course-bar.has-course { border-bottom: 2px solid var(--accent-blue); }
+.current-course-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.current-course-name {
+  font-size: calc(var(--editor-font-size) - 1px);
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 3;
+}
+.current-course-bar.has-course .current-course-name { color: var(--accent-blue); }
+/* セッションにピン留めされたコース版 (M.m)。コース名の直後に控えめに示す */
+.current-course-version {
+  font-size: calc(var(--editor-font-size) - 4px);
+  color: var(--text-muted);
+  font-family: var(--editor-font-family);
+  flex-shrink: 0;
+}
+.current-course-version:empty { display: none; }
+.current-course-session {
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--text-muted);
+  font-family: var(--editor-font-family);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+.session-icon { flex-shrink: 0; font-size: 12px; }
+.session-name { overflow: hidden; text-overflow: ellipsis; }
+/* 再開ダイアログのセッション行: ピン留めされたコース版 (M.m) */
+.session-version {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--editor-font-family);
+}
+
+/* ── Context menu (小型・コンパクト) ── */
+.ctx-menu {
+  position: fixed;
+  z-index: 9999;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  min-width: 0;
+  padding: 2px 0;
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 4px);
+}
+.ctx-menu-item {
+  padding: 3px 10px;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+.ctx-menu-item:hover      { background: var(--bg-overlay); }
+.ctx-menu-danger          { color: #c0392b; }
+.theme-dark .ctx-menu-danger { color: #e74c3c; }
+
+/* ── Workspace settings input ── */
+.ws-root-wrap { display: flex; gap: 6px; align-items: center; margin-top: 4px; }
+.ws-root-input {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text-sub);
+  font-size: calc(var(--editor-font-size) - 1px);
+  font-family: var(--editor-font-family);
+}
+
+/* ── Side panels ── */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── 設問内容ペイン見出しの右側 (完了ボタン + 前後ナビ) ── */
+.problem-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-mark-done {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-weight: 700;
+  font-family: var(--editor-font-family);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.btn-mark-done:hover:not(:disabled) {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+.btn-mark-done.active {
+  background: color-mix(in srgb, var(--accent-green) 16%, transparent);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+.btn-mark-done:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+/* エリア見出し (📝 レッスン一覧 / 📁 プロジェクト構成 など)
+   — アクセントバー付きで領域の区切りを分かりやすく */
+.side-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px 7px 8px;
+  font-size: calc(var(--editor-font-size) - 1px);
+  font-weight: 700;
+  color: var(--text-main);
+  background: var(--bg-overlay);
+  border-left: 4px solid var(--accent-blue);
+  border-bottom: 1px solid var(--border-color);
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 8px;
+  background: var(--accent-blue);
+  color: #fff;
+}
+
+/* ── コース進捗バー (レッスン一覧見出しの直下) ── */
+.list-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  cursor: default;
+}
+.list-progress-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-hover);
+  overflow: hidden;
+}
+.list-progress-fill {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent-green);
+  transition: width 0.3s;
+}
+.list-progress-text {
+  flex-shrink: 0;
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-weight: 700;
+  font-family: var(--editor-font-family);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.list-progress.all-done .list-progress-text { color: var(--accent-green); }
+
+/* ── コースバーの進捗表示 (✓ n/m) ── */
+.current-course-progress {
+  flex-shrink: 0;
+  font-size: calc(var(--editor-font-size) - 3px);
+  font-weight: 700;
+  font-family: var(--editor-font-family);
+  padding: 1px 8px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent-green) 14%, transparent);
+  color: var(--accent-green);
+  white-space: nowrap;
+}
+
+/* ── Java question list ── */
+.question-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+/* ── 設問アイテムの状態アイコン (○ 未着手 / ✓ 完了 / ▶ 現在地) ──
+   .q-item は question-item / sb-question-item / sql-question-item に共通付与される。
+   クリックすると、その設問を開かずに完了/未完了を切り替えられる。 */
+.q-status {
+  width: 15px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: calc(var(--editor-font-size) - 4px);
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.q-status:hover { background: var(--bg-hover); }
+.q-item .q-status::before {
+  content: '○';
+  color: var(--text-muted);
+  opacity: 0.45;
+}
+.q-item.done .q-status::before {
+  content: '✓';
+  color: var(--accent-green);
+  font-weight: 800;
+  font-size: calc(var(--editor-font-size) - 2px);
+  opacity: 1;
+}
+/* 完了したレッスンは行全体を薄く緑に染め、左に細いバーを出す (✓ だけでは見落としやすい)。
+   現在地 (.active) の色は後続の各リストの規則が上書きする。 */
+.q-item.done {
+  background: color-mix(in srgb, var(--accent-green) 7%, transparent);
+  border-left-color: color-mix(in srgb, var(--accent-green) 55%, transparent);
+}
+body.theme-dark .q-item.done { background: color-mix(in srgb, var(--accent-green) 11%, transparent); }
+.q-item.active .q-status::before {
+  content: '▶';
+  color: var(--accent-blue);
+  font-size: calc(var(--editor-font-size) - 6px);
+  opacity: 1;
+}
+.q-item.done .q-title,
+.q-item.done .sb-q-title { color: var(--text-muted); }
+.q-item.done.active .q-title,
+.q-item.done.active .sb-q-title { color: var(--text-main); }
+
+/* グループ見出しの進捗 (done/total)。全問完了で緑に */
+.q-group-count.all-done {
+  background: color-mix(in srgb, var(--accent-green) 18%, transparent);
+  color: var(--accent-green);
+}
+.question-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 10px;
+  cursor: pointer;
+  transition: background 0.12s;
+  border-left: 3px solid transparent;
+}
+.question-item:hover  { background: var(--bg-overlay); }
+.question-item.active {
+  background: color-mix(in srgb, var(--accent-blue) 15%, transparent);
+  border-left-color: var(--accent-blue);
+}
+.question-item.active .q-title { color: var(--text-main); font-weight: 700; }
+body.theme-dark .question-item.active { background: color-mix(in srgb, var(--accent-blue) 26%, transparent); }
+.question-item.done .q-num { color: var(--accent-green); }
+
+/* ── Question group headers (ツリーの親ノード) ── */
+.q-group-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  background: var(--bg-surface);
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid var(--border-color);
+  user-select: none;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.q-group-header:hover { background: var(--bg-overlay); }
+/* 開閉シェブロン: 展開時 ▾ / 折りたたみ時は -90° 回転して ▸ に見える */
+.q-group-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-sub);
+  transition: transform 0.15s;
+}
+.q-group-header.collapsed .q-group-toggle { transform: rotate(-90deg); }
+.q-group-num {
+  font-size: calc(var(--editor-font-size) - 2px);
+  font-weight: 800;
+  font-family: var(--editor-font-family);
+  color: var(--accent-blue);
+  min-width: 14px;
+}
+.q-group-num.sb { color: var(--accent-mauve); }
+.q-group-title {
+  flex: 1;
+  font-size: calc(var(--editor-font-size) - 1px);
+  font-weight: 600;
+  font-family: var(--editor-font-family);
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.q-group-count {
+  font-size: calc(var(--editor-font-size) - 3px);
+  font-weight: 700;
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* ── 設問はカテゴリの子としてツリー状にぶら下げる ──
+   ガイドライン (縦線) + インデントで、カテゴリ配下であることを視覚化する。 */
+.q-group-body {
+  margin-left: 17px;
+  border-left: 2px solid var(--border-color);
+}
+.q-group-body.collapsed { display: none; }
+.q-num   { font-size: calc(var(--editor-font-size) - 2px); font-weight: 700; color: var(--text-muted); width: 40px; flex-shrink: 0; font-family: var(--editor-font-family); }
+.q-title { font-size: calc(var(--editor-font-size) - 1px); color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--editor-font-family); }
+
+/* ── Spring Boot question list ── */
+/* プロジェクト構成をエディタのタブへ移したので、レッスン一覧がドロワーの高さを使い切る */
+.sb-question-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 60px;
+}
+
+.sb-question-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 10px;
+  cursor: pointer;
+  transition: background 0.12s;
+  border-left: 3px solid transparent;
+}
+.sb-question-item:hover  { background: var(--bg-overlay); }
+.sb-question-item.active {
+  background: color-mix(in srgb, var(--accent-mauve) 15%, transparent);
+  border-left-color: var(--accent-mauve);
+}
+.sb-question-item.active .sb-q-title { color: var(--text-main); font-weight: 700; }
+body.theme-dark .sb-question-item.active { background: color-mix(in srgb, var(--accent-mauve) 26%, transparent); }
+.sb-q-num   { font-size: calc(var(--editor-font-size) - 2px); font-weight: 700; color: var(--accent-mauve); width: 40px; flex-shrink: 0; font-family: var(--editor-font-family); }
+.sb-q-title { font-size: calc(var(--editor-font-size) - 1px); color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--editor-font-family); }
+
+/* ── SQL question list ── */
+.sql-question-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 10px;
+  cursor: pointer;
+  transition: background 0.12s;
+  border-left: 3px solid transparent;
+}
+.sql-question-item:hover  { background: var(--bg-overlay); }
+.sql-question-item.active {
+  background: color-mix(in srgb, var(--accent-yellow) 15%, transparent);
+  border-left-color: var(--accent-yellow);
+}
+.sql-question-item.active .q-title { color: var(--text-main); font-weight: 700; }
+body.theme-dark .sql-question-item.active { background: color-mix(in srgb, var(--accent-yellow) 26%, transparent); }
+.q-group-num.sql { color: var(--accent-yellow); }
+
+/* ── File tree (エディタの「プロジェクト構成」タブに表示する閲覧専用ツリー) ── */
+.project-tree-view {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-base);
+}
+.file-tree {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0 20px;
+  font-size: calc(var(--editor-font-size) - 2px);
+  font-family: var(--editor-font-family);
+}
+.tree-placeholder {
+  padding: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+  font-family: inherit;
+}
+.tree-dir {
+  color: var(--accent-yellow);
+  padding: 1px 4px;
+  user-select: none;
+}
+/* ファイル行は閲覧専用 (クリックで選択はできない)。カーソル・ホバーも変えない */
+.tree-file {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 4px;
+  color: var(--text-sub);
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tree-file.editable { color: var(--accent-teal); }
+/* ファイル行はクリックでそのタブを開く（カーソルは VS Code と同じ「指差し」） */
+.tree-file { cursor: pointer; }
+.tree-file:hover { background: var(--bg-hover); color: var(--text-main); }
+.tree-file.current {
+  background: color-mix(in srgb, var(--accent-blue) 20%, transparent);
+  color: var(--text-main);
+  font-weight: 700;
+}
+.tree-icon { flex-shrink: 0; }
+
+/* ── File tree folder toggle ── */
+.tree-dir {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 1px 4px;
+}
+.tree-dir:hover { background: var(--bg-overlay); border-radius: 3px; }
+.tree-dir-children.collapsed { display: none; }
+
+/* VS Code–style file type badge */
+.file-type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  font-family: var(--editor-font-family), monospace;
+  padding: 1px 3px;
+  border-radius: 2px;
+  letter-spacing: 0;
+  line-height: 1.4;
+  flex-shrink: 0;
+  min-width: 22px;
+  text-align: center;
+}
+/* ═══════════════════════════════════════════
+   Content Area — flex row (problem-pane | editor-pane)
+   ═══════════════════════════════════════════ */
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ── 設問ナビゲーション (設問内容ヘッダー右の ‹ n/m › ) ── */
+.q-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+/* 高さは音声操作ボタン (.btn-ai-replay など 44x32) と揃え、幅だけ少し広げてレッスン移動を押しやすくする。
+   色はテーマ非依存の --accent-blue を使い、どのカラーテーマでも一段目立つようにする。 */
+.q-nav-btn {
+  width: 50px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--accent-blue);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--accent-blue);
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.q-nav-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--accent-blue);
+  border-color: var(--accent-blue);
+}
+.q-nav-btn:disabled { opacity: 0.35; cursor: default; }
+/* クリックでフォーカスが当たらないよう、フォーカスリングは出さない */
+.q-nav-btn:focus,
+.q-nav-btn:focus-visible { outline: none; box-shadow: none; }
+.q-nav-pos {
+  min-width: 44px;
+  text-align: center;
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-weight: 700;
+  font-family: var(--editor-font-family);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ── Left: Problem Pane ── */
+/* tabindex によるクリックフォーカス時、ペイン全体に枠線を出さない
+   (← → キーでの設問移動用にフォーカスを受けるだけ) */
+.problem-pane:focus,
+.problem-pane:focus-visible { outline: none; }
+.problem-pane {
+  width: 540px;
+  min-width: 180px;
+  max-width: 900px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border-color);
+}
+/* 設問内容ヘッダー: タイトルと ‹ ID › が狭い幅で重ならないよう制御 */
+.problem-pane > .side-header > span:first-child {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 6px;
+}
+/* 上下バーが本文スクロールと重ならないよう前面に固定 */
+.problem-pane > .side-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "title actions"
+    "audio audio";
+  row-gap: 6px;
+  position: relative;
+  z-index: 2;
+}
+.problem-pane > .side-header > span:first-child {
+  grid-area: title;
+}
+.problem-pane > .side-header > .problem-header-actions {
+  grid-area: actions;
+}
+.problem-pane > .side-header > .problem-audio-controls {
+  grid-area: audio;
+  justify-self: end;
+  margin: 0;
+}
+
+/* Problem description section (top of problem-pane) */
+.problem-desc-section {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: var(--bg-surface);
+}
+
+/* ── Horizontal resize handle between question ↕ answer ── */
+.problem-answer-handle {
+  height: 6px;
+  flex-shrink: 0;
+  cursor: ns-resize;
+  background: var(--border-color);
+  position: relative;
+  transition: background 0.15s;
+  z-index: 10;
+}
+.problem-answer-handle::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--text-muted);
+  opacity: 0.5;
+}
+.problem-answer-handle:hover,
+.problem-answer-handle.dragging {
+  background: var(--accent-blue);
+  opacity: 0.7;
+}
+
+/* Answer section (bottom of problem-pane) */
+.answer-section {
+  position: relative;
+  z-index: 2;
+  height: 130px;
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+}
+.answer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.answer-audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.output-answer {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px 12px 24px;
+  font-size: calc(var(--editor-font-size));
+  color: var(--text-main);
+  line-height: 1.7;
+}
+
+/* ── Vertical resize handle (problem ↔ editor) ── */
+.v-resize-handle {
+  width: 5px;
+  flex-shrink: 0;
+  cursor: ew-resize;
+  background: var(--border-color);
+  position: relative;
+  transition: background 0.15s;
+  z-index: 10;
+}
+.v-resize-handle::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: -4px; right: -4px;
+  cursor: ew-resize;
+}
+.v-resize-handle::after {
+  content: '⋮';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-muted);
+  font-size: 12px;
+  opacity: 0.5;
+  line-height: 1;
+}
+.v-resize-handle:hover,
+.v-resize-handle.dragging {
+  background: var(--accent-blue);
+  opacity: 0.7;
+}
+
+/* ── Right: Editor Pane ── */
+.editor-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ── Problem header ── */
+.problem-header {
+  padding: 12px 14px 10px;
+  background: var(--bg-surface);
+}
+.problem-audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: auto;
+  margin-right: 6px;
+}
+.problem-title { font-size: calc(var(--editor-font-size) + 2px); font-weight: 700; color: var(--accent-blue); line-height: 1.4; margin-bottom: 6px; }
+.problem-desc  { font-size: calc(var(--editor-font-size) - 1px); color: var(--text-sub); white-space: pre-line; line-height: 1.7; font-family: var(--editor-font-family); }
+
+/* ── Editor ── */
+.editor-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+/* .editor-header は .side-header と併用し、レッスン一覧/設問内容と高さ・フォントを統一 */
+.editor-header { justify-content: flex-start; gap: 10px; }
+/* 見出し「エディタ」は折り返さない (分割ボタンが増えて幅が詰まっても 1 行に保つ) */
+.editor-header > span:first-child { flex-shrink: 0; white-space: nowrap; }
+.editor-filepath {
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--accent-teal);
+  font-family: var(--editor-font-family);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* 言語サーバー (Java) の状態。起動中は控えめ、エラー時だけ目立たせる */
+.lsp-badge {
+  flex-shrink: 0;
+  font-size: calc(var(--editor-font-size) - 5px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 1px 6px;
+  border-radius: 9px;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+.lsp-badge.starting { color: var(--accent-yellow); border-color: var(--accent-yellow); }
+.lsp-badge.ready    { color: var(--accent-green);  border-color: var(--accent-green); }
+.lsp-badge.error    { color: var(--accent-red);    border-color: var(--accent-red); }
+
+/* ── Editor file tabs (コードファイル単位・閉じることはできない) ──
+   タブが多くて画面から溢れる場合は VS Code と同様に左右スクロールボタンを表示する */
+.editor-tabs-bar {
+  display: flex;
+  align-items: stretch;
+  flex-shrink: 0;
+  background: var(--bg-overlay);
+  border-bottom: 1px solid var(--border-color);
+}
+.editor-tabs-scroll-btn {
+  flex-shrink: 0;
+  width: 22px;
+  border: none;
+  background: var(--bg-overlay);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: calc(var(--editor-font-size) - 1px);
+  line-height: 1;
+}
+.editor-tabs-scroll-btn:hover:not(:disabled) { color: var(--text-main); background: var(--bg-surface); }
+.editor-tabs-scroll-btn:disabled { color: var(--text-muted); opacity: 0.35; cursor: default; }
+.editor-tabs-scroll {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;      /* Firefox: スクロールバーは非表示 (ボタンで操作) */
+}
+.editor-tabs-scroll::-webkit-scrollbar { display: none; }
+.editor-tabs {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  width: max-content;
+}
+.editor-tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  flex-shrink: 0;
+  user-select: none;
+  border: none;
+  border-right: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: calc(var(--editor-font-size) - 3px);
+  font-family: var(--editor-font-family);
+  white-space: nowrap;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.12s, background 0.12s;
+}
+.editor-tab:hover  { color: var(--text-main); background: var(--bg-surface); }
+.editor-tab.active {
+  color: var(--text-main);
+  background: var(--bg-surface);
+  border-bottom-color: var(--accent-blue);
+}
+.editor-tab.editable.active { color: var(--accent-blue); }
+/* 一番左の「プロジェクト構成」タブ。ファイルタブと視覚的に区切る */
+.editor-tab.project-tab { border-right: 1px solid var(--border-color); }
+.editor-tab.project-tab.active { color: var(--accent-yellow); border-bottom-color: var(--accent-yellow); }
+.editor-tab-icon { display: inline-flex; flex-shrink: 0; }
+/* ドラッグ中の挿入位置 */
+.editor-tab.drop-before { box-shadow: inset 2px 0 0 var(--accent-blue); }
+.editor-tab.drop-after  { box-shadow: inset -2px 0 0 var(--accent-blue); }
+.editor-tab-label { overflow: hidden; text-overflow: ellipsis; }
+
+/* ── 実行結果/ログ (エディタの下・常時表示) ── */
+.run-output-section {
+  height: 200px;
+  min-height: 60px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-base);
+}
+.run-output-header {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 10px;
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: var(--bg-overlay);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+/* 実行結果 ⇄ ブラウザ のタブボタン */
+.run-tab {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 4px 10px 3px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.12s, border-color 0.12s;
+}
+.run-tab:hover  { color: var(--text-main); }
+.run-tab.active { color: var(--text-main); border-bottom-color: var(--accent-blue); }
+.run-output-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.run-pane {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 14px 24px;
+}
+.run-pane.active { display: block; }
+
+/* ── ターミナル (実行結果とブラウザの間のタブ / bash) ──
+   通常のターミナルと同じく、出力末尾のインラインプロンプトに直接入力する */
+.run-pane.terminal-pane { padding: 0; overflow: hidden; }
+.run-pane.terminal-pane.active { display: flex; flex-direction: column; }
+.terminal-screen {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px 14px 24px;
+  cursor: text;
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 1px);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.terminal-text { color: var(--text-main); }
+.terminal-prompt {
+  font-weight: 700;
+  color: var(--accent-green);
+  user-select: none;
+}
+.terminal-cmdline {
+  outline: none;
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  min-width: 1px;
+  caret-color: transparent;      /* ネイティブの点滅キャレットは表示しない */
+}
+/* グローバルの :focus-visible アウトライン (罫線) を打ち消す */
+.terminal-cmdline:focus,
+.terminal-cmdline:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+/* 点滅しないブロックカーソル (フォーカス時のみ・行末に表示) */
+.terminal-cmdline:focus::after {
+  content: '';
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  margin-left: 1px;
+  background: var(--accent-green);
+  opacity: 0.65;
+  vertical-align: text-bottom;
+}
+
+/* ── 簡易ブラウザ (Web 系設問の動作確認用タブ) ── */
+.run-pane.browser-pane { padding: 0; overflow: hidden; }
+.run-pane.browser-pane.active { display: flex; flex-direction: column; }
+.browser-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.browser-btn {
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: var(--bg-base);
+  color: var(--text-sub);
+  font-size: calc(var(--editor-font-size) - 3px);
+  line-height: 1;
+  padding: 3px 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.12s;
+}
+.browser-btn:hover {
+  color: var(--accent-blue);
+  border-color: var(--accent-blue);
+}
+.browser-url {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: var(--bg-base);
+  color: var(--text-main);
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 4px);
+  padding: 3px 8px;
+  outline: none;
+}
+.browser-url:focus { border-color: var(--accent-blue); }
+.mini-browser {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  background: #fff;
+  border: none;
+}
+
+/* ➕ コンテキスト追加 — ログの上に重ねるゴーストボタン (背景に溶け込ませる) */
+.btn-add-context {
+  position: absolute;
+  top: 6px;
+  right: 14px;
+  z-index: 5;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--bg-base) 82%, transparent);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--editor-font-family);
+  padding: 2px 8px;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: all 0.15s;
+}
+.btn-add-context:hover {
+  opacity: 1;
+  color: var(--accent-blue);
+  border-color: var(--accent-blue);
+  background: var(--bg-base);
+}
+.btn-add-context.added {
+  opacity: 1;
+  color: var(--accent-green);
+  border-color: var(--accent-green);
+}
+
+/* ── エディタグループ (最大 2。左右 / 上下に分割) ── */
+.editor-groups {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+.editor-groups.vertical { flex-direction: column; }
+.editor-group {
+  flex: 1 1 50%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* 分割中はどちらのペインを操作しているかを上辺のラインで示す */
+.editor-groups.split .editor-group.focused .editor-tabs-bar {
+  box-shadow: inset 0 2px 0 var(--accent-blue);
+}
+.editor-group.tab-drop-target { outline: 2px dashed var(--accent-blue); outline-offset: -4px; }
+.editor-group-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.editor-group-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: calc(var(--editor-font-size) - 2px);
+  font-family: var(--editor-font-family);
+}
+/* 分割ハンドル (ドラッグで比率を変える) */
+.editor-split-handle {
+  flex-shrink: 0;
+  width: 5px;
+  background: var(--border-color);
+  cursor: ew-resize;
+  transition: background 0.15s;
+}
+.editor-groups.vertical > .editor-split-handle { width: auto; height: 5px; cursor: ns-resize; }
+.editor-split-handle:hover,
+.editor-split-handle.dragging { background: var(--accent-blue); }
+
+/* 分割ボタン (「↻ やり直す」の右) */
+.editor-split-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.btn-editor-split {
+  width: 24px;
+  height: 21px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: calc(var(--editor-font-size) - 2px);
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.btn-editor-split:hover { background: var(--bg-hover); color: var(--text-main); }
+.btn-editor-split.on {
+  background: color-mix(in srgb, var(--accent-blue) 20%, transparent);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+.editor-wrap {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── CodeMirror 6 の配置 ──
+   配色 (背景・行番号・カーソル・選択) は editor/themes.js が 6 テーマ分すべて持つので、
+   ここでは大きさとフォントだけを決める。CM5 時代にあった
+   body:not(.theme-dark) の色上書きは、ライトテーマが JS 側で完結したため不要。 */
+.cm-host { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.cm-editor {
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+  font-family: var(--editor-font-family);
+  font-size: var(--editor-font-size);
+}
+.cm-editor .cm-scroller { line-height: 1.6; }
+/* フォーカス時の既定のアウトラインは、分割時の focused 表示と二重になるので消す */
+.cm-editor.cm-focused { outline: none; }
+
+/* ── Toolbar (エディタの実行系機能: ▶実行・停止・ブラウザ・Gradleタスク等) ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.toolbar-spacer { flex: 1; }
+
+/* ── Gradle task selector group ── */
+.gradle-task-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.gradle-task-select {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-family: var(--editor-font-family);
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  outline: none;
+  max-width: 140px;
+}
+.gradle-task-select:hover  { border-color: var(--text-muted); }
+.gradle-task-select:focus  { border-color: var(--accent-blue); background: var(--bg-hover); }
+
+/* ── HSQLDB status badge ── */
+.hsqldb-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: var(--bg-overlay);
+  color: var(--accent-teal);
+  border: 1px solid var(--accent-teal);
+  white-space: nowrap;
+  cursor: default;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 5px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Unified action button — 塗りつぶしなしのアウトラインスタイル (ヘッダーのコース開始ボタンと同系) */
+.btn-run,
+.btn-stop,
+.btn-browser {
+  background: transparent;
+  border: 1px solid var(--accent-blue);
+  color: var(--accent-blue);
+  width: 86px;
+  padding: 4px 0;
+  justify-content: center;
+  font-weight: 700;
+}
+.btn-answer  { background: var(--bg-overlay); color: var(--text-main); border: 1px solid var(--border-color); }
+/* 「保存」「変更」ボタンも他のアクションボタンと同じ青 (テーマアクセント) に統一 */
+.btn-apply   { background: var(--btn-action-bg); color: #fff; font-size: 12px; }
+body.theme-dark .btn-apply { border: 1px solid var(--accent-blue); padding: 4px 12px; }
+.btn-apply-green {
+  background: var(--btn-action-bg);
+  color: #fff;
+  font-size: 12px;
+}
+body.theme-dark .btn-apply-green { background: hsl(145, 48%, 44%); }
+
+.btn:not(:disabled):hover { filter: brightness(1.12); }
+.btn-run:not(:disabled):hover,
+.btn-stop:not(:disabled):hover,
+.btn-browser:not(:disabled):hover { background: var(--bg-overlay); filter: none; }
+.btn-answer:not(:disabled):hover { background: var(--bg-hover); }
+.btn-apply:not(:disabled):hover  { background: var(--btn-action-hover); filter: none; }
+.btn-apply-green:not(:disabled):hover { background: var(--btn-action-hover); filter: none; }
+body.theme-dark .btn-apply-green:not(:disabled):hover { background: hsl(145, 52%, 33%); }
+
+/* ─── Resize handle ─── */
+.resize-handle {
+  height: 5px;
+  background: var(--border-color);
+  cursor: ns-resize;
+  flex-shrink: 0;
+  position: relative;
+  transition: background 0.15s;
+  z-index: 10;
+}
+.resize-handle::before {
+  content: '';
+  position: absolute;
+  top: -5px; left: 0; right: 0;
+  height: 15px;
+  cursor: ns-resize;
+}
+.resize-handle:hover, .resize-handle.dragging {
+  background: var(--accent-blue);
+}
+/* Resize grip dots */
+.resize-handle::after {
+  content: '· · · · ·';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════════════
+   AI Mentor Panel (画面右・縦長 / Cursor 風)
+   構成: header (🤖 AI Mentor / 🧹クリア) → 設問ラベル
+         → chat-history → コンテキストチップ → 入力欄 + 小型ボタン行
+   ═══════════════════════════════════════════ */
+.ai-panel {
+  width: 360px;
+  min-width: 240px;
+  max-width: 640px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-surface);
+}
+.ai-panel-header { justify-content: space-between; gap: 8px; }
+
+/* ── コンテンツ ↔ AI パネルのリサイズハンドル (縦バー) ── */
+.ai-resize-handle {
+  width: 5px;
+  flex-shrink: 0;
+  cursor: ew-resize;
+  background: var(--border-color);
+  position: relative;
+  transition: background 0.15s;
+  z-index: 10;
+}
+.ai-resize-handle::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: -4px; right: -4px;
+  cursor: ew-resize;
+}
+.ai-resize-handle::after {
+  content: '⋮';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-muted);
+  font-size: 12px;
+  opacity: 0.5;
+  line-height: 1;
+}
+.ai-resize-handle:hover,
+.ai-resize-handle.dragging {
+  background: var(--accent-blue);
+  opacity: 0.7;
+}
+
+/* 対象設問バッジは廃止し、タイトルを伸ばして音声操作ボタンを右寄せにする */
+.ai-panel-title { white-space: nowrap; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── 追加コンテキストのチップ一覧 (入力欄の直上) ── */
+.ai-context-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  flex-shrink: 0;
+  max-height: 84px;
+  overflow-y: auto;
+}
+.ai-chips-caption {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  margin-right: 2px;
+  white-space: nowrap;
+}
+.ai-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 2px 4px 2px 7px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-overlay);
+  font-size: 10px;
+  color: var(--text-sub);
+  font-family: var(--editor-font-family);
+}
+.ai-chip-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 170px;
+}
+.ai-chip-x {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 10px;
+  padding: 0 3px;
+  line-height: 1;
+}
+.ai-chip-x:hover { color: var(--accent-red); }
+/* 自動収集チップ (設問リソース): 削除不可・控えめな青系トーン */
+.ai-chip.auto {
+  border-color: color-mix(in srgb, var(--accent-blue) 35%, transparent);
+  background: color-mix(in srgb, var(--accent-blue) 8%, transparent);
+  color: var(--text-sub);
+}
+.ai-chip.flash { animation: chipFlash 1.4s ease; }
+@keyframes chipFlash {
+  0%  { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
+  60% { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
+}
+
+/* 自動再生・再生/一時停止・停止 — ヘッダーの主要操作なので大きめに */
+.btn-ai-voice,
+.btn-ai-replay,
+.btn-ai-stop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 32px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-sub);
+  cursor: pointer;
+  font-size: 19px;
+  line-height: 1;
+  transition: all 0.12s;
+}
+.btn-ai-voice {
+  flex-direction: column;
+  gap: 1px;
+  font-family: system-ui, sans-serif;
+  font-size: 10px;
+}
+.gemini-autoplay-icon {
+  display: block;
+  width: 21px;
+  height: 14px;
+  flex-shrink: 0;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7h11v3l4-4-4-4v3H7C4.79 5 3 6.79 3 9v4h2V9c0-1.1.9-2 2-2zm10 10H6v-3l-4 4 4 4v-3h11c2.21 0 4-1.79 4-4v-4h-2v4c0 1.1-.9 2-2 2z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7h11v3l4-4-4-4v3H7C4.79 5 3 6.79 3 9v4h2V9c0-1.1.9-2 2-2zm10 10H6v-3l-4 4 4 4v-3h11c2.21 0 4-1.79 4-4v-4h-2v4c0 1.1-.9 2-2 2z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.gemini-autoplay-state {
+  font-size: 7px;
+  font-weight: 800;
+  line-height: 7px;
+  letter-spacing: 0.4px;
+}
+.btn-ai-voice.autoplay-enabled {
+  color: var(--text-main);
+  border-color: var(--text-muted);
+  background: color-mix(in srgb, var(--text-main) 5%, transparent);
+}
+.btn-ai-voice:not(.autoplay-enabled) .gemini-autoplay-icon { opacity: 0.55; }
+.btn-ai-voice.autoplay-warning { font-size: 18px; }
+.btn-ai-voice:hover { background: var(--bg-hover); border-color: var(--text-sub); }
+.btn-ai-replay:hover:not(:disabled),
+.btn-ai-stop:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--accent-blue); }
+.btn-ai-replay:disabled,
+.btn-ai-stop:disabled { opacity: 0.4; cursor: default; }
+/* OS のカラー絵文字を使わず、現在色で単純な一時停止・停止記号を描画する。 */
+.btn-ai-replay.pause-mode::before {
+  content: '';
+  width: 4px;
+  height: 14px;
+  background: currentColor;
+  border-radius: 1px;
+  box-shadow: 7px 0 0 currentColor;
+  transform: translateX(-3.5px);
+}
+.btn-ai-stop::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  border-radius: 1px;
+}
+/* 生成中のみ ▶ が「やり直す」(↻) に変わる。Gemini Live の応答が返らないときに
+   ユーザー自身が同じ内容を生成し直せるようにするための状態。
+   待たされていることが分かるよう、ゆっくり明滅させる。 */
+.btn-ai-replay.retry-mode {
+  color: var(--accent-yellow);
+  border-color: var(--accent-yellow);
+  animation: gemini-retry-pulse 1.6s ease-in-out infinite;
+}
+.btn-ai-replay.retry-mode:hover:not(:disabled) {
+  background: var(--bg-hover);
+  border-color: var(--accent-yellow);
+}
+@keyframes gemini-retry-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-ai-replay.retry-mode { animation: none; }
+}
+.btn-ai-voice.speaking {
+  color: var(--accent-blue);
+  border-color: var(--accent-blue);
+  animation: gemini-speaking-pulse 1s ease-in-out infinite;
+}
+.btn-ai-voice.error { color: var(--accent-red); border-color: var(--accent-red); }
+@keyframes gemini-speaking-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-blue) 35%, transparent); }
+  50% { box-shadow: 0 0 0 4px transparent; }
+}
+
+/* ── 音声プログレスバー (AI Mentor ヘッダー直下・クリックでシーク) ── */
+.ai-audio-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  flex-shrink: 0;
+}
+.content-audio-progress {
+  padding: 6px 10px;
+}
+.ai-audio-progress-track {
+  flex: 1;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.ai-audio-progress-track:hover { border-color: var(--accent-blue); }
+.ai-audio-progress.empty .ai-audio-progress-track {
+  cursor: default;
+  opacity: 0.7;
+}
+.ai-audio-progress-fill,
+.ai-audio-buffer-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
+  width: 0%;
+  border-radius: 5px;
+  transition: width 0.18s linear;
+}
+.ai-audio-progress-fill { background: var(--accent-blue); }
+.ai-audio-buffer-fill { display: none; }
+/* 生成中は不確定な総尺で再生位置を描かず、先読みバッファの充足率を表示する。 */
+.ai-audio-progress.generating .ai-audio-progress-track { cursor: default; }
+.ai-audio-progress.generating .ai-audio-progress-fill { display: none; }
+.ai-audio-progress.generating .ai-audio-buffer-fill {
+  display: block;
+  background: linear-gradient(90deg, var(--accent-blue) 70%, color-mix(in srgb, var(--accent-blue) 45%, transparent));
+}
+.ai-audio-progress.buffering .ai-audio-buffer-fill {
+  background: linear-gradient(90deg, var(--accent-yellow, #d99a24) 70%, color-mix(in srgb, var(--accent-yellow, #d99a24) 45%, transparent));
+}
+/* 講義のみ: 現在セグメント名 (レッスン説明 / コード解説 N/M) */
+.ai-audio-segment-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-blue);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ai-audio-progress-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--editor-font-family);
+  white-space: nowrap;
+  min-width: 74px;
+  text-align: right;
+}
+
+.btn-ai-clear {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 2px 10px;
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-ai-clear:hover { background: var(--bg-hover); color: var(--text-main); border-color: var(--text-muted); }
+
+/* ── Pre output (エディタ裏の実行結果) ── */
+.output-pre {
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 1px);
+  color: var(--accent-green);
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.55;
+}
+.output-pre.sb-log { color: var(--text-sub); }
+
+.placeholder { color: var(--text-muted); font-style: italic; }
+
+.chat-bubble.streaming::after {
+  content: '▋';
+  display: inline-block;
+  margin-left: 2px;
+  animation: blink 0.7s step-end infinite;
+  color: var(--accent-blue);
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ── Answer tab ── */
+.answer-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.answer-file-block { margin-bottom: 14px; }
+.answer-file-label {
+  font-size: calc(var(--editor-font-size) - 3px); font-weight: 700; color: var(--accent-teal);
+  margin-bottom: 4px; font-family: var(--editor-font-family);
+}
+.answer-code-wrap {
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  overflow: hidden;
+}
+/* 正解ペインのコードは内容の高さぶんだけ伸ばし、長い場合だけ内側でスクロールさせる */
+.answer-code-wrap .cm-editor {
+  height: auto;
+  font-size: calc(var(--editor-font-size) - 1px);
+  font-family: var(--editor-font-family);
+}
+.answer-code-wrap .cm-scroller {
+  max-height: 280px;
+  overflow: auto;
+}
+.answer-exp-label {
+  font-size: calc(var(--editor-font-size) - 3px); font-weight: 700; color: var(--accent-yellow);
+  margin: 10px 0 4px; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.answer-exp-text {
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 1px); color: var(--text-sub); white-space: pre-line; line-height: 1.55;
+}
+
+/* ═══════════════════════════════════════════
+   AI Chat (AI Mentor パネル本体)
+   ═══════════════════════════════════════════ */
+.chat-history { flex: 1; overflow-y: auto; padding: 10px 12px; min-height: 0; }
+.chat-welcome {
+  color: var(--text-muted); font-style: italic; font-size: calc(var(--editor-font-size) - 2px);
+  line-height: 1.8; text-align: center; padding-top: 8px;
+}
+.chat-msg { display: flex; flex-direction: column; margin-bottom: 8px; }
+.chat-msg.user      { align-items: flex-end; }
+.chat-msg.assistant { align-items: flex-start; }
+.chat-role-label    { font-size: calc(var(--editor-font-size) - 4px); font-weight: 700; color: var(--text-muted); margin-bottom: 2px; }
+.chat-bubble {
+  max-width: 88%;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 1px);
+  line-height: 1.35;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.chat-msg.user .chat-bubble {
+  background: var(--accent-blue);
+  color: #fff;
+  border-radius: 10px 10px 2px 10px;
+}
+.chat-msg.assistant .chat-bubble {
+  background: var(--bg-overlay);
+  color: var(--text-main);
+  border-radius: 2px 10px 10px 10px;
+}
+/* ── 入力エリア (縦長パネル用: 入力欄の下に小型ボタン行) ── */
+.chat-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  flex-shrink: 0;
+}
+
+/* ── アクションボタン行 (入力欄の下・横並びの小型ボタン) ── */
+.chat-actions {
+  display: flex;
+  gap: 6px;
+}
+.chat-mini-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-sub);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  min-width: 0;
+}
+.chat-mini-btn:hover:not(:disabled) { background: var(--bg-overlay); color: var(--text-main); }
+.chat-mini-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+/* 📤 送信 = アクセント色のアウトラインで強調 (塗りつぶしなし) */
+.chat-mini-send {
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+  font-weight: 700;
+}
+.chat-mini-send:hover:not(:disabled) { background: var(--bg-overlay); color: var(--accent-blue); }
+
+/* ── ⏹ 中断ボタン (送信中はボタン行と入れ替わる) ── */
+.chat-abort-btn {
+  height: 26px;
+  border: 1px solid var(--accent-red);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--accent-red);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.chat-abort-btn:hover { background: var(--accent-red); color: #fff; }
+.chat-input {
+  height: 98px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-main);
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: calc(var(--editor-font-size) - 2px);
+  resize: none; line-height: 1.5;
+  overflow-y: auto;
+  min-width: 0;
+}
+.chat-input:focus { outline: none; border-color: var(--accent-blue); }
+
+/* ── Markdown body (AI chat assistant bubbles) ── */
+.md-body { line-height: 1.35; white-space: normal; }
+.md-body p  { margin: 0 0 3px; }
+.md-body p:last-child { margin-bottom: 0; }
+.md-body h1,.md-body h2,.md-body h3 { font-weight: 700; margin: 5px 0 2px; color: var(--text-main); }
+.md-body h1 { font-size: calc(var(--editor-font-size) + 2px); }
+.md-body h2 { font-size: calc(var(--editor-font-size) + 1px); }
+.md-body h3 { font-size: var(--editor-font-size); }
+.md-body ul,.md-body ol { padding-left: 16px; margin: 2px 0 3px; }
+.md-body li  { margin: 0; }
+/* インラインコードは周囲の文字と同じ書体・同じ大きさにし、背景と細い枠でコードだと示す */
+.md-body code {
+  font-family: var(--editor-font-family);
+  font-size: inherit;
+  background: var(--bg-base);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--accent-teal);
+}
+.md-body pre {
+  background: var(--bg-base);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin: 4px 0;
+  overflow-x: auto;
+}
+.md-body pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: calc(var(--editor-font-size) - 2px);
+  color: var(--text-main);
+}
+.md-body blockquote {
+  border-left: 3px solid var(--accent-blue);
+  margin: 3px 0;
+  padding: 3px 10px;
+  color: var(--text-sub);
+  background: var(--bg-overlay);
+  border-radius: 0 4px 4px 0;
+}
+.md-body table { border-collapse: collapse; margin: 8px 0; width: 100%; }
+.md-body th,.md-body td { border: 1px solid var(--border-color); padding: 4px 8px; font-size: calc(var(--editor-font-size) - 2px); }
+.md-body th { background: var(--bg-overlay); font-weight: 700; }
+.md-body strong { font-weight: 700; color: var(--text-main); }
+.md-body em     { font-style: italic; }
+.md-body hr     { border: none; border-top: 1px solid var(--border-color); margin: 8px 0; }
+/* In dark mode override bubble color for code */
+body.theme-dark .md-body pre { background: var(--bg-surface); }
+
+/* Softer error text for AI errors */
+.ai-error { color: #c0404a; font-size: calc(var(--editor-font-size) - 1px); }
+body.theme-dark .ai-error { color: #e07070; }
+
+/* ═══════════════════════════════════════════
+   SQL モード – 実行結果テーブル
+   ═══════════════════════════════════════════ */
+.sql-result-wrap {
+  flex: 1;
+  overflow: auto;
+  padding: 8px 10px;
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 2px);
+}
+.sql-placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 12px 0;
+}
+.sql-message {
+  color: var(--accent-teal);
+  padding: 6px 0;
+  line-height: 1.5;
+}
+.sql-error {
+  color: #e07070;
+  padding: 6px 0;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+.sql-rowcount {
+  color: var(--text-muted);
+  font-size: calc(var(--editor-font-size) - 4px);
+  padding-top: 4px;
+}
+.sql-table-wrap {
+  overflow-x: auto;
+}
+.sql-table {
+  border-collapse: collapse;
+  font-size: calc(var(--editor-font-size) - 2px);
+  font-family: var(--editor-font-family);
+  white-space: nowrap;
+}
+.sql-table th {
+  background: var(--bg-overlay);
+  color: var(--accent-blue);
+  font-weight: 700;
+  padding: 4px 10px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+  position: sticky;
+  top: 0;
+}
+.sql-table td {
+  padding: 3px 10px;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+.sql-table tbody tr:nth-child(even) { background: var(--bg-overlay); }
+.sql-table tbody tr:hover            { background: var(--bg-hover); }
+.sql-table td em { color: var(--text-muted); font-style: italic; }
+
+/* ── DB status indicator ── */
+.sql-db-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: calc(var(--editor-font-size) - 3px);
+  font-family: var(--editor-font-family);
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--bg-overlay);
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+.sql-db-status.running { color: var(--accent-teal); }
+.sql-db-status::before { content: '⬤'; font-size: 8px; }
+
+/* Loading */
+.ai-loading {
+  display: inline-flex; gap: 4px; align-items: center;
+  color: var(--accent-blue); font-size: calc(var(--editor-font-size) - 1px); padding: 4px 0;
+}
+.ai-loading::before { content: '⏳'; animation: spin 1s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════
+   Scrollbars
+   ═══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg-hover); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+body.theme-dark ::-webkit-scrollbar-thumb { background: #3c3c3c; }
+body.theme-dark ::-webkit-scrollbar-thumb:hover { background: #4a4a4a; }
+
+/* ═══════════════════════════════════════════
+   Focus / Accessibility
+   ═══════════════════════════════════════════ */
+:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 1px; }
+
+/* CM5 時代はダークテーマ共通で背景・ガター色を上書きしていたが、
+   CM6 では 6 テーマそれぞれが正しい配色を持つため撤去した (editor/themes.js)。 */
+
+/* ═══════════════════════════════════════════
+   Course Selection Dialog (新規コース開始 / 既存コース再開)
+   ═══════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.course-dialog {
+  width: 640px;
+  max-width: 90vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 12px 48px var(--shadow);
+  overflow: hidden;
+}
+.course-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px 10px;
+  flex-shrink: 0;
+}
+.course-dialog-title {
+  font-size: calc(var(--editor-font-size) + 2px);
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: 0.02em;
+}
+.course-dialog-close {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 6px;
+  transition: all 0.12s;
+}
+.course-dialog-close:hover { background: var(--bg-hover); color: var(--text-main); }
+.course-dialog-sub {
+  padding: 0 18px 10px;
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+/* 新規コース開始ダイアログの言語選択行 */
+.course-dialog-lang-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.course-dialog-lang-row label {
+  font-size: calc(var(--editor-font-size) - 2px);
+  font-weight: 600;
+  color: var(--text-sub);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.course-dialog-lang-row .lang-select { min-width: 170px; }
+
+.course-dialog-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.course-dialog-empty {
+  padding: 32px 12px;
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.9;
+}
+
+/* ═══════════════════════════════════════════
+   Simple Dialog (alert / confirm / prompt の代替、OS 標準ダイアログ不使用)
+   ═══════════════════════════════════════════ */
+.simple-dialog {
+  width: 420px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 12px 48px var(--shadow);
+  padding: 20px 20px 16px;
+}
+.simple-dialog-message {
+  font-size: var(--editor-font-size);
+  color: var(--text-main);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.simple-dialog-input {
+  margin-top: 12px;
+  width: 100%;
+  padding: 7px 10px;
+  font-size: var(--editor-font-size);
+  color: var(--text-main);
+  background: var(--bg-base);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.simple-dialog-input:focus { border-color: var(--accent-blue); outline: none; }
+.simple-dialog-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ═══════════════════════════════════════════
+   利用資格切れロック (フル版・期限切れ / 残高切れ / アカウント停止)
+   他のどのモーダルよりも前面に出し、背面の操作を完全に塞ぐ。
+   ═══════════════════════════════════════════ */
+.credit-lock-overlay {
+  z-index: 4000;                     /* 設定・コースダイアログ (1000) より前面 */
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(2px);
+}
+.credit-lock-dialog {
+  width: 460px;
+  text-align: center;
+  align-items: center;
+  border-color: var(--accent-red);
+}
+.credit-lock-icon {
+  font-size: 32px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.credit-lock-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+.credit-lock-reason {
+  font-size: var(--editor-font-size);
+  color: var(--text-sub);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.credit-lock-note {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  min-height: 1em;
+}
+.credit-lock-note.warn { color: var(--accent-yellow); }
+.credit-lock-dialog .simple-dialog-actions {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ═══════════════════════════════════════════
+   API キー設定のお願い (BYOK 版・起動時)
+   ═══════════════════════════════════════════ */
+.api-setup-dialog { width: 480px; }
+.api-setup-title {
+  font-size: calc(var(--editor-font-size) + 2px);
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+.api-setup-intro {
+  font-size: calc(var(--editor-font-size) - 1px);
+  color: var(--text-sub);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+/* API キー取得ページへの導線。
+   枠 + 背景を付けると .api-key-input と見分けが付かず入力欄に見えてしまうため、
+   下線付きのリンクとして見せる。 */
+.api-setup-cta {
+  display: inline-block;
+  /* .simple-dialog は flex column なので、指定しないと下線が幅いっぱいに伸びて
+     区切り線に見えてしまう */
+  align-self: flex-start;
+  margin-top: 12px;
+  font-size: calc(var(--editor-font-size) - 1px);
+  font-weight: 700;
+  color: var(--accent-blue);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-blue) 45%, transparent);
+  cursor: pointer;
+}
+.api-setup-cta:hover { border-bottom-color: var(--accent-blue); }
+.api-setup-note {
+  margin-top: 12px;
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.api-setup-dontshow {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: calc(var(--editor-font-size) - 2px);
+  color: var(--text-sub);
+  cursor: pointer;
+  user-select: none;
+}
+.api-setup-dontshow input { cursor: pointer; }
+
+/* ── 新規: コースカード ── */
+.course-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s, transform 0.08s;
+}
+.course-card:hover {
+  border-color: var(--accent-blue);
+  background: var(--bg-overlay);
+}
+.course-card:active { transform: scale(0.995); }
+.course-card-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+  width: 34px;
+  text-align: center;
+}
+.course-card-texts { flex: 1; min-width: 0; }
+.course-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--editor-font-size);
+  font-weight: 700;
+  color: var(--text-main);
+}
+.course-card:hover .course-card-title { color: var(--accent-blue); }
+.course-card-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-sub);
+  letter-spacing: 0.03em;
+}
+.course-card-desc {
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+.course-card-count {
+  flex-shrink: 0;
+  font-size: calc(var(--editor-font-size) - 3px);
+  font-weight: 700;
+  color: var(--accent-blue);
+  font-family: var(--editor-font-family);
+}
+
+/* ── 再開: コース見出し + セッション行 ── */
+.resume-course-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px 4px;
+  font-size: calc(var(--editor-font-size) - 1px);
+  font-weight: 700;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border-color);
+}
+.resume-course-icon { font-size: 16px; }
+.resume-session-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  margin-left: 12px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 2px);
+  color: var(--text-sub);
+  transition: border-color 0.12s, background 0.12s;
+}
+.resume-session-item:hover {
+  border-color: var(--accent-blue);
+  background: var(--bg-overlay);
+  color: var(--text-main);
+}
+.resume-session-item.active {
+  border-color: var(--accent-blue);
+  background: color-mix(in srgb, var(--accent-blue) 10%, var(--bg-base));
+}
+.resume-session-item .session-name { flex: 1; font-weight: 600; }
+.session-date {
+  flex-shrink: 0;
+  font-size: calc(var(--editor-font-size) - 4px);
+  color: var(--text-muted);
+}
+.session-active-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 8px;
+  background: var(--accent-blue);
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════
+   同梱ランタイム情報 (設定パネル)
+   ═══════════════════════════════════════════ */
+.runtime-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+  font-family: var(--editor-font-family);
+}
+.runtime-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-sub);
+  background: var(--bg-overlay);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+.runtime-info-row .runtime-ok { color: var(--accent-blue); font-weight: 600; }
+.runtime-info-row .runtime-ng { color: var(--accent-red); font-weight: 600; }
+
+/* ═══════════════════════════════════════════
+   テスト結果パネル (Eclipse JUnit ビュー相当)
+   ═══════════════════════════════════════════ */
+/* 余白は .run-pane 側で持つ。実行タブ (.output-pre) と書き出し位置を揃えるため、
+   ここでは足さない（テスト結果もプレースホルダも同じ左上から始まる） */
+.test-results-wrap {
+  height: 100%;
+  overflow-y: auto;
+  padding: 0;
+  font-size: 13px;
+}
+.test-results-placeholder {
+  color: var(--text-muted);
+  padding: 0;
+  /* 実行タブ (.output-pre) と同じ字送りにして、切り替えても行の位置が動かないようにする */
+  font-size: calc(var(--editor-font-size) - 1px);
+  line-height: 1.55;
+}
+
+/* サマリー行 */
+.tr-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.tr-verdict { font-weight: 700; }
+.tr-verdict.pass { color: var(--accent-green); }
+.tr-verdict.fail { color: var(--accent-red); }
+.tr-chip {
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: var(--bg-overlay);
+  color: var(--text-sub);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.tr-chip.pass { color: var(--accent-green); }
+.tr-chip.fail { color: var(--accent-red); }
+.tr-chip.skip { color: var(--accent-yellow); }
+.tr-chip.cov  { color: var(--accent-teal, var(--accent-blue)); }
+
+/* グリーンバー / レッドバー */
+.tr-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-overlay);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.tr-bar-fill { height: 100%; border-radius: 4px; transition: width .3s; }
+.tr-bar-fill.pass { background: var(--accent-green); }
+.tr-bar-fill.fail { background: var(--accent-red); }
+
+/* テストクラスのグループ */
+.tr-class {
+  margin-bottom: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.tr-class-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--bg-overlay);
+  font-weight: 600;
+}
+.tr-class-header.has-fail { color: var(--accent-red); }
+.tr-class-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tr-class-stat { color: var(--text-muted); font-size: 12px; }
+
+/* テストメソッド行 */
+.tr-case {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 22px;
+  border-top: 1px solid var(--border-color);
+}
+.tr-case.clickable { cursor: pointer; }
+.tr-case.clickable:hover { background: var(--bg-hover); }
+.tr-case-name { flex: 1; font-family: var(--mono-font, monospace); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tr-case.failed .tr-case-name { color: var(--accent-red); }
+.tr-case.skipped .tr-case-name { color: var(--text-muted); }
+.tr-case-time { color: var(--text-muted); font-size: 11px; }
+
+/* 失敗詳細 (期待値 / 実測値 / スタックトレース) */
+.tr-fail-detail {
+  display: none;
+  padding: 8px 12px 10px 34px;
+  border-top: 1px dashed var(--border-color);
+  background: color-mix(in srgb, var(--accent-red) 6%, transparent);
+}
+.tr-fail-detail.open { display: block; }
+.tr-msg {
+  font-family: var(--mono-font, monospace);
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 6px;
+}
+.tr-ea { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 6px; }
+.tr-ea code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--bg-overlay);
+  font-size: 12px;
+}
+.tr-ea-exp { color: var(--accent-green); font-weight: 600; }
+.tr-ea-act { color: var(--accent-red);   font-weight: 600; }
+.tr-type { color: var(--text-muted); font-size: 11px; margin-bottom: 4px; }
+.tr-stack summary { cursor: pointer; color: var(--text-muted); font-size: 12px; }
+.tr-stack pre {
+  margin: 6px 0 0;
+  padding: 8px;
+  background: var(--bg-overlay);
+  border-radius: 6px;
+  font-size: 11px;
+  overflow-x: auto;
+  max-height: 200px;
+}
+
+/* ファイル別カバレッジ */
+.tr-cov-files { margin-top: 14px; }
+.tr-cov-title { font-weight: 700; margin-bottom: 2px; }
+.tr-cov-legend { color: var(--text-muted); font-size: 11px; margin-bottom: 6px; }
+.tr-cov-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.tr-cov-file:hover { background: var(--bg-hover); }
+.tr-cov-name { flex: 1; font-family: var(--mono-font, monospace); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tr-cov-barwrap {
+  width: 120px;
+  height: 7px;
+  border-radius: 4px;
+  background: var(--bg-overlay);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.tr-cov-barfill { display: block; height: 100%; background: var(--accent-green); border-radius: 4px; }
+.tr-cov-pct { width: 40px; text-align: right; font-size: 12px; color: var(--text-sub); }
+
+/* ═══ エディタ行カバレッジ (JaCoCo: 緑=実行 / 黄=分岐一部 / 赤=未実行) ═══ */
+.cm-cov-full { background: color-mix(in srgb, var(--accent-green)  16%, transparent) !important; }
+.cm-cov-part { background: color-mix(in srgb, var(--accent-yellow) 22%, transparent) !important; }
+.cm-cov-miss { background: color-mix(in srgb, var(--accent-red)    16%, transparent) !important; }
+
+/* ═══ 講義 (type: lecture) — ステップ解説と行ハイライト ═══ */
+/* 講義で説明中の行 (カバレッジと同方式の背景ハイライト + 左罫) */
+.cm-lecture-line {
+  background: color-mix(in srgb, var(--accent-yellow) 22%, transparent) !important;
+  box-shadow: inset 4px 0 0 var(--accent-yellow);
+}
+
+/* レッスン一覧の種別バッジ (L = 講義 / Q = 設問) */
+.q-type-badge {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--bg-overlay);
+  color: var(--text-sub);
+}
+.q-type-badge.lecture {
+  background: color-mix(in srgb, var(--accent-yellow) 24%, transparent);
+  color: var(--accent-yellow);
+}
+
+/* ステップ解説ボックス (設問内容ペイン内・説明文の下) */
+.lecture-steps {
+  margin: 12px 14px;
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--accent-yellow);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.lecture-steps-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lecture-steps-title {
+  font-weight: 700;
+  font-size: calc(var(--editor-font-size) - 1px);
+  color: var(--text-main);
+}
+.btn-lecture-narration {
+  margin-left: auto;
+  white-space: nowrap;
+  padding: 3px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--accent-teal);
+  background: transparent;
+  color: var(--accent-teal);
+  font-size: calc(var(--editor-font-size) - 3px);
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-lecture-narration:hover { background: color-mix(in srgb, var(--accent-teal) 14%, transparent); }
+.btn-lecture-narration.active {
+  background: var(--accent-teal);
+  color: var(--bg-base);
+}
+.lecture-steps-text {
+  margin: 10px 2px 6px;
+  font-size: calc(var(--editor-font-size) - 1px);
+  line-height: 1.8;
+  color: var(--text-main);
+  white-space: pre-wrap;
+}
+.lecture-steps-hint {
+  margin: 0 2px 10px;
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--accent-yellow);
+  font-weight: 700;
+}
+.lecture-steps-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.btn-lecture-nav {
+  padding: 3px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-size: calc(var(--editor-font-size) - 3px);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-lecture-nav:hover:not(:disabled) { border-color: var(--accent-blue); color: var(--accent-blue); }
+.btn-lecture-nav:disabled { opacity: 0.4; cursor: default; }
+.lecture-steps-count {
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-weight: 700;
+  color: var(--text-sub);
+}
+.lecture-steps-done {
+  font-size: calc(var(--editor-font-size) - 3px);
+  font-weight: 700;
+  color: var(--accent-teal);
+  white-space: nowrap;
+}
+
+/* ═══ レッスン説明・解説の Markdown (チャットの .md-body の規則を流用) ═══ */
+.problem-desc,
+.answer-exp-text { line-height: 1.7; white-space: normal; }
+.problem-desc p, .answer-exp-text p { margin: 0 0 6px; }
+.problem-desc p:last-child, .answer-exp-text p:last-child { margin-bottom: 0; }
+.problem-desc h1, .problem-desc h2, .problem-desc h3,
+.answer-exp-text h1, .answer-exp-text h2, .answer-exp-text h3 {
+  font-weight: 700; margin: 8px 0 4px; color: var(--text-main);
+}
+.problem-desc h1, .answer-exp-text h1 { font-size: calc(var(--editor-font-size) + 2px); }
+.problem-desc h2, .answer-exp-text h2 { font-size: calc(var(--editor-font-size) + 1px); }
+.problem-desc h3, .answer-exp-text h3 { font-size: var(--editor-font-size); }
+.problem-desc ul, .problem-desc ol,
+.answer-exp-text ul, .answer-exp-text ol { padding-left: 18px; margin: 4px 0 6px; }
+.problem-desc li, .answer-exp-text li { margin: 0; }
+/* インラインコードは周囲の文字と同じ書体・同じ大きさにし、背景と細い枠でコードだと示す */
+.problem-desc code, .answer-exp-text code {
+  font-family: var(--editor-font-family);
+  font-size: inherit;
+  background: var(--bg-base);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--accent-teal);
+}
+.problem-desc pre, .answer-exp-text pre {
+  background: var(--bg-base);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin: 6px 0;
+  overflow-x: auto;
+}
+.problem-desc pre code, .answer-exp-text pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: calc(var(--editor-font-size) - 2px);
+  color: var(--text-main);
+}
+.problem-desc blockquote, .answer-exp-text blockquote {
+  border-left: 3px solid var(--accent-blue);
+  margin: 4px 0;
+  padding: 3px 10px;
+  color: var(--text-sub);
+  background: var(--bg-overlay);
+  border-radius: 0 4px 4px 0;
+}
+.problem-desc table, .answer-exp-text table { border-collapse: collapse; margin: 8px 0; width: 100%; }
+.problem-desc th, .problem-desc td,
+.answer-exp-text th, .answer-exp-text td {
+  border: 1px solid var(--border-color); padding: 4px 8px;
+  font-size: calc(var(--editor-font-size) - 2px);
+}
+.problem-desc th, .answer-exp-text th { background: var(--bg-overlay); font-weight: 700; }
+.problem-desc strong, .answer-exp-text strong { font-weight: 700; color: var(--text-main); }
+.problem-desc em, .answer-exp-text em { font-style: italic; }
+.problem-desc hr, .answer-exp-text hr { border: none; border-top: 1px solid var(--border-color); margin: 8px 0; }
+/* 図 (assets/ 参照の画像) はレッスン領域の幅に合わせて表示する。
+   ペイン側の幅は変えず (max-width で収め)、ペインを広げ縮めしたら図も
+   それに追従して拡大・縮小するよう width: 100% で領域幅に固定する。 */
+.problem-desc img, .answer-exp-text img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 6px 0;
+}
+
+/* ═══ UI ツアー「🗺️ 画面の使い方」 ═══ */
+.tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+}
+/* スポットライト: box-shadow で対象以外を減光する (cody 方式) */
+.tour-spotlight {
+  position: fixed;
+  border: 3px solid var(--accent-blue);
+  border-radius: 10px;
+  box-shadow: 0 0 0 9999px rgba(10, 12, 18, 0.55);
+  background: transparent;
+  pointer-events: none;
+  transition: top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease;
+}
+.tour-bubble {
+  position: fixed;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+  transition: top 0.25s ease, left 0.25s ease;
+}
+.tour-bubble-text {
+  margin: 0 0 12px;
+  font-size: calc(var(--editor-font-size) - 1px);
+  line-height: 1.7;
+  color: var(--text-main);
+  white-space: pre-wrap;
+}
+.tour-bubble-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* 押しやすさ優先で通常の .btn より広い当たり判定にする */
+.tour-bubble-actions .btn {
+  min-width: 104px;
+  padding: 8px 16px;
+  font-size: 13px;
+  justify-content: center;
+}
+.tour-progress {
+  margin-right: auto;
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-weight: 700;
+  color: var(--text-sub);
+}
+
+/* ═══ 対話実行 (stdin 対応) の標準入力欄 ═══
+   実行中のみ表示。実行結果ペイン (#tab-result) の下端に固定表示する */
+.run-stdin-row {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 2px 4px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+}
+.run-stdin-mark {
+  color: var(--accent-green);
+  font-family: var(--editor-font-family);
+  font-weight: bold;
+}
+.run-stdin-input {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text-main);
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 2px);
+}
+.run-stdin-input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+/* ═══ PTY ターミナル (xterm.js) ═══ */
+.xterm-wrap {
+  flex: 1;
+  min-height: 0;
+  padding: 4px 0 4px 8px;
+  /* 端末の地色は IDE の配色テーマに合わせる (xterm の theme も renderer.js が CSS 変数から組む) */
+  background: var(--bg-base);
+}
+.xterm-wrap .terminal { height: 100%; }
+
+/* ── AI エージェント端末 (OpenCode / 専用 xterm.js) ── */
+.run-pane.agent-pane { position: relative; }
+.agent-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 16px; text-align: center; font-size: 13px; color: var(--text-main);
+  background: var(--bg-surface); opacity: 0.94;
+}
+.agent-overlay.hidden { display: none; }
+/* プロジェクト構成からのドラッグ中: 端末をドロップ先として強調し、案内を出す */
+.run-pane.agent-pane.drop-active .xterm-wrap { box-shadow: inset 0 0 0 2px var(--accent-blue); }
+.agent-drop-hint {
+  position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); z-index: 3;
+  padding: 4px 12px; border-radius: 12px; pointer-events: none; white-space: nowrap;
+  background: var(--accent-blue); color: #fff; font-size: 12px;
+}
+.agent-drop-hint.hidden { display: none; }
+
+/* ── Markdown プレビュー (エディタ内。仕様書・ルール・メモリなど .md の閲覧用) ── */
+.md-preview {
+  flex: 1; min-height: 0; overflow: auto; padding: 12px 16px;
+  font-size: 14px; line-height: 1.7;
+}
+.md-preview.hidden { display: none; }
+.md-preview pre, .md-preview code { font-family: var(--editor-font-family); border-radius: 4px; padding: 1px 5px; background: rgba(127, 127, 127, 0.15); }
+.md-preview pre { padding: 8px; overflow-x: auto; }
+.md-preview img { max-width: 100%; }
+.btn-editor-history.on { color: #4ea1ff; border-color: #4ea1ff; }
+
+
+/* ══ AI エージェント対象コース (body.agent-course): 左 = プロジェクト構成 / 中央 = エディタ / 右 = 業務仕様 ══
+   通常コースの 設問 / エディタ / AI Mentor と左右が入れ替わり、AI Mentor は出さない。
+   1 コース = 1 プロジェクトなので、レッスン一覧・前後ナビ・正解セクションも出さない。 */
+.project-panel {
+  width: 300px; min-width: 180px; max-width: 700px; min-height: 0;
+  display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
+  border-right: 1px solid var(--border-color); background: var(--bg-base);
+}
+.project-panel.hidden { display: none; }
+.project-panel-header { justify-content: space-between; gap: 8px; }
+.project-panel-header > span:first-child { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.project-panel-body { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.btn-project-reset { flex-shrink: 0; padding: 3px 10px; font-size: 12px; }
+.project-reset-error { color: var(--accent-red); font-size: 11px; font-weight: 400; }
+.project-reset-error.hidden { display: none; }
+body.agent-course #project-panel        { order: 0; }
+body.agent-course #v-resize-handle      { order: 1; }
+body.agent-course #editor-pane          { order: 2; }
+body.agent-course #spec-resize-handle   { order: 3; }
+body.agent-course #problem-pane         { order: 4; border-right: none; border-left: 1px solid var(--border-color); }
+body.agent-course #ai-panel,
+body.agent-course #ai-resize-handle,
+body.agent-course #btn-lesson-list,
+body.agent-course .q-nav,
+body.agent-course #answer-section,
+body.agent-course #problem-answer-handle,
+body.agent-course #run-tab-terminal { display: none; }
+/* 実行・停止（▶実行 / ⏹停止）はエージェント端末の中で行うので、対象コースではツールバーごと出さない */
+body.agent-course .toolbar { display: none; }
+/* ツリーの行（フォルダ含む）は AI エージェント端末へドラッグできるが、ホバー時のカーソルは
+   VS Code と同じ「指差し」にする（掴む手 grab にはしない） */
+body.agent-course .tree-file, body.agent-course .tree-dir { cursor: pointer; }
+
+/* 実行結果エリア: AI エージェントタブを一番左へ（端末が主役のため） */
+body.agent-course #run-tab-agent { order: -1; }
+/* 「実行」「テスト」タブの中に置く実行操作（エディタ下のツールバーを出さない代わり） */
+.run-actions {
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  padding: 6px 10px; border-bottom: 1px solid var(--border-color); background: var(--bg-surface);
+}
+.run-actions.hidden { display: none; }
+/* 「実行」と「テスト実行」はタブ切替で入れ替わるので、幅を揃えて位置がずれないようにする */
+.run-actions .btn { min-width: 108px; padding: 4px 12px; text-align: center; justify-content: center; }
+/* 業務仕様の見出しはブラウザ既定（h1=2em / h2=1.5em）だと本文に対して大きすぎるので少し抑える */
+body.agent-course .problem-desc h1 { font-size: calc(var(--editor-font-size) + 5px); }
+body.agent-course .problem-desc h2 { font-size: calc(var(--editor-font-size) + 3px); }
+body.agent-course .problem-desc h3 { font-size: calc(var(--editor-font-size) + 1px); }
+body.agent-course .problem-desc h4,
+body.agent-course .problem-desc h5,
+body.agent-course .problem-desc h6 { font-size: var(--editor-font-size); }
+
+/* 対象コースのタブは閉じられる（× ボタン） */
+.editor-tab-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; margin-left: 2px; border-radius: 3px; opacity: 0.55; font-size: 14px; line-height: 1;
+}
+.editor-tab-close:hover { opacity: 1; background: var(--bg-hover); }
+/* コードベース（左パネル）のツリーは行間を少し詰める（従前 19.3px と詰めすぎ 17.5px の中間 ≒ 18.4px） */
+#project-panel .tree-file, #project-panel .tree-dir { padding: 1px 4px; line-height: 1.26; }
+/* 業務仕様（AI エージェント対象コース）は仕様書らしく行間を少し詰める（折り返し行 1.55） */
+body.agent-course .problem-desc { line-height: 1.55; }
+body.agent-course .problem-desc p { margin: 0 0 10px; }
+body.agent-course .problem-desc li { margin-bottom: 4px; }
+
+/* ══ AI エージェント対象コース: Mentral Code と同じ構成 (2026-09-12)
+   左 = コードベース (+ 左下の固定操作領域) / 中央 = エディタ (下 1/3 に 演習内容・業務仕様 のタブ領域) /
+   右 = AI エージェント (常に左右分割。比率 1 : 3 : 2) ══ */
+body.agent-course #editor-pane { flex-direction: row; }
+body.agent-course #editor-pane .editor-section { flex: 1; min-width: 0; }
+/* エディタ ↔ AI エージェント領域 の境界 (左右) */
+body.agent-course #run-log-handle { width: 5px; height: auto; cursor: ew-resize; }
+body.agent-course #run-log-handle::before { top: 0; bottom: 0; left: -5px; right: auto; width: 15px; height: auto; cursor: ew-resize; }
+body.agent-course #run-log-handle::after { content: '·\A·\A·\A·\A·'; white-space: pre; line-height: 0.55; letter-spacing: 0; font-size: 9px; }
+body.agent-course #run-output-wrap {
+  width: 480px; min-width: 240px; height: auto !important; min-height: 0; flex-shrink: 0;
+  border-left: 1px solid var(--border-color);
+}
+/* 業務仕様 (#problem-pane) はタブ領域の中に置く: 幅の固定と右カラム用の罫線を外す */
+body.agent-course #problem-pane {
+  order: unset; width: auto !important; max-width: none; min-width: 0; flex: 1; min-height: 0;
+  border-left: none; border-right: none;
+}
+body.agent-course #spec-resize-handle { display: none; }
+
+/* 左下の固定操作領域 (境界は動かない) */
+.codebase-actions {
+  flex-shrink: 0; display: flex; flex-direction: column; gap: 6px;
+  padding: 10px 8px 8px; background: var(--bg-overlay);
+  border-top: 2px solid var(--border-color);
+}
+.codebase-actions-row { display: flex; gap: 6px; }
+.btn.codebase-action {
+  flex: 1; min-width: 0; padding: 6px 4px; font-size: 12px; font-weight: 600;
+  text-align: center; justify-content: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.btn.codebase-action.on { color: var(--accent-blue); border-color: var(--accent-blue); }
+.btn.codebase-action.danger { color: var(--accent-red); }
+.btn.codebase-action:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* エディタ下の 演習内容 / 業務仕様 タブ領域 */
+.docs-panel {
+  flex-shrink: 0; height: 240px; min-height: 80px; display: flex; flex-direction: column;
+  background: var(--bg-surface); overflow: hidden;
+}
+.docs-panel.hidden, #docs-resize-handle.hidden { display: none; }
+.docs-tabs {
+  display: flex; align-items: stretch; gap: 2px; padding: 0 6px; flex-shrink: 0;
+  background: var(--bg-overlay); border-bottom: 1px solid var(--border-color);
+}
+.docs-tab { display: flex; align-items: center; border-bottom: 2px solid transparent; }
+.docs-tab.hidden { display: none; }
+.docs-tab.active { border-bottom-color: var(--accent-blue); }
+.docs-tab-label {
+  padding: 6px 4px 6px 8px; border: none; background: none; color: var(--text-muted);
+  font: inherit; font-size: calc(var(--editor-font-size) - 2px); font-weight: 700; cursor: pointer;
+}
+.docs-tab.active .docs-tab-label { color: var(--text-main); }
+.docs-tab-close {
+  width: 18px; height: 18px; margin-right: 4px; padding: 0; border: none; border-radius: 4px;
+  background: none; color: var(--text-muted); font-size: 14px; line-height: 1; cursor: pointer;
+}
+.docs-tab-close:hover { background: var(--bg-surface); color: var(--text-main); }
+.docs-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.spec-slot { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.spec-slot.hidden { display: none; }
+.exercise-view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.exercise-view.hidden { display: none; }
+.docs-view-header {
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0; min-height: 34px; padding: 2px 10px;
+  font-size: calc(var(--editor-font-size) - 1px); font-weight: 700; color: var(--accent-blue); background: var(--bg-overlay);
+}
+.docs-view-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.docs-view-header .problem-audio-controls { margin-left: auto; margin-right: 0; }
+.docs-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 10px 14px 14px; }
+/* 演習の ‹ n / N › ナビ (見出し行の右、読み上げボタンの左。小さく・色は付けない) */
+.exercise-nav { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: auto; }
+.btn.exercise-nav-btn { min-width: 26px; padding: 1px 6px; font-size: 14px; line-height: 1.2; background: transparent; color: var(--text-main); }
+.btn.exercise-nav-btn:disabled { opacity: 0.4; cursor: default; }
+.exercise-position { font-size: 12px; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+.docs-view-header .problem-audio-controls { margin-left: 4px; }
+#exercise-desc { white-space: normal; }
+
+/* 段落ごとのコピー (Markdown 原文をクリップボードへ) */
+.md-block { position: relative; padding: 4px 34px 4px 6px; margin: 0 -6px 6px; border-radius: 6px; white-space: normal; }
+.md-block:hover { background: color-mix(in srgb, var(--accent-blue) 8%, transparent); }
+.md-block-body > :first-child { margin-top: 0; }
+.md-block-body > :last-child { margin-bottom: 0; }
+.md-copy {
+  position: absolute; top: 2px; right: 2px; min-width: 26px; height: 24px; padding: 0 6px;
+  border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-surface);
+  color: var(--text-muted); font: inherit; font-size: 12px; line-height: 1; cursor: pointer;
+  opacity: 0.55; transition: opacity 0.12s, color 0.12s;
+}
+.md-block:hover .md-copy, .md-copy:focus-visible { opacity: 1; }
+.md-copy:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+.md-copy.copied { opacity: 1; color: var(--accent-green, #3fb950); border-color: currentColor; font-weight: 700; }
+
+/* AI エージェント端末上部のコンテキストバー (エディタで開いているファイル) */
+.agent-context-bar {
+  flex-shrink: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px;
+  padding: 3px 10px; border-bottom: 1px solid var(--border-color); background: var(--bg-overlay);
+  font-size: calc(var(--editor-font-size) - 3px); color: var(--text-muted);
+}
+.agent-context-label { font-weight: 700; }
+.agent-context-empty { font-style: italic; }
+.agent-context-empty.hidden { display: none; }
+.agent-context-chip {
+  padding: 0 8px; border: 1px solid var(--accent-blue); border-radius: 10px;
+  background: color-mix(in srgb, var(--accent-blue) 10%, var(--bg-surface));
+  color: var(--accent-blue); font: inherit; font-size: calc(var(--editor-font-size) - 3px); line-height: 18px; cursor: pointer;
+}
+.agent-context-chip:hover { background: var(--accent-blue); color: #fff; }
+.agent-pane { display: flex; flex-direction: column; }
+.agent-pane .xterm-wrap { flex: 1; min-height: 0; }
+
+/* 実行・確認タブ: 起動 / 停止 と、起動するまでの起動ログ */
+#browser-run-actions.hidden { display: none; }
+.agent-sb-log-slot { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+.agent-sb-log-slot.hidden { display: none; }
+.agent-sb-log-slot .output-pre { flex: 1; min-height: 0; }
+.mini-browser.hidden { display: none; }
+.preview-state { margin-left: 8px; font-size: 12px; color: var(--text-muted); }
+
+/* ═══════════════════════════════════════════════════════════
+   Codinable 追加・上書きスタイル
+
+   ここより上は Chatinable から持ってきた資産で、色・間隔・部品の見た目は
+   そのまま流用する。Codinable では画面の骨組みだけが違う
+   (レッスンペインが無く、左端が常設のファイルエクスプローラになる) ので、
+   その差分をこのセクションに集約する。上を直接書き換えないのは、
+   Chatinable 側の改善を取り込みやすくしておくため。
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 左サイドバーを「ドロワー」から「常設パネル」へ ──
+   Chatinable では position: fixed の引き出しだったが、Codinable では
+   画面の一番左に常に居るファイルエクスプローラにする。 */
+.sidebar.explorer {
+  position: static;
+  z-index: auto;
+  width: 260px;
+  min-width: 150px;
+  max-width: 560px;
+  flex-shrink: 0;
+  box-shadow: none;
+  display: flex;
+}
+/* ドロワー前提の表示制御 (body.sidebar-open) を無効化する */
+body:not(.sidebar-open) .sidebar.explorer { display: flex; }
+
+.explorer-header { justify-content: space-between; gap: 8px; }
+.explorer-actions { display: inline-flex; gap: 2px; flex-shrink: 0; }
+.explorer-action {
+  border: 1px solid var(--border-color);
+  background: var(--bg-overlay);
+  color: var(--text-sub);
+  font: inherit;
+  font-size: calc(var(--editor-font-size) - 4px);
+  padding: 1px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.explorer-action:hover { background: var(--bg-hover); color: var(--text-main); }
+
+/* サイドバーの幅を変えるつまみ。上下方向の .resize-handle と対になる部品 */
+.sidebar-resize-handle {
+  width: 4px;
+  flex-shrink: 0;
+  cursor: col-resize;
+  background: var(--border-color);
+  transition: background 0.12s;
+}
+.sidebar-resize-handle:hover,
+.sidebar-resize-handle.dragging { background: var(--accent-blue); }
+
+/* ── ヘッダーのプロジェクト切り替え ── */
+.project-select {
+  max-width: 260px;
+  padding: 3px 8px;
+  background: var(--bg-overlay);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  font: inherit;
+  font-size: calc(var(--editor-font-size) - 3px);
+  font-family: var(--editor-font-family);
+  cursor: pointer;
+}
+
+/* ── ヘッダーのモデル選択 (LLM は任意機能なので控えめに置く) ── */
+.llm-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--bg-overlay);
+}
+.llm-picker-icon { font-size: calc(var(--editor-font-size) - 2px); line-height: 1; }
+.llm-select {
+  background: transparent;
+  color: var(--text-main);
+  border: none;
+  font: inherit;
+  font-size: calc(var(--editor-font-size) - 3px);
+  font-family: var(--editor-font-family);
+  cursor: pointer;
+  outline: none;
+}
+/* キー未登録のあいだは赤系にして、チャットを押す前に気づけるようにする */
+.api-key-badge.unset { color: var(--accent-red); border-color: var(--accent-red); }
+.api-key-badge.set   { color: var(--accent-green); border-color: var(--accent-green); }
+
+/* ── プロジェクト情報バー ── */
+.project-kinds { display: inline-flex; gap: 4px; flex-shrink: 0; }
+.project-kind {
+  font-size: calc(var(--editor-font-size) - 5px);
+  padding: 1px 6px;
+  border-radius: 9px;
+  border: 1px solid var(--accent-blue);
+  color: var(--accent-blue);
+  white-space: nowrap;
+}
+.project-path {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: calc(var(--editor-font-size) - 4px);
+  color: var(--text-muted);
+  font-family: var(--editor-font-family);
+}
+.project-bar-actions { display: inline-flex; gap: 4px; flex-shrink: 0; }
+
+/* ── エディタのタブ列 ──
+   Chatinable の .editor-tabs はスクロール用の入れ物 (.editor-tabs-scroll) の
+   中に入っていた。Codinable は入れ物を持たないので、タブ列自身を帯にする。 */
+#editor-tabs {
+  width: auto;
+  height: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-shrink: 0;
+  background: var(--bg-overlay);
+  border-bottom: 1px solid var(--border-color);
+  scrollbar-width: none;
+}
+#editor-tabs::-webkit-scrollbar { display: none; }
+#editor-tabs:empty { display: none; }
+
+/* 開いたファイルごとに CodeMirror を 1 つ持ち、表示するものだけ出す。
+   こうするとタブを切り替えても取り消し履歴とスクロール位置が残る。 */
+.editor-hosts {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-base);
+}
+.editor-hosts > .cm-host {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.editor-hosts > .cm-host.hidden { display: none; }
+.editor-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: calc(var(--editor-font-size) - 2px);
+}
+
+/* ── SQL タブのツールバー ── */
+.sql-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-overlay);
+}
+.sql-hint { font-size: calc(var(--editor-font-size) - 4px); color: var(--text-muted); }
+
+/* ── 新規プロジェクトダイアログ ── */
+.template-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
+  background: var(--bg-overlay);
+  color: var(--text-main);
+  font: inherit;
+  font-family: var(--editor-font-family);
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+.template-card:hover { background: var(--bg-hover); }
+.template-card.selected { border-color: var(--accent-blue); background: var(--bg-hover); }
+.template-card-title { font-size: calc(var(--editor-font-size) - 1px); font-weight: 600; }
+.template-card-desc {
+  margin-top: 2px;
+  font-size: calc(var(--editor-font-size) - 4px);
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+.template-card-tags { margin-top: 4px; display: flex; gap: 4px; flex-wrap: wrap; }
+.template-card-tag {
+  font-size: calc(var(--editor-font-size) - 5px);
+  padding: 1px 6px;
+  border-radius: 9px;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+.new-project-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+.new-project-name-label { font-size: calc(var(--editor-font-size) - 3px); color: var(--text-sub); flex-shrink: 0; }
+.new-project-footer .api-key-input { flex: 1; min-width: 140px; }
+.new-project-error { font-size: calc(var(--editor-font-size) - 4px); color: var(--accent-red); width: 100%; }
+
+/* ── ファイルツリーの右クリックメニュー ── */
+.tree-context-menu {
+  position: fixed;
+  z-index: 800;
+  min-width: 180px;
+  padding: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
+  box-shadow: 0 8px 28px var(--shadow);
+}
+.tree-context-item {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--text-main);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tree-context-item:hover { background: var(--bg-hover); }
+
+/* ── チャット ── */
+.chat-welcome { padding: 14px; color: var(--text-muted); font-size: calc(var(--editor-font-size) - 3px); line-height: 1.8; }
+.chat-welcome p { margin: 0 0 6px; }
+
+/* 添付 (開いているファイル・実行ログ) のチップ */
+.ai-context-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 2px 4px 2px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-overlay);
+  color: var(--text-sub);
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-family: var(--editor-font-family);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ai-context-chip-remove {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+}
+.ai-context-chip-remove:hover { color: var(--accent-red); }
+
+/* ── 設定: API キー欄 (LLM 1 社ぶん) ── */
+.api-key-group { margin-bottom: 12px; }
+.api-key-group:last-child { margin-bottom: 0; }
+.api-key-hint a { color: var(--accent-blue); text-decoration: none; }
+.api-key-hint a:hover { text-decoration: underline; }

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>計算結果</title>
+</head>
+<body>
+  <h2>計算結果</h2>
+  <hr>
+  <!-- |...| で囲むと、文字列と式をつないで書ける -->
+  <div th:text="|パラメータ1 => ${calcParam.param1}|"></div>
+  <div th:text="|パラメータ2 => ${calcParam.param2}|"></div>
+  <div th:text="|計算結果 => ${result}|"></div>
+  <hr>
+  <a th:href="@{/}">戻る</a>
+</body>
+</html>

@@ -1,0 +1,18 @@
+Codinable
+Copyright (c) 2025-2026 Kenya Saitoh
+
+This software is a development environment provided for programming learning
+purposes, primarily as a companion to the author's Udemy courses.
+Redistribution and modification require permission from the author.
+
+The LLM chat is an optional feature and requires your own API key (BYOK) for
+Anthropic, OpenAI, or Google. API usage is billed directly to you by the
+provider you choose. All other features work without any API key.
+
+本ソフトウェアは、主に作者の Udemy 講座の受講環境として、プログラミング学習
+目的で提供される開発環境です。
+再配布・改変は作者の許可を得てください。
+
+LLM チャットは任意機能であり、利用には Anthropic / OpenAI / Google いずれかの
+ご自身の API キー (BYOK) が必要です。API の利用料金は選択した提供元から
+お客様に直接請求されます。チャット以外の機能は API キーなしで動作します。

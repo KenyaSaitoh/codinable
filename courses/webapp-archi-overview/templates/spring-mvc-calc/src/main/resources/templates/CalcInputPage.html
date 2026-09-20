@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- Thymeleaf のテンプレート。th: で始まる属性はサーバー側で処理され、
+     ブラウザーに届くときには通常の HTML になっている。 -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>計算アプリケーション</title>
+</head>
+<body>
+  <h2>計算アプリケーション</h2>
+  <hr>
+
+  <!-- 業務エラー (0 除算) はここに出る -->
+  <div th:if="${error}" th:text="${error}" style="color: red"></div>
+
+  <!-- th:object を指定すると *{...} でそのオブジェクトの項目を参照できる -->
+  <form method="POST" th:object="${calcParam}">
+    <div>
+      <span>パラメータ1</span>
+      <!-- th:field は name / id / value をまとめて生成する -->
+      <input type="text" th:field="*{param1}">
+      <span th:if="${#fields.hasErrors('param1')}" th:errors="*{param1}"
+            style="color: red"></span>
+    </div>
+    <div>
+      <span>パラメータ2</span>
+      <input type="text" th:field="*{param2}">
+      <span th:if="${#fields.hasErrors('param2')}" th:errors="*{param2}"
+            style="color: red"></span>
+    </div>
+    <div>
+      <!-- 同じフォームを、押したボタンによって別の URL へ送る -->
+      <button type="submit" th:formaction="@{/add}">足し算</button>
+      <button type="submit" th:formaction="@{/subtract}">引き算</button>
+      <button type="submit" th:formaction="@{/multiply}">掛け算</button>
+      <button type="submit" th:formaction="@{/divide}">割り算</button>
+    </div>
+  </form>
+</body>
+</html>
