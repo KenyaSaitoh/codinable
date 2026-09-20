@@ -1691,8 +1691,10 @@ body.theme-dark .sql-question-item.active { background: color-mix(in srgb, var(-
   border-bottom: 2px solid transparent;
   transition: color 0.12s, border-color 0.12s;
 }
-.run-tab:hover  { color: var(--text-main); }
+.run-tab:hover:not(:disabled) { color: var(--text-main); }
 .run-tab.active { color: var(--text-main); border-bottom-color: var(--accent-blue); }
+/* プレビューは待ち受けているサーバーが無いあいだ触れない (押せるのに何も出ない状態を作らない) */
+.run-tab:disabled { opacity: 0.35; cursor: default; }
 .run-output-body {
   position: relative;
   flex: 1;

@@ -108,8 +108,9 @@ const UI_STRINGS = {
 
     // ── 実行 ──
     runTargetTitle:      '実行する内容を選びます',
-    runTargetFile:       '▶ 開いているファイル ({name})',
-    runTargetSql:        '🗄 SQL を実行 ({name})',
+    runTargetFile:       '▶ {name}',
+    runTargetSql:        '🗄 SQL: {name}',
+    runNotRunnable:      '{name} は実行対象になっていません。',
     runTargetGradle:     'Gradle: {task}',
     runTargetNpm:        'npm: {script}',
     runTargetJava:       '▶ Java (main を探して実行)',
@@ -334,8 +335,9 @@ const UI_STRINGS = {
     confirmCloseDirty:   '"{name}" has unsaved changes. Close it anyway?',
 
     runTargetTitle:      'Choose what to run',
-    runTargetFile:       '▶ Current file ({name})',
-    runTargetSql:        '🗄 Run SQL ({name})',
+    runTargetFile:       '▶ {name}',
+    runTargetSql:        '🗄 SQL: {name}',
+    runNotRunnable:      '{name} is not a run target.',
     runTargetGradle:     'Gradle: {task}',
     runTargetNpm:        'npm: {script}',
     runTargetJava:       '▶ Java (find and run main)',

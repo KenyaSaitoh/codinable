@@ -584,6 +584,7 @@ async function selectProject(name, { openInitial = [] } = {}) {
 
   await window.api.runStop();
   await window.api.previewStop();
+  setPreviewAvailable(false);
   disposeLsp();
   closeAllFiles();
   collapsed.clear();
@@ -786,12 +787,8 @@ async function applyExerciseRunTarget(exercise) {
   if (!exercise.run) return;
   const [kind, arg = ''] = exercise.run.split(/:(.*)/s);
 
-  // file: と sql: はどちらも「いま開いているファイル」を実行するので、先に開く
-  if (kind === 'file' || kind === 'sql') {
-    if (arg) await openFile(arg);
-    selectRunTarget(kind);
-    return;
-  }
+  // file: / sql: は対象がファイルなので、何を動かすのか見えるように開いておく
+  if ((kind === 'file' || kind === 'sql') && arg) await openFile(arg);
   selectRunTarget(exercise.run);
 }
 
@@ -921,31 +918,42 @@ async function createProject() {
 
 let running = false;
 
-/** 実行できるものを select に並べる。値は 'kind' または 'kind:引数'。 */
+/**
+ * 実行できるものを select に並べる。値は 'kind' または 'kind:引数'。
+ *
+ * 並ぶ内容はプロジェクトの中身だけで決まり、エディタで選んでいるファイルには
+ * 依存しない。README を開いているあいだ実行できなくなる、といったことを避ける。
+ * 先頭に来るものが既定になるので、そのプロジェクトの「本命」から並べる。
+ */
 function updateRunTargets() {
   const select = $('run-target-select');
   const previous = select.value;
   select.innerHTML = '';
 
+  const kinds   = projectInfo?.kinds || [];
   const options = [];
-  if (activeFile && /\.(java|py|ts|js|mjs|cjs|sh|bash)$/i.test(activeFile)) {
-    options.push(['file', tf('runTargetFile', { name: activeFile.split('/').pop() })]);
-  }
-  // .sql は子プロセスではなく常駐の HSQLDB へ流す (SQL タブに結果が出る)
-  if (activeFile && /\.sql$/i.test(activeFile)) {
-    options.push(['sql', tf('runTargetSql', { name: activeFile.split('/').pop() })]);
-  }
+
   for (const task of projectInfo?.gradleTasks || []) {
     options.push([`gradle:${task}`, tf('runTargetGradle', { task })]);
   }
   for (const script of projectInfo?.npmScripts || []) {
     options.push([`npm:${script}`, tf('runTargetNpm', { script })]);
   }
-  if ((projectInfo?.kinds || []).includes('java') && !(projectInfo?.kinds || []).includes('gradle')) {
-    options.push(['java', t('runTargetJava')]);
-  }
-  if (projectInfo?.staticRoot !== null && projectInfo?.staticRoot !== undefined) {
+  // 静的配信は npm スクリプトが無いときだけ。Vite などは index.html が
+  // あっても dev サーバー越しでないと動かないので、並べると壊れた選択肢になる。
+  if (projectInfo?.staticRoot !== null && projectInfo?.staticRoot !== undefined &&
+      !(projectInfo?.npmScripts || []).length) {
     options.push([`static:${projectInfo.staticRoot}`, t('runTargetStatic')]);
+  }
+  for (const entry of projectInfo?.runnableFiles || []) {
+    // .sql は子プロセスではなく常駐の HSQLDB へ流す (SQL タブに結果が出る)
+    const key = entry.kind === 'sql' ? 'runTargetSql' : 'runTargetFile';
+    options.push([`${entry.kind}:${entry.relPath}`, tf(key, { name: entry.relPath })]);
+  }
+  // main を持つ .java が拾えなかったときの保険 (自動でエントリポイントを探す)
+  if (kinds.includes('java') && !kinds.includes('gradle') &&
+      !(projectInfo?.runnableFiles || []).some(e => e.relPath.endsWith('.java'))) {
+    options.push(['java', t('runTargetJava')]);
   }
 
   if (!options.length) options.push(['', t('runTargetNone')]);
@@ -995,9 +1003,8 @@ async function runSelected() {
   if (kind === 'static') { await servePreview(arg); return; }
 
   // SQL は子プロセスではなく常駐の HSQLDB へ流す。
-  // 開いている .sql を編集してそのまま実行できるように、DB が止まっていれば
-  // ここで起こしてから流す (受講者に「DB起動」を先に押させない)。
-  if (kind === 'sql') { await runSqlFromEditor(); return; }
+  // DB が止まっていればここで起こしてから流す (「DB起動」を先に押させない)。
+  if (kind === 'sql') { await runSqlFromEditor(arg); return; }
 
   // 保存していない内容で動かして混乱しないよう、先に全部書き出す
   for (const relPath of openFiles.keys()) await saveFile(relPath);
@@ -1009,8 +1016,8 @@ async function runSelected() {
   setRunning(true);
   const res = await window.api.runStart({
     project,
-    kind:    kind === 'file' ? 'file' : kind,
-    relPath: kind === 'file' ? activeFile : undefined,
+    kind,
+    relPath: kind === 'file' ? arg : undefined,
     task:    kind === 'gradle' || kind === 'npm' ? arg : undefined,
   });
   if (!res.ok) {
@@ -1024,7 +1031,13 @@ async function runSelected() {
 /** ツリーの右クリックから直接ファイルを実行する */
 async function runFile(relPath) {
   await openFile(relPath);
-  $('run-target-select').value = 'file';
+  // 実行対象に無いファイル (実行できないもの) なら選択は変えずに何もしない
+  const value = /\.sql$/i.test(relPath) ? `sql:${relPath}` : `file:${relPath}`;
+  selectRunTarget(value);
+  if ($('run-target-select').value !== value) {
+    await alertDialog(tf('runNotRunnable', { name: relPath }));
+    return;
+  }
   await runSelected();
 }
 
@@ -1295,14 +1308,19 @@ async function runSql() {
 
 /**
  * 「実行」ボタンから SQL を流す。
- * SQL タブを見せ、DB が止まっていれば起こし、開いているファイル
- * (選択範囲があればそこだけ) を流す。編集 → 実行をボタン 1 つで回せるようにする。
+ *
+ * 対象ファイルをエディタで開いてから、その内容 (選択範囲があればそこだけ) を
+ * HSQLDB へ流す。DB が止まっていれば起こすので、編集 → 実行がボタン 1 つで回る。
  */
-async function runSqlFromEditor() {
-  for (const relPath of openFiles.keys()) await saveFile(relPath);
+async function runSqlFromEditor(relPath) {
+  // 何が流れたのかが見えるように、対象は必ず画面に出しておく
+  if (relPath) await openFile(relPath);
+  for (const openPath of openFiles.keys()) await saveFile(openPath);
   showRunPane('tab-sql');
 
-  const sql = currentSqlText().trim();
+  const entry = relPath ? openFiles.get(relPath) : null;
+  const sql = (relPath && relPath !== activeFile && entry ? entry.cm.getValue()
+                                                          : currentSqlText()).trim();
   if (!sql) { setSqlMessage(escapeHtml(t('sqlNoSql')), 'sql-error'); return; }
 
   if (!sqlRunning) {
@@ -1467,8 +1485,39 @@ function restartTerminalIfVisible() {
 //  Web プレビュー
 // ═══════════════════════════════════════════
 
+// プレビューできる先があるか。
+// 「ボタンはあるが押しても何も起きない」を無くすため、実際に待ち受けている
+// サーバーが見つかるまではプレビューを触れない状態にしておく。
+let previewAvailable = false;
+
+function setPreviewAvailable(state) {
+  previewAvailable = !!state;
+  $('btn-preview').disabled     = !previewAvailable;
+  $('run-tab-browser').disabled = !previewAvailable;
+  if (!previewAvailable) {
+    // <webview> の src は触らない (about:blank を入れ直すと ERR_ABORTED になる)。
+    // 触れないタブなので、次にプレビューできたとき previewUrl が入れ替える。
+    $('browser-url').value = '';
+    // 見えなくなるタブを開いたままにしない
+    if (document.querySelector('.run-tab.active')?.id === 'run-tab-browser') {
+      showRunPane('tab-result');
+    }
+  }
+}
+
+/**
+ * 実行が終わったあとにプレビューの可否を見直す。
+ * 静的ページの内蔵サーバーは実行プロセスとは別に生き続けるので、
+ * プロセスが終わったことだけを理由に落とさない。
+ */
+async function refreshPreviewAvailability() {
+  const status = await window.api.previewStatus();
+  setPreviewAvailable(!!(status.ok && status.url));
+}
+
 function previewUrl(url) {
   $('browser-url').value = url;
+  setPreviewAvailable(true);
   $('mini-browser').src  = url;
   showRunPane('tab-browser');
 }
@@ -1492,14 +1541,12 @@ async function servePreview(relDir) {
   previewUrl(res.url);
 }
 
-/** 🌐 プレビューボタン: 起動中のアプリ → 静的ページ の順に当たってみる */
+/** 🌐 プレビューボタン: 直前に見つかった URL → 内蔵サーバー の順に当たってみる */
 async function openPreview() {
+  const current = $('browser-url').value.trim();
+  if (current && current !== 'about:blank') { previewUrl(current); return; }
   const status = await window.api.previewStatus();
   if (status.ok && status.url) { previewUrl(status.url); return; }
-  const staticRoot = projectInfo?.staticRoot;
-  if (staticRoot !== null && staticRoot !== undefined) { await servePreview(staticRoot); return; }
-  const url = $('browser-url').value.trim();
-  if (url) { previewUrl(url); return; }
   await alertDialog(t('previewNoTarget'));
 }
 
@@ -2259,9 +2306,10 @@ function sendStdin() {
 
 function wireIpc() {
   window.api.onRunOutput(text => appendRunOutput(text));
-  window.api.onRunExit(({ code }) => {
+  window.api.onRunExit(async ({ code }) => {
     setRunning(false);
     appendRunOutput(code === 0 ? t('runExitOk') : tf('runExitNg', { code }));
+    await refreshPreviewAvailability();
   });
   window.api.onRunUrl(({ url }) => previewUrl(url));
   window.api.onRunTestResults(data => {
@@ -2325,6 +2373,7 @@ async function boot() {
   clearRunOutput();
   setRunning(false);
   setSqlRunning(false);
+  setPreviewAvailable(false);
   wireEvents();
   wireIpc();
 

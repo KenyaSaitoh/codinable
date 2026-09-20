@@ -110,8 +110,65 @@ function detectProject(projectDir) {
     npmScripts,
     // '' はプロジェクトルート自身が配信ルートという意味
     staticRoot,
+    runnableFiles: collectRunnableFiles(projectDir, entries, {
+      hasPackageJson: names.has('package.json'),
+      isStatic: staticRoot !== null,
+      isGradle: kinds.includes('gradle'),
+    }),
     hasGradleWrapper: names.has('gradlew') || names.has('gradlew.bat'),
   };
+}
+
+/**
+ * 「そのファイルを指定すれば動く」ファイルを集める。
+ *
+ * 実行ボタンはエディタで選んでいるファイルに依存させない (選択と実行対象が
+ * 連動すると、README を開いただけで実行できなくなる)。代わりに、動かせる
+ * ものをプロジェクト全体から拾って実行対象セレクトに並べる。
+ *
+ * @returns {Array<{ relPath: string, kind: 'file'|'sql' }>}
+ */
+function collectRunnableFiles(projectDir, entries, { hasPackageJson, isStatic, isGradle }) {
+  const files = entries.filter(e => !e.dir).map(e => e.path);
+  const out   = [];
+
+  // .py / .sh / .sql は単体で動かせる
+  for (const relPath of files) {
+    const lower = relPath.toLowerCase();
+    if (lower.endsWith('.py') || lower.endsWith('.sh') || lower.endsWith('.bash')) {
+      out.push({ relPath, kind: 'file' });
+    } else if (lower.endsWith('.sql')) {
+      out.push({ relPath, kind: 'sql' });
+    }
+  }
+
+  // JavaScript / TypeScript は「単体のスクリプト」のときだけ並べる。
+  // package.json があれば npm スクリプトが入口であり、index.html があれば
+  // ブラウザで読まれる側なので、node で直接動かすと必ず失敗する。
+  if (!hasPackageJson && !isStatic) {
+    for (const relPath of files) {
+      if (/\.(js|mjs|cjs|ts|mts)$/i.test(relPath)) out.push({ relPath, kind: 'file' });
+    }
+  }
+
+  // Gradle を使わない Java は main を持つファイルだけ並べる。
+  // 数が多いプロジェクトで全部読むのは無駄なので上限を置き、
+  // 超えるときは kinds の 'java' による自動検出に任せる。
+  if (!isGradle) {
+    const javaFiles = files.filter(f => f.toLowerCase().endsWith('.java'));
+    if (javaFiles.length && javaFiles.length <= 60) {
+      for (const relPath of javaFiles) {
+        const source = readTextSafe(path.join(projectDir, relPath.split('/').join(path.sep)));
+        if (/public\s+static\s+void\s+main\s*\(/.test(source)) out.push({ relPath, kind: 'file' });
+      }
+    }
+  }
+
+  // 浅いものを先に、同じ深さなら名前順 (01_… のような連番が並ぶ)
+  out.sort((a, b) =>
+    a.relPath.split('/').length - b.relPath.split('/').length ||
+    a.relPath.localeCompare(b.relPath));
+  return out.slice(0, 30);
 }
 
 /** ワークスペース直下のプロジェクト一覧 */
