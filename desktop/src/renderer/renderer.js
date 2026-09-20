@@ -1558,6 +1558,7 @@ let chatMessages  = [];     // [{ role, content }] API へ送る履歴
 let chatStreaming = false;
 let chatBubble    = null;   // ストリーミング中の吹き出し
 let chatBuffer    = '';
+let chatEditMode  = false;  // 応答を変更案として解釈するか
 const attachments = [];     // [{ kind: 'file' | 'log', path?, content }]
 
 function currentModel() {
@@ -1600,6 +1601,7 @@ function addChatMessage(role, content, { streaming = false } = {}) {
 function setChatStreaming(state) {
   chatStreaming = state;
   $('btn-chat-send').disabled = state;
+  $('btn-chat-edit').disabled = state;
   $('btn-chat-abort').classList.toggle('hidden', !state);
   $('chat-actions').classList.toggle('hidden', state);
 }
@@ -1640,7 +1642,7 @@ function attachRunLog() {
   renderAttachments();
 }
 
-async function sendChat() {
+async function sendChat({ editMode = false } = {}) {
   const input = $('chat-input');
   const text  = input.value.trim();
   if (!text || chatStreaming) return;
@@ -1653,11 +1655,26 @@ async function sendChat() {
     return;
   }
 
+  // 書き換えは「いま開いているファイル」が対象。中身を渡さないと書き換えられないので、
+  // 添付し忘れても成立するようにここで開いているファイルを全部積む。
+  if (editMode) {
+    if (!project)     { await alertDialog(t('editNoProject')); return; }
+    if (!openFiles.size) { await alertDialog(t('editNoFile')); return; }
+    for (const relPath of openFiles.keys()) await saveFile(relPath);
+    for (const [relPath, entry] of openFiles) {
+      const existing = attachments.find(a => a.kind === 'file' && a.path === relPath);
+      if (existing) existing.content = entry.cm.getValue();
+      else attachments.push({ kind: 'file', path: relPath, content: entry.cm.getValue() });
+    }
+    renderAttachments();
+  }
+
   input.value = '';
   addChatMessage('user', text);
   chatMessages.push({ role: 'user', content: text });
 
   chatBuffer = '';
+  chatEditMode = editMode;
   chatBubble = addChatMessage('assistant', '', { streaming: true });
   setChatStreaming(true);
 
@@ -1668,8 +1685,168 @@ async function sendChat() {
       kinds: projectInfo?.kinds || [],
       files: attachments.filter(a => a.kind === 'file').map(a => ({ path: a.path, content: a.content })),
       log:   attachments.find(a => a.kind === 'log')?.content || null,
+      editMode,
     },
   });
+}
+
+// ═══════════════════════════════════════════
+//  コードの書き換え (AI駆動開発)
+//
+//  応答に含まれる ```codinable-edit path=… ブロックを変更案として取り出し、
+//  差分を見せてから適用する。勝手に書き換えることはしない。
+// ═══════════════════════════════════════════
+
+const EDIT_BLOCK_RE = /^[ \t]*```+[ \t]*codinable-edit[ \t]+path=([^\n`]+)\n([\s\S]*?)\n[ \t]*```+[ \t]*$/gm;
+
+/** 応答テキストから変更案を取り出す。取り出した部分は本文から取り除く。 */
+function extractEditProposals(text) {
+  const proposals = [];
+  const body = text.replace(EDIT_BLOCK_RE, (_all, rawPath, content) => {
+    const relPath = rawPath.trim().replace(/^["'`]|["'`]$/g, '').replace(/\\/g, '/');
+    if (relPath) proposals.push({ relPath, content });
+    return '';
+  });
+  return { body: body.replace(/\n{3,}/g, '\n\n').trim(), proposals };
+}
+
+/** 行単位の差分 (LCS)。戻りは [{ kind: 'keep'|'add'|'del', text }] */
+function diffLines(before, after) {
+  const a = before.split('\n');
+  const b = after.split('\n');
+
+  // 教材のファイルは短いので素直な DP で足りる。念のため上限を置き、
+  // 超えたときは「全置換」として見せる (計算で固まらせないため)。
+  if (a.length * b.length > 4_000_000) {
+    return [...a.map(text => ({ kind: 'del', text })),
+            ...b.map(text => ({ kind: 'add', text }))];
+  }
+
+  const lcs = Array.from({ length: a.length + 1 }, () => new Uint32Array(b.length + 1));
+  for (let i = a.length - 1; i >= 0; i--) {
+    for (let j = b.length - 1; j >= 0; j--) {
+      lcs[i][j] = a[i] === b[j] ? lcs[i + 1][j + 1] + 1
+                                : Math.max(lcs[i + 1][j], lcs[i][j + 1]);
+    }
+  }
+
+  const rows = [];
+  let i = 0, j = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j])                     { rows.push({ kind: 'keep', text: a[i] }); i++; j++; }
+    else if (lcs[i + 1][j] >= lcs[i][j + 1]) { rows.push({ kind: 'del', text: a[i] }); i++; }
+    else                                     { rows.push({ kind: 'add', text: b[j] }); j++; }
+  }
+  while (i < a.length) rows.push({ kind: 'del', text: a[i++] });
+  while (j < b.length) rows.push({ kind: 'add', text: b[j++] });
+  return rows;
+}
+
+/** keep が続くところを畳んで、変更の周辺だけ見せる */
+function collapseDiff(rows, context = 2) {
+  const keep = new Array(rows.length).fill(false);
+  rows.forEach((row, index) => {
+    if (row.kind === 'keep') return;
+    for (let k = index - context; k <= index + context; k++) {
+      if (k >= 0 && k < rows.length) keep[k] = true;
+    }
+  });
+
+  const out = [];
+  let skipped = 0;
+  rows.forEach((row, index) => {
+    if (keep[index]) {
+      if (skipped) { out.push({ kind: 'skip', count: skipped }); skipped = 0; }
+      out.push(row);
+    } else {
+      skipped++;
+    }
+  });
+  if (skipped) out.push({ kind: 'skip', count: skipped });
+  return out;
+}
+
+const DIFF_MARK = { add: '+', del: '-', keep: ' ' };
+
+/** 変更案 1 件をカードとして描く */
+async function renderEditProposal(proposal, container) {
+  const current = await window.api.wsReadFile(project, proposal.relPath);
+  const before  = current.ok ? String(current.content ?? '') : null;
+  const after   = proposal.content;
+
+  const card = document.createElement('div');
+  card.className = 'edit-proposal';
+
+  if (before !== null && before === after) {
+    card.innerHTML =
+      `<div class="edit-proposal-head"><span class="edit-proposal-path">` +
+      `${escapeHtml(proposal.relPath)}</span>` +
+      `<span class="edit-proposal-stat">${escapeHtml(t('editNoChange'))}</span></div>`;
+    container.appendChild(card);
+    return;
+  }
+
+  const rows    = before === null
+    ? after.split('\n').map(text => ({ kind: 'add', text }))
+    : diffLines(before, after);
+  const added   = rows.filter(r => r.kind === 'add').length;
+  const removed = rows.filter(r => r.kind === 'del').length;
+
+  const diffHtml = collapseDiff(rows).map(row => row.kind === 'skip'
+    ? `<div class="diff-row skip">${escapeHtml(tf('editDiffSkipped', { n: row.count }))}</div>`
+    : `<div class="diff-row ${row.kind}"><span class="diff-mark">${DIFF_MARK[row.kind]}</span>` +
+      `<span class="diff-text">${escapeHtml(row.text)}</span></div>`).join('');
+
+  card.innerHTML =
+    '<div class="edit-proposal-head">' +
+      `<span class="edit-proposal-path">${escapeHtml(proposal.relPath)}</span>` +
+      `<span class="edit-proposal-stat">${before === null ? escapeHtml(t('editNewFile')) + ' ' : ''}` +
+        `<span class="diff-added">+${added}</span> <span class="diff-removed">-${removed}</span></span>` +
+    '</div>' +
+    `<div class="edit-diff">${diffHtml}</div>` +
+    '<div class="edit-proposal-actions">' +
+      `<button class="btn btn-apply" data-act="apply">${escapeHtml(t('editApply'))}</button>` +
+      `<button class="btn" data-act="discard">${escapeHtml(t('editDiscard'))}</button>` +
+    '</div>';
+
+  const actions = card.querySelector('.edit-proposal-actions');
+  card.querySelector('[data-act="apply"]').addEventListener('click', async () => {
+    const res = await window.api.wsWriteFile(project, proposal.relPath, after);
+    if (!res.ok) { await alertDialog(tf('saveFailed', { error: res.error || '' })); return; }
+    await reopenFileFromDisk(proposal.relPath);
+    await reloadTree();
+    actions.innerHTML = `<span class="edit-proposal-done">${escapeHtml(t('editApplied'))}</span>`;
+  });
+  card.querySelector('[data-act="discard"]').addEventListener('click', () => {
+    actions.innerHTML = `<span class="edit-proposal-done">${escapeHtml(t('editDiscarded'))}</span>`;
+  });
+
+  container.appendChild(card);
+}
+
+/** 適用後、開いているタブを disk の内容に入れ替える */
+async function reopenFileFromDisk(relPath) {
+  if (!openFiles.has(relPath)) { await openFile(relPath); return; }
+  const res = await window.api.wsReadFile(project, relPath);
+  if (!res.ok) return;
+  const entry = openFiles.get(relPath);
+  entry.cm.setValue(String(res.content ?? ''));
+  entry.dirty = false;
+  renderTabs();
+}
+
+/** 応答の描画。書き換えモードなら変更案をカードにして本文の下に並べる */
+async function renderChatResponse(bubble, text, { editMode }) {
+  if (!editMode) { bubble.innerHTML = renderMarkdown(text); return; }
+
+  const { body, proposals } = extractEditProposals(text);
+  bubble.innerHTML = renderMarkdown(body || text);
+  if (!proposals.length) return;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'edit-proposals';
+  bubble.appendChild(wrap);
+  for (const proposal of proposals) await renderEditProposal(proposal, wrap);
 }
 
 function clearChat() {
@@ -2005,7 +2182,8 @@ function wireEvents() {
     window.api.openBrowser($('browser-url').value));
 
   // ── チャット ──
-  $('btn-chat-send').addEventListener('click', sendChat);
+  $('btn-chat-send').addEventListener('click', () => sendChat());
+  $('btn-chat-edit').addEventListener('click', () => sendChat({ editMode: true }));
   $('btn-chat-abort').addEventListener('click', () => window.api.chatAbort());
   $('btn-chat-clear').addEventListener('click', clearChat);
   $('btn-attach-file').addEventListener('click', attachCurrentFile);
@@ -2098,17 +2276,24 @@ function wireIpc() {
   window.api.onChatChunk(text => {
     if (!chatBubble) return;
     chatBuffer += text;
-    chatBubble.innerHTML = renderMarkdown(chatBuffer);
+    // 途中では本文だけ描く (書き換えブロックは閉じるまで差分を出せない)
+    chatBubble.innerHTML = renderMarkdown(
+      chatEditMode ? extractEditProposals(chatBuffer).body || chatBuffer : chatBuffer);
     const history = $('chat-history');
     history.scrollTop = history.scrollHeight;
   });
-  window.api.onChatEnd(() => {
-    if (chatBubble) {
-      chatBubble.classList.remove('streaming');
-      chatMessages.push({ role: 'assistant', content: chatBuffer });
-    }
+  window.api.onChatEnd(async () => {
+    const bubble = chatBubble;
+    const text   = chatBuffer;
+    const editMode = chatEditMode;
     chatBubble = null;
     setChatStreaming(false);
+    if (!bubble) return;
+    bubble.classList.remove('streaming');
+    chatMessages.push({ role: 'assistant', content: text });
+    await renderChatResponse(bubble, text, { editMode });
+    const history = $('chat-history');
+    history.scrollTop = history.scrollHeight;
   });
   window.api.onChatError(async (message, info) => {
     if (chatBubble) {

@@ -4105,3 +4105,85 @@ body.theme-dark .exercise-item.active {
 .api-key-group:last-child { margin-bottom: 0; }
 .api-key-hint a { color: var(--accent-blue); text-decoration: none; }
 .api-key-hint a:hover { text-decoration: underline; }
+
+/* ── コードの書き換え (AI駆動開発) ──
+   チャットの応答に混ざる ```codinable-edit ブロックを、差分つきの
+   「変更案カード」として吹き出しの中に並べる。適用は必ず手動。 */
+.chat-mini-edit { color: var(--accent-blue); }
+
+.edit-proposals {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+.edit-proposal {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-base);
+  overflow: hidden;
+}
+.edit-proposal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 8px;
+  background: var(--bg-overlay);
+  border-bottom: 1px solid var(--border-color);
+}
+.edit-proposal-path {
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 3px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.edit-proposal-stat {
+  flex-shrink: 0;
+  font-size: calc(var(--editor-font-size) - 4px);
+  color: var(--text-muted);
+}
+.diff-added   { color: var(--accent-green); }
+.diff-removed { color: var(--accent-red); }
+
+/* 差分本体。長い行は折り返さず横スクロールにする (コードの形を保つため) */
+.edit-diff {
+  max-height: 320px;
+  overflow: auto;
+  padding: 4px 0;
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 3px);
+  line-height: 1.5;
+}
+.diff-row { display: flex; white-space: pre; }
+.diff-row.add { background: color-mix(in srgb, var(--accent-green) 14%, transparent); }
+.diff-row.del { background: color-mix(in srgb, var(--accent-red) 14%, transparent); }
+.diff-row.skip {
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 2px 8px;
+  white-space: normal;
+}
+.diff-mark {
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+  color: var(--text-muted);
+  user-select: none;
+}
+.diff-row.add .diff-mark { color: var(--accent-green); }
+.diff-row.del .diff-mark { color: var(--accent-red); }
+.diff-text { padding-right: 8px; }
+
+.edit-proposal-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-top: 1px solid var(--border-color);
+}
+.edit-proposal-done {
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--text-muted);
+}
