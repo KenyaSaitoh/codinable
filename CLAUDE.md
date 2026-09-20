@@ -70,14 +70,28 @@ Java の言語サーバーを同梱している。
   ここで指定した選択肢が実際に出るかは `workspace.js` の `detectProject` が
   決めるので、雛形の構成（`build.gradle` の有無、`package.json` の `scripts`、
   `index.html`）と食い違わせない。選択肢が無いときは黙って無視される。
-  `file:` と `sql:` は「開いているファイル」を実行するので、パスを書くと
-  そのファイルを先に開く
+  `file:` と `sql:` はパスも指定するので、そのファイルを先に開いてから選ぶ
 - **依存の用意は受講者に踏ませない**。`package.json` があって依存が
   揃っていなければ実行前に `npm install` が、`requirements.txt` があれば
   `pip install -r` が自動で走る（`runner.js` の `needsNpmInstall` /
   `pipInstallStep`）。雛形に「最初に install してください」と書く必要はない
 - **問いを立てない**。`descriptions` は「何をどう動かすか」に徹し、
   正解・採点・完了といった語を持ち込まない
+
+## 実行対象とプレビューの活性
+
+- **実行対象はプロジェクトの中身だけで決まる**（`detectProject` の
+  `runnableFiles`）。エディタで選んでいるファイルには依存させない。
+  README を開いた瞬間に実行できなくなる、という状態を作らないため
+- **動かない選択肢を並べない**。`package.json` があるプロジェクトの `.js` は
+  npm スクリプトが入口なので単体では並べず、`index.html` の隣の `.js` は
+  ブラウザで読まれる側なので並べない。`static:` も npm スクリプトが
+  あるときは出さない（Vite などは dev サーバー越しでないと動かない）
+- **プレビューは待ち受けているサーバーがあるときだけ活性**にする
+  （`setPreviewAvailable`）。実行の出力から URL を検知したとき、または
+  内蔵の静的サーバーを起こしたときに活性化し、実行が終わったら
+  `refreshPreviewAvailability` で見直す。静的サーバーは実行プロセスとは
+  別に生きるので、プロセスの終了だけを理由に落とさない
 
 ## 雛形（`courses/*/templates/`）を追加・修正するとき
 
