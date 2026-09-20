@@ -61,12 +61,19 @@ module.exports = {
   nsis: {
     oneClick:   false,
     perMachine: false,
+    // 日本語と英語の 2 言語。インストーラの 1 ページ目で切り替え、
+    // 選ばれた言語は default-lang.txt 経由でアプリの初期表示言語にもなる
+    // (assets/installer.nsh と src/main/config.js の readInstallerLang)。
+    //
     // multiLanguageInstaller を false にすると electron-builder は
     // installerLanguages を無視して英語固定のインストーラを作るため、
     // 2 言語でも true のままにする (app-builder-lib の LangConfigurator)。
-    multiLanguageInstaller:  true,
-    displayLanguageSelector: true,
+    multiLanguageInstaller: true,
+    // 言語選択は assets/installer.nsh の自前ページで行うので、
+    // NSIS 標準の言語選択ダイアログは出さない
+    displayLanguageSelector: false,
     installerLanguages:      ['en_US', 'ja_JP'],
+    include:                 'assets/installer.nsh',
     allowToChangeInstallationDirectory: true,
     createDesktopShortcut:   true,
     createStartMenuShortcut: true,
