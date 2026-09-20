@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!--
+  JavaScript によるフォーム操作。
+  HTML だけでは書けない検証（2 つの欄を見比べる、入力中に知らせる）を担う。
+
+  試すこと:
+    1. パスワードを打つ → 8 文字に達するまで枠の色が変わる（リアルタイム検証）
+    2. 確認用パスワードを違う値にして「登録」→ ページが遷移せずエラーが出る
+    3. 正しく入力して「登録」→ 送信される値の一覧が出てフォームが空になる
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フォーム操作</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>ユーザー登録</h1>
+
+  <!--
+    action を書いていないのは、送信を JavaScript が受け取って止めるためである
+    （サーバーへ送るのは 8 章以降の演習で扱う）。
+    novalidate は付けていないので、HTML の検証（required など）も併せて働く。
+  -->
+  <form id="registration-form">
+    <p>
+      <label for="name">氏名</label>
+      <input type="text" id="name" name="name" required minlength="2" placeholder="山田太郎">
+    </p>
+
+    <p>
+      <label for="email">メール</label>
+      <input type="email" id="email" name="email" required placeholder="user@example.com">
+      <!-- 入力中の助言を出す場所 -->
+      <span class="hint" id="email-hint"></span>
+    </p>
+
+    <p>
+      <label for="password">パスワード（8 文字以上）</label>
+      <input type="password" id="password" name="password" required>
+      <span class="hint" id="password-hint"></span>
+    </p>
+
+    <p>
+      <label for="confirm-password">パスワード（確認）</label>
+      <input type="password" id="confirm-password" name="confirmPassword" required>
+    </p>
+
+    <p>
+      <label for="department">部署</label>
+      <select id="department" name="department">
+        <option value="営業部">営業部</option>
+        <option value="企画部">企画部</option>
+        <option value="人事部">人事部</option>
+      </select>
+    </p>
+
+    <fieldset>
+      <legend>勤務形態</legend>
+      <input type="radio" id="work-office" name="work" value="出社" checked>
+      <label for="work-office">出社</label>
+      <input type="radio" id="work-remote" name="work" value="在宅">
+      <label for="work-remote">在宅</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>扱える技術（複数選択）</legend>
+      <input type="checkbox" id="skill-java" name="skills" value="Java">
+      <label for="skill-java">Java</label>
+      <input type="checkbox" id="skill-js" name="skills" value="JavaScript">
+      <label for="skill-js">JavaScript</label>
+      <input type="checkbox" id="skill-sql" name="skills" value="SQL">
+      <label for="skill-sql">SQL</label>
+    </fieldset>
+
+    <p>
+      <input type="checkbox" id="agree" name="agree" required>
+      <label for="agree">利用規約に同意する</label>
+    </p>
+
+    <p>
+      <button type="submit">登録</button>
+    </p>
+
+    <!-- エラーと結果を出す場所。中身は JavaScript が入れる -->
+    <p class="error" id="error-message"></p>
+  </form>
+
+  <h2>送信される値</h2>
+  <pre id="result">（まだ登録していない）</pre>
+
+  <script src="app.js"></script>
+</body>
+</html>

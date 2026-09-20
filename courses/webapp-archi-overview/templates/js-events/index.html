@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--
+  イベント処理。ユーザーの操作は「イベント」として JavaScript に届く。
+
+  画面右の記録欄に、発生したイベントが上から順に積まれる。
+  ボタンを押す、文字を打つ、選び直す、マウスを乗せる、キーを押す……を試して、
+  どの操作でどのイベントが発生するかを見る。
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>イベント処理</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>イベントを観察する</h1>
+
+  <div class="layout">
+    <section class="panel">
+      <h2>操作するところ</h2>
+
+      <p>
+        <button id="hello-button" type="button">クリック（click）</button>
+        <span id="click-count" class="count">0 回</span>
+      </p>
+
+      <p>
+        <label for="keyword">文字を打つ（input / change）</label>
+        <input type="text" id="keyword" placeholder="打つたびに input が発生する">
+        <span id="echo" class="echo"></span>
+      </p>
+
+      <p>
+        <label for="department">選び直す（change）</label>
+        <select id="department">
+          <option value="営業部">営業部</option>
+          <option value="企画部">企画部</option>
+          <option value="人事部">人事部</option>
+        </select>
+      </p>
+
+      <p>
+        <label for="memo">フォーカスの出入り（focus / blur）</label>
+        <input type="text" id="memo" placeholder="クリックして、外をクリックする">
+      </p>
+
+      <p>
+        <label for="keys">キーを押す（keydown）</label>
+        <input type="text" id="keys" placeholder="Enter や矢印キーも試す">
+      </p>
+
+      <!-- マウスを乗せたときと離したとき -->
+      <div id="hover-box" class="hover-box">ここにマウスを乗せる（mouseover / mouseout）</div>
+    </section>
+
+    <section class="panel">
+      <h2>発生したイベント <button id="clear-log" type="button">消す</button></h2>
+      <ul id="log" class="log"></ul>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

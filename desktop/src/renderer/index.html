@@ -30,6 +30,12 @@
   <header class="app-header">
     <div class="header-left">
       <span class="app-title" id="app-title">Codinable</span>
+      <!-- コース切り替え。インストールされている講座のあいだを移る。
+           コースが 1 つだけのときは、今どの講座かを示す表示として出したままにする -->
+      <label class="course-picker" data-i18n-title="coursePickerTitle" title="受講している講座を選びます">
+        <span class="course-picker-icon" aria-hidden="true">🎓</span>
+        <select class="course-select" id="active-course-select"></select>
+      </label>
       <select class="project-select" id="project-select" data-i18n-title="projectSelectTitle" title="開くプロジェクトを選びます">
         <option value="" data-i18n="noProject">プロジェクト未選択</option>
       </select>
@@ -53,7 +59,9 @@
     <span class="project-kinds" id="project-kinds"></span>
     <span class="project-path" id="project-path"></span>
     <span class="project-bar-actions">
-      <button class="btn-lesson-list" id="btn-restore-template" data-i18n="btnRestoreTemplate" data-i18n-title="btnRestoreTemplateTitle" title="雛形のファイルのうち、消してしまったものを復元します（既存ファイルは上書きしません）">雛形を復元</button>
+      <!-- 1 プロジェクト = 1 演習なので、ここが「この演習をやり直す」口になる。
+           雛形にあるファイルを上書きして戻す (自分で足したファイルは残す) -->
+      <button class="btn-lesson-list" id="btn-reset-exercise" data-i18n="btnResetExercise" data-i18n-title="btnResetExerciseTitle" title="この演習のファイルを配布時の状態に戻します">↺ 初期化</button>
     </span>
   </div>
 
@@ -150,6 +158,28 @@
 
     <div class="settings-sep"></div>
 
+    <!-- コースは講座単位で足せる。どこから読まれているかが分かると、
+         「増やしたのに出ない」ときの切り分けができる -->
+    <div class="settings-group">
+      <div class="settings-label" data-i18n="coursesLabel">インストールされている講座</div>
+      <div class="runtime-info" id="courses-info">
+        <div class="runtime-info-row" data-i18n="loading">読み込み中...</div>
+      </div>
+      <div class="ws-root-wrap">
+        <button class="btn btn-answer" id="btn-open-courses-dir" data-i18n="btnOpenCoursesDir"
+                data-i18n-title="btnOpenCoursesDirTitle"
+                title="講座を手で足すためのフォルダを開きます">📂 講座フォルダを開く</button>
+        <button class="btn btn-answer" id="btn-reload-courses" data-i18n="btnReloadCourses"
+                data-i18n-title="btnReloadCoursesTitle"
+                title="足した講座を読み直します">↻ 読み直す</button>
+      </div>
+      <div class="api-key-hint" data-i18n="coursesHint">
+        講座を足すと、このアプリを入れ直さなくても演習が増えます。
+      </div>
+    </div>
+
+    <div class="settings-sep"></div>
+
     <div class="settings-group">
       <div class="settings-label" data-i18n="runtimeLabel">同梱ランタイム</div>
       <div class="runtime-info" id="runtime-info">
@@ -185,9 +215,9 @@
       <div class="side-header exercise-header">
         <span data-i18n="exerciseTitle">📚 演習</span>
         <span class="badge" id="exercise-count">0</span>
+        <!-- どの講座の演習を出しているか。切り替えはヘッダー左のコース選択で行う -->
+        <span class="exercise-course-name" id="exercise-course-name"></span>
       </div>
-      <select class="exercise-course-select" id="exercise-course-select"
-              data-i18n-title="exerciseCourseTitle" title="講座を選びます"></select>
       <div class="exercise-list" id="exercise-list">
         <div class="tree-placeholder" data-i18n="exerciseEmpty">演習がありません</div>
       </div>

@@ -87,6 +87,23 @@ ipcMain.handle('open-browser', (_event, url) => {
 ipcMain.handle('load-courses', (_event, { lang } = {}) =>
   courses.loadCourses(lang || config.getUiLang()));
 
+// インストールされているコースと置き場の一覧 (設定画面に出す)
+ipcMain.handle('courses-info', (_event, { lang } = {}) =>
+  courses.describeCourses(lang || config.getUiLang()));
+
+// コースを足したあとに読み直す (アプリの再起動を要らなくする)
+ipcMain.handle('courses-reload', (_event, { lang } = {}) => {
+  courses.clearCache();
+  return courses.loadCourses(lang || config.getUiLang());
+});
+
+// 手でコースを足せるように、個人用のコース置き場を開く
+ipcMain.handle('courses-open-dir', () => {
+  const dir = courses.ensureUserCoursesDir();
+  shell.openPath(dir);
+  return { ok: true, dir };
+});
+
 // ═══════════════════════════════════════════════════════════
 //  ワークスペース
 // ═══════════════════════════════════════════════════════════
@@ -106,13 +123,14 @@ ipcMain.handle('ws-create-project', (_event, { name, courseId, templateId, lang 
 });
 
 
-ipcMain.handle('ws-restore-template', (_event, { name, lang } = {}) => {
+// 演習を配布時の状態に戻す。汚したコードをいつでも捨てられるようにするための口。
+ipcMain.handle('ws-reset-template', (_event, { name, lang } = {}) => {
   const dir = workspace.resolveProjectDir(name);
   if (!dir) return { ok: false, error: 'not-found' };
   const meta = workspace.readProjectMeta(dir);
   if (!meta.courseId || !meta.template) return { ok: false, error: 'no-template' };
   const templateDir = courses.findTemplateDir(meta.courseId, meta.template, lang || config.getUiLang());
-  return workspace.restoreTemplate({ name, templateDir });
+  return workspace.resetToTemplate({ name, templateDir });
 });
 
 ipcMain.handle('ws-project-info', (_event, { name } = {}) => {

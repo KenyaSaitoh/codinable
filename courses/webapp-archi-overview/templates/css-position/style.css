@@ -1,0 +1,93 @@
+body {
+  font-family: 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+  line-height: 1.7;
+  margin: 16px;
+  max-width: 640px;
+  color: #24292f;
+}
+
+h2 { margin-top: 32px; }
+.caption { font-size: 14px; color: #57606a; }
+code { font-family: 'Consolas', monospace; background: #eaeef2; padding: 0 4px; }
+
+.demo-area {
+  border: 1px dashed #8b949e;
+  padding: 12px;
+  background: #f6f8fa;
+}
+
+.block {
+  background: #ffffff;
+  border: 1px solid #d8dee4;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+/* ── relative: 通常の位置を基準にずらす ───────────────── */
+.rel {
+  position: relative;
+  left: 40px;
+  top: 10px;
+  border-color: #2f6feb;
+  background: #ddf4ff;
+}
+
+/* ── absolute: position 指定済みの親を基準に置く ────────── */
+/* 基準にしたい親に relative を付けるのが定石（付け忘れると画面全体が基準になる） */
+.anchor { position: relative; min-height: 120px; }
+
+.tag {
+  position: absolute;
+  padding: 2px 8px;
+  font-size: 13px;
+  color: #ffffff;
+  background: #8250df;
+  border-radius: 4px;
+}
+.tag-tr { top: 8px;    right: 8px; }
+.tag-bl { bottom: 8px; left: 8px; }
+
+/* ── fixed: 画面に対して固定する ─────────────────────── */
+.floating-button {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 50;          /* 本文より手前に出す */
+  padding: 6px 12px;
+  font: inherit;
+  color: #ffffff;
+  background: #2f6feb;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+/* ── z-index: 重なり順 ──────────────────────────────── */
+.stack { position: relative; height: 140px; }
+
+.layer {
+  position: absolute;
+  width: 160px;
+  height: 80px;
+  padding: 6px;
+  font-size: 13px;
+  border: 1px solid #24292f;
+}
+/* 位置を少しずつずらして重ねる。手前に来るのは z-index が大きいもの */
+.layer-1 { top: 10px; left: 10px;  background: #ddf4ff; z-index: 1; }
+.layer-2 { top: 30px; left: 70px;  background: #dafbe1; z-index: 2; }
+.layer-3 { top: 50px; left: 130px; background: #fff8c5; z-index: 3; }
+
+/* ── sticky: 指定位置に達したら貼り付く ────────────────── */
+.sticky-head {
+  position: sticky;
+  top: 0;                /* 画面の上端に達したら止まる */
+  margin: 0;
+  padding: 6px 10px;
+  color: #ffffff;
+  background: #2f6feb;
+  z-index: 10;
+}
+
+.long { padding: 0 10px; border: 1px solid #d8dee4; border-top: none; }

@@ -1,0 +1,118 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+  line-height: 1.7;
+  color: #24292f;
+  background: #f6f8fa;
+}
+
+h1 { font-size: 24px; }
+h2 { font-size: 18px; margin-top: 28px; }
+.caption, .label { font-size: 13px; color: #57606a; margin: 4px 0 16px; }
+code { font-family: 'Consolas', monospace; background: #eaeef2; padding: 0 4px; }
+
+/* ═══ Flexbox: 1 方向に並べる ═══════════════════════ */
+
+.navbar {
+  display: flex;                    /* 子要素が横一列に並ぶ */
+  justify-content: space-between;   /* 主軸（横）方向: 両端に寄せる */
+  align-items: center;              /* 交差軸（縦）方向: 中央で揃える */
+  gap: 16px;                        /* 子要素のあいだの間隔 */
+  padding: 10px 20px;
+  background: #24292f;
+  color: #ffffff;
+}
+
+.brand { font-weight: bold; }
+
+.nav-links { display: flex; gap: 16px; }
+.nav-links a { color: #ddf4ff; text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+
+/* ── justify-content の比較 ─────────────────────────── */
+.flex-demo {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px dashed #8b949e;
+}
+
+.start   { justify-content: flex-start; }
+.center  { justify-content: center; }
+.between { justify-content: space-between; }
+.around  { justify-content: space-around; }
+
+.chip {
+  padding: 6px 16px;
+  background: #ddf4ff;
+  border: 1px solid #2f6feb;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* flex は「余った幅をどの比で受け取るか」の指定 */
+.grow .chip { flex-basis: 0; }
+.flex-1 { flex: 1; }
+.flex-2 { flex: 2; }
+
+/* ── カードの横並び（折り返しあり） ───────────────────── */
+.cards {
+  display: flex;
+  flex-wrap: wrap;        /* 入りきらなければ次の行へ回す */
+  gap: 12px;
+}
+
+.card {
+  flex: 1 1 160px;        /* 伸びる / 縮む / 基準サイズ */
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #d8dee4;
+  border-radius: 8px;
+}
+.card h3 { margin: 0 0 4px; font-size: 16px; }
+.card p  { margin: 0; color: #57606a; font-size: 14px; }
+
+/* ═══ Grid: 行と列の 2 次元 ═════════════════════════ */
+
+.page {
+  display: grid;
+  /* 1 列目は 200px 固定、2 列目は残り全部（1fr = 余った幅の 1 つ分） */
+  grid-template-columns: 200px 1fr;
+  gap: 16px;
+  padding: 16px;
+}
+
+.side { grid-column: 1; }
+.main { grid-column: 2; }
+/* フッターは 2 列ぶんを占める（1 本目の線から 3 本目の線まで） */
+.foot { grid-column: 1 / 3; }
+
+.side, .main, .foot {
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid #d8dee4;
+  border-radius: 8px;
+}
+.side h2 { margin-top: 0; }
+.foot p  { margin: 0; color: #57606a; font-size: 14px; }
+
+/* ── マス目の例 ─────────────────────────────────────── */
+.grid-demo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);   /* 1fr を 3 つ = 均等 3 列 */
+  gap: 8px;
+}
+
+.cell {
+  padding: 16px 8px;
+  text-align: center;
+  background: #dafbe1;
+  border: 1px solid #1a7f37;
+  font-size: 14px;
+}
+
+/* 1 本目の線から 3 本目の線まで（= 2 列分）を占める */
+.wide { grid-column: 1 / 3; background: #fff8c5; border-color: #9a6700; }

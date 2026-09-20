@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!--
+  サーバーからデータを取り、ページを再読み込みせずに一部だけ書き換える。
+  ここでのサーバーは Codinable の静的サーバーで、users.json を返すだけである。
+
+  ページ全体をリロードせずに画面が変わることが要点である。
+  この考え方が、10 章の SPA（React）の土台になる。
+
+  試すこと:
+    1. 「読み込む」を押す → 表が埋まる（URL は変わらない）
+    2. 「わざと失敗させる」を押す → 404 になり、エラーの分岐が動く
+    3. users.json を編集して保存し、もう一度「読み込む」→ 内容が変わる
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>非同期通信</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>社員一覧</h1>
+
+  <p>
+    <button id="load" type="button">読み込む</button>
+    <button id="load-broken" type="button">わざと失敗させる</button>
+    <span id="status" class="status"></span>
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>社員番号</th><th>氏名</th><th>部署</th><th>月給</th></tr>
+    </thead>
+    <!-- 行は app.js が組み立てる -->
+    <tbody id="user-list"></tbody>
+  </table>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!--
+  レイアウトのための入れ物。
+  同じ見た目を div だけで組むことも、セマンティック要素で組むこともできる。
+  違いは「タグ名から領域の役割が読み取れるか」だけである。
+
+  読み込んでいる outline.css は、どこがどの領域かを見えるようにするための
+  最小限の指定にとどめてある（装飾そのものは 3.3 で扱う）。
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>セマンティック要素</title>
+  <link rel="stylesheet" href="outline.css">
+</head>
+<body>
+
+  <!-- ページやセクションのヘッダー領域 -->
+  <header>
+    <h1>Kensait Blog</h1>
+    <!-- ナビゲーションリンクのまとまり -->
+    <nav aria-label="メインナビゲーション">
+      <a href="#">ホーム</a>
+      <a href="#">記事一覧</a>
+      <a href="#">お問い合わせ</a>
+    </nav>
+  </header>
+
+  <!-- ページの主要コンテンツ。1 ページに 1 つだけ置く -->
+  <main>
+    <!-- 単体で意味が通る記事コンテンツ -->
+    <article>
+      <h2>セマンティック要素とは</h2>
+      <p>
+        <code>div</code> はそれ自体に意味を持たない汎用の入れ物である。
+        <code>header</code> や <code>main</code> といったセマンティック要素に置き換えると、
+        Web ブラウザや検索エンジン、スクリーンリーダーが領域の役割を読み取れるようになる。
+      </p>
+
+      <!-- テーマごとのまとまり -->
+      <section>
+        <h3>div と span の違い</h3>
+        <p>
+          <code>div</code> はブロック要素で、横幅いっぱいに広がり前後が改行される。
+          <span class="highlight">span はインライン要素</span>で、文章の流れの中に収まる。
+        </p>
+        <!-- 見た目は同じでも、意味を持たないのはこちら -->
+        <div class="plain-box">これは div（ブロック要素）である</div>
+        <div class="plain-box">これも div。前後に改行が入るので縦に並ぶ</div>
+        <p>
+          <span class="plain-inline">これは span</span>
+          <span class="plain-inline">これも span</span>
+          インライン要素なので横に並ぶ。
+        </p>
+      </section>
+    </article>
+
+    <!-- 補足的なコンテンツ（サイドバー等） -->
+    <aside>
+      <h3>関連リンク</h3>
+      <ul>
+        <li><a href="#">HTML の基本</a></li>
+        <li><a href="#">フォームの作り方</a></li>
+      </ul>
+
+      <h3>アクセシビリティ</h3>
+      <p>
+        <!-- 画像だけのボタンは、何のボタンか読み上げられない。
+             aria-label で読み上げ用のラベルを補う（装飾目的の画像は alt="" にする） -->
+        <button aria-label="メニューを開く">
+          <img src="menu-icon.svg" alt="" width="16" height="16">
+        </button>
+        アイコンだけのボタンには <code>aria-label</code> を付ける。
+      </p>
+      <!-- JavaScript で中身を差し替えると、スクリーンリーダーが読み上げる領域。
+           差し替えの実際は 3.2 の DOM 操作で扱う -->
+      <div aria-live="polite" id="notification">通知はここに出る</div>
+    </aside>
+  </main>
+
+  <!-- ページやセクションのフッター領域 -->
+  <footer>
+    <p>&copy; 2026 Example Inc.</p>
+  </footer>
+
+</body>
+</html>

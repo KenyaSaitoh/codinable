@@ -17,9 +17,9 @@ const UI_STRINGS = {
     projectSelectTitle:  '開くプロジェクトを選びます',
     btnNewProject:       '＋ 新規プロジェクト',
     btnNewProjectTitle:  '講座のサンプルまたは空のプロジェクトを作ります',
-    btnRestoreTemplate:  '雛形を復元',
-    btnRestoreTemplateTitle:
-      '雛形のファイルのうち、消してしまったものを復元します（既存ファイルは上書きしません）',
+    btnResetExercise:    '↺ 初期化',
+    btnResetExerciseTitle:
+      'この演習のファイルを配布時の状態に戻します（自分で足したファイルは残ります）',
     llmPickerTitle:      'チャットに使うモデル（API キーは自分で設定します）',
     btnSettings:         '⚙ 設定',
     settings:            '設定',
@@ -56,8 +56,23 @@ const UI_STRINGS = {
     // 演習 = 講座のレッスンに対応する「動かして確かめる 1 単位」。
     // 問題を解かせるものではないので、正解・採点・完了といった語は使わない。
     exerciseTitle:       '📚 演習',
-    exerciseCourseTitle: '講座を選びます',
     exerciseEmpty:       '演習がありません',
+
+    // ── コース (講座) ──
+    // 講座は 1 つずつ足せる。同梱 / 共有 / 個人のどこから読まれたかを設定画面に出す。
+    coursePickerTitle:   '受講している講座を選びます',
+    coursesLabel:        'インストールされている講座',
+    coursesHint:         '講座を足すと、このアプリを入れ直さなくても演習が増えます。',
+    coursesEmpty:        '講座が入っていません',
+    coursesExercises:    '演習 {n} 件',
+    coursesRootMissing:  '（まだありません）',
+    courseSource_bundled: 'アプリ同梱',
+    courseSource_shared:  '共有フォルダ',
+    courseSource_user:    '個人フォルダ',
+    btnOpenCoursesDir:      '📂 講座フォルダを開く',
+    btnOpenCoursesDirTitle: '講座を手で足すためのフォルダを開きます',
+    btnReloadCourses:       '↻ 読み直す',
+    btnReloadCoursesTitle:  '足した講座を読み直します',
     exerciseChapter:     'チャプター {n}',
     exerciseNotCreated:  'まだ開いていません（選ぶと雛形から用意します）',
     runtime_java:        'Java',
@@ -199,8 +214,10 @@ const UI_STRINGS = {
     errNameInvalid:      '半角英数字と . _ - だけが使えます（先頭は英数字）。',
     errNameExists:       '同じ名前のプロジェクトが既にあります。',
     errCreateFailed:     'プロジェクトを作成できませんでした: {error}',
-    restoreNoTemplate:   'このプロジェクトは雛形から作られていないため復元できません。',
-    restoreDone:         '雛形を復元しました（{n} 件のファイルを追加）。',
+    resetNoTemplate:     'このプロジェクトは演習の雛形から作られていないため、戻す先がありません。',
+    confirmResetExercise:
+      '{name} を配布時の状態に戻します。\n編集した内容は失われます（自分で足したファイルは残ります）。\nよろしいですか？',
+    resetDone:           '初期化しました（{n} 件のファイルを書き戻し）。',
 
     // ── チャット ──
     chatTitle:           '🤖 チャット',
@@ -251,9 +268,9 @@ const UI_STRINGS = {
     projectSelectTitle:  'Choose the project to open',
     btnNewProject:       '＋ New project',
     btnNewProjectTitle:  'Create a project from a course template, or an empty one',
-    btnRestoreTemplate:  'Restore template',
-    btnRestoreTemplateTitle:
-      'Bring back template files you deleted (existing files are never overwritten)',
+    btnResetExercise:    '↺ Reset',
+    btnResetExerciseTitle:
+      'Put this exercise back to the state it shipped in (files you added are kept)',
     llmPickerTitle:      'Model used for chat (you supply the API key)',
     btnSettings:         '⚙ Settings',
     settings:            'Settings',
@@ -286,8 +303,22 @@ const UI_STRINGS = {
     wsChangedReload:     'Workspace changed. Reloading the project list.',
 
     exerciseTitle:       '📚 Exercises',
-    exerciseCourseTitle: 'Choose a course',
     exerciseEmpty:       'No exercises',
+
+    // ── Courses ──
+    coursePickerTitle:   'Choose the course you are taking',
+    coursesLabel:        'Installed courses',
+    coursesHint:         'Adding a course brings in more exercises without reinstalling the app.',
+    coursesEmpty:        'No courses installed',
+    coursesExercises:    '{n} exercises',
+    coursesRootMissing:  '(not present yet)',
+    courseSource_bundled: 'Bundled with app',
+    courseSource_shared:  'Shared folder',
+    courseSource_user:    'Personal folder',
+    btnOpenCoursesDir:      '📂 Open course folder',
+    btnOpenCoursesDirTitle: 'Opens the folder where you can add courses by hand',
+    btnReloadCourses:       '↻ Reload',
+    btnReloadCoursesTitle:  'Reloads courses you have added',
     exerciseChapter:     'Chapter {n}',
     exerciseNotCreated:  'Not opened yet (choosing it sets up the files)',
     runtime_java:        'Java',
@@ -420,8 +451,10 @@ const UI_STRINGS = {
     errNameInvalid:      'Use only letters, digits and . _ - (must start with a letter or digit).',
     errNameExists:       'A project with that name already exists.',
     errCreateFailed:     'Could not create the project: {error}',
-    restoreNoTemplate:   'This project was not created from a template, so there is nothing to restore.',
-    restoreDone:         'Template restored ({n} file(s) added).',
+    resetNoTemplate:     'This project was not created from an exercise template, so there is nothing to reset to.',
+    confirmResetExercise:
+      'Reset {name} to the state it shipped in.\nYour edits will be lost (files you added are kept).\nContinue?',
+    resetDone:           'Reset done ({n} file(s) written back).',
 
     chatTitle:           '🤖 Chat',
     chatWelcome1:        '🤖 A coding sounding board. Using it is entirely optional.',

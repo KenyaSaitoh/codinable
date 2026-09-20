@@ -1,0 +1,147 @@
+/*
+  ── CSS 変数（カスタムプロパティ）─────────────────────
+  :root（文書のルート要素）に定義して、var() で参照する。
+  色や余白の値を 1 か所にまとめておくと、ここを変えるだけで全体に反映される。
+*/
+:root {
+  --primary:      #2f6feb;
+  --primary-dark: #1f4fb6;
+  --text:         #24292f;
+  --muted:        #57606a;
+  --border:       #d8dee4;
+  --bg:           #f6f8fa;
+  --space:        8px;      /* 余白の基本単位。倍数で使って統一感を出す */
+  --radius:       8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+}
+
+code { font-family: 'Consolas', monospace; background: #eaeef2; padding: 0 4px; }
+
+/* ── ヘッダーとフッター ─────────────────────────────── */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* calc で単位付きの計算ができる。8px の倍数で余白を揃える */
+  padding: var(--space) calc(var(--space) * 3);
+  color: #ffffff;
+  background: var(--primary);
+}
+.brand { font-weight: bold; }
+.nav a { color: #ffffff; margin-left: calc(var(--space) * 2); text-decoration: none; }
+.nav a:hover { text-decoration: underline; }
+
+.site-footer {
+  padding: var(--space) calc(var(--space) * 3);
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+}
+.site-footer p { margin: 0; font-size: 14px; }
+
+.width-note {
+  margin: var(--space) calc(var(--space) * 3) 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ── 全体の骨組み（既定 = 広い画面向け）───────────────── */
+.container {
+  display: grid;
+  grid-template-columns: 220px 1fr;   /* サイドバー + 本文 */
+  gap: calc(var(--space) * 2);
+  max-width: 1000px;
+  margin: 0 auto;                      /* 中央寄せ */
+  padding: calc(var(--space) * 2) calc(var(--space) * 3);
+}
+
+.sidebar, .content {
+  padding: calc(var(--space) * 2);
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.sidebar h2 { margin-top: 0; font-size: 16px; }
+.sidebar ul { padding-left: 20px; color: var(--muted); }
+
+/* ── 商品グリッド（既定は 3 列）──────────────────────── */
+.products {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(var(--space) * 2);
+}
+
+.product {
+  padding: calc(var(--space) * 1.5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  /* x方向 / y方向 / ぼかし / 色。最後の rgba の 4 つ目が透明度 */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  /* 状態が変わるときに、指定したプロパティをなめらかに変化させる */
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+.product:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  transform: translateY(-2px);      /* 少し上に浮かせる */
+}
+.product h3 { margin: 0 0 var(--space); font-size: 16px; }
+.price { margin: 0 0 var(--space); color: var(--muted); }
+
+/* ── ボタンの状態変化 ───────────────────────────────── */
+.button {
+  padding: 6px 14px;
+  font: inherit;
+  color: #ffffff;
+  background: var(--primary);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.button:hover  { background: var(--primary-dark); transform: scale(1.05); }
+.button:active { transform: scale(0.98); }
+.button:focus-visible { outline: 2px solid var(--primary-dark); outline-offset: 2px; }
+
+/* ── アニメーション ─────────────────────────────────── */
+/* @keyframes で動きを定義し、animation で要素に適用する */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.6s ease-in; }
+
+/*
+  ── メディアクエリ ───────────────────────────────────
+  画面幅の条件ごとにスタイルを上書きする。
+  ここでは「広い画面向けを既定にして、狭い画面で上書きする」書き方にしている。
+*/
+
+/* タブレット向け: 768px 以下 */
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;   /* サイドバーを本文の上に回す（1 列に積む） */
+    padding: calc(var(--space) * 2);
+  }
+  .products {
+    grid-template-columns: repeat(2, 1fr);   /* 商品は 2 列 */
+  }
+}
+
+/* スマートフォン向け: 480px 以下 */
+@media (max-width: 480px) {
+  .nav { display: none; }                    /* ナビゲーションは隠す */
+  .sidebar { display: none; }                /* サイドバーも隠す */
+  .products {
+    grid-template-columns: 1fr;              /* 商品は 1 列 */
+  }
+  body { font-size: 15px; }
+}

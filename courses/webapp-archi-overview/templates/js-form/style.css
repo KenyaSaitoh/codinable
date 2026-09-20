@@ -1,0 +1,32 @@
+body {
+  font-family: 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+  line-height: 1.7;
+  margin: 16px;
+  max-width: 520px;
+}
+
+label { display: inline-block; }
+
+input[type="radio"] + label,
+input[type="checkbox"] + label { margin-right: 12px; }
+
+input[type="text"], input[type="email"], input[type="password"], select {
+  display: block;
+  width: 100%;
+  padding: 4px 6px;
+  font: inherit;
+  /* JavaScript が style.borderColor で色だけ差し替えるので、太さと種類は固定 */
+  border: 1px solid #d8dee4;
+  border-radius: 4px;
+}
+
+fieldset { margin: 12px 0; }
+
+.hint  { font-size: 13px; color: #57606a; }
+.error { color: #cf222e; font-weight: bold; min-height: 1.7em; }
+
+pre {
+  padding: 8px;
+  background: #eaeef2;
+  white-space: pre-wrap;
+}

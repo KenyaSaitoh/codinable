@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+  ボックスモデル。CSS ではすべての要素が「箱」として扱われる。
+
+  箱は内側から content → padding → border → margin の順に囲われている。
+  この 4 つの区別が付くと、余白が思ったとおりにならない理由が分かるようになる。
+
+  style.css の数値を変えて保存し、プレビューを再読み込みして確かめる。
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ボックスモデル</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>ボックスモデル</h1>
+
+  <h2>4 つの領域</h2>
+  <!-- margin の外側・border・padding・content が入れ子になっている様子 -->
+  <div class="box-demo">
+    <div class="box-demo-border">
+      <div class="box-demo-padding">
+        <div class="box-demo-content">content</div>
+      </div>
+    </div>
+  </div>
+  <p class="caption">外から margin（灰）→ border（青の線）→ padding（水色）→ content（白）</p>
+
+  <h2>width はどこまでを指すか</h2>
+  <p>
+    どちらのカードも <code>width: 240px</code>、<code>padding: 20px</code>、
+    <code>border: 4px</code> を指定してあるが、画面上の幅が違う。
+  </p>
+  <div class="row">
+    <!-- 既定では width は content だけの幅。padding と border は外側に足される -->
+    <div class="sizing-demo content-box">
+      box-sizing: content-box<br>
+      （既定）実際の幅は 240 + 20×2 + 4×2 = 288px
+    </div>
+    <!-- border-box にすると padding と border を含めた全体が 240px になる -->
+    <div class="sizing-demo border-box">
+      box-sizing: border-box<br>
+      実際の幅は 240px のまま
+    </div>
+  </div>
+  <p class="caption">
+    現代の CSS では、最初に <code>*, *::before, *::after { box-sizing: border-box; }</code>
+    を書いて border-box に揃えるのが定石である。
+  </p>
+
+  <h2>margin の指定いろいろ</h2>
+  <div class="m-demo m-all">margin: 16px（上下左右）</div>
+  <div class="m-demo m-tb-lr">margin: 8px 40px（上下 / 左右）</div>
+  <div class="m-demo m-center">margin: 8px auto（左右 auto で中央寄せ）</div>
+
+  <h2>display による振る舞いの違い</h2>
+  <p>
+    <span class="d-inline">inline</span>
+    <span class="d-inline">inline</span>
+    インライン要素は文章の流れの中に収まり、幅や高さの指定が効かない。
+  </p>
+  <div class="d-block">block：横幅いっぱいに広がり、前後が改行される</div>
+  <div class="d-block">block：だから縦に並ぶ</div>
+  <p>
+    <span class="d-inline-block">inline-block</span>
+    <span class="d-inline-block">inline-block</span>
+    こちらは横に並びながら、幅と高さの指定が効く。
+  </p>
+  <div class="d-none">display: none を指定したので、この文は見えず、場所も取らない</div>
+
+  <h2>はみ出したとき（overflow）</h2>
+  <div class="row">
+    <div class="ov-demo ov-visible">
+      overflow: visible（既定）。枠からはみ出したまま表示される。ここに長い文章を入れると、
+      箱の外まで文字があふれる。
+    </div>
+    <div class="ov-demo ov-hidden">
+      overflow: hidden。はみ出した部分は切り捨てられる。ここに長い文章を入れると、
+      入りきらない分は見えなくなる。
+    </div>
+    <div class="ov-demo ov-auto">
+      overflow: auto。必要なときだけスクロールバーが出る。ここに長い文章を入れると、
+      スクロールして読めるようになる。
+    </div>
+  </div>
+</body>
+</html>

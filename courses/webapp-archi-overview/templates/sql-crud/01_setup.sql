@@ -1,0 +1,23 @@
+-- CRUD（登録・参照・更新・削除）を試すための準備。
+--
+-- この演習は EMPLOYEE テーブルの中身を実際に書き換える。
+-- 元の 4 件に戻したくなったら、いつでもこのファイルをもう一度流せばよい。
+--
+-- 他の SQL 演習と同じ名前のテーブルを使うので、最初に作り直している。
+
+DROP TABLE EMPLOYEE IF EXISTS CASCADE;
+
+CREATE TABLE EMPLOYEE (
+    EMPLOYEE_ID     INT,
+    EMPLOYEE_NAME   VARCHAR(30) NOT NULL,
+    DEPARTMENT_NAME VARCHAR(30),
+    SALARY          INT NOT NULL,
+    PRIMARY KEY(EMPLOYEE_ID)
+);
+
+INSERT INTO EMPLOYEE VALUES (10001, 'Alice', '営業部', 500000);
+INSERT INTO EMPLOYEE VALUES (10002, 'Bob',   '企画部', 450000);
+INSERT INTO EMPLOYEE VALUES (10003, 'Carol', '人事部', 350000);
+INSERT INTO EMPLOYEE VALUES (10004, 'Dave',  '営業部', 400000);
+
+SELECT * FROM EMPLOYEE ORDER BY EMPLOYEE_ID;

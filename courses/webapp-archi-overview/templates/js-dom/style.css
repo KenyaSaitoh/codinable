@@ -1,0 +1,26 @@
+/* 見た目は CSS 側に置き、JavaScript はクラスを付け外しするだけにする */
+
+body {
+  font-family: 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+  line-height: 1.7;
+  margin: 16px;
+  max-width: 640px;
+}
+
+table { border-collapse: collapse; }
+th, td { border: 1px solid #d8dee4; padding: 4px 10px; text-align: left; }
+
+.card {
+  border: 1px solid #d8dee4;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 16px 0;
+}
+
+/* JavaScript が classList.add で付けるクラス */
+.card.highlighted {
+  border-color: #2f6feb;
+  background: #ddf4ff;
+}
+
+#log li { color: #57606a; font-size: 14px; }

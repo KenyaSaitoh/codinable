@@ -250,12 +250,17 @@ function createProject({ name, templateDir = null, courseId = null, template = n
   return { ok: true, name: safeName, path: dir, ...detectProject(dir) };
 }
 
-/** テンプレートを再展開する (既存ファイルは壊さない) */
-function restoreTemplate({ name, templateDir }) {
+/**
+ * 演習を配布時の状態に戻す (雛形のファイルを上書きする)。
+ *
+ * 上書きだけで、受講者が自分で足したファイルは消さない。消す方が「初期状態」に
+ * 忠実だが、試したコードを黙って捨てることになるため、雛形にあるものだけを戻す。
+ */
+function resetToTemplate({ name, templateDir }) {
   const dir = resolveProjectDir(name);
   if (!dir || !fs.existsSync(dir)) return { ok: false, error: 'not-found' };
   if (!templateDir || !fs.existsSync(templateDir)) return { ok: false, error: 'no-template' };
-  const written = copyDirSafe(templateDir, dir);
+  const written = copyDirSafe(templateDir, dir, { overwrite: true });
   return { ok: true, written };
 }
 
@@ -358,7 +363,7 @@ module.exports = {
   readProjectMeta,
   writeProjectMeta,
   createProject,
-  restoreTemplate,
+  resetToTemplate,
   listTree,
   readFile,
   writeFile,

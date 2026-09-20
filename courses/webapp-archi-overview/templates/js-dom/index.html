@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--
+  DOM 操作。HTML に書いた内容を、JavaScript が後から書き換える。
+
+  このページの HTML には「書き換え前」の文字が入っている。
+  プレビューに出ているのは app.js が書き換えたあとの姿なので、
+  ソース（この index.html）と見比べると、何が変わったかが分かる。
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM操作</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- id はページ内で一意。getElementById で 1 つだけ取り出せる -->
+  <h1 id="title">書き換え前のタイトル</h1>
+
+  <p id="message">この文も JavaScript から書き換える。</p>
+
+  <!-- class は同じ役割の要素に付けるグループ名。querySelectorAll でまとめて取れる -->
+  <ul>
+    <li class="list-item">Alice</li>
+    <li class="list-item">Bob</li>
+    <li class="list-item">Carol</li>
+  </ul>
+
+  <div class="card">
+    <h2>カード</h2>
+    <p>クラスを足すと見た目が変わる（CSS 側に .highlighted を用意してある）。</p>
+  </div>
+
+  <h2>JavaScript から作った行</h2>
+  <!-- 中身が空の入れ物。行は app.js が組み立てて入れる -->
+  <table>
+    <thead>
+      <tr><th>氏名</th><th>部署</th></tr>
+    </thead>
+    <tbody id="person-list"></tbody>
+  </table>
+
+  <h2>やったこと</h2>
+  <ol id="log"></ol>
+
+  <!-- script は body の末尾に置く。DOM が組み立て終わってから実行されるため -->
+  <script src="app.js"></script>
+</body>
+</html>

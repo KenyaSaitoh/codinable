@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!--
+  レスポンシブデザインと視覚効果、そして CSS 変数。
+
+  プレビューとエディタの境目をドラッグして幅を変えると、
+  768px 以下・480px 以下でレイアウトが切り替わるのが見える
+  （現在の幅は画面上部に出る）。
+
+  色や余白は :root にまとめた CSS 変数を参照している。
+  style.css のいちばん上の --primary を変えると、ページ全体の色が一度に変わる。
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- スマートフォンで等倍に表示するための宣言。これが無いと縮小表示になる -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>レスポンシブと視覚効果</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <span class="brand">Kensait Shop</span>
+    <!-- 狭い画面では隠すナビゲーション -->
+    <nav class="nav">
+      <a href="#">一覧</a>
+      <a href="#">カート</a>
+      <a href="#">マイページ</a>
+    </nav>
+  </header>
+
+  <p class="width-note">
+    いまの幅：<span id="width">-</span>px
+    （<span id="mode">-</span>）
+  </p>
+
+  <div class="container">
+    <!-- 480px 以下では消えるサイドバー -->
+    <aside class="sidebar">
+      <h2>絞り込み</h2>
+      <ul>
+        <li>価格</li>
+        <li>在庫あり</li>
+        <li>新着</li>
+      </ul>
+    </aside>
+
+    <main class="content">
+      <h1 class="fade-in">商品一覧</h1>
+      <p>
+        広い画面では 3 列、768px 以下では 2 列、480px 以下では 1 列に切り替わる。
+        切り替えはメディアクエリ（<code>@media</code>）で指定している。
+      </p>
+
+      <div class="products">
+        <article class="product">
+          <h3>ノート</h3>
+          <p class="price">¥480</p>
+          <button class="button" type="button">カートに入れる</button>
+        </article>
+        <article class="product">
+          <h3>万年筆</h3>
+          <p class="price">¥3,200</p>
+          <button class="button" type="button">カートに入れる</button>
+        </article>
+        <article class="product">
+          <h3>インク</h3>
+          <p class="price">¥1,100</p>
+          <button class="button" type="button">カートに入れる</button>
+        </article>
+        <article class="product">
+          <h3>ブックカバー</h3>
+          <p class="price">¥900</p>
+          <button class="button" type="button">カートに入れる</button>
+        </article>
+        <article class="product">
+          <h3>しおり</h3>
+          <p class="price">¥220</p>
+          <button class="button" type="button">カートに入れる</button>
+        </article>
+        <article class="product">
+          <h3>ペンケース</h3>
+          <p class="price">¥1,800</p>
+          <button class="button" type="button">カートに入れる</button>
+        </article>
+      </div>
+
+      <h2>視覚効果</h2>
+      <p>ボタンにマウスを乗せると、色と大きさがなめらかに変わる（transition + transform）。</p>
+      <p>カードにマウスを乗せると、影が濃くなって浮き上がる（box-shadow）。</p>
+      <p>見出しはページを開いたときに薄く現れる（@keyframes + animation）。</p>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Example Inc.</p>
+  </footer>
+
+  <script>
+    // 学習用に、いまの幅とどのメディアクエリが効いているかを表示しているだけ。
+    // レスポンシブそのものは CSS の機能であり、JavaScript は必要ない。
+    const widthLabel = document.getElementById('width');
+    const modeLabel  = document.getElementById('mode');
+
+    function showWidth() {
+      const w = document.documentElement.clientWidth;
+      widthLabel.textContent = w;
+      modeLabel.textContent =
+        w <= 480 ? 'スマートフォン向け（480px 以下・1 列）'
+        : w <= 768 ? 'タブレット向け（768px 以下・2 列）'
+        : 'デスクトップ向け（3 列）';
+    }
+
+    showWidth();
+    window.addEventListener('resize', showWidth);
+  </script>
+</body>
+</html>

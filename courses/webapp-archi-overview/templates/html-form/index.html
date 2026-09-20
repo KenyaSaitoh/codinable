@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<!--
+  ユーザー入力を受け取るフォーム。
+  JavaScript は 1 か所（送信後の URL を表示する部分）だけで、
+  入力欄の種類と検証はすべて HTML の機能である。
+
+  試すこと:
+    1. 何も入力せずに「送信」を押す → Web ブラウザが必須入力を弾く
+    2. メール欄に「abc」と入れて送信 → 形式のエラーが出る
+    3. 正しく入力して送信 → ページが再読み込みされ、URL に入力値が並ぶ
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フォーム</title>
+  <link rel="stylesheet" href="form.css">
+</head>
+<body>
+  <h1>社員登録</h1>
+
+  <!--
+    action は送信先の URL、method は使う HTTP メソッド。
+    ここでは送信先を自分自身（action="")、メソッドを GET にしてあるので、
+    入力値が URL のクエリパラメータとして並ぶのが見える。
+    パスワードのように見せたくない値は POST を使う（4.1 の HTTP で扱う）。
+  -->
+  <form action="" method="get">
+
+    <!-- label の for と input の id を一致させると、ラベルを押して入力欄に移れる -->
+    <p>
+      <label for="name">氏名（必須・3〜20文字）</label>
+      <input type="text" id="name" name="name" placeholder="山田太郎"
+             required minlength="3" maxlength="20">
+    </p>
+
+    <p>
+      <label for="email">メール（必須・形式を検証する）</label>
+      <input type="email" id="email" name="email" placeholder="user@example.com" required>
+    </p>
+
+    <p>
+      <label for="tel">電話番号（数字とハイフンのみ）</label>
+      <input type="tel" id="tel" name="tel" placeholder="090-1234-5678" pattern="[0-9\-]+">
+    </p>
+
+    <p>
+      <label for="zipcode">郵便番号（123-4567 の形）</label>
+      <!-- pattern は正規表現。[0-9]{3} は「数字 3 個」の意味。
+           title はエラー時に併せて出るメッセージ -->
+      <input type="text" id="zipcode" name="zipcode" pattern="[0-9]{3}-[0-9]{4}"
+             placeholder="123-4567" title="郵便番号をハイフン付きで入力してください">
+    </p>
+
+    <p>
+      <label for="age">年齢（0〜150）</label>
+      <input type="number" id="age" name="age" min="0" max="150" step="1">
+    </p>
+
+    <p>
+      <label for="salary">月給（1000円単位）</label>
+      <input type="number" id="salary" name="salary" min="0" max="9999999" step="1000">
+    </p>
+
+    <p>
+      <label for="birthday">生年月日</label>
+      <input type="date" id="birthday" name="birthday">
+    </p>
+
+    <p>
+      <label for="start-time">始業時刻</label>
+      <input type="time" id="start-time" name="start_time" min="07:00" max="12:00">
+    </p>
+
+    <p>
+      <label for="site">サイト（URL の形式を検証する）</label>
+      <input type="url" id="site" name="site" placeholder="https://example.com">
+    </p>
+
+    <p>
+      <label for="department">部署（select）</label>
+      <select id="department" name="department">
+        <option value="">選択してください</option>
+        <option value="dev">開発部</option>
+        <option value="plan">企画部</option>
+        <option value="sales">営業部</option>
+      </select>
+    </p>
+
+    <fieldset>
+      <!-- 選択肢のまとまりには fieldset と legend を使う -->
+      <legend>勤務形態（ラジオボタン・単一選択）</legend>
+      <input type="radio" id="work-office" name="work" value="office" checked>
+      <label for="work-office">出社</label>
+      <input type="radio" id="work-remote" name="work" value="remote">
+      <label for="work-remote">在宅</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>扱える技術（チェックボックス・複数選択）</legend>
+      <!-- name を揃えると、同じ項目の複数値として送られる -->
+      <input type="checkbox" id="skill-java" name="skills" value="java">
+      <label for="skill-java">Java</label>
+      <input type="checkbox" id="skill-js" name="skills" value="js">
+      <label for="skill-js">JavaScript</label>
+      <input type="checkbox" id="skill-sql" name="skills" value="sql">
+      <label for="skill-sql">SQL</label>
+    </fieldset>
+
+    <p>
+      <label for="level">習熟度（range）</label>
+      <input type="range" id="level" name="level" min="0" max="100" step="10" value="50">
+    </p>
+
+    <p>
+      <label for="color">テーマカラー（color）</label>
+      <input type="color" id="color" name="color" value="#3498db">
+    </p>
+
+    <p>
+      <label for="comment">備考（textarea）</label>
+      <textarea id="comment" name="comment" rows="4" cols="40" maxlength="200"></textarea>
+    </p>
+
+    <p>
+      <label for="readonly-id">社員番号（readonly：変更できないが送信される）</label>
+      <input type="text" id="readonly-id" name="employee_id" value="10005" readonly>
+    </p>
+
+    <p>
+      <label for="disabled-note">備考テンプレート（disabled：送信もされない）</label>
+      <input type="text" id="disabled-note" name="template" value="未使用" disabled>
+    </p>
+
+    <!-- 画面には出さず、値だけ送る欄 -->
+    <input type="hidden" name="form_version" value="1">
+
+    <p>
+      <input type="checkbox" id="agree" name="agree" required>
+      <label for="agree">利用規約に同意する（必須）</label>
+    </p>
+
+    <p>
+      <button type="submit">送信</button>
+      <button type="reset">入力をクリア</button>
+    </p>
+  </form>
+
+  <hr>
+
+  <h2>送信された値</h2>
+  <!-- GET で送ると、入力値が URL のクエリパラメータになる。それをそのまま出す -->
+  <pre id="sent"></pre>
+
+  <script>
+    // 送信は HTML の機能で行われ、ページは再読み込みされる。
+    // ここでは、再読み込み後の URL に何が入っているかを表示しているだけである。
+    // ページを再読み込みせずに送る方法は 3.2 で扱う。
+    const params = new URLSearchParams(location.search);
+    const lines  = [...params.entries()].map(([key, value]) => `${key} = ${value}`);
+    document.getElementById('sent').textContent =
+      lines.length ? lines.join('\n') : '（まだ送信していない）';
+  </script>
+</body>
+</html>

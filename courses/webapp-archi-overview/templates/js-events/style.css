@@ -1,0 +1,53 @@
+body {
+  font-family: 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+  line-height: 1.7;
+  margin: 16px;
+}
+
+/* 画面が広いときは 2 列、狭いときは 1 列（レイアウトの話は 3.3 で扱う） */
+.layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.panel {
+  border: 1px solid #d8dee4;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+label { display: block; }
+input[type="text"], select { padding: 4px 6px; font: inherit; }
+
+.count, .echo { margin-left: 8px; color: #57606a; }
+
+.hover-box {
+  margin-top: 12px;
+  padding: 24px;
+  text-align: center;
+  border: 1px dashed #8b949e;
+  border-radius: 8px;
+}
+
+/* JavaScript が classList で付け外しするクラス */
+.hover-box.hovered {
+  border-color: #2f6feb;
+  background: #ddf4ff;
+}
+
+.log {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 320px;
+  overflow: auto;
+  font-family: 'Consolas', monospace;
+  font-size: 13px;
+}
+
+.log li {
+  padding: 2px 4px;
+  border-bottom: 1px solid #eaeef2;
+  white-space: nowrap;
+}

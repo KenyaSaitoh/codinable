@@ -3750,19 +3750,19 @@ body:not(.sidebar-open) .sidebar.explorer { display: flex; }
   overflow-y: auto;
   padding: 3px 0 6px;
 }
-.exercise-course-select {
-  margin: 5px 8px;
-  padding: 3px 6px;
-  flex-shrink: 0;
-  background: var(--bg-overlay);
-  color: var(--text-main);
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
-  font: inherit;
-  font-size: calc(var(--editor-font-size) - 4px);
-  cursor: pointer;
-}
 .exercise-header { justify-content: space-between; gap: 8px; }
+/* どの講座の演習を出しているかの表示。切り替えはヘッダー左のコース選択で行う */
+.exercise-course-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+  font-weight: 400;
+  font-size: calc(var(--editor-font-size) - 5px);
+  color: var(--text-muted);
+}
 
 /* チャプターの区切り。リスト自体はフラットなまま、
    どのチャプターのものかを示すだけの見出し (折りたためない) */
@@ -3887,6 +3887,32 @@ body.theme-dark .exercise-item.active {
   background: var(--bg-overlay);
 }
 .llm-picker-icon { font-size: calc(var(--editor-font-size) - 2px); line-height: 1; }
+
+/* ── コース切り替え (ヘッダー左) ──
+   受講している講座のあいだを移る。LLM の選択と同じ見た目に揃えて、
+   「上の行は今いる場所を選ぶところ」と分かるようにする。 */
+.course-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--bg-overlay);
+}
+.course-picker-icon { font-size: calc(var(--editor-font-size) - 2px); line-height: 1; }
+.course-select {
+  max-width: 220px;
+  background: transparent;
+  color: var(--text-main);
+  border: none;
+  font: inherit;
+  font-size: calc(var(--editor-font-size) - 3px);
+  cursor: pointer;
+  outline: none;
+}
+/* 講座が 1 つだけのときは選べないが、今どの講座かは読めるようにしておく */
+.course-select:disabled { color: var(--text-main); cursor: default; opacity: 1; }
 .llm-select {
   background: transparent;
   color: var(--text-main);

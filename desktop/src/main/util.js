@@ -127,7 +127,7 @@ function safeJoin(root, relPath) {
 }
 
 /** ディレクトリを再帰コピーする (既存ファイルは上書きしない) */
-function copyDirSafe(src, dest) {
+function copyDirSafe(src, dest, { overwrite = false } = {}) {
   let written = 0;
   if (!fs.existsSync(src)) return written;
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
@@ -135,8 +135,8 @@ function copyDirSafe(src, dest) {
     const to   = path.join(dest, entry.name);
     if (entry.isDirectory()) {
       fs.mkdirSync(to, { recursive: true });
-      written += copyDirSafe(from, to);
-    } else if (!fs.existsSync(to)) {
+      written += copyDirSafe(from, to, { overwrite });
+    } else if (overwrite || !fs.existsSync(to)) {
       fs.mkdirSync(path.dirname(to), { recursive: true });
       fs.copyFileSync(from, to);
       written++;

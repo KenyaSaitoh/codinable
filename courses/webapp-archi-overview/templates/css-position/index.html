@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!--
+  要素の配置と重なり。position で「どこに置くか」、z-index で「どちらを手前にするか」を決める。
+
+  プレビューを縦にスクロールして、次の違いを見る。
+    ・右上のボタンは fixed なので、スクロールしても画面上の位置が変わらない
+    ・青い見出しは sticky なので、上端に達すると貼り付いて止まる
+    ・absolute の付箋は、親（relative を指定した箱）の角を基準に置かれている
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>配置と重なり</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- fixed: スクロールしても画面上の位置が固定される -->
+  <button class="floating-button" type="button">固定ボタン</button>
+
+  <h1>position と z-index</h1>
+
+  <h2>static（既定）と relative</h2>
+  <div class="demo-area">
+    <div class="block">static：通常の位置に置かれる</div>
+    <!-- relative は「通常の位置から」ずらす。周りの要素は詰めてこない -->
+    <div class="block rel">relative：通常の位置から右 40px・下 10px ずらした</div>
+    <div class="block">static：前の要素がずれても、この要素の位置は変わらない</div>
+  </div>
+
+  <h2>absolute</h2>
+  <p>
+    absolute は、<code>position</code> を指定した最も近い親（ここでは
+    <code>relative</code> を付けた箱）を基準に置かれる。通常の並びから外れるので、
+    周りの要素はこの要素が無いものとして詰まる。
+  </p>
+  <div class="demo-area anchor">
+    <p>この箱には position: relative を指定してある。</p>
+    <span class="tag tag-tr">右上</span>
+    <span class="tag tag-bl">左下</span>
+  </div>
+
+  <h2>z-index（重なり順）</h2>
+  <p>数字が大きいほど手前に出る。position が static のままでは効かない。</p>
+  <div class="demo-area stack">
+    <div class="layer layer-1">z-index: 1</div>
+    <div class="layer layer-2">z-index: 2</div>
+    <div class="layer layer-3">z-index: 3</div>
+  </div>
+  <p class="caption">
+    モーダルダイアログやツールチップは、この仕組みで他の要素より前面に出している。
+  </p>
+
+  <h2>sticky</h2>
+  <p>下にスクロールすると、次の見出しが上端で止まる。</p>
+
+  <section>
+    <h3 class="sticky-head">貼り付く見出し A</h3>
+    <div class="long">
+      <p>スクロール用の長い本文。</p>
+      <p>sticky は relative と fixed の中間で、指定した位置に達するまでは通常の並びにいる。</p>
+      <p>達したあとは、その場に貼り付いて動かなくなる。</p>
+      <p>一覧表の見出し行を固定する用途でよく使われる。</p>
+      <p>本文。</p>
+      <p>本文。</p>
+      <p>本文。</p>
+    </div>
+  </section>
+
+  <section>
+    <h3 class="sticky-head">貼り付く見出し B</h3>
+    <div class="long">
+      <p>次の見出しが来ると、前の見出しは押し出されて消える。</p>
+      <p>本文。</p>
+      <p>本文。</p>
+      <p>本文。</p>
+      <p>本文。</p>
+      <p>本文。</p>
+      <p>本文。</p>
+    </div>
+  </section>
+</body>
+</html>

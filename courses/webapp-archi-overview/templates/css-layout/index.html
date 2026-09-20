@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!--
+  Flexbox と Grid。ページ全体の骨組みを組むための道具である。
+
+  使い分けは向きの数で決まる。
+    ・Flexbox … 1 方向（横一列 / 縦一列）に並べる。ナビゲーション、カードの横並び
+    ・Grid   … 行と列の 2 次元のマス目に置く。ページ全体のレイアウト
+
+  プレビューとエディタの境目をドラッグして幅を変えると、折り返しの様子が見える。
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlexboxとGrid</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── Flexbox: ナビゲーションバー ────────────────── -->
+  <header class="navbar">
+    <span class="brand">Kensait</span>
+    <nav class="nav-links">
+      <a href="#">ホーム</a>
+      <a href="#">記事</a>
+      <a href="#">お問い合わせ</a>
+    </nav>
+  </header>
+
+  <!-- ── Grid: ページ全体を 2 次元で組む ───────────────── -->
+  <div class="page">
+    <aside class="side">
+      <h2>サイドバー</h2>
+      <p>grid-template-columns の 1 列目。</p>
+    </aside>
+
+    <main class="main">
+      <h1>Grid と Flexbox</h1>
+      <p>
+        この 3 領域（サイドバー・本文・フッター）は Grid で配置している。
+        本文の中のカードの並びは Flexbox である。
+      </p>
+
+      <h2>justify-content（主軸方向の配置）</h2>
+      <p class="caption">同じ 3 個の箱を、並べ方だけ変えたもの。</p>
+
+      <div class="flex-demo start">
+        <span class="chip">1</span><span class="chip">2</span><span class="chip">3</span>
+      </div>
+      <p class="label">flex-start（既定・左寄せ）</p>
+
+      <div class="flex-demo center">
+        <span class="chip">1</span><span class="chip">2</span><span class="chip">3</span>
+      </div>
+      <p class="label">center（中央寄せ）</p>
+
+      <div class="flex-demo between">
+        <span class="chip">1</span><span class="chip">2</span><span class="chip">3</span>
+      </div>
+      <p class="label">space-between（両端に寄せて均等配置）</p>
+
+      <div class="flex-demo around">
+        <span class="chip">1</span><span class="chip">2</span><span class="chip">3</span>
+      </div>
+      <p class="label">space-around（端にも余白を取って均等配置）</p>
+
+      <h2>flex による幅の分配</h2>
+      <div class="flex-demo grow">
+        <span class="chip flex-1">flex: 1</span>
+        <span class="chip flex-2">flex: 2</span>
+        <span class="chip flex-1">flex: 1</span>
+      </div>
+      <p class="label">余った幅を 1 : 2 : 1 の比で分ける</p>
+
+      <h2>カードの横並び（折り返しあり）</h2>
+      <p class="caption">幅が足りなくなると次の行へ回る（flex-wrap: wrap）。</p>
+      <div class="cards">
+        <article class="card"><h3>Alice</h3><p>営業部</p></article>
+        <article class="card"><h3>Bob</h3><p>企画部</p></article>
+        <article class="card"><h3>Carol</h3><p>人事部</p></article>
+        <article class="card"><h3>Dave</h3><p>営業部</p></article>
+      </div>
+
+      <h2>Grid のマス目</h2>
+      <p class="caption">
+        3 列のマス目に置いている。1 つだけ <code>grid-column: 1 / 3</code> を指定して
+        2 列分を占めさせてある。
+      </p>
+      <div class="grid-demo">
+        <div class="cell wide">1 / 3（2 列分）</div>
+        <div class="cell">3 列目</div>
+        <div class="cell">4</div>
+        <div class="cell">5</div>
+        <div class="cell">6</div>
+      </div>
+    </main>
+
+    <footer class="foot">
+      <p>&copy; 2026 Example Inc.</p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+body {
+  font-family: 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+  line-height: 1.7;
+  margin: 16px;
+  max-width: 720px;
+  color: #24292f;
+}
+
+h2 { margin-top: 32px; }
+.caption { font-size: 14px; color: #57606a; }
+code { font-family: 'Consolas', monospace; background: #eaeef2; padding: 0 4px; }
+
+/* ── 4 つの領域を入れ子で見せる ──────────────────────── */
+.box-demo {
+  /* いちばん外の灰色が margin にあたる領域 */
+  background: #eaeef2;
+  padding: 24px;          /* ここでは margin の代わりに padding で厚みを見せている */
+  display: inline-block;
+}
+.box-demo-border {
+  border: 4px solid #2f6feb;   /* border（境界線） */
+}
+.box-demo-padding {
+  background: #ddf4ff;         /* padding（内側の余白） */
+  padding: 24px;
+}
+.box-demo-content {
+  background: #ffffff;         /* content（実際の中身） */
+  padding: 8px 16px;
+  text-align: center;
+}
+
+/* ── width がどこまでを指すか ───────────────────────── */
+.row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+
+.sizing-demo {
+  width: 240px;
+  padding: 20px;
+  border: 4px solid #2f6feb;
+  background: #ffffff;
+  font-size: 14px;
+}
+
+/* 既定。width は content 領域の幅を指す */
+.content-box { box-sizing: content-box; }
+
+/* padding と border を含めた全体を width にする */
+.border-box  { box-sizing: border-box; background: #ddf4ff; }
+
+/* ── margin の指定 ──────────────────────────────────── */
+.m-demo {
+  background: #ddf4ff;
+  border: 1px solid #2f6feb;
+  padding: 6px;
+  width: 260px;
+  font-size: 14px;
+}
+.m-all    { margin: 16px; }
+.m-tb-lr  { margin: 8px 40px; }
+/* 左右を auto にすると、余った幅が均等に分かれて中央に寄る */
+.m-center { margin: 8px auto; }
+
+/* ── display ────────────────────────────────────────── */
+.d-inline {
+  display: inline;
+  background: #fff8c5;
+  /* インライン要素では width / height が効かない（指定しても無視される） */
+  width: 300px;
+  padding: 4px;
+}
+.d-block {
+  display: block;
+  background: #ddf4ff;
+  padding: 4px;
+  margin-bottom: 4px;
+}
+.d-inline-block {
+  display: inline-block;
+  background: #dafbe1;
+  width: 160px;         /* inline-block なら幅が効く */
+  padding: 4px;
+  text-align: center;
+}
+.d-none { display: none; }
+
+/* ── overflow ───────────────────────────────────────── */
+.ov-demo {
+  box-sizing: border-box;
+  width: 200px;
+  height: 90px;
+  padding: 6px;
+  border: 1px solid #8b949e;
+  background: #ffffff;
+  font-size: 13px;
+}
+.ov-visible { overflow: visible; }
+.ov-hidden  { overflow: hidden; }
+.ov-auto    { overflow: auto; }

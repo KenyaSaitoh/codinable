@@ -7,6 +7,9 @@
 #
 #  講座を追加するときは courses/ にディレクトリを 1 つ増やして
 #  この形式の course.yaml と templates/ を置くだけでよい（アプリ側の変更は不要）。
+#  置き場は 3 つあり、アプリ同梱 / 共有（%PROGRAMDATA%\Codinable\courses）/
+#  個人（設定画面の「講座フォルダを開く」で開く場所）の順に読む。
+#  同じ id があれば version の新しいほうが使われる。
 #
 #  exercises[] の項目:
 #    id           演習の識別子（dir 省略時はディレクトリ名として使う）
@@ -26,6 +29,8 @@
 # ═══════════════════════════════════════════════════════════
 id: webapp-archi-overview
 order: 1
+# 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
+version: 1.0.0
 
 names:
   ja: Webシステム＋生成AI 技術概要編
@@ -47,25 +52,314 @@ udemy:
   url: https://github.com/KenyaSaitoh/learn_webapp_archi_overview
 
 exercises:
+  # ── チャプター3: HTML（構造）──────────────────────────
+  # 静的ページはすべて内蔵の静的サーバーで配信する（プロジェクト直下が配信ルート）。
+  # 保存したら、プレビュータブの再読み込みで結果が変わる。
+  - id: html-basic
+    chapter: 3
+    lesson: '3.1 HTMLによるWeb構造定義'
+    runtime: static
+    run: 'static:'
+    suggestName: html-basic
+    names:
+      ja: HTMLの基本構造を読む
+      en: Read the basic structure of HTML
+    descriptions:
+      ja: >-
+        CSS も JavaScript も無い、HTML だけのページです。
+        見出し・段落・リンク・画像と、id / class 属性が入っています。
+        タグを書き換えて保存し、プレビューを再読み込みして変化を確かめてください。
+      en: >-
+        A page with nothing but HTML - no CSS, no JavaScript.
+        It contains headings, paragraphs, links, an image and the id / class attributes.
+        Edit a tag, save, and reload the preview to see what changes.
+    openFiles:
+      - index.html
+
+  - id: html-list-table
+    chapter: 3
+    lesson: '3.1 HTMLによるWeb構造定義'
+    runtime: static
+    run: 'static:'
+    suggestName: html-list-table
+    names:
+      ja: リストとテーブルで並べる
+      en: Lay out data with lists and tables
+    descriptions:
+      ja: >-
+        箇条書き（ul / ol）と表（table）の書き方です。
+        thead と tbody、th と td の違い、入れ子のリストが入っています。
+        行や項目を増やして、どこに何が出るかを確かめてください。
+      en: >-
+        How to write bullet lists (ul / ol) and tables.
+        Covers thead vs tbody, th vs td, and nested lists.
+        Add rows and items to see where each part appears.
+    openFiles:
+      - index.html
+
+  - id: html-semantic
+    chapter: 3
+    lesson: '3.1 HTMLによるWeb構造定義'
+    runtime: static
+    run: 'static:'
+    suggestName: html-semantic
+    names:
+      ja: セマンティック要素でページを組む
+      en: Structure a page with semantic elements
+    descriptions:
+      ja: >-
+        header / nav / main / article / aside / footer で組んだページです。
+        どこがどの領域かが分かるよう、タグ名のラベルを出してあります。
+        div / span との違いと、アクセシビリティのための属性も入っています。
+      en: >-
+        A page built from header / nav / main / article / aside / footer,
+        with each region labelled by its tag name so the structure is visible.
+        Also shows how div / span differ, and attributes that help accessibility.
+    openFiles:
+      - index.html
+
+  - id: html-form
+    chapter: 3
+    lesson: '3.1 HTMLによるWeb構造定義'
+    runtime: static
+    run: 'static:'
+    suggestName: html-form
+    names:
+      ja: フォームで入力を受け取る
+      en: Take user input with a form
+    descriptions:
+      ja: >-
+        input の type 一式（text / email / date / range / color など）と、
+        required や pattern といった検証属性が入ったフォームです。
+        空のまま送信すると Web ブラウザが弾き、正しく送ると URL に入力値が並びます。
+      en: >-
+        A form with the full set of input types (text / email / date / range / color ...)
+        and validation attributes such as required and pattern.
+        Submit it empty and the browser blocks it; submit it properly and the values
+        show up in the URL.
+    openFiles:
+      - index.html
+
+  # ── チャプター3: JavaScript（振る舞い）──────────────────
+  - id: js-dom
+    chapter: 3
+    lesson: '3.2 JavaScriptによるWebページ振る舞い制御'
+    runtime: static
+    run: 'static:'
+    suggestName: js-dom
+    names:
+      ja: DOMを操作して書き換える
+      en: Rewrite the page through the DOM
+    descriptions:
+      ja: >-
+        getElementById / querySelector で要素を取り、textContent や classList で
+        書き換えます。index.html には「書き換え前」の文字が入っているので、
+        ソースとプレビューを見比べると、JavaScript が何をしたかが分かります。
+      en: >-
+        Take elements with getElementById / querySelector and rewrite them through
+        textContent and classList. The HTML holds the "before" text, so comparing the
+        source with the preview shows exactly what the script did.
+    openFiles:
+      - app.js
+      - index.html
+
+  - id: js-events
+    chapter: 3
+    lesson: '3.2 JavaScriptによるWebページ振る舞い制御'
+    runtime: static
+    run: 'static:'
+    suggestName: js-events
+    names:
+      ja: イベントを受け取って反応する
+      en: React to events
+    descriptions:
+      ja: >-
+        click / input / change / focus / blur / mouseover / keydown を
+        addEventListener で受け取り、発生した順に記録していきます。
+        操作してみて、どの操作がどのイベントになるかを確かめてください。
+      en: >-
+        Registers click / input / change / focus / blur / mouseover / keydown with
+        addEventListener and logs them as they fire.
+        Interact with the page to see which action produces which event.
+    openFiles:
+      - app.js
+      - index.html
+
+  - id: js-form
+    chapter: 3
+    lesson: '3.2 JavaScriptによるWebページ振る舞い制御'
+    runtime: static
+    run: 'static:'
+    suggestName: js-form
+    names:
+      ja: JavaScriptでフォームを扱う
+      en: Handle a form with JavaScript
+    descriptions:
+      ja: >-
+        submit を受けて event.preventDefault() でページ遷移を止め、
+        FormData で入力値を集めます。パスワードの一致や長さのように、
+        HTML の検証属性では書けない検証を JavaScript で行います。
+      en: >-
+        Catches submit, stops the page transition with event.preventDefault(), and
+        collects the values with FormData. Checks that HTML validation attributes
+        cannot express - matching passwords, minimum length - are done in JavaScript.
+    openFiles:
+      - app.js
+      - index.html
+
+  - id: js-fetch
+    chapter: 3
+    lesson: '3.2 JavaScriptによるWebページ振る舞い制御'
+    runtime: static
+    run: 'static:'
+    suggestName: js-fetch
+    names:
+      ja: サーバーからデータを取って画面を更新する
+      en: Fetch data and update part of the page
+    descriptions:
+      ja: >-
+        Fetch API で users.json を取得し、表の部分だけを書き換えます。
+        ページ全体が再読み込みされないことが要点で、これが10章の SPA の土台です。
+        わざと 404 を起こすボタンで、エラー時の分岐も確かめられます。
+      en: >-
+        Fetches users.json with the Fetch API and rewrites only the table.
+        The point is that the page itself is never reloaded - the basis of the SPA in
+        chapter 10. A button that deliberately triggers a 404 exercises the error path.
+    openFiles:
+      - app.js
+      - users.json
+
+  # ── チャプター3: CSS（修飾）─────────────────────────
+  - id: css-selectors
+    chapter: 3
+    lesson: '3.3 CSSによるWebページ修飾'
+    runtime: static
+    run: 'static:'
+    suggestName: css-selectors
+    names:
+      ja: セレクタで対象を選び、色と文字を変える
+      en: Pick targets with selectors, then set colour and type
+    descriptions:
+      ja: >-
+        要素・クラス・ID・子孫・擬似クラス・属性の各セレクタと、
+        色の書き方（カラーネーム / 16進数 / RGB / RGBA）、フォントと背景のプロパティです。
+        どの指定が勝つか（詳細度）と、親から子への継承も確かめられます。
+      en: >-
+        Element, class, ID, descendant, pseudo-class and attribute selectors, plus the
+        ways to write colours (name / hex / RGB / RGBA) and the font and background
+        properties. Also shows which rule wins (specificity) and what is inherited.
+    openFiles:
+      - style.css
+      - index.html
+
+  - id: css-box
+    chapter: 3
+    lesson: '3.3 CSSによるWebページ修飾'
+    runtime: static
+    run: 'static:'
+    suggestName: css-box
+    names:
+      ja: ボックスモデルで余白を制御する
+      en: Control spacing with the box model
+    descriptions:
+      ja: >-
+        content / padding / border / margin の 4 領域を、入れ子の箱として見せます。
+        同じ width でも box-sizing で幅が変わることや、display と overflow の
+        振る舞いの違いも並べてあります。数値を変えて確かめてください。
+      en: >-
+        Shows the four areas - content / padding / border / margin - as nested boxes.
+        Also compares how box-sizing changes the rendered width for the same width
+        value, and how display and overflow behave. Change the numbers and watch.
+    openFiles:
+      - style.css
+      - index.html
+
+  - id: css-position
+    chapter: 3
+    lesson: '3.3 CSSによるWebページ修飾'
+    runtime: static
+    run: 'static:'
+    suggestName: css-position
+    names:
+      ja: 要素を配置して重ねる
+      en: Place elements and stack them
+    descriptions:
+      ja: >-
+        static / relative / absolute / fixed / sticky の違いと、z-index による
+        重なり順です。プレビューをスクロールすると、固定ボタンと貼り付く見出しの
+        振る舞いの違いが見えます。
+      en: >-
+        The difference between static / relative / absolute / fixed / sticky, and
+        stacking order with z-index. Scroll the preview to see how the fixed button
+        and the sticky heading behave differently.
+    openFiles:
+      - style.css
+      - index.html
+
+  - id: css-layout
+    chapter: 3
+    lesson: '3.3 CSSによるWebページ修飾'
+    runtime: static
+    run: 'static:'
+    suggestName: css-layout
+    names:
+      ja: FlexboxとGridでレイアウトする
+      en: Lay out pages with Flexbox and Grid
+    descriptions:
+      ja: >-
+        1 方向の並びは Flexbox、2 次元のマス目は Grid で組みます。
+        justify-content の値による違い、flex による幅の分配、grid-column による
+        セルの占有を並べてあります。プレビューの幅を変えると折り返しが見えます。
+      en: >-
+        Flexbox for one-directional rows, Grid for two-dimensional layouts.
+        Compares the values of justify-content, how flex distributes width, and how
+        grid-column spans cells. Resize the preview to see the wrapping.
+    openFiles:
+      - style.css
+      - index.html
+
+  - id: css-responsive
+    chapter: 3
+    lesson: '3.3 CSSによるWebページ修飾'
+    runtime: static
+    run: 'static:'
+    suggestName: css-responsive
+    names:
+      ja: レスポンシブと視覚効果を付ける
+      en: Add responsive rules and visual effects
+    descriptions:
+      ja: >-
+        メディアクエリで 768px 以下・480px 以下のレイアウトに切り替えます。
+        transition / transform / box-shadow / @keyframes の視覚効果と、
+        色や余白を一元管理する CSS 変数も入っています。
+        プレビューとエディタの境目をドラッグして幅を変えてください。
+      en: >-
+        Media queries switch the layout at 768px and 480px.
+        Includes the visual effects transition / transform / box-shadow / @keyframes,
+        and CSS variables that keep colours and spacing in one place.
+        Drag the divider between editor and preview to change the width.
+    openFiles:
+      - style.css
+      - index.html
+
   - id: static-web
     chapter: 3
-    lesson: '3.1 - 3.3 HTML / JavaScript / CSS'
+    lesson: '3.1 - 3.3 まとめ（HTML / JavaScript / CSS）'
     runtime: static
-    # 静的ページは内蔵の静的サーバーで配信する（プロジェクト直下が配信ルート）
     run: 'static:'
     suggestName: static-web
     names:
-      ja: 静的Webページを表示する
-      en: Display a static web page
+      ja: 3つを組み合わせて1つの画面を作る
+      en: Combine all three into one screen
     descriptions:
       ja: >-
         HTML で構造、CSS で装飾、JavaScript で振る舞いを書いた名簿管理ページです。
-        「実行」を押すとプレビュータブに表示されます。
         追加・削除を試し、3 つのファイルの役割の違いを確かめてください。
+        10章の React 版（react-spa）が同じ題材なので、あとで見比べられます。
       en: >-
-        A roster page with structure in HTML, styling in CSS and behaviour in JavaScript.
-        Press Run and it opens in the preview tab.
-        Try adding and removing rows to see how the three files divide the work.
+        A roster page with structure in HTML, styling in CSS and behaviour in
+        JavaScript. Try adding and removing rows to see how the three files divide the
+        work. The React version in chapter 10 (react-spa) covers the same subject.
     openFiles:
       - index.html
       - app.js
@@ -91,30 +385,125 @@ exercises:
     openFiles:
       - 01_get.sh
 
+  # ── チャプター6: SQL ────────────────────────────────
+  # sql: は「指定した .sql を HSQLDB へ流す」実行対象。
+  # DB が止まっていれば実行時に起こすので、先に「DB起動」を押す必要はない。
+  # 結果は最後の 1 文だけが出る。1 文だけ流したいときは、その範囲を選択して実行する。
+  #
+  # どの演習も最初のファイルでテーブルを作り直すので、順番は問わない。
+  # データを汚したら、最初のファイルをもう一度流せば元に戻る。
   - id: sql-basics
     chapter: 6
-    lesson: '6.1 データベースとSQLの基本'
+    lesson: '6.1 データベースとSQLの基本（検索）'
     runtime: sql
-    # sql: は「開いている .sql を HSQLDB へ流す」実行対象。
-    # DB が止まっていれば実行時に起こすので、先に「DB起動」を押す必要はない
     run: 'sql:01_create.sql'
     suggestName: sql-basics
     names:
-      ja: SQLを実行して結果を見る
-      en: Run SQL and inspect the results
+      ja: テーブルを作ってSELECTで検索する
+      en: Create a table and query it with SELECT
     descriptions:
       ja: >-
-        講義と同じ EMPLOYEE / DEPARTMENT テーブルです。
-        「実行」を押すと開いている .sql が流れ、SQL タブに結果が出ます。
-        01_create.sql を流したあと 02・03 を開いて実行してください。
-        一部だけ選択して実行すればその文だけ流せます。
+        講義と同じ EMPLOYEE テーブル（4 件）を作り、SELECT で取り出します。
+        主キー検索・射影・比較演算子と、AND / OR / IN / BETWEEN / LIKE / IS NULL の
+        条件の書き方が入っています。01_create.sql を流したあと 02・03 を実行してください。
       en: >-
-        The same EMPLOYEE / DEPARTMENT tables used in the lectures.
-        Press Run and the open .sql file is executed against HSQLDB, with the
-        results in the SQL tab. Run 01_create.sql first, then open 02 and 03.
-        Select part of the file to run just that statement.
+        Creates the EMPLOYEE table from the lectures (4 rows) and queries it with SELECT.
+        Covers primary-key lookups, projection, comparison operators and the
+        AND / OR / IN / BETWEEN / LIKE / IS NULL conditions.
+        Run 01_create.sql first, then 02 and 03.
     openFiles:
       - 01_create.sql
+
+  - id: sql-crud
+    chapter: 6
+    lesson: '6.1 データベースとSQLの基本（CRUD）'
+    runtime: sql
+    run: 'sql:01_setup.sql'
+    suggestName: sql-crud
+    names:
+      ja: INSERT・UPDATE・DELETEでデータを操作する
+      en: Change data with INSERT, UPDATE and DELETE
+    descriptions:
+      ja: >-
+        登録・更新・削除を実際に実行して、SELECT で結果を確かめます。
+        主キー指定と条件指定の違い、WHERE を書き忘れたときに何が起きるかも扱います。
+        元の 4 件に戻したいときは 01_setup.sql をもう一度流してください。
+      en: >-
+        Actually inserts, updates and deletes rows, checking the result with SELECT.
+        Covers the difference between targeting by primary key and by condition, and
+        what happens when you forget the WHERE clause.
+        Run 01_setup.sql again to get the original 4 rows back.
+    openFiles:
+      - 01_setup.sql
+      - 02_insert.sql
+
+  - id: sql-aggregate
+    chapter: 6
+    lesson: '6.1 データベースとSQLの基本（集計と整形）'
+    runtime: sql
+    run: 'sql:01_setup.sql'
+    suggestName: sql-aggregate
+    names:
+      ja: 集計して並べ替える
+      en: Aggregate and sort the results
+    descriptions:
+      ja: >-
+        COUNT / SUM / AVG / MAX / MIN と GROUP BY・HAVING、
+        ORDER BY・DISTINCT・LIMIT です。部署ごとの人数や平均月給を出します。
+        NULL が集計からどう扱われるか、AVG が整数で返る理由も確かめられます。
+      en: >-
+        COUNT / SUM / AVG / MAX / MIN together with GROUP BY, HAVING, ORDER BY,
+        DISTINCT and LIMIT - head counts and average salary per department.
+        Also shows how NULL is treated and why AVG comes back as an integer.
+    openFiles:
+      - 01_setup.sql
+      - 03_group_by.sql
+
+  - id: sql-ddl
+    chapter: 6
+    lesson: '6.1 データベースとSQLの基本（DDL）'
+    runtime: sql
+    run: 'sql:01_create_table.sql'
+    suggestName: sql-ddl
+    names:
+      ja: テーブルを定義して制約を確かめる
+      en: Define a table and test its constraints
+    descriptions:
+      ja: >-
+        CREATE TABLE でデータ型と制約（NOT NULL / UNIQUE / PRIMARY KEY / CHECK /
+        DEFAULT）を指定し、ALTER TABLE と DROP TABLE で変更・削除します。
+        02_constraints.sql はすべてエラーになる SQL で、制約が働くことを失敗で確かめます。
+      en: >-
+        Specifies data types and constraints (NOT NULL / UNIQUE / PRIMARY KEY / CHECK /
+        DEFAULT) with CREATE TABLE, then changes and drops it with ALTER and DROP TABLE.
+        Every statement in 02_constraints.sql fails on purpose - that is how you see
+        the constraints working.
+    openFiles:
+      - 01_create_table.sql
+      - 02_constraints.sql
+
+  - id: sql-join
+    chapter: 6
+    lesson: '6.1 データベースとSQLの基本（結合）'
+    runtime: sql
+    run: 'sql:01_setup.sql'
+    suggestName: sql-join
+    names:
+      ja: テーブルを分けて結合する
+      en: Split tables apart and join them
+    descriptions:
+      ja: >-
+        部署を別テーブルに分け、外部キーで参照する形にします。
+        INNER JOIN と LEFT JOIN の違い（部署未設定の社員、社員のいない部署）、
+        サブクエリ、ビュー、ON DELETE CASCADE を実際に動かして確かめます。
+      en: >-
+        Moves departments into their own table, referenced by a foreign key.
+        Shows the difference between INNER JOIN and LEFT JOIN (an employee with no
+        department, a department with no employees), plus subqueries, views and
+        ON DELETE CASCADE.
+    openFiles:
+      - 01_setup.sql
+      - 02_join.sql
 
   - id: javascript-basics
     chapter: 7

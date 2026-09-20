@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!--
+  CSS の記述方法とセレクタ。
+
+  このページには CSS の 3 つの書き方が全部入っている。
+    ① 外部スタイルシート（style.css を link で読み込む）… 実務で使うのはこれ
+    ② 内部スタイルシート（head の中の style タグ）
+    ③ インラインスタイル（要素の style 属性）
+
+  style.css を書き換えて保存し、プレビューを再読み込みすると結果が変わる。
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>セレクタと色・文字</title>
+
+  <!-- ① 外部スタイルシート。複数ページで共有でき、保守しやすい -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- ② 内部スタイルシート。1 ページだけの試作に向く -->
+  <style>
+    .inner-style-demo { background: #fff8c5; }
+  </style>
+</head>
+<body>
+  <h1 id="main-title">セレクタを試す</h1>
+
+  <p>これは p 要素。要素セレクタ <code>p</code> が効いている。</p>
+
+  <p class="note">これは class="note" が付いた p。クラスセレクタ <code>.note</code> が効いている。</p>
+
+  <p class="inner-style-demo">
+    この段落の背景色は、head の中の style タグ（内部スタイルシート）で付けている。
+  </p>
+
+  <!-- ③ インラインスタイル。その要素だけに効くが、使い回せない -->
+  <p style="color: #cf222e;">
+    この段落の文字色は style 属性（インラインスタイル）で付けている。
+    通常のセレクタによる指定より優先される。
+  </p>
+
+  <div class="card">
+    <h2>カードの中</h2>
+    <!-- 子孫セレクタ .card p は「.card の中にある p」だけを指す -->
+    <p>この p は <code>.card p</code>（子孫セレクタ）の対象になるので、外の p と色が違う。</p>
+    <p><a href="#main-title">リンクにマウスを乗せると色が変わる（<code>a:hover</code>）</a></p>
+  </div>
+
+  <h2>属性セレクタと状態</h2>
+  <p>
+    <!-- input[type="text"] のように、属性の値で絞り込める -->
+    <input type="text" value="type=text の入力欄">
+    <input type="text" value="無効にした入力欄" disabled>
+  </p>
+  <p>
+    <button>押せるボタン</button>
+    <!-- button:disabled は「無効状態のボタン」だけを指す擬似クラス -->
+    <button disabled>押せないボタン</button>
+  </p>
+
+  <h2>詳細度（どの指定が勝つか）</h2>
+  <!--
+    同じ要素に複数の指定が当たったときは、詳細度の高いほうが採用される。
+    要素セレクタ < クラスセレクタ < ID セレクタ < インラインスタイル の順。
+    詳細度が同じなら、あとに書いたほうが勝つ。
+  -->
+  <p id="priority" class="note">
+    この段落には p（要素）・.note（クラス）・#priority（ID）の 3 つが当たっている。
+    style.css を見て、どれが勝っているか確かめる。
+  </p>
+
+  <h2>継承</h2>
+  <div class="inherit-demo">
+    <p>文字色やフォントは親から子へ引き継がれる。</p>
+    <p>この 2 つの p には何も指定していないが、親の div の色になっている。</p>
+  </div>
+
+  <h2>色の指定</h2>
+  <ul class="colors">
+    <li class="color-name">カラーネーム：navy</li>
+    <li class="color-hex">16進数 6桁：#2f6feb</li>
+    <li class="color-hex3">16進数 3桁：#f60</li>
+    <li class="color-rgb">RGB：rgb(26, 127, 55)</li>
+    <li class="color-rgba">RGBA：rgba(207, 34, 46, 0.35)（背景が透ける）</li>
+  </ul>
+</body>
+</html>

@@ -1,0 +1,14 @@
+body {
+  font-family: 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+  line-height: 1.7;
+  margin: 16px;
+  max-width: 560px;
+}
+
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #d8dee4; padding: 4px 10px; text-align: left; }
+td:first-child, td:last-child { text-align: right; }
+
+.status { margin-left: 8px; font-size: 14px; color: #57606a; }
+.status.ok    { color: #1a7f37; }
+.status.error { color: #cf222e; }

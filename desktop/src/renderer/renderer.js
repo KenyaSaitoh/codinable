@@ -615,7 +615,7 @@ async function refreshProjectInfo() {
     $('project-name').textContent = t('noProject');
     $('project-kinds').innerHTML  = '';
     $('project-path').textContent = '';
-    $('btn-restore-template').classList.add('hidden');
+    $('btn-reset-exercise').classList.add('hidden');
     $('hsqldb-badge').classList.add('hidden');
     updateRunTargets();
     return;
@@ -629,22 +629,33 @@ async function refreshProjectInfo() {
   $('project-path').textContent = info.ok ? info.path : '';
   $('project-kinds').innerHTML = (info.kinds || [])
     .map(k => `<span class="project-kind">${escapeHtml(k)}</span>`).join('');
-  $('btn-restore-template').classList.toggle('hidden', !(info.ok && info.template));
+  $('btn-reset-exercise').classList.toggle('hidden', !(info.ok && info.template));
   $('hsqldb-badge').classList.toggle('hidden', !(info.kinds || []).includes('sql'));
 
   updateRunTargets();
 }
 
-async function restoreTemplate() {
+/**
+ * 演習を配布時の状態に戻す。
+ *
+ * 試して壊したコードをいつでも捨てられるようにするための機能なので、
+ * 編集中のタブも disk の内容に入れ替える (開いたままだと戻したのに古い内容が
+ * 見え続け、保存した瞬間に書き戻ってしまう)。
+ */
+async function resetExercise() {
   if (!project) return;
-  const res = await window.api.wsRestoreTemplate(project, getLang());
+  if (!projectInfo?.template) { await alertDialog(t('resetNoTemplate')); return; }
+  if (!await confirmDialog(tf('confirmResetExercise', { name: project }))) return;
+
+  const res = await window.api.wsResetTemplate(project, getLang());
   if (!res.ok) {
-    await alertDialog(res.error === 'no-template' ? t('restoreNoTemplate') : (res.error || ''));
+    await alertDialog(res.error === 'no-template' ? t('resetNoTemplate') : (res.error || ''));
     return;
   }
+  for (const relPath of [...openFiles.keys()]) await reopenFileFromDisk(relPath);
   await reloadTree();
   await refreshProjectInfo();
-  await alertDialog(tf('restoreDone', { n: res.written }));
+  await alertDialog(tf('resetDone', { n: res.written }));
 }
 
 // ═══════════════════════════════════════════
@@ -664,27 +675,36 @@ const RUNTIME_ICONS = {
   python: '🐍', static: '🌐', sql: '🗄', shell: '🖥', other: '📦',
 };
 
-async function reloadExercises() {
-  courses = await window.api.loadCourses(getLang());
+async function reloadExercises({ reload = false } = {}) {
+  courses = reload ? await window.api.coursesReload(getLang())
+                   : await window.api.loadCourses(getLang());
 
-  const select = $('exercise-course-select');
+  // コースの切り替えはヘッダー左で行う。講座が 1 つだけのときも、
+  // 今どの講座を見ているのかが分かるように出したままにして、選べなくする。
+  const select = $('active-course-select');
   const previous = select.value || localStorage.getItem('lastCourse') || '';
   select.innerHTML = '';
   for (const course of courses) {
     const opt = document.createElement('option');
     opt.value = course.id;
     opt.textContent = course.name;
+    opt.title = course.description || course.name;
     select.appendChild(opt);
   }
-  // 講座が 1 つしか入っていないときは選ぶ意味がないので隠す
-  select.classList.toggle('hidden', courses.length <= 1);
+  if (!courses.length) {
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = t('coursesEmpty');
+    select.appendChild(opt);
+  }
   select.value = courses.some(c => c.id === previous) ? previous : (courses[0]?.id || '');
+  select.disabled = courses.length <= 1;
 
   renderExercises();
 }
 
 function currentCourse() {
-  return courses.find(c => c.id === $('exercise-course-select').value) || null;
+  return courses.find(c => c.id === $('active-course-select').value) || null;
 }
 
 /** 演習に対応する作業用プロジェクト (まだ作っていなければ null) */
@@ -698,6 +718,7 @@ function renderExercises() {
   const entries = course?.exercises || [];
 
   $('exercise-count').textContent = String(entries.length);
+  $('exercise-course-name').textContent = course?.name || '';
   list.innerHTML = '';
   if (!entries.length) {
     list.innerHTML = `<div class="tree-placeholder">${escapeHtml(t('exerciseEmpty'))}</div>`;
@@ -821,8 +842,9 @@ async function openNewProjectDialog() {
     opt.textContent = course.name;
     select.appendChild(opt);
   }
-  // 最初の講座を既定にする (講座を使う人のほうが多いため)
-  select.value = courses[0]?.id || '';
+  // ヘッダーで選んでいる講座を既定にする (講座を使う人のほうが多いため)
+  const active = $('active-course-select').value;
+  select.value = courses.some(c => c.id === active) ? active : (courses[0]?.id || '');
 
   $('new-project-name').value = '';
   $('new-project-error').classList.add('hidden');
@@ -1992,6 +2014,7 @@ async function openSettings() {
   document.querySelectorAll('[data-key-field]').forEach(input => { input.value = ''; });
   updateModelHint();
   updateKeyBadges();
+  renderCoursesInfo();
   renderRuntimeInfo();
 
   $('settings-overlay').classList.remove('hidden');
@@ -2039,6 +2062,41 @@ async function renderRuntimeInfo() {
   wrap.innerHTML = rows.map(([label, value]) =>
     `<div class="runtime-info-row"><span>${escapeHtml(label)}</span>` +
     `<span>${escapeHtml(value || t('runtimeMissing'))}</span></div>`).join('');
+}
+
+/**
+ * インストールされている講座と、それがどこから読まれたかを出す。
+ * 講座を足したのに出ないときの切り分け (置き場が違う / course.yaml が壊れている) に使う。
+ */
+async function renderCoursesInfo() {
+  const wrap = $('courses-info');
+  wrap.innerHTML = `<div class="runtime-info-row">${escapeHtml(t('loading'))}</div>`;
+
+  let info;
+  try {
+    info = await window.api.coursesInfo(getLang());
+  } catch (err) {
+    wrap.innerHTML = `<div class="runtime-info-row"><span>${escapeHtml(t('coursesLabel'))}</span>` +
+                     `<span>${escapeHtml(err?.message || String(err))}</span></div>`;
+    return;
+  }
+
+  const rows = (info.courses || []).map(c =>
+    `<div class="runtime-info-row" title="${escapeHtml(c.path || '')}">` +
+    `<span>${escapeHtml(c.name)}</span><span>` +
+    `${escapeHtml(tf('coursesExercises', { n: c.exerciseCount }))} / ` +
+    `${escapeHtml(t(`courseSource_${c.source}`))}` +
+    (c.version && c.version !== '0' ? ` / v${escapeHtml(c.version)}` : '') +
+    '</span></div>');
+
+  // 置き場そのものも出す (どこへ置けばよいかが分かるように)
+  for (const root of info.roots || []) {
+    rows.push(`<div class="runtime-info-row" title="${escapeHtml(root.dir)}">` +
+      `<span>${escapeHtml(t(`courseSource_${root.source}`))}</span>` +
+      `<span>${escapeHtml(root.exists ? root.dir : t('coursesRootMissing'))}</span></div>`);
+  }
+  wrap.innerHTML = rows.join('') ||
+    `<div class="runtime-info-row"><span>${escapeHtml(t('coursesEmpty'))}</span><span></span></div>`;
 }
 
 async function saveSettings() {
@@ -2137,16 +2195,16 @@ function setupResize(handleId, targetId, { axis, invert = false, storageKey, min
 // ═══════════════════════════════════════════
 
 function wireEvents() {
-  // ── 演習一覧 ──
-  $('exercise-course-select').addEventListener('change', ev => {
+  // ── ヘッダー ──
+  // コース切り替え。開いているプロジェクトはそのままにして、演習一覧だけ入れ替える
+  // (別の講座を見ながら今の作業を続けられるようにするため)
+  $('active-course-select').addEventListener('change', ev => {
     localStorage.setItem('lastCourse', ev.target.value);
     renderExercises();
   });
-
-  // ── ヘッダー ──
   $('project-select').addEventListener('change', ev => selectProject(ev.target.value));
   $('btn-new-project').addEventListener('click', openNewProjectDialog);
-  $('btn-restore-template').addEventListener('click', restoreTemplate);
+  $('btn-reset-exercise').addEventListener('click', resetExercise);
   $('llm-model-select').addEventListener('change', async ev => {
     appInfo.llmSelection = await window.api.setLlmSelection({
       modelId: ev.target.value, override: appInfo.llmSelection.override,
@@ -2164,6 +2222,12 @@ function wireEvents() {
     if (ev.target === $('settings-overlay')) closeSettings({ revert: true });
   });
   $('btn-ws-browse').addEventListener('click', changeWorkspaceRoot);
+  $('btn-open-courses-dir').addEventListener('click', () => window.api.coursesOpenDir());
+  // 講座を足した直後に、アプリを再起動させずに反映する
+  $('btn-reload-courses').addEventListener('click', async () => {
+    await reloadExercises({ reload: true });
+    await renderCoursesInfo();
+  });
   // テーマ・フォントは選んだ瞬間に反映して見た目を確かめられるようにする
   document.querySelectorAll('#theme-grid .theme-btn').forEach(btn =>
     btn.addEventListener('click', () => applyTheme(btn.dataset.theme)));

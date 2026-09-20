@@ -1,0 +1,45 @@
+/*
+  どこがどの領域かを見えるようにするだけの CSS。
+  セレクタやプロパティの意味は 3.3 で扱うので、ここでは読み流してよい。
+*/
+
+body {
+  font-family: 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+  line-height: 1.7;
+  margin: 16px;
+}
+
+/* 各領域に破線の枠と、タグ名のラベルを付ける */
+header, nav, main, article, section, aside, footer {
+  position: relative;
+  border: 1px dashed #8b949e;
+  padding: 24px 12px 12px;
+  margin: 8px 0;
+}
+
+header::before, nav::before, main::before, article::before,
+section::before, aside::before, footer::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 1px 6px;
+  font-size: 11px;
+  font-family: monospace;
+  color: #fff;
+  background: #57606a;
+}
+
+header::before  { content: '<header>'; }
+nav::before     { content: '<nav>'; }
+main::before    { content: '<main>'; }
+article::before { content: '<article>'; }
+section::before { content: '<section>'; }
+aside::before   { content: '<aside>'; }
+footer::before  { content: '<footer>'; }
+
+nav a { margin-right: 12px; }
+
+/* div と span の違いを見るための箱 */
+.plain-box    { background: #eaeef2; padding: 6px; }
+.plain-inline { background: #eaeef2; padding: 6px; }
+.highlight    { background: #fff8c5; }

@@ -1,0 +1,6 @@
+[
+  { "id": 10001, "name": "Alice", "department": "営業部", "salary": 500000 },
+  { "id": 10002, "name": "Bob",   "department": "企画部", "salary": 450000 },
+  { "id": 10003, "name": "Carol", "department": "人事部", "salary": 350000 },
+  { "id": 10004, "name": "Dave",  "department": "営業部", "salary": 400000 }
+]

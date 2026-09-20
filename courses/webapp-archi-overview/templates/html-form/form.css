@@ -1,0 +1,33 @@
+/*
+  入力欄が縦に並んで読めるようにするだけの CSS。
+  フォームそのものの学習には関係しないので、読み流してよい（装飾は 3.3 で扱う）。
+*/
+
+body {
+  font-family: 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+  line-height: 1.7;
+  margin: 16px;
+  max-width: 560px;
+}
+
+label { display: inline-block; margin-bottom: 2px; }
+
+/* ラジオとチェックボックスのラベルは、入力欄の右に置きたいので横並びのまま */
+input[type="radio"] + label,
+input[type="checkbox"] + label { margin-right: 12px; }
+
+input[type="text"], input[type="email"], input[type="tel"], input[type="url"],
+input[type="number"], input[type="date"], input[type="time"], select, textarea {
+  display: block;
+  width: 100%;
+  padding: 4px 6px;
+  font: inherit;
+}
+
+fieldset { margin: 12px 0; }
+
+pre {
+  padding: 8px;
+  background: #eaeef2;
+  white-space: pre-wrap;
+}

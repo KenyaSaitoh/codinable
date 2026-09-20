@@ -30,6 +30,9 @@ contextBridge.exposeInMainWorld('api', {
 
   // ── コースパック ──
   loadCourses:      lang          => ipcRenderer.invoke('load-courses', { lang }),
+  coursesInfo:      lang          => ipcRenderer.invoke('courses-info', { lang }),
+  coursesReload:    lang          => ipcRenderer.invoke('courses-reload', { lang }),
+  coursesOpenDir:   ()            => ipcRenderer.invoke('courses-open-dir'),
 
   // ── ワークスペース ──
   wsGetRoot:        ()            => ipcRenderer.invoke('ws-get-root'),
@@ -37,7 +40,7 @@ contextBridge.exposeInMainWorld('api', {
   wsPickDir:        ()            => ipcRenderer.invoke('ws-pick-dir'),
   wsListProjects:   ()            => ipcRenderer.invoke('ws-list-projects'),
   wsCreateProject:  payload       => ipcRenderer.invoke('ws-create-project', payload),
-  wsRestoreTemplate:(name, lang)  => ipcRenderer.invoke('ws-restore-template', { name, lang }),
+  wsResetTemplate:  (name, lang)  => ipcRenderer.invoke('ws-reset-template', { name, lang }),
   wsProjectInfo:    name          => ipcRenderer.invoke('ws-project-info', { name }),
   wsTree:           name          => ipcRenderer.invoke('ws-tree', { name }),
   wsReadFile:       (name, relPath) => ipcRenderer.invoke('ws-read-file', { name, relPath }),

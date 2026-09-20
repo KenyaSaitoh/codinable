@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!--
+  HTML の基本構造。CSS も JavaScript も読み込んでいないので、
+  ここで見えているのは Web ブラウザが素の HTML に付ける既定の見た目である。
+
+  「実行」を押すとプレビュータブに表示される。
+  タグを書き換えて保存し、プレビューを再読み込みすると結果が変わる。
+-->
+<html lang="ja">
+<head>
+  <!-- 文字コードの宣言。これが無いと日本語が化ける -->
+  <meta charset="UTF-8">
+  <!-- スマートフォンで等倍表示にする（3.3 のレスポンシブで効いてくる） -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- タブに出るページ名 -->
+  <title>HTMLの基本 | 社内ポータル</title>
+</head>
+<body>
+  <!-- 見出しは h1 から h6 まで。数字が小さいほど上位 -->
+  <h1>社内ポータル</h1>
+  <p>これは HTML だけで書いたページである。段落は <code>p</code> タグで表す。</p>
+
+  <h2>お知らせ</h2>
+  <p>
+    段落の中で改行したいときは <code>br</code> タグを使う。<br>
+    ただし意味の切れ目なら、段落そのものを分けたほうが適切である。
+  </p>
+
+  <h3>画像</h3>
+  <!-- img は閉じタグを書かない。alt は画像が出ないときの代替テキスト -->
+  <img src="logo.svg" alt="架空の会社のロゴ" width="160" height="80">
+
+  <h3>リンク</h3>
+  <p>
+    <!-- 外部サイトへ。別タブで開くときは rel="noopener noreferrer" も付ける -->
+    <a href="https://developer.mozilla.org/ja/docs/Web/HTML" target="_blank" rel="noopener noreferrer">
+      HTML の仕様を調べる（別タブ）
+    </a>
+  </p>
+  <p>
+    <!-- ページ内リンク。href の # のあとに、飛び先の id を書く -->
+    <a href="#contact">このページの「連絡先」へ移動する</a>
+  </p>
+
+  <h2 id="contact">連絡先</h2>
+  <p>
+    <!-- mailto: はメールソフトを開くリンク -->
+    <a href="mailto:info@example.com">info@example.com</a>
+  </p>
+
+  <hr>
+
+  <h2>タグと属性</h2>
+  <p>属性は開始タグの中に <code>属性名="値"</code> の形で書く。</p>
+  <!-- id はページ内で一意、class は同じ役割の要素に付けるグループ名。
+       どちらも 3.2 の JavaScript と 3.3 の CSS から要素を指し示すのに使う -->
+  <p id="unique-paragraph" class="note">
+    この段落には id="unique-paragraph" と class="note" を付けてある。
+    見た目は変わらないが、3.3 の CSS で <code>.note</code> を指定すると装飾できる。
+  </p>
+</body>
+</html>
