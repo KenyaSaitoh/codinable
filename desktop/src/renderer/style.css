@@ -3989,6 +3989,18 @@ body.theme-dark .exercise-item.active {
 }
 
 /* ── SQL タブのツールバー ── */
+.messaging-hint { margin: 0 0 10px; color: var(--text-muted); }
+#messaging-services { display: flex; flex-wrap: wrap; gap: 12px; }
+.messaging-service { flex: 1 1 230px; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; min-width: 0; }
+.messaging-service-title { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.messaging-service code { display: block; overflow-wrap: anywhere; user-select: text; }
+.messaging-state[data-state="running"] { color: var(--accent-green, #238636); }
+.messaging-actions { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 6px; }
+.messaging-actions .btn { width: auto; }
+.messaging-error { color: var(--accent-red, #e5534b); overflow-wrap: anywhere; }
+.messaging-log-toolbar { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.messaging-log { height: 150px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+
 .sql-toolbar {
   display: flex;
   align-items: center;
@@ -4113,38 +4125,31 @@ body.theme-dark .exercise-item.active {
 }
 .chat-mode {
   display: flex;
+  align-items: center;
+  gap: 14px;
   margin-right: auto;
-  border: 1px solid var(--border-color);
-  border-radius: 7px;
-  overflow: hidden;
-  background: var(--bg-input);
 }
-.chat-mode-btn {
+.chat-mode-option {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background: transparent;
-  border: none;
-  border-right: 1px solid var(--border-color);
-  padding: 4px 9px;
+  gap: 6px;
+  padding: 4px 0;
   font-size: calc(var(--editor-font-size) - 3px);
-  color: var(--text-muted);
+  color: var(--text-main);
   cursor: pointer;
 }
-.chat-mode-btn:last-child { border-right: none; }
-.chat-mode-check { visibility: hidden; width: 0.8em; font-weight: 900; }
-.chat-mode-btn.is-active .chat-mode-check { visibility: visible; }
-.chat-mode-btn:hover:not(.is-active) { background: var(--bg-overlay); color: var(--text-main); }
-.chat-mode-btn.is-active {
-  background: var(--accent-blue);
-  color: #fff;
-  font-weight: 700;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, #fff 20%, transparent);
+.chat-mode-option input {
+  margin: 0;
+  width: 14px;
+  height: 14px;
+  accent-color: var(--accent-blue);
+  cursor: pointer;
 }
-.chat-mode.is-agent .chat-mode-btn.is-active {
-  background: color-mix(in srgb, var(--accent-green) 78%, #087f5b);
-  color: #fff;
+.chat-mode-option input:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 3px;
 }
+.chat-mode-option:has(input:disabled) { opacity: 0.6; cursor: default; }
 
 /* ── Agent の経過 ──
    何をしたかを 1 行ずつ残す。実行の出力は畳んで置く */

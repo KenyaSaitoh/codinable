@@ -12,6 +12,20 @@
 
 const UI_STRINGS = {
   ja: {
+    tabMessaging: 'メッセージング',
+    messagingHint: '必要なサーバーを起動して、演習から接続できます。データは停止後も保存されます。',
+    messagingLog: 'サーバーログ',
+    messagingStart: '起動',
+    messagingStop: '停止',
+    messagingReset: 'データを初期化',
+    messagingManagement: '管理画面',
+    messagingCredentials: 'ユーザー名 / パスワード: guest / guest',
+    messagingConfirmReset: '{name} の保存データを削除します。メッセージやトピック・キューの設定は元に戻せません。初期化しますか？',
+    messaging_stopped: '停止中',
+    messaging_starting: '起動中…',
+    messaging_running: '稼働中',
+    messaging_stopping: '停止処理中…',
+    messaging_error: 'エラー',
     // ── ヘッダー / プロジェクト ──
     noProject:           'プロジェクト未選択',
     btnResetExercise:    '↺ 初期化',
@@ -218,8 +232,8 @@ const UI_STRINGS = {
 
     // ── Ask / Agent の切り替え ──
     chatModeLabel:       'AIモード',
-    modeAsk:             'Ask（質問）',
-    modeAgent:           'Agent（編集）',
+    modeAsk:             'Ask',
+    modeAgent:           'Agent',
     chatModeTitle:       'Ask は読むだけ。Agent は開いている演習のファイルを書き換えます（実行はしません）',
 
     // ── コードの書き換え (AI駆動開発) ──
@@ -257,6 +271,20 @@ const UI_STRINGS = {
   },
 
   en: {
+    tabMessaging: 'Messaging',
+    messagingHint: 'Start a server to connect from your exercises. Data is kept when the server stops.',
+    messagingLog: 'Server log',
+    messagingStart: 'Start',
+    messagingStop: 'Stop',
+    messagingReset: 'Reset data',
+    messagingManagement: 'Management UI',
+    messagingCredentials: 'Username / password: guest / guest',
+    messagingConfirmReset: 'Delete all saved {name} data? Messages, topics, and queue settings cannot be restored.',
+    messaging_stopped: 'Stopped',
+    messaging_starting: 'Starting…',
+    messaging_running: 'Running',
+    messaging_stopping: 'Stopping…',
+    messaging_error: 'Error',
     noProject:           'No project selected',
     btnResetExercise:    '↺ Reset',
     btnResetExerciseTitle:
@@ -446,8 +474,8 @@ const UI_STRINGS = {
     btnChatClearTitle:   'Erase the conversation',
 
     chatModeLabel:       'AI mode',
-    modeAsk:             'Ask (read)',
-    modeAgent:           'Agent (edit)',
+    modeAsk:             'Ask',
+    modeAgent:           'Agent',
     chatModeTitle:       'Ask only reads. Agent edits files in the open exercise (it never runs them).',
 
     agentNoProject:      'Pick an exercise before asking the Agent.',

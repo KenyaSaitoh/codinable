@@ -285,6 +285,7 @@
             <button class="run-tab" id="run-tab-tests" data-pane="tab-test-results" data-i18n="tabTests" data-i18n-title="tabTestsTitle" title="テストメソッド単位の成否・失敗内容・カバレッジ">テスト結果</button>
             <button class="run-tab" id="run-tab-sql" data-pane="tab-sql" data-i18n="tabSql" data-i18n-title="tabSqlTitle" title="HSQLDB に SQL を実行します">🗄 SQL</button>
             <button class="run-tab" id="run-tab-terminal" data-pane="tab-terminal" data-i18n="tabTerminal" data-i18n-title="tabTerminalTitle" title="プロジェクトのフォルダで動くターミナル (bash)">🖥 ターミナル</button>
+            <button class="run-tab" id="run-tab-messaging" data-pane="tab-messaging" data-i18n="tabMessaging">メッセージング</button>
             <button class="run-tab" id="run-tab-browser" data-pane="tab-browser" data-i18n="tabBrowser" data-i18n-title="tabBrowserTitle" title="Web アプリ・静的ページの動作確認">🌐 プレビュー</button>
           </div>
           <div class="run-output-body">
@@ -326,6 +327,16 @@
             </div>
 
             <!-- ターミナル (node-pty + xterm.js) -->
+            <div class="run-pane" id="tab-messaging">
+              <p class="messaging-hint" data-i18n="messagingHint">必要なサーバーを起動して、演習から接続できます。データは停止後も保存されます。</p>
+              <div id="messaging-services"></div>
+              <div class="messaging-log-toolbar">
+                <label for="messaging-log-select" data-i18n="messagingLog">サーバーログ</label>
+                <select id="messaging-log-select"><option value="kafka">Kafka</option><option value="rabbitmq">RabbitMQ</option></select>
+              </div>
+              <pre class="output-pre messaging-log" id="messaging-log"></pre>
+            </div>
+
             <div class="run-pane terminal-pane" id="tab-terminal">
               <div class="xterm-wrap" id="xterm-wrap"></div>
             </div>
@@ -376,10 +387,10 @@
         <div class="chat-actions" id="chat-actions">
           <!-- 開いているプロジェクトのファイルは送信時に自動で渡すので、添付の操作は置かない -->
           <!-- Ask: 読むだけ / Agent: 開いている演習の中だけを書き換える (実行はしない) -->
-          <span class="chat-mode-label" data-i18n="chatModeLabel">AIモード</span>
-          <div class="chat-mode" id="chat-mode" role="radiogroup" data-i18n-title="chatModeTitle" title="Ask は読むだけ。Agent は開いている演習のファイルを書き換えます（実行はしません）">
-            <button class="chat-mode-btn is-active" id="btn-mode-ask" data-mode="ask" role="radio" aria-checked="true" aria-pressed="true"><span class="chat-mode-check" aria-hidden="true">✓</span><span data-i18n="modeAsk">Ask（質問）</span></button>
-            <button class="chat-mode-btn" id="btn-mode-agent" data-mode="agent" role="radio" aria-checked="false" aria-pressed="false"><span class="chat-mode-check" aria-hidden="true">✓</span><span data-i18n="modeAgent">Agent（編集）</span></button>
+          <span class="chat-mode-label" id="chat-mode-label" data-i18n="chatModeLabel">AIモード</span>
+          <div class="chat-mode" id="chat-mode" role="radiogroup" aria-labelledby="chat-mode-label" data-i18n-title="chatModeTitle" title="Ask は読むだけ。Agent は開いている演習のファイルを書き換えます（実行はしません）">
+            <label class="chat-mode-option"><input type="radio" name="chat-mode" id="btn-mode-ask" value="ask" checked><span data-i18n="modeAsk">Ask</span></label>
+            <label class="chat-mode-option"><input type="radio" name="chat-mode" id="btn-mode-agent" value="agent"><span data-i18n="modeAgent">Agent</span></label>
           </div>
           <button class="chat-mini-btn chat-mini-send" id="btn-chat-send" data-i18n="btnSend" data-i18n-title="btnSendTitle" title="送信">➤ 送信</button>
         </div>

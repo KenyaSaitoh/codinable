@@ -30,6 +30,7 @@ const crypto = require('crypto');
 const { decodeOutput, killTree, killPort, walkTree } = require('./util');
 const { resolveProjectDir, detectProject } = require('./workspace');
 const { JACOCO_INIT_SCRIPT, collectTestRunArtifacts } = require('../test-report');
+const messaging = require('./messaging');
 
 const CP_SEP = IS_WIN ? ';' : ':';
 
@@ -530,6 +531,12 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
   let spec;
   try {
     spec = buildSpec({ kind, projectDir, relPath, task, uiLang });
+    const services = messaging.requirements(projectDir);
+    if (services.length) {
+      send('run-output', (uiLang === 'en' ? 'Starting messaging servers: ' : 'メッセージングサーバーを準備中: ') + services.join(', ') + '\n');
+      await messaging.getManager().ensure(services, () => token !== runToken);
+      if (token !== runToken) return { ok: false, error: uiLang === 'en' ? 'Run cancelled' : '実行を停止しました' };
+    }
   } catch (err) {
     send('run-output', `\n❌ ${err.message}\n`);
     send('run-exit', { code: -1, phase: 'prepare' });

@@ -3,7 +3,7 @@
 Udemy 講座の受講環境として使う、Windows 向けのデスクトップ開発環境（Electron 製）。
 
 エディタ・ファイルツリー・ターミナル・実行・テスト結果・Web プレビュー・SQL 実行を
-1 つのウィンドウにまとめてあり、**Java / Node.js / Python / Bash / HSQLDB を同梱**しているため、
+1 つのウィンドウにまとめてあり、**Java / Node.js / Python / Bash / HSQLDB / Kafka / RabbitMQ を同梱**しているため、
 受講者は個別に開発環境を作らなくても講座を始められる。
 
 LLM とのチャットも使えるが、これは任意機能である（API キーを登録しなければ使わないだけで、
@@ -21,8 +21,9 @@ LLM とのチャットも使えるが、これは任意機能である（API キ
 | Web プレビュー | 開発サーバー（Spring Boot / Django / Express / Vite）と静的 HTML の両方に対応。**待ち受けているサーバーが見つかるまでプレビューは押せない**（押しても何も出ない状態を作らないため） |
 | ターミナル | node-pty による本物の PTY。同梱ランタイムが PATH に入った状態で開く |
 | SQL | 実行対象で選んだ `.sql` を HSQLDB（インメモリ）へ流し、結果を表で表示。DB が止まっていれば自動で起動する。開いているファイルの一部を選択していればその文だけ実行できる |
+| メッセージング | Kafka / RabbitMQ の起動・停止、接続先・ログの確認、保存データの初期化。RabbitMQ の管理画面も開ける。演習が必要とするサーバーは実行前に自動起動する |
 | LLM チャット | Claude Haiku / GPT Luna / Gemini Flash から選択（BYOK）。開いているプロジェクトのファイルは送信時に自動で渡す |
-| Ask / Agent | チャット下部のトグルで切り替える。**Ask** は読むだけで、答えるだけ。**Agent** は開いている演習のファイルを自分で読んで書き換える |
+| Ask / Agent | チャット下部のラジオボタンで切り替える。**Ask** は読むだけで、答えるだけ。**Agent** は開いている演習のファイルを自分で読んで書き換える |
 | Agent ができる範囲 | **開いている演習のディレクトリの中の読み書きだけ**。演習の外（`..` や絶対パス）と生成物（`node_modules` / `build` など）は弾かれる。**プログラムを動かすことはできない**（実行するのは受講者の「実行」ボタンだけ） |
 | Agent の書き換え | 変更は必ず差分で表示され、「元に戻す」で戻せる |
 
@@ -37,7 +38,7 @@ Windows + Git Bash で、リポジトリ直下の `setup.bat` を実行する（
 ./setup.bat
 ```
 
-同梱ランタイム（合計 300MB 超）を取得するため Git では追跡していない。
+同梱ランタイム・サーバー本体はサイズが大きいため Git では追跡していない。
 `setup.bat` が入れるものは次の通り。
 
 | 置き場所 | 中身 |
@@ -46,6 +47,9 @@ Windows + Git Bash で、リポジトリ直下の `setup.bat` を実行する（
 | `runtime/node/` | Node.js 24（`npm` / `npx` 同梱） |
 | `runtime/python/` | Python 3.13（embeddable 版に `pip` を入れたもの） |
 | `runtime/bash/` | PortableGit から抜いた `bash` + coreutils + `curl` |
+| `runtime/kafka/` | Apache Kafka 4.3.1（KRaft、学習用の単一ノード） |
+| `runtime/rabbitmq/` | RabbitMQ 4.3.6（管理プラグインを有効にして起動） |
+| `runtime/erlang/` | Erlang/OTP 28.5 と起動に必要な Visual C++ ランタイム DLL |
 | `hsqldb/` | HSQLDB の jar |
 | `resources/jdtls/` | Java の言語サーバー（Eclipse JDT LS） |
 | `resources/gradle-wrapper/` | Gradle Wrapper の jar（雛形に `gradlew` が無くても実行できるように） |
@@ -55,6 +59,7 @@ Windows + Git Bash で、リポジトリ直下の `setup.bat` を実行する（
 ```bash
 powershell -ExecutionPolicy Bypass -File scripts/setup.ps1 -Only python,node
 powershell -ExecutionPolicy Bypass -File scripts/setup.ps1 -Only java -Force
+powershell -ExecutionPolicy Bypass -File scripts/setup.ps1 -Only kafka,rabbitmq
 ```
 
 ## 起動とビルド
@@ -89,6 +94,53 @@ codinable/
 IntelliJ で開いても成立する。
 
 ## 演習
+
+### Kafka / RabbitMQ
+
+講座選択から **「Kafka・RabbitMQ サンプル」** を選び、演習を開いて「実行」を押すと、
+必要なサーバーが起動して Java の送受信サンプルが動く。
+初回の Gradle / ライブラリ取得にはインターネット接続が必要。
+サーバー本体・Erlang はインストーラに含まれ、受講者による Docker や Windows サービスの導入は不要。
+
+**「メッセージング」タブ**では、各サーバーの起動・停止、接続先とログの確認、
+停止後のデータ初期化ができる。通常の「実行停止」は演習プログラムだけを停止する。
+サーバーは演習の実行後も動き続け、アプリを終了すると停止する。
+
+| 接続先 | 既定値 |
+|---|---|
+| Kafka | `127.0.0.1:9092` |
+| RabbitMQ（AMQP） | `amqp://guest:guest@127.0.0.1:5672/` |
+| RabbitMQ 管理画面 | `http://127.0.0.1:15672`（ユーザー名・パスワードともに `guest`） |
+
+待ち受けはローカル PC のみ。Kafka の内部通信に 9093、RabbitMQ の内部通信に 25672 と
+43690 も使う。他のソフトが必要なポートを使用中ならエラーを表示し、そのプロセスは停止しない。
+
+保存先は `%APPDATA%\Codinable\messaging\kafka` と `rabbitmq`。
+データは再起動後も残り、同じ Codinable の演習間で共有する。
+**「データを初期化」は選んだサーバーの全演習分のデータを削除する**ため、画面で確認してから実行する。
+Kafka の通常トピックの保持上限は 24 時間 / パーティションあたり 128 MiB（削除は定期実行）。
+
+新しい演習で自動起動を使う場合は、雛形のルートに `codinable.services.json` を置く。
+
+```json
+{ "services": ["kafka", "rabbitmq"] }
+```
+
+必要なものだけ指定する。演習とターミナルには `KAFKA_BOOTSTRAP_SERVERS`、`RABBITMQ_URL`、
+Spring Boot 用の `SPRING_KAFKA_BOOTSTRAP_SERVERS` / `SPRING_RABBITMQ_*` を渡す。
+送信側・受信側を別プログラムとして常駐させるときは、実行ボタンとターミナルを使う。
+
+同梱物の取得だけを行う開発用コマンド（Java セットアップ済みの場合）:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/setup-messaging.ps1
+```
+
+バージョンの定義は `desktop/src/messaging-config.js`。公式配布物を固定バージョンで取得し、
+Kafka は公式 SHA-512、GitHub 配布物は公開されている SHA-256 digest がある場合に照合する。
+配布物の LICENSE / NOTICE を保持し、Erlang のライセンス文書も同梱する。
+
+### 演習の操作
 
 **演習（exercise）** は「動かして確かめる 1 単位」で、講座のレッスンと 1 対 1 に
 対応する。問題を出して解いてもらうものではない。
@@ -161,11 +213,12 @@ courses/<講座ID>/
 ```
 
 `course.yaml` の書き方は `courses/webapp-archi-overview/course.yaml` の
-コメントを参照。収録済みの講座は次の 1 つ。
+コメントを参照。収録済みの講座・サンプルは次のとおり。
 
 | 講座ID | 対応する Udemy 講座 | 演習 |
 |---|---|---|
 | `webapp-archi-overview` | Web システム＋生成AI 技術概要編 | 全 30 件（下記） |
+| `messaging-basics` | Kafka・RabbitMQ の動作確認用サンプル | Kafka / RabbitMQ 各 1 件 |
 
 `webapp-archi-overview` の演習は次のとおり。チャプター 3 と 6 は、
 Web ブラウザと DB の仕組みをその場で動かして確かめられるよう細かく分けてある。

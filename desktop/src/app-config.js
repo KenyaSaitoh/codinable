@@ -27,7 +27,8 @@ const PRODUCT = {
   // 選択できる UI 言語。renderer/i18n.js の UI_STRINGS と同じ並びにしておくこと
   languages:        ['ja', 'en'],
   // 同梱を前提とするランタイム (scripts/setup-runtimes.ps1 / setup-jdtls.ps1 が用意する)
-  runtimes:         ['java', 'node', 'python', 'bash', 'hsqldb', 'gradle-wrapper', 'jdtls'],
+  runtimes:         ['java', 'node', 'python', 'bash', 'hsqldb', 'gradle-wrapper', 'jdtls',
+                     'kafka', 'rabbitmq', 'erlang'],
 };
 
 // ── LLM (BYOK) ─────────────────────────────────────────────

@@ -8,6 +8,7 @@
 #    runtime/node/               portable Node.js (node.exe のみ)
 #    runtime/python/             embeddable Python
 #    runtime/bash/               PortableGit から bash + coreutils + curl を抽出
+#    runtime/kafka/ rabbitmq/ erlang/  学習用メッセージングサーバー
 #    resources/jdtls/            Eclipse JDT Language Server (Java の LSP)
 #    resources/gradle-wrapper/   gradle-wrapper.jar (雛形に wrapper が無いとき用)
 #    hsqldb/hsqldb-2.7.3.jar     SQL 学習用の組み込み DB
@@ -17,13 +18,14 @@
 #    powershell -ExecutionPolicy Bypass -File scripts\setup.ps1 -Only java,jdtls
 # ============================================================
 param(
-  # 一部だけ入れ直したいとき: java / node / python / bash / jdtls / gradle / hsqldb
+  # 一部だけ入れ直したいとき: java / node / python / bash / jdtls / gradle / hsqldb / kafka / rabbitmq / erlang
   [string[]] $Only = @(),
   # 既にあるものも作り直す
   [switch] $Force
 )
 
 $ErrorActionPreference = "Stop"
+$Only = @($Only | ForEach-Object { $_ -split ',' })
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 $root      = Split-Path $PSScriptRoot -Parent
@@ -215,6 +217,9 @@ Step "hsqldb" (Join-Path $root "hsqldb\hsqldb-$hsqldbVer.jar") {
   New-Item -ItemType Directory -Force (Join-Path $root "hsqldb") | Out-Null
   Invoke-WebRequest -Uri $hsqldbUrl -OutFile (Join-Path $root "hsqldb\hsqldb-$hsqldbVer.jar") -UseBasicParsing
 }
+
+# Kafka / RabbitMQ / Erlang are portable distributions used by the messaging tab.
+& (Join-Path $PSScriptRoot 'setup-messaging.ps1') -Only $Only -Force:$Force
 
 Remove-Item -Recurse -Force $work -ErrorAction SilentlyContinue
 

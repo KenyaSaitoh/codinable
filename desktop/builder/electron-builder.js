@@ -13,12 +13,25 @@
 // ═══════════════════════════════════════════════════════════
 
 const { PRODUCT } = require('../src/app-config');
+const { VERSIONS } = require('../src/messaging-config');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
   appId:       PRODUCT.appId,
   productName: PRODUCT.productName,
   copyright:   `Copyright © 2025-2026 ${PRODUCT.displayName}`,
   asar:        true,
+  beforePack: () => {
+    for (const [name, file] of [
+      ['kafka', `libs/kafka_2.13-${VERSIONS.kafka}.jar`],
+      ['rabbitmq', 'sbin/rabbitmq-server.bat'],
+      ['erlang', 'bin/erl.exe'], ['erlang', 'bin/vcruntime140.dll'], ['erlang', 'LICENSE.txt'],
+    ]) {
+      const target = path.resolve(__dirname, '../../runtime', name, file);
+      if (!fs.existsSync(target)) throw new Error(`Missing bundled file: ${target}. Run scripts/setup-messaging.ps1.`);
+    }
+  },
 
   files: [
     'src/**',
@@ -39,6 +52,9 @@ module.exports = {
     { from: '../runtime/node',             to: 'runtime/node',   filter: ['**/*'] },
     { from: '../runtime/python',           to: 'runtime/python', filter: ['**/*'] },
     { from: '../runtime/bash',             to: 'runtime/bash',   filter: ['**/*'] },
+    { from: '../runtime/kafka',            to: 'runtime/kafka',  filter: ['**/*'] },
+    { from: '../runtime/rabbitmq',         to: 'runtime/rabbitmq', filter: ['**/*'] },
+    { from: '../runtime/erlang',           to: 'runtime/erlang', filter: ['**/*'] },
     { from: '../hsqldb',                   to: 'hsqldb',         filter: ['*.jar'] },
     { from: '../resources/gradle-wrapper', to: 'gradle-wrapper', filter: ['**/*'] },
     // Java の言語サーバー (Eclipse JDT LS)。補完・定義ジャンプ・診断に使う

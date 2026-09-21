@@ -27,6 +27,12 @@ Java の言語サーバーを同梱している。
   設定画面に出しているため、置き場を増やすときはそちらも一緒に見る
 - **実行は 1 本だけ**（`main/runner.js`）。新しく走らせるときは既存を止める。
   「今どれが走っているか」が常に 1 つに決まるようにしている
+- **Kafka / RabbitMQ は `main/messaging.js` で別管理**。必要時のみ起動し、
+  通常の実行停止では落とさず、アプリ終了時に停止する。雛形ルートの
+  `codinable.services.json` の `services` 配列で実行前の自動起動を宣言できる。
+  データは userData/messaging に保存し、他のプロセスのポートを奪わない。
+  バージョンは `src/messaging-config.js`、配布物の用意は `scripts/setup-messaging.ps1`。
+  Erlang はユーザー領域に launcher と erl.ini を作り、同梱物に書き込まず起動する
 - **LLM は任意機能**。API キーが無い状態でも他のすべてが動くことを壊さない
 - **チャットは Ask と Agent の 2 つ**（`src/renderer/renderer.js` の `chatMode`）。
   Ask は読むだけ（`src/llm/index.js` の `streamChat`）。Agent は道具を使う

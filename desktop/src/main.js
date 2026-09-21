@@ -36,6 +36,7 @@ const runner     = require('./main/runner');
 const terminal   = require('./main/terminal');
 const staticSrv  = require('./main/static-server');
 const sqlEngine  = require('./main/sql');
+const messaging  = require('./main/messaging');
 const agent      = require('./main/agent');
 const lspServer  = require('./lsp-server');
 const llm        = require('./llm');
@@ -75,6 +76,14 @@ ipcMain.handle('get-llm-selection', () => config.getLlmSelection());
 ipcMain.handle('set-llm-selection', (_event, selection) => config.setLlmSelection(selection || {}));
 
 ipcMain.handle('runtime-status', () => runtimes.probeRuntimes(util.decodeOutput));
+
+ipcMain.handle('messaging-status', () => messaging.getManager().status());
+for (const action of ['start', 'stop', 'reset']) {
+  ipcMain.handle(`messaging-${action}`, async (_event, id) => {
+    try { await messaging.getManager()[action](id); return { ok: true }; }
+    catch (err) { return { ok: false, error: err.message }; }
+  });
+}
 
 ipcMain.handle('open-browser', (_event, url) => {
   if (/^https?:\/\//i.test(String(url || ''))) shell.openExternal(url);
@@ -425,6 +434,12 @@ app.on('web-contents-created', (_event, contents) => {
 // ═══════════════════════════════════════════════════════════
 
 app.whenReady().then(() => {
+  const brokerManager = messaging.getManager();
+  for (const channel of ['status', 'log']) brokerManager.on(channel, payload => {
+    for (const win of BrowserWindow.getAllWindows()) {
+      if (!win.webContents.isDestroyed()) win.webContents.send(`messaging-${channel}`, payload);
+    }
+  });
   // ワークスペースが無ければ作っておく (初回起動でファイルツリーが空でも迷わないように)
   try { fs.mkdirSync(config.getWorkspaceRoot(), { recursive: true }); } catch { /* 権限が無い環境では諦める */ }
   createSplash();
@@ -435,10 +450,18 @@ app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(
 app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 
 // 終了時に子プロセス (実行・ターミナル・HSQLDB・言語サーバー・静的サーバー) を残さない
-app.on('before-quit', () => {
+let cleanupComplete = false;
+let cleanupPending = false;
+app.on('before-quit', event => {
+  if (cleanupComplete) return;
+  event.preventDefault();
+  if (cleanupPending) return;
+  cleanupPending = true;
   runner.disposeAll();
   terminal.stop();
   sqlEngine.stop();
   staticSrv.stop();
   lspServer.stopAll();
+  messaging.getManager().dispose().catch(err => console.error('[messaging] shutdown:', err))
+    .finally(() => { cleanupComplete = true; app.quit(); });
 });

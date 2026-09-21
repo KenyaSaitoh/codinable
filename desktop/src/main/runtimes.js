@@ -176,7 +176,7 @@ const { applyJavaLocaleToEnv, getJavaRuntimeOptions, getJavacRuntimeOptions } =
  *  ユーザーが入れたツールがそのまま見えるほうが望ましい)
  */
 function getDevEnv(uiLang = null, options = {}) {
-  let env = { ...process.env };
+  let env = { ...process.env, ...require('../messaging-config').connectionEnv() };
 
   // 開発時に npm 経由で Codinable を起動すると npm_config_* が子に継がれ、
   // 同梱 npm が "Unknown env config" を警告する。受講者にはエラーに見えるので落とす
@@ -258,6 +258,10 @@ function probeRuntimes(decodeOutput) {
     java, node, npm, python, bash,
     hsqldb: !!resolveHsqldb(),
     gradleWrapper: !!resolveGradleWrapperJar(),
+    ...Object.fromEntries(['kafka', 'rabbitmq', 'erlang'].map(name => {
+      try { return [name, fs.readFileSync(path.join(resolveRuntimeDir(name), 'codinable-version.txt'), 'utf8').trim()]; }
+      catch { return [name, null]; }
+    })),
   }));
 }
 

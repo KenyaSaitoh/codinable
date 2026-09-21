@@ -45,9 +45,9 @@ main().then(async code => {
 
 async function main() {
   PORT = await freePort();
-  const electron = path.resolve(__dirname, '../node_modules/electron/dist/electron.exe');
+  const electron = process.env.PACKAGED_APP || path.resolve(__dirname, '../node_modules/electron/dist/electron.exe');
   const child = spawn(electron, [
-    path.resolve(__dirname, '..'),
+    ...(!process.env.PACKAGED_APP ? [path.resolve(__dirname, '..')] : []),
     `--remote-debugging-port=${PORT}`,
     `--user-data-dir=${userData}`,
   ], { stdio: ['ignore', 'pipe', 'pipe'] });
@@ -60,9 +60,27 @@ async function main() {
   try {
     cdp = await connect();
     await run(cdp);
+    if (process.env.CHECK_MESSAGING) {
+      const exited = new Promise(resolve => child.once('exit', () => resolve(true)));
+      await cdp.eval('setTimeout(() => window.close(), 100); true');
+      let timeout;
+      const closed = await Promise.race([exited, new Promise(resolve => { timeout = setTimeout(() => resolve(false), 40000); })]);
+      clearTimeout(timeout);
+      check(closed, 'App shutdown did not finish');
+      if (closed) {
+        cdp.close(); cdp = null;
+        const { portOpen } = require('../src/main/messaging');
+        for (const port of [9092, 9093, 5672, 15672, 25672, 43690]) check(!await portOpen(port), 'App shutdown left port ' + port + ' open');
+      }
+    }
   } catch (err) {
     problems.push(err.message);
   } finally {
+    if (cdp && process.env.CHECK_MESSAGING) {
+      for (const id of ['kafka', 'rabbitmq']) {
+        try { await cdp.eval(`window.api.messagingStop('${id}')`); } catch {}
+      }
+    }
     if (cdp) cdp.close();
     child.kill();
     // Electron はウィンドウを持つので、念のため子プロセスも落とす
@@ -154,25 +172,22 @@ async function run(cdp) {
   const activePane = await cdp.eval(`document.querySelector('.run-pane.active')?.id`);
   check(activePane === 'tab-sql', `SQL 実行後に SQL タブが出ていない: ${activePane}`);
 
-  // 6. チャットの Ask / Agent トグル
-  check(await cdp.eval(`!!document.getElementById('chat-mode')`), 'Ask/Agent のトグルが無い');
+  // 6. チャットの Ask / Agent ラジオボタン
+  check(await cdp.eval(`document.querySelectorAll('input[type="radio"][name="chat-mode"]').length`) === 2, 'Ask/Agent のラジオボタンが無い');
   check(await cdp.eval(`!document.getElementById('btn-chat-edit')`),
         '「書き換え」ボタンが残っている');
-  check(await cdp.eval(`document.getElementById('btn-mode-ask').classList.contains('is-active')`),
+  check(await cdp.eval(`document.getElementById('btn-mode-ask').checked`),
         '既定が Ask になっていない');
-  check(await cdp.eval(`document.getElementById('btn-mode-ask').getAttribute('aria-pressed')`) === 'true',
-        'Ask が選択中であることを支援技術へ伝えていない');
+  check(await cdp.eval(`document.querySelector('label:has(#btn-mode-ask)').textContent.trim()`) === 'Ask', 'Ask のラベルに補足が残っている');
   await cdp.eval(`document.getElementById('btn-mode-agent').click()`);
-  await waitFor(cdp, `document.getElementById('btn-mode-agent').classList.contains('is-active')`,
+  await waitFor(cdp, `document.getElementById('btn-mode-agent').checked`,
                 5000, 'Agent に切り替わらない');
-  check(await cdp.eval(`document.getElementById('chat-mode').classList.contains('is-agent')`),
-        'Agent のときの見た目が変わらない');
-  check(await cdp.eval(`document.getElementById('btn-mode-agent').getAttribute('aria-pressed')`) === 'true',
-        'Agent が選択中であることを支援技術へ伝えていない');
+  check(await cdp.eval(`!document.getElementById('btn-mode-ask').checked`), 'Ask と Agent が同時に選択されている');
+  check(await cdp.eval(`document.querySelector('label:has(#btn-mode-agent)').textContent.trim()`) === 'Agent', 'Agent のラベルに補足が残っている');
   const placeholder = await cdp.eval(`document.getElementById('chat-input').placeholder`);
   check(/演習/.test(placeholder), `Agent の入力案内が変わらない: ${placeholder}`);
   await cdp.eval(`document.getElementById('btn-mode-ask').click()`);
-  check(await cdp.eval(`document.getElementById('btn-mode-ask').classList.contains('is-active')`),
+  check(await cdp.eval(`document.getElementById('btn-mode-ask').checked`),
         'Ask に戻せない');
 
   // 7. 任意の重い検査: 実ランタイムで React / Spring Boot の待受とプレビューを確認する
@@ -182,11 +197,43 @@ async function run(cdp) {
     await checkWebServerExercise(cdp, 'spring-mvc-calc', 'gradle:bootRun', /localhost:8080/, 'Spring Boot');
   }
 
+  if (process.env.CHECK_MESSAGING) await checkMessaging(cdp);
+
   if (process.env.SHOTS) {
     fs.mkdirSync(process.env.SHOTS, { recursive: true });
     const png = await cdp.screenshot();
     fs.writeFileSync(path.join(process.env.SHOTS, 'app-sql.png'), Buffer.from(png, 'base64'));
   }
+}
+
+async function checkMessaging(cdp) {
+  await cdp.eval(`document.getElementById('run-tab-messaging').click()`);
+  await waitFor(cdp, `document.querySelectorAll('.messaging-service').length === 2`, 10000, 'Messaging controls missing');
+  check(await cdp.eval(`document.querySelectorAll('.messaging-service button[data-action="start"]:not(:disabled)').length`) === 2,
+    'Bundled brokers not available');
+  await cdp.eval(`(() => { const s = document.getElementById('active-course-select'); s.value = 'messaging-basics'; s.dispatchEvent(new Event('change')); })()`);
+  for (const id of ['kafka', 'rabbitmq']) {
+    await clickExercise(cdp, id + '-roundtrip');
+    await waitFor(cdp, `projectInfo?.template === '${id}-roundtrip' && document.getElementById('run-target-select').value === 'gradle:run' && !document.getElementById('btn-run').disabled`, 20000, id + ' run target');
+    await cdp.eval(`document.getElementById('btn-run').click()`);
+    const success = await waitFor(cdp, `document.getElementById('output-result').textContent.includes('BUILD SUCCESSFUL')`, 240000, id + ' sample failed');
+    if (!success) console.log(await cdp.eval(`document.getElementById('output-result').textContent`));
+    check(await cdp.eval(`document.getElementById('output-result').textContent.includes('Received:')`), id + ' did not receive a message');
+    const state = await cdp.eval(`window.api.messagingStatus().then(s => s.find(s => s.id === '${id}').state)`);
+    check(state === 'running', id + ' broker stopped when the exercise ended');
+    await waitFor(cdp, `!running`, 15000, id + ' exercise did not finish');
+  }
+  await cdp.eval(`document.getElementById('run-tab-messaging').click()`);
+  if (process.env.SHOTS) {
+    fs.mkdirSync(process.env.SHOTS, { recursive: true });
+    fs.writeFileSync(path.join(process.env.SHOTS, 'app-messaging.png'), Buffer.from(await cdp.screenshot(), 'base64'));
+  }
+  // Exercise the Stop/Start controls as well as automatic startup.
+  await cdp.eval(`document.querySelector('[data-service="rabbitmq"] [data-action="stop"]').click()`);
+  await waitFor(cdp, `document.querySelector('[data-service="rabbitmq"] .messaging-state').dataset.state === 'stopped'`, 30000, 'RabbitMQ stop button');
+  await cdp.eval(`document.querySelector('[data-service="rabbitmq"] [data-action="start"]').click()`);
+  await waitFor(cdp, `document.querySelector('[data-service="rabbitmq"] .messaging-state').dataset.state === 'running'`, 90000, 'RabbitMQ start button');
+  console.log('Messaging UI and both sample exercises checked');
 }
 
 async function checkWebServerExercise(cdp, exerciseId, target, urlPattern, label) {

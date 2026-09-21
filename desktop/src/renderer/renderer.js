@@ -962,6 +962,58 @@ function showRunPane(paneId) {
 
   if (paneId === 'tab-terminal') startTerminal();
   if (paneId === 'tab-browser')  fitPreview();
+  if (paneId === 'tab-messaging') refreshMessaging();
+}
+
+let messagingStates = [];
+
+async function refreshMessaging() {
+  try { messagingStates = await window.api.messagingStatus(); renderMessaging(); }
+  catch (err) { $('messaging-log').textContent = err.message; }
+}
+
+function renderMessaging() {
+  $('messaging-services').innerHTML = messagingStates.map(s => {
+    const idle = ['stopped', 'error'].includes(s.state);
+    const name = s.id === 'kafka' ? 'Apache Kafka' : 'RabbitMQ';
+    return `<div class="messaging-service" data-service="${s.id}">` +
+      `<div class="messaging-service-title"><strong>${name} ${escapeHtml(s.version)}</strong>` +
+      `<span class="messaging-state" data-state="${s.state}">${escapeHtml(t(s.available ? `messaging_${s.state}` : 'runtimeMissing'))}</span></div>` +
+      `<code>${escapeHtml(s.endpoint)}</code>` +
+      `<div class="messaging-actions">` +
+      `<button class="btn btn-run" data-action="start" ${!idle || !s.available ? 'disabled' : ''}>${escapeHtml(t('messagingStart'))}</button>` +
+      `<button class="btn btn-stop" data-action="stop" ${!['running', 'starting'].includes(s.state) ? 'disabled' : ''}>${escapeHtml(t('messagingStop'))}</button>` +
+      `<button class="btn" data-action="reset" ${!idle ? 'disabled' : ''}>${escapeHtml(t('messagingReset'))}</button>` +
+      (s.managementUrl ? `<button class="btn" data-action="management" ${s.state !== 'running' ? 'disabled' : ''}>${escapeHtml(t('messagingManagement'))}</button>` : '') +
+      '</div>' + (s.managementUrl ? `<small>${escapeHtml(t('messagingCredentials'))}</small>` : '') +
+      (s.error ? `<p class="messaging-error">${escapeHtml(s.error)}</p>` : '') + '</div>';
+  }).join('');
+  renderMessagingLog();
+}
+
+function renderMessagingLog() {
+  const pre = $('messaging-log');
+  pre.textContent = messagingStates.find(s => s.id === $('messaging-log-select').value)?.log || '';
+  pre.scrollTop = pre.scrollHeight;
+}
+
+async function messagingAction(event) {
+  const button = event.target.closest('button[data-action]');
+  if (!button || button.disabled) return;
+  const id = button.closest('[data-service]').dataset.service;
+  const action = button.dataset.action;
+  if (action === 'management') {
+    await window.api.openBrowser(messagingStates.find(s => s.id === id).managementUrl);
+    return;
+  }
+  if (action === 'reset' && !await confirmDialog(tf('messagingConfirmReset', { name: id === 'kafka' ? 'Kafka' : 'RabbitMQ' }))) return;
+  button.disabled = true;
+  try {
+    const call = { start: 'messagingStart', stop: 'messagingStop', reset: 'messagingReset' }[action];
+    const result = await window.api[call](id);
+    if (!result.ok) await alertDialog(result.error);
+  } catch (err) { await alertDialog(err.message); }
+  await refreshMessaging();
 }
 
 // ═══════════════════════════════════════════
@@ -1549,6 +1601,7 @@ function addChatMessage(role, content, { streaming = false } = {}) {
 }
 
 function setChatStreaming(state) {
+  document.querySelectorAll('input[name="chat-mode"]').forEach(input => { input.disabled = state; });
   chatStreaming = state;
   $('btn-chat-send').disabled = state;
   $('btn-chat-abort').classList.toggle('hidden', !state);
@@ -1557,18 +1610,14 @@ function setChatStreaming(state) {
 
 // ── Ask / Agent の切り替え ─────────────────────────────────
 //
-// Ask は読むだけ。Agent はファイルを書き換えて実行まで試す
+// Ask は読むだけ。Agent はファイルを書き換える (実行は受講者が行う)
 // どちらを使うかは覚えておく (毎回選び直させない)
 
 function setChatMode(mode, { persist = true } = {}) {
   chatMode = mode === 'agent' ? 'agent' : 'ask';
-  for (const btn of document.querySelectorAll('.chat-mode-btn')) {
-    const active = btn.dataset.mode === chatMode;
-    btn.classList.toggle('is-active', active);
-    btn.setAttribute('aria-checked', active ? 'true' : 'false');
-    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+  for (const input of document.querySelectorAll('input[name="chat-mode"]')) {
+    input.checked = input.value === chatMode;
   }
-  $('chat-mode').classList.toggle('is-agent', chatMode === 'agent');
   $('chat-input').placeholder = t(chatMode === 'agent' ? 'chatInputAgent' : 'chatInputAsk');
   if (persist) window.api.setLlmSelection({ chatMode });
 }
@@ -2000,6 +2049,9 @@ async function renderRuntimeInfo() {
     ['bash',    status.bash],
     ['HSQLDB',  status.hsqldb ? 'OK' : null],
     ['Gradle Wrapper', status.gradleWrapper ? 'OK' : null],
+    ['Apache Kafka', status.kafka],
+    ['RabbitMQ', status.rabbitmq],
+    ['Erlang/OTP', status.erlang],
   ];
   wrap.innerHTML = rows.map(([label, value]) =>
     `<div class="runtime-info-row"><span>${escapeHtml(label)}</span>` +
@@ -2205,6 +2257,8 @@ function wireEvents() {
   $('btn-sql-start').addEventListener('click', startSql);
   $('btn-sql-stop').addEventListener('click', stopSql);
   $('btn-sql-run').addEventListener('click', runSql);
+  $('messaging-services').addEventListener('click', messagingAction);
+  $('messaging-log-select').addEventListener('change', renderMessagingLog);
 
   // ── プレビュー ──
   const view = $('mini-browser');
@@ -2220,8 +2274,8 @@ function wireEvents() {
 
   // ── チャット ──
   $('btn-chat-send').addEventListener('click', () => sendChat());
-  for (const btn of document.querySelectorAll('.chat-mode-btn')) {
-    btn.addEventListener('click', () => { if (!chatStreaming) setChatMode(btn.dataset.mode); });
+  for (const input of document.querySelectorAll('input[name="chat-mode"]')) {
+    input.addEventListener('change', () => { if (input.checked && !chatStreaming) setChatMode(input.value); });
   }
   $('btn-chat-abort').addEventListener('click', () => {
     if (chatMode === 'agent') window.api.agentAbort();
@@ -2297,6 +2351,12 @@ function sendStdin() {
 // ═══════════════════════════════════════════
 
 function wireIpc() {
+  window.api.onMessagingStatus(states => { messagingStates = states; renderMessaging(); });
+  window.api.onMessagingLog(({ id, text }) => {
+    const state = messagingStates.find(s => s.id === id);
+    if (state) state.log = (state.log + text).slice(-64000);
+    if ($('tab-messaging').classList.contains('active')) renderMessagingLog();
+  });
   window.api.onRunOutput(text => appendRunOutput(text));
   window.api.onRunExit(async ({ code }) => {
     setRunning(false);

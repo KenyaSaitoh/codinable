@@ -82,6 +82,14 @@ contextBridge.exposeInMainWorld('api', {
   sqlRun:           sql           => ipcRenderer.invoke('sql-run', { sql }),
   sqlStop:          ()            => ipcRenderer.invoke('sql-stop'),
 
+  // ── Messaging servers ──
+  messagingStatus:  ()            => ipcRenderer.invoke('messaging-status'),
+  messagingStart:   id            => ipcRenderer.invoke('messaging-start', id),
+  messagingStop:    id            => ipcRenderer.invoke('messaging-stop', id),
+  messagingReset:   id            => ipcRenderer.invoke('messaging-reset', id),
+  onMessagingStatus: handler     => subscribe('messaging-status', handler),
+  onMessagingLog:    handler     => subscribe('messaging-log', handler),
+
   // ── 言語サーバー ──
   lspAvailable:     language      => ipcRenderer.invoke('lsp-available', { language }),
   lspStart:         payload       => ipcRenderer.invoke('lsp-start', payload),
