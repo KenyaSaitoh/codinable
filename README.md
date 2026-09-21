@@ -18,7 +18,7 @@ LLM とのチャットも使えるが、これは任意機能である（API キ
 | 実行 | 何を動かすかは実行対象のセレクトで選ぶ。中身はプロジェクトから割り出されるので、どのファイルを開いていても変わらない。依存が足りなければ実行前に `npm install` / `pip install -r requirements.txt` を自動で通す |
 | Spring Boot | `bootRun` でアプリを起動し、出力の URL を検知してプレビュータブを開く |
 | テスト | `test` 実行後、JUnit の結果をメソッド単位で表示。JaCoCo のカバレッジをエディタに色で反映 |
-| Web プレビュー | 開発サーバー（Spring Boot / Flask / Express / Vite）と静的 HTML の両方に対応。**待ち受けているサーバーが見つかるまでプレビューは押せない**（押しても何も出ない状態を作らないため） |
+| Web プレビュー | 開発サーバー（Spring Boot / Django / Express / Vite）と静的 HTML の両方に対応。**待ち受けているサーバーが見つかるまでプレビューは押せない**（押しても何も出ない状態を作らないため） |
 | ターミナル | node-pty による本物の PTY。同梱ランタイムが PATH に入った状態で開く |
 | SQL | 実行対象で選んだ `.sql` を HSQLDB（インメモリ）へ流し、結果を表で表示。DB が止まっていれば自動で起動する。開いているファイルの一部を選択していればその文だけ実行できる |
 | LLM チャット | Claude Haiku / GPT Luna / Gemini Flash から選択（BYOK）。開いているプロジェクトのファイルは送信時に自動で渡す |
@@ -165,7 +165,7 @@ courses/<講座ID>/
 
 | 講座ID | 対応する Udemy 講座 | 演習 |
 |---|---|---|
-| `webapp-archi-overview` | Web システム＋生成AI 技術概要編 | 全 26 件（下記） |
+| `webapp-archi-overview` | Web システム＋生成AI 技術概要編 | 全 30 件（下記） |
 
 `webapp-archi-overview` の演習は次のとおり。チャプター 3 と 6 は、
 Web ブラウザと DB の仕組みをその場で動かして確かめられるよう細かく分けてある。
@@ -179,9 +179,9 @@ Web ブラウザと DB の仕組みをその場で動かして確かめられる
 | 4 HTTP | curl でリクエストを送る |
 | 6 SQL | 検索（SELECT・WHERE）/ CRUD / 集計と整形 / DDL と制約 / 結合・サブクエリ・ビュー |
 | 7 言語 | JavaScript・TypeScript |
-| 8 サーバーサイド | Spring MVC / Flask / Express |
+| 8 サーバーサイド | Spring MVC / Django / Express |
 | 9 REST API | Spring REST + JUnit |
-| 10 SPA | React |
+| 10 SPA | JSX・コンポーネント / State・Props / フォーム・イベント / Fetch・カスタムフック / React総合 |
 
 ## 注意事項
 

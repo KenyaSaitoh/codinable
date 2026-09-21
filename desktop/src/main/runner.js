@@ -10,7 +10,7 @@
 //  常駐させたいプロセスが 2 つ以上あるときはターミナルタブを使う。
 //
 //  実行中の出力からは「起動した URL」を拾い、見つかったら renderer に伝える。
-//  Spring Boot / Flask / Express / Vite など、どのフレームワークでも
+//  Spring Boot / Django / Express / Vite など、どのフレームワークでも
 //  プレビュータブが自動で開くようにするため。
 // ═══════════════════════════════════════════════════════════
 
@@ -41,7 +41,7 @@ let runToken = 0;
 
 // ── 起動 URL の検出 ────────────────────────────────────────
 //
-// 明示的に URL を書き出すもの (Flask / Vite / Next / Nuxt / http-server) と、
+// 明示的に URL を書き出すもの (Django / Vite / Next / Nuxt / http-server) と、
 // ポート番号だけを書くもの (Spring Boot / Express の定番ログ) の両方に対応する。
 const URL_PATTERNS = [
   /https?:\/\/(?:localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\]):(\d{2,5})(?:\/\S*)?/i,

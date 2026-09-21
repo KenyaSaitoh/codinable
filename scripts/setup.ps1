@@ -109,7 +109,7 @@ Step "node" (Join-Path $runtime "node\npm.cmd") {
 
 # ---- Python (embeddable + pip) ----
 # embeddable 版は pip を持たず、._pth で sys.path を固定して site-packages も
-# 読まない。そのままでは Flask などを入れられないため、
+# 読まない。そのままでは Django などを入れられないため、
 #   1. ._pth に Lib\site-packages を足し、import site を有効にする
 #   2. get-pip.py で pip を入れる
 # の 2 手を踏んで「pip install できる Python」にする。

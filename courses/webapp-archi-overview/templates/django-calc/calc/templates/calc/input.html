@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>計算アプリケーション (Django)</title>
+  <style>
+    body { max-width: 600px; margin: 40px auto; padding: 0 20px; font-family: sans-serif; }
+    form, .field { display: grid; gap: 12px; }
+    label { display: grid; gap: 4px; }
+    input, button { padding: 8px 10px; font: inherit; }
+    .buttons { display: flex; gap: 8px; }
+    .errorlist { color: #b42318; }
+  </style>
+</head>
+<body>
+  <h1>計算アプリケーション (Django)</h1>
+  <p>同じ入力をPOSTとGETのどちらでも送れます。</p>
+
+  <form id="calc-form">
+    {% csrf_token %}
+    <label>
+      {{ form.param1.label }}
+      {{ form.param1 }}
+      {{ form.param1.errors }}
+    </label>
+    <label>
+      {{ form.param2.label }}
+      {{ form.param2 }}
+      {{ form.param2.errors }}
+    </label>
+    <div class="buttons">
+      <button type="submit" formmethod="post" formaction="{% url 'calc:add_by_post' %}">
+        足し算(POST)
+      </button>
+      <button type="submit" formmethod="get" formaction="{% url 'calc:add_by_get' %}">
+        足し算(GET)
+      </button>
+    </div>
+  </form>
+</body>
+</html>

@@ -1,0 +1,18 @@
+:root { font-family: "Hiragino Sans", Meiryo, sans-serif; color: #243746; background: #f2f6f8; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 900px; margin: auto; padding: 40px 24px; }
+.layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+section { padding: 20px; background: white; border: 1px solid #cad8e1; border-radius: 12px; }
+h2 { margin-top: 0; }
+form, label { display: grid; gap: 6px; }
+form { gap: 14px; }
+input, select, button { padding: 9px 11px; font: inherit; border-radius: 6px; }
+input, select { border: 1px solid #afc1cc; }
+.buttons { display: flex; gap: 8px; }
+button { color: white; background: #486a83; border: 1px solid #486a83; cursor: pointer; }
+.secondary { color: #345065; background: white; }
+dl { display: grid; grid-template-columns: 70px 1fr; gap: 8px; }
+dt { color: #667784; }
+dd { margin: 0; font-weight: 700; }
+.empty { color: #667784; }

@@ -30,7 +30,7 @@
 id: webapp-archi-overview
 order: 1
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.0.0
+version: 1.1.0
 
 names:
   ja: Webシステム＋生成AI 技術概要編
@@ -38,13 +38,13 @@ names:
 
 descriptions:
   ja: >-
-    HTML・CSS・JavaScript から HTTP、SQL、サーバーサイド MVC（Spring / Flask / Express）、
+    HTML・CSS・JavaScript から HTTP、SQL、サーバーサイド MVC（Spring / Django / Express）、
     Web API、React による SPA までを一通り扱う講座の演習です。
     講座本編は PostgreSQL と Maven を前提にしていますが、ここでは Codinable に同梱の
     HSQLDB と Gradle Wrapper で動くように調整してあります。
   en: >-
     Exercises for the course covering HTML/CSS/JavaScript, HTTP, SQL, server-side MVC
-    (Spring / Flask / Express), Web APIs and React SPAs.
+    (Spring / Django / Express), Web APIs and React SPAs.
     The course itself assumes PostgreSQL and Maven; these are adjusted to run on the
     HSQLDB and Gradle Wrapper bundled with Codinable.
 
@@ -545,26 +545,27 @@ exercises:
     openFiles:
       - src/main/java/pro/kensait/spring/calc/CalcController.java
 
-  - id: flask-calc
+  - id: django-calc
     chapter: 8
-    lesson: '8.3 Flaskによるアプリケーション構築'
+    lesson: '8.3 Djangoによるアプリケーション構築'
     runtime: python
-    run: 'file:app.py'
-    suggestName: flask-calc
+    run: 'file:manage.py'
+    suggestName: django-calc
     names:
-      ja: Flaskのアプリケーションを動かす
-      en: Run a Flask application
+      ja: Djangoのアプリケーションを動かす
+      en: Run a Django application
     descriptions:
       ja: >-
-        同じ計算アプリケーションを Flask で書いたものです。
-        先にターミナルタブで pip install -r requirements.txt を実行してください。
-        Spring MVC 版と見比べると、MVC の骨組みが同じことが分かります。
+        同じ計算アプリケーションを Django で書いたものです。「実行」を押すと、初回だけ
+        依存パッケージを自動で準備して開発サーバーを起動します。URLconf、View、Form、
+        Template、Service の責務を Spring MVC 版と見比べてください。
       en: >-
-        The same calculator written with Flask.
-        Run pip install -r requirements.txt in the terminal tab first.
-        Compare it with the Spring MVC version to see the same MVC structure.
+        The same calculator written with Django. Run it to install dependencies on the
+        first launch and start the development server. Compare the URLconf, View, Form,
+        Template and Service roles with the Spring MVC version.
     openFiles:
-      - app.py
+      - calc/views.py
+      - calc/forms.py
 
   - id: express-calc
     chapter: 8
@@ -608,6 +609,88 @@ exercises:
     openFiles:
       - src/main/java/pro/kensait/spring/users/UserController.java
       - src/test/java/pro/kensait/spring/users/UserServiceTest.java
+
+  # ── チャプター10: React ─────────────────────────────
+  # 原稿の説明順に小さな演習を並べ、最後に名簿管理の総合演習へ進む。
+  - id: react-components
+    chapter: 10
+    lesson: '10.1.3 Reactの基本的な考え方（JSXとコンポーネント）'
+    runtime: react
+    run: 'npm:dev'
+    suggestName: react-components
+    names:
+      ja: JSXでコンポーネントを組み立てる
+      en: Compose components with JSX
+    descriptions:
+      ja: >-
+        UserCard を異なる Props で繰り返し利用し、親子のコンポーネントツリーを確認します。
+        JSX の波括弧、className、配列からの描画を一つの小さな画面で動かせます。
+      en: >-
+        Reuse UserCard with different props and inspect the parent-child component tree.
+        The small page demonstrates JSX expressions, className and rendering from an array.
+    openFiles:
+      - src/App.tsx
+      - src/UserCard.tsx
+
+  - id: react-state-props
+    chapter: 10
+    lesson: '10.1.4 データの流れと状態管理（StateとProps）'
+    runtime: react
+    run: 'npm:dev'
+    suggestName: react-state-props
+    names:
+      ja: StateとPropsの単方向データフローを動かす
+      en: Run one-way data flow with State and Props
+    descriptions:
+      ja: >-
+        親が useState で一覧を持ち、子へ Props と削除コールバックを渡します。
+        操作に応じて State が変わり、画面が再描画される流れを確認できます。
+      en: >-
+        A parent owns a list with useState and passes data and a delete callback as props.
+        Interact with it to see state changes trigger a new render.
+    openFiles:
+      - src/App.tsx
+      - src/UserList.tsx
+
+  - id: react-form-events
+    chapter: 10
+    lesson: '10.1.5 ユーザー操作とサーバー連携（イベント処理）'
+    runtime: react
+    run: 'npm:dev'
+    suggestName: react-form-events
+    names:
+      ja: 制御されたフォームとイベントを扱う
+      en: Handle events with a controlled form
+    descriptions:
+      ja: >-
+        入力値を State に同期する制御されたコンポーネントと、onChange / onSubmit を扱います。
+        送信後もページ遷移せず、State から確認表示が作られることを確かめられます。
+      en: >-
+        Handle onChange and onSubmit in controlled inputs whose values stay in state.
+        Submission keeps the page in place and renders a confirmation from state.
+    openFiles:
+      - src/App.tsx
+      - src/ProfileForm.tsx
+
+  - id: react-fetch-hooks
+    chapter: 10
+    lesson: '10.1.5 / 10.1.7 useEffect・Fetch・カスタムフック'
+    runtime: react
+    run: 'npm:dev'
+    suggestName: react-fetch-hooks
+    names:
+      ja: Fetch処理をカスタムフックへ分離する
+      en: Extract Fetch logic into a custom hook
+    descriptions:
+      ja: >-
+        useEffect からローカルの JSON を取得し、loading / error / data を State で管理します。
+        取得処理を useUsers に分離し、表示コンポーネントから再利用する構成です。
+      en: >-
+        Fetch local JSON from useEffect and keep loading, error and data in state.
+        The useUsers hook separates reusable data logic from the display component.
+    openFiles:
+      - src/hooks/useUsers.ts
+      - src/App.tsx
 
   - id: react-spa
     chapter: 10

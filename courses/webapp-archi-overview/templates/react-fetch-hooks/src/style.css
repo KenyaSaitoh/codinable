@@ -1,0 +1,14 @@
+:root { font-family: "Hiragino Sans", Meiryo, sans-serif; color: #243746; background: #f2f6f8; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 720px; margin: auto; padding: 48px 24px; }
+.eyebrow { color: #486a83; font-size: 12px; font-weight: 700; letter-spacing: .08em; }
+h1 { display: inline-block; margin-right: 16px; }
+button { padding: 8px 12px; color: white; background: #486a83; border: 0; border-radius: 6px; cursor: pointer; }
+button:disabled { opacity: .5; }
+section { min-height: 180px; padding: 20px; background: white; border: 1px solid #cad8e1; border-radius: 12px; }
+ul { margin: 0; padding: 0; list-style: none; }
+li { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid #dce5ea; }
+li:last-child { border-bottom: 0; }
+li span, .status { color: #667784; }
+.error { color: #b42318; }

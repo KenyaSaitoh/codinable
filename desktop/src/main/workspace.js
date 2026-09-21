@@ -7,7 +7,7 @@
 //    <workspaceRoot>/
 //    ├── my-first-page/        ← プロジェクト (静的 Web)
 //    ├── spring-hello/         ← プロジェクト (Spring Boot)
-//    └── flask-hello/          ← プロジェクト (Python)
+//    └── django-hello/         ← プロジェクト (Python)
 //
 //  ファイルはすべて実体として置かれ、エディタもターミナルも言語サーバーも
 //  同じディレクトリを直接見る。そのため VS Code や IntelliJ で同じフォルダを
