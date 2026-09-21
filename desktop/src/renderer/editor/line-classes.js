@@ -1,12 +1,12 @@
 // ═══════════════════════════════════════════════════════════
 //  行への CSS クラス付与 (CodeMirror 6)
 //
-//  CM5 の addLineClass / removeLineClass(line, 'background', cls) の置き換え。
+//  CM5 の addLineClass / removeLineClass(line, 'background', cls) の置き換え
 //  カバレッジ表示 (cm-cov-full / -part / -miss) と講義のステップ強調
 //  (cm-lecture-line) が使う。クラス名は CM5 時代のまま維持しているので、
-//  style.css の配色定義はそのまま効く。
+//  style.css の配色定義はそのまま効く
 //
-//  行番号は呼び出し側 (renderer.js) に合わせて **0 始まり**で受ける。
+//  行番号は呼び出し側 (renderer.js) に合わせて **0 始まり**で受ける
 // ═══════════════════════════════════════════════════════════
 
 import { StateField, StateEffect } from '@codemirror/state';
@@ -21,7 +21,7 @@ function decoFor(cls) {
   return lineDeco.get(cls);
 }
 
-/** 付与中の { line(0始まり) → Set<class> } を保持し、そこから DecorationSet を組む。 */
+/** 付与中の { line(0始まり) → Set<class> } を保持し、そこから DecorationSet を組む */
 export const lineClassField = StateField.define({
   create: () => ({ map: new Map(), decorations: Decoration.none }),
 
@@ -45,7 +45,7 @@ export const lineClassField = StateField.define({
       }
     }
 
-    // 行数が変わると 0 始まり行番号の指す先がずれるため、範囲外は落として組み直す。
+    // 行数が変わると 0 始まり行番号の指す先がずれるため、範囲外は落として組み直す
     if (!changed && !tr.docChanged) return value;
     return { map, decorations: build(map, tr.state) };
   },

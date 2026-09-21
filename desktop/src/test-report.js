@@ -1,5 +1,5 @@
 // テスト結果 (JUnit XML) / カバレッジ (JaCoCo XML) の解析ユーティリティ
-// main.js から require され、springboot-run (test タスク) の完了時に使われる。
+// main.js から require され、springboot-run (test タスク) の完了時に使われる
 'use strict';
 
 const fs = require('fs');
@@ -7,7 +7,7 @@ const path = require('path');
 
 // ── テスト結果 (JUnit XML) / カバレッジ (JaCoCo XML) の解析 ─────────────────
 // Gradle の test タスクが生成するレポートを解析し、Eclipse の JUnit ビューのように
-// テストメソッド単位の成否・失敗メッセージ・カバレッジをレンダラーに渡す。
+// テストメソッド単位の成否・失敗メッセージ・カバレッジをレンダラーに渡す
 
 function decodeXmlEntities(s) {
   return String(s)
@@ -114,13 +114,13 @@ allprojects {
             finalizedBy 'jacocoTestReport'
             // 講義にはテストではなく main() のデモを見せるものがある。Gradle 9 は
             // 「テスト 0 件」を設定ミスとみなしてビルドを失敗させるが、学習者には
-            // 壊れて見えるだけなので、0 件は静かに成功として扱う。
+            // 壊れて見えるだけなので、0 件は静かに成功として扱う
             if (it.hasProperty('failOnNoDiscoveredTests')) {
                 it.failOnNoDiscoveredTests = false
             }
             // JDK 24 以降は動的エージェントのロードが既定で禁止されるため、
-            // Mockito の MockMaker が自己アタッチできず初期化に失敗する。
-            // テスト用クラスパスにある mockito-core をそのまま -javaagent で渡す。
+            // Mockito の MockMaker が自己アタッチできず初期化に失敗する
+            // テスト用クラスパスにある mockito-core をそのまま -javaagent で渡す
             // (バージョンは教材の build.gradle の指定に従う。Mockito を使わない
             //  プロジェクトでは jar が見つからないので何もしない)
             doFirst {
@@ -142,7 +142,7 @@ allprojects {
 
 function collectTestRunArtifacts(projectDir) {
   const tests = parseJUnitXmlReports(path.join(projectDir, 'build', 'test-results', 'test'));
-  // JaCoCo XML のパスは既定 (jacocoTestReport.xml)。コース側で出力先を変えている場合に備えて探索する。
+  // JaCoCo XML のパスは既定 (jacocoTestReport.xml)。コース側で出力先を変えている場合に備えて探索する
   let coverage = parseJacocoXml(path.join(projectDir, 'build', 'reports', 'jacoco', 'test', 'jacocoTestReport.xml'));
   if (!coverage) {
     const repRoot = path.join(projectDir, 'build', 'reports', 'jacoco');

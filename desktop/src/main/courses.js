@@ -2,7 +2,7 @@
 //  コースパック
 //
 //  Codinable は問題を出して解かせることをしない。講座との「連動」は
-//  「講義で出てくるサンプルを、開いてすぐ動かせる形で配る」ことだけで実現する。
+//  「講義で出てくるサンプルを、開いてすぐ動かせる形で配る」ことだけで実現する
 //
 //    courses/
 //    └── <courseId>/
@@ -10,25 +10,25 @@
 //        └── templates/<name>/    … 雛形の中身 (そのままワークスペースへコピーされる)
 //
 //  この courses/ は 3 か所にある。読む順は 同梱 → 共有 → 個人 で、同じ id が
-//  あればバージョンの新しいほうを採る (同じなら後の置き場が勝つ)。
+//  あればバージョンの新しいほうを採る (同じなら後の置き場が勝つ)
 //
 //    同梱: アプリの中 (asar)                     … そのインストーラが持ってきたコース
 //    共有: %PROGRAMDATA%\Codinable\courses       … コース単位のインストーラが足す場所
 //    個人: <userData>\courses                    … 手で足す・差し替える場所
 //
-//  受講者が 2 つ目の講座を受けるときは、アプリを入れ直さずコースだけが増える。
-//  どのコースを見ているかは画面左上のコース選択で切り替える。
+//  受講者が 2 つ目の講座を受けるときは、アプリを入れ直さずコースだけが増える
+//  どのコースを見ているかは画面左上のコース選択で切り替える
 //
 //  **演習 (exercise)** = 動かして確かめる 1 単位。講座のレッスンと 1 対 1 で対応し、
 //  「どのレッスンのものか (chapter / lesson)」「何で動くか (runtime)」
 //  「どう動かすか (run)」を自分で持つ。受講者が演習を選ぶだけで実行環境まで
-//  決まるようにするためで、これが雛形との違いである。
+//  決まるようにするためで、これが雛形との違いである
 //
 //  雛形は「開いてすぐ動く最小構成」に徹する。解説は Udemy の動画側にあるため、
-//  ここに講義内容を持ち込まない。
+//  ここに講義内容を持ち込まない
 //
 //  別の Udemy 講座を足すときは courses/ にディレクトリを 1 つ増やすだけでよい
-//  (アプリ側の変更は不要)。
+//  (アプリ側の変更は不要)
 // ═══════════════════════════════════════════════════════════
 
 const fs   = require('fs');
@@ -40,9 +40,9 @@ const { getRepoRoot } = require('./runtimes');
 const { PRODUCT } = require('../app-config');
 
 /**
- * 同梱のコースパックの置き場所。
+ * 同梱のコースパックの置き場所
  * パッケージ後は asar の中 (resources/app.asar/courses)。雛形は読むだけなので
- * Electron の asar 透過読み込みでそのまま扱える。
+ * Electron の asar 透過読み込みでそのまま扱える
  */
 function getCoursesDir() {
   return app.isPackaged
@@ -51,9 +51,9 @@ function getCoursesDir() {
 }
 
 /**
- * 全ユーザー共有のコース置き場 (Windows のみ)。
- * コース単位のインストーラはここへ course.yaml と templates/ を置く。
- * アプリ本体を入れ直さずにコースだけ増やせるようにするための領域。
+ * 全ユーザー共有のコース置き場 (Windows のみ)
+ * コース単位のインストーラはここへ course.yaml と templates/ を置く
+ * アプリ本体を入れ直さずにコースだけ増やせるようにするための領域
  */
 function getSharedCoursesDir() {
   const base = process.env.ProgramData || process.env.ALLUSERSPROFILE;
@@ -66,8 +66,8 @@ function getUserCoursesDir() {
 }
 
 /**
- * 読む順に並べたコース置き場。後に来るものが優先 (同じ id は後勝ち)。
- * 同梱 → 共有 → 個人 の順で、あとから足したコースで上書きできる。
+ * 読む順に並べたコース置き場。後に来るものが優先 (同じ id は後勝ち)
+ * 同梱 → 共有 → 個人 の順で、あとから足したコースで上書きできる
  */
 function getCourseRoots() {
   const roots = [{ source: 'bundled', dir: getCoursesDir() }];
@@ -79,7 +79,7 @@ function getCourseRoots() {
 
 /**
  * '1.2.0' のようなバージョンを比べる。数値の並びとして見て、
- * 桁数が違うものは短いほうを 0 埋めして扱う (1.2 < 1.2.1)。
+ * 桁数が違うものは短いほうを 0 埋めして扱う (1.2 < 1.2.1)
  */
 function compareVersions(a, b) {
   const pa = String(a || '0').split('.').map(n => parseInt(n, 10) || 0);
@@ -101,11 +101,11 @@ function pickLang(map, lang, fallback = '') {
 let cache = null;
 
 /**
- * コース置き場すべてを読み込む。
+ * コース置き場すべてを読み込む
  *
  * 同じ id のコースが複数の置き場にあるときは、バージョンが新しいほうを採る
  * (同じなら後の置き場が勝つ)。コース単位のインストーラが古いパックを
- * 置いても、新しいものが選ばれている状態を保つため。
+ * 置いても、新しいものが選ばれている状態を保つため
  *
  * @param {string} lang UI 言語 ('ja' | 'en')
  */
@@ -172,12 +172,12 @@ function readCourseRoot(root, lang) {
           // 対応する講義の位置。chapter はバッジ、lesson は副題として出る
           chapter:     t.chapter === undefined || t.chapter === null ? null : String(t.chapter),
           lesson:      t.lesson ? String(t.lesson) : null,
-          // 実行環境 (java / spring / node / react / python / static / sql / shell)。
+          // 実行環境 (java / spring / node / react / python / static / sql / shell)
           // 一覧のアイコンとタグに使う
           runtime:     String(t.runtime || 'other'),
           // 実行対象の既定値。renderer の実行対象 select と同じ書式で、
           //   file:<相対パス> / gradle:<タスク> / npm:<スクリプト> / static:<ルート> / java
-          // を受け付ける。演習を選んだだけで「実行」が押せる状態にするためのもの。
+          // を受け付ける。演習を選んだだけで「実行」が押せる状態にするためのもの
           run:         t.run ? String(t.run) : null,
           name:        pickLang(t.names, lang, dirName),
           description: pickLang(t.descriptions, lang, ''),
@@ -219,8 +219,8 @@ function clearCache() {
 }
 
 /**
- * インストールされているコースと、その置き場の一覧。
- * 「今どのコースが入っていて、どこから読まれているか」を設定画面に出すためのもの。
+ * インストールされているコースと、その置き場の一覧
+ * 「今どのコースが入っていて、どこから読まれているか」を設定画面に出すためのもの
  */
 function describeCourses(lang = 'ja') {
   return {

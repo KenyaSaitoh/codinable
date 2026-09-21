@@ -1,11 +1,11 @@
 // ═══════════════════════════════════════════════════════════
 //  SQL 実行エンジン (HSQLDB インメモリ)
 //
-//  講座の DB / SQL の章で「サーバーを別に立てずに SQL を試す」ための仕組み。
+//  講座の DB / SQL の章で「サーバーを別に立てずに SQL を試す」ための仕組み
 //  同梱の HSQLDB jar を使い、常駐する小さな Java プロセス (SqlServer) と
-//  標準入出力で 1 行 1 リクエストの JSON をやり取りする。
+//  標準入出力で 1 行 1 リクエストの JSON をやり取りする
 //
-//  SqlServer.java は初回だけコンパイルして userData にキャッシュする。
+//  SqlServer.java は初回だけコンパイルして userData にキャッシュする
 // ═══════════════════════════════════════════════════════════
 
 const fs   = require('fs');
@@ -205,8 +205,8 @@ function stop() {
 }
 
 /**
- * DB を起動する (稼働中なら PUBLIC スキーマを作り直すだけで済ませる)。
- * schemaSQL を渡すと初期化 SQL として流す。
+ * DB を起動する (稼働中なら PUBLIC スキーマを作り直すだけで済ませる)
+ * schemaSQL を渡すと初期化 SQL として流す
  */
 async function start({ schemaSQL, uiLang } = {}) {
   if (serverProcess) {

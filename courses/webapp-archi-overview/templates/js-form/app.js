@@ -1,8 +1,8 @@
-// フォームは、DOM 操作とイベント処理が一通り登場する題材である。
+// フォームは、DOM 操作とイベント処理が一通り登場する題材である
 //
-// 入力欄の値は value、チェック状態は checked で読み書きする。
+// 入力欄の値は value、チェック状態は checked で読み書きする
 // 送信は submit イベントで受け取り、event.preventDefault() で
-// Web ブラウザ既定のページ遷移を止めてから自分で処理する。
+// Web ブラウザ既定のページ遷移を止めてから自分で処理する
 
 const form            = document.getElementById('registration-form');
 const email           = document.getElementById('email');
@@ -13,7 +13,7 @@ const result          = document.getElementById('result');
 
 // ── 入力中のリアルタイム検証 ─────────────────────────
 // input は 1 文字ごとに発生する。入力を終える前に知らせられるので、
-// ユーザーは「送信して初めて怒られる」ことがなくなる。
+// ユーザーは「送信して初めて怒られる」ことがなくなる
 password.addEventListener('input', () => {
   const hint = document.getElementById('password-hint');
   if (8 <= password.value.length) {
@@ -53,8 +53,8 @@ form.addEventListener('submit', event => {
   }
 
   // ── 値の取り出し ──────────────────────────────────
-  // FormData はフォームの入力値をまとめて集める仕組み。
-  // name 属性が付いていて disabled でない欄が対象になる。
+  // FormData はフォームの入力値をまとめて集める仕組み
+  // name 属性が付いていて disabled でない欄が対象になる
   const formData = new FormData(form);
 
   // 同じ name が複数ある項目（チェックボックス）は getAll でまとめて取る
@@ -65,7 +65,7 @@ form.addEventListener('submit', event => {
     name:       formData.get('name'),
     email:      formData.get('email'),
     department: formData.get('department'),
-    // ラジオボタンは「選ばれているもの」を CSS セレクタで指す。
+    // ラジオボタンは「選ばれているもの」を CSS セレクタで指す
     // ?. は左辺が null のときにエラーにせず undefined を返す書き方（オプショナルチェイニング）
     work:       document.querySelector('input[name="work"]:checked')?.value,
     skills:     skills.length ? skills.join(' / ') : '（なし）',
@@ -79,8 +79,8 @@ form.addEventListener('submit', event => {
     .map(([key, value]) => `${key} = ${value}`)
     .join('\n');
 
-  // ここでサーバーへ送るときは、JSON にして fetch で POST する。
-  // その形は js-fetch の演習で扱う。
+  // ここでサーバーへ送るときは、JSON にして fetch で POST する
+  // その形は js-fetch の演習で扱う
   //
   //   await fetch('/api/users', {
   //     method: 'POST',

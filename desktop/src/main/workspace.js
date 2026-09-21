@@ -2,7 +2,7 @@
 //  ワークスペース
 //
 //  Codinable は「ワークスペースルート直下のディレクトリ = 1 プロジェクト」という
-//  素直なモデルをとる。教材アプリのようなセッション / 設問の入れ子は持たない。
+//  素直なモデルをとる。教材アプリのようなセッション / 設問の入れ子は持たない
 //
 //    <workspaceRoot>/
 //    ├── my-first-page/        ← プロジェクト (静的 Web)
@@ -11,7 +11,7 @@
 //
 //  ファイルはすべて実体として置かれ、エディタもターミナルも言語サーバーも
 //  同じディレクトリを直接見る。そのため VS Code や IntelliJ で同じフォルダを
-//  開いてもそのままプロジェクトとして成立する。
+//  開いてもそのままプロジェクトとして成立する
 // ═══════════════════════════════════════════════════════════
 
 const fs    = require('fs');
@@ -53,8 +53,8 @@ function hasAnyExt(entries, ext) {
 }
 
 /**
- * プロジェクトの中身から「何が動かせるか」を割り出す。
- * ファイル名の規約だけで判断するので、どの Udemy 講座のサンプルでも同じ扱いになる。
+ * プロジェクトの中身から「何が動かせるか」を割り出す
+ * ファイル名の規約だけで判断するので、どの Udemy 講座のサンプルでも同じ扱いになる
  */
 function detectProject(projectDir) {
   const entries = walkTree(projectDir, { limit: 2500 });
@@ -120,11 +120,11 @@ function detectProject(projectDir) {
 }
 
 /**
- * 「そのファイルを指定すれば動く」ファイルを集める。
+ * 「そのファイルを指定すれば動く」ファイルを集める
  *
  * 実行ボタンはエディタで選んでいるファイルに依存させない (選択と実行対象が
  * 連動すると、README を開いただけで実行できなくなる)。代わりに、動かせる
- * ものをプロジェクト全体から拾って実行対象セレクトに並べる。
+ * ものをプロジェクト全体から拾って実行対象セレクトに並べる
  *
  * @returns {Array<{ relPath: string, kind: 'file'|'sql' }>}
  */
@@ -142,18 +142,18 @@ function collectRunnableFiles(projectDir, entries, { hasPackageJson, isStatic, i
     }
   }
 
-  // JavaScript / TypeScript は「単体のスクリプト」のときだけ並べる。
+  // JavaScript / TypeScript は「単体のスクリプト」のときだけ並べる
   // package.json があれば npm スクリプトが入口であり、index.html があれば
-  // ブラウザで読まれる側なので、node で直接動かすと必ず失敗する。
+  // ブラウザで読まれる側なので、node で直接動かすと必ず失敗する
   if (!hasPackageJson && !isStatic) {
     for (const relPath of files) {
       if (/\.(js|mjs|cjs|ts|mts)$/i.test(relPath)) out.push({ relPath, kind: 'file' });
     }
   }
 
-  // Gradle を使わない Java は main を持つファイルだけ並べる。
+  // Gradle を使わない Java は main を持つファイルだけ並べる
   // 数が多いプロジェクトで全部読むのは無駄なので上限を置き、
-  // 超えるときは kinds の 'java' による自動検出に任せる。
+  // 超えるときは kinds の 'java' による自動検出に任せる
   if (!isGradle) {
     const javaFiles = files.filter(f => f.toLowerCase().endsWith('.java'));
     if (javaFiles.length && javaFiles.length <= 60) {
@@ -223,8 +223,8 @@ function writeProjectMeta(projectDir, meta) {
 const NAME_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
 
 /**
- * プロジェクトを作る。
- * templateDir が与えられればそれを丸ごとコピーし、無ければ空ディレクトリを作る。
+ * プロジェクトを作る
+ * templateDir が与えられればそれを丸ごとコピーし、無ければ空ディレクトリを作る
  */
 function createProject({ name, templateDir = null, courseId = null, template = null }) {
   const safeName = String(name || '').trim();
@@ -251,10 +251,10 @@ function createProject({ name, templateDir = null, courseId = null, template = n
 }
 
 /**
- * 演習を配布時の状態に戻す (雛形のファイルを上書きする)。
+ * 演習を配布時の状態に戻す (雛形のファイルを上書きする)
  *
  * 上書きだけで、受講者が自分で足したファイルは消さない。消す方が「初期状態」に
- * 忠実だが、試したコードを黙って捨てることになるため、雛形にあるものだけを戻す。
+ * 忠実だが、試したコードを黙って捨てることになるため、雛形にあるものだけを戻す
  */
 function resetToTemplate({ name, templateDir }) {
   const dir = resolveProjectDir(name);
@@ -265,13 +265,13 @@ function resetToTemplate({ name, templateDir }) {
 }
 
 /**
- * チャットに渡すため、プロジェクトのテキストファイルを集める。
+ * チャットに渡すため、プロジェクトのテキストファイルを集める
  *
- * 受講者に添付の操作をさせない代わりに、開いているプロジェクトの中身をそのまま渡す。
- * ただしモデルに渡せる量には限りがあるので、次の順で落とす。
+ * 受講者に添付の操作をさせない代わりに、開いているプロジェクトの中身をそのまま渡す
+ * ただしモデルに渡せる量には限りがあるので、次の順で落とす
  *   1. 生成物・巨大ファイル・機械が作るもの (SKIP_DIRS / EXCLUDE_NAMES / サイズ上限)
  *   2. 入りきらない分 (件数・合計バイトの上限)
- * 落とした件数を返すので、画面には「何件渡したか」を出せる。
+ * 落とした件数を返すので、画面には「何件渡したか」を出せる
  */
 const CONTEXT_EXCLUDE = [
   /^package-lock\.json$/, /^yarn\.lock$/, /^pnpm-lock\.yaml$/,

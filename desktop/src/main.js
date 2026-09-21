@@ -2,7 +2,7 @@
 //  Codinable — メインプロセス
 //
 //  役割は「renderer からの依頼を、OS 上の実体 (ファイル・プロセス・ポート) に
-//  つなぐこと」だけ。機能ごとの実装は src/main/ 配下に分けてある。
+//  つなぐこと」だけ。機能ごとの実装は src/main/ 配下に分けてある
 //
 //    main/config.js        設定の永続化 (API キーは safeStorage で暗号化)
 //    main/runtimes.js      同梱ランタイム (java / node / python / bash …) の解決
@@ -124,7 +124,7 @@ ipcMain.handle('ws-create-project', (_event, { name, courseId, templateId, lang 
 });
 
 
-// 演習を配布時の状態に戻す。汚したコードをいつでも捨てられるようにするための口。
+// 演習を配布時の状態に戻す。汚したコードをいつでも捨てられるようにするための口
 ipcMain.handle('ws-reset-template', (_event, { name, lang } = {}) => {
   const dir = workspace.resolveProjectDir(name);
   if (!dir) return { ok: false, error: 'not-found' };
@@ -203,8 +203,8 @@ ipcMain.handle('sql-stop',  () => sqlEngine.stop());
 // ═══════════════════════════════════════════════════════════
 
 /**
- * jdtls に渡す依存ライブラリの glob。
- * Gradle 取り込みを使わない場合 (build.gradle が無いプロジェクト) の補助。
+ * jdtls に渡す依存ライブラリの glob
+ * Gradle 取り込みを使わない場合 (build.gradle が無いプロジェクト) の補助
  */
 function libraryGlobs() {
   const globs = [];
@@ -225,8 +225,8 @@ ipcMain.handle('lsp-start', (event, { language, project } = {}) => {
   const result = lspServer.start(app, event.sender, { language: language || 'java', rootPath });
   if (!result.ok) return result;
 
-  // build.gradle があるなら Gradle 取り込みに任せたほうが依存解決が正しい。
-  // 無いプロジェクト (フォルダ直置きの .java) は sourcePaths + referencedLibraries で補う。
+  // build.gradle があるなら Gradle 取り込みに任せたほうが依存解決が正しい
+  // 無いプロジェクト (フォルダ直置きの .java) は sourcePaths + referencedLibraries で補う
   const detected = workspace.detectProject(rootPath);
   return {
     ...result,
@@ -290,7 +290,7 @@ ipcMain.on('chat-send', async (event, { messages, context } = {}) => {
 //  Agent (道具を使う書き換え)
 //
 //  Ask との違いは道具を持つかどうかだけなので、キーの扱いも選択中モデルも
-//  チャットと同じものを使う。経過は agent-* で画面へ流す。
+//  チャットと同じものを使う。経過は agent-* で画面へ流す
 // ═══════════════════════════════════════════════════════════
 
 let agentAbort = null;
@@ -367,8 +367,8 @@ function closeSplash() {
 function createWindow() {
   revealed = false;
 
-  // メニューバーは隠すが editMenu (コピー / 貼り付け / 元に戻す) は残す。
-  // setApplicationMenu(null) にすると環境によってエディタ上の Ctrl+C / Ctrl+V が効かなくなる。
+  // メニューバーは隠すが editMenu (コピー / 貼り付け / 元に戻す) は残す
+  // setApplicationMenu(null) にすると環境によってエディタ上の Ctrl+C / Ctrl+V が効かなくなる
   Menu.setApplicationMenu(Menu.buildFromTemplate([{ role: 'editMenu' }]));
 
   mainWindow = new BrowserWindow({

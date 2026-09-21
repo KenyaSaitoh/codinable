@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /*
- * API がやりとりするデータ。
+ * API がやりとりするデータ
  *
  * record にすると、Jackson がそのまま JSON に変換してくれる
- * (フィールド名がそのまま JSON のキーになる)。
+ * (フィールド名がそのまま JSON のキーになる)
  */
 public record User(
         Integer id,

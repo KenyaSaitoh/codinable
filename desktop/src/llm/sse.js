@@ -1,6 +1,6 @@
-// Server-Sent Events (SSE) の共通読み取り。
+// Server-Sent Events (SSE) の共通読み取り
 // 3 社とも「行頭 data: の後ろに JSON」という形は共通なので、
-// フレーム分解だけここに寄せ、差分は各プロバイダの onEvent に閉じる。
+// フレーム分解だけここに寄せ、差分は各プロバイダの onEvent に閉じる
 
 /**
  * @param {Response} response fetch のレスポンス (body は ReadableStream)

@@ -5,11 +5,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 /*
- * フォームから送られてくるパラメータ。
+ * フォームから送られてくるパラメータ
  *
  * アノテーションが入力値の決まりを表し、Controller 側で @Validated を付けると
  * Spring が送信値を検査してくれる。エラーメッセージは
- * src/main/resources/ValidationMessages.properties にある。
+ * src/main/resources/ValidationMessages.properties にある
  */
 public record CalcParam(
         @NotNull

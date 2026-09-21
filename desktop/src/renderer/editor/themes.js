@@ -3,18 +3,18 @@
 //
 //  CodeMirror 5 時代は cm-themes.css が `.cm-s-<id>` の CSS で色を当てていたが、
 //  CM6 のテーマは JS オブジェクト (EditorView.theme + HighlightStyle) なので
-//  ここに移した。id は renderer.js の THEMES と 1:1 で対応する。
+//  ここに移した。id は renderer.js の THEMES と 1:1 で対応する
 //
 //  配色は移行前の cm-themes.css をそのまま引き継いでいる
-//  (Dracula だけは CM5 同梱テーマを使っていたので、公式パレットから起こした)。
-//  CM5 のトークン名 → CM6 の lezer タグの対応は buildHighlight() を参照。
+//  (Dracula だけは CM5 同梱テーマを使っていたので、公式パレットから起こした)
+//  CM5 のトークン名 → CM6 の lezer タグの対応は buildHighlight() を参照
 // ═══════════════════════════════════════════════════════════
 
 import { EditorView } from '@codemirror/view';
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { tags as t } from '@lezer/highlight';
 
-// 1 テーマ = 「枠 (chrome)」と「トークン色 (token)」。
+// 1 テーマ = 「枠 (chrome)」と「トークン色 (token)」
 // chrome: bg / fg / gutterBg / gutterFg / gutterBorder / cursor / selection /
 //         activeLine / matchingBracketOutline
 const THEME_DEFS = {
@@ -66,7 +66,7 @@ const THEME_DEFS = {
       link: '#9ece6a', invalid: '#f7768e',
     },
   },
-  // CM5 では codemirror 同梱の theme/dracula.css を使っていた。公式パレットから起こす。
+  // CM5 では codemirror 同梱の theme/dracula.css を使っていた。公式パレットから起こす
   dracula: {
     dark: true,
     chrome: {
@@ -120,7 +120,7 @@ const THEME_DEFS = {
 export const THEME_IDS = Object.keys(THEME_DEFS);
 export const DEFAULT_THEME_ID = 'github-dark';
 
-/** CM5 のトークン名 → CM6 (lezer) のタグ。cm-themes.css の対応をそのまま移した。 */
+/** CM5 のトークン名 → CM6 (lezer) のタグ。cm-themes.css の対応をそのまま移した */
 function buildHighlight(token) {
   const rules = [
     { tag: [t.lineComment, t.blockComment, t.docComment, t.comment],
@@ -160,7 +160,7 @@ function buildHighlight(token) {
 
 /**
  * 枠まわりのテーマ。フォントは CSS 変数 (--editor-font-family / --editor-font-size) が正で、
- * 設定ダイアログのスライダーがそこを動かす。CM6 側では変数を参照するだけにする。
+ * 設定ダイアログのスライダーがそこを動かす。CM6 側では変数を参照するだけにする
  */
 function buildChrome(c, dark) {
   return EditorView.theme({
@@ -220,7 +220,7 @@ function buildChrome(c, dark) {
 
 const CACHE = new Map();
 
-/** テーマ id → CM6 拡張 (枠 + ハイライト)。生成結果は使い回す。 */
+/** テーマ id → CM6 拡張 (枠 + ハイライト)。生成結果は使い回す */
 export function themeExtension(id) {
   const key = THEME_DEFS[id] ? id : DEFAULT_THEME_ID;
   if (!CACHE.has(key)) {

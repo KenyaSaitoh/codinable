@@ -1,5 +1,5 @@
--- 並べ替え（ORDER BY）・重複排除（DISTINCT）・件数制限（LIMIT）。
--- 01_setup.sql を流したあとに実行する。
+-- 並べ替え（ORDER BY）・重複排除（DISTINCT）・件数制限（LIMIT）
+-- 01_setup.sql を流したあとに実行する
 
 -- ── 降順に並べる ────────────────────────────────────
 SELECT EMPLOYEE_NAME, SALARY FROM EMPLOYEE ORDER BY SALARY DESC;

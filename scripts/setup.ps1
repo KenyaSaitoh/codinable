@@ -1,8 +1,8 @@
 # ============================================================
 #  Codinable - 開発環境セットアップスクリプト
 #
-#  git clone した直後のリポジトリに、同梱物 (git 管理外) を用意する。
-#  すでにあるものは飛ばすので、何度実行しても構わない。
+#  git clone した直後のリポジトリに、同梱物 (git 管理外) を用意する
+#  すでにあるものは飛ばすので、何度実行しても構わない
 #
 #    runtime/java/               jlink で最小化した JRE (javac 同梱, ~70MB)
 #    runtime/node/               portable Node.js (node.exe のみ)
@@ -33,7 +33,7 @@ $work      = Join-Path $env:TEMP "codinable-setup"
 
 # ---- バージョン設定 ----
 # Java は Spring Boot 4 / Java 25 の教材に合わせる。ここを上げるときは
-# desktop/src/main/runtimes.js のコメントと講座側の要件も確認する。
+# desktop/src/main/runtimes.js のコメントと講座側の要件も確認する
 $jdkUrl     = "https://api.adoptium.net/v3/binary/latest/25/ga/windows/x64/jdk/hotspot/normal/eclipse"
 $nodeVer    = "v24.18.0"
 $nodeUrl    = "https://nodejs.org/dist/$nodeVer/node-$nodeVer-win-x64.zip"
@@ -42,7 +42,7 @@ $pyUrl      = "https://www.python.org/ftp/python/$pyVer/python-$pyVer-embed-amd6
 $jdtlsUrl   = "https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz"
 $hsqldbVer  = "2.7.3"
 $hsqldbUrl  = "https://repo1.maven.org/maven2/org/hsqldb/hsqldb/$hsqldbVer/hsqldb-$hsqldbVer.jar"
-$gradleVer  = "9.4.1"
+$gradleVer  = "9.6.1"
 $gradleUrl  = "https://services.gradle.org/distributions/gradle-$gradleVer-bin.zip"
 
 # jlink に含めるモジュール (javac + Spring Boot + HSQLDB + JUnit が動く構成)
@@ -50,7 +50,7 @@ $jlinkModules = "java.se,jdk.compiler,jdk.zipfs,jdk.charsets,jdk.crypto.ec," +
                 "jdk.crypto.cryptoki,jdk.unsupported,jdk.management,jdk.httpserver,jdk.localedata"
 
 # Windows 標準の bsdtar を **フルパスで** 呼ぶ。PATH 上に Git for Windows の
-# GNU tar があると "C:\..." をリモートホスト指定と解釈して失敗する。
+# GNU tar があると "C:\..." をリモートホスト指定と解釈して失敗する
 $tarExe = Join-Path $env:SystemRoot "System32\tar.exe"
 
 New-Item -ItemType Directory -Force $runtime, $resources, $work | Out-Null
@@ -90,7 +90,7 @@ Step "java" (Join-Path $runtime "java\bin\javac.exe") {
 
 # ---- Node.js (node.exe + npm。TypeScript は type stripping で直接実行する) ----
 # marker は npm.cmd にする。node.exe だと「npm を足す前の runtime/」を
-# 完成済みと誤判定して skip してしまう (= npm スクリプトが動かない状態で止まる)。
+# 完成済みと誤判定して skip してしまう (= npm スクリプトが動かない状態で止まる)
 Step "node" (Join-Path $runtime "node\npm.cmd") {
   $nodeZip = Join-Path $work "node.zip"
   Invoke-WebRequest -Uri $nodeUrl -OutFile $nodeZip -UseBasicParsing
@@ -112,7 +112,7 @@ Step "node" (Join-Path $runtime "node\npm.cmd") {
 # 読まない。そのままでは Django などを入れられないため、
 #   1. ._pth に Lib\site-packages を足し、import site を有効にする
 #   2. get-pip.py で pip を入れる
-# の 2 手を踏んで「pip install できる Python」にする。
+# の 2 手を踏んで「pip install できる Python」にする
 Step "python" (Join-Path $runtime "python\Scripts\pip.exe") {
   $pyDir = Join-Path $runtime "python"
   $pyZip = Join-Path $work "python.zip"
@@ -137,8 +137,8 @@ Step "python" (Join-Path $runtime "python\Scripts\pip.exe") {
 }
 
 # ---- Bash (PortableGit から bash + coreutils + curl だけを抽出) ----
-# フルの Git (~350MB) は同梱せず、シェル演習に要るものだけ残す。
-# PortableGit は 7-Zip 自己展開形式なので -y -o で無人展開できる。
+# フルの Git (~350MB) は同梱せず、シェル演習に要るものだけ残す
+# PortableGit は 7-Zip 自己展開形式なので -y -o で無人展開できる
 Step "bash" (Join-Path $runtime "bash\usr\bin\bash.exe") {
   $rel   = Invoke-RestMethod "https://api.github.com/repos/git-for-windows/git/releases/latest"
   $asset = $rel.assets | Where-Object { $_.name -like "PortableGit-*-64-bit.7z.exe" } | Select-Object -First 1
@@ -169,7 +169,7 @@ Step "bash" (Join-Path $runtime "bash\usr\bin\bash.exe") {
 }
 
 # ---- jdtls (Java の言語サーバー。補完・定義ジャンプ・診断に使う) ----
-# 実行は同梱 JRE (runtime/java) で行うので、別途 Java を入れる必要はない。
+# 実行は同梱 JRE (runtime/java) で行うので、別途 Java を入れる必要はない
 Step "jdtls" (Join-Path $resources "jdtls\config_win") {
   if (-not (Test-Path $tarExe)) { throw "tar.exe が見つかりません: $tarExe" }
   $target = Join-Path $resources "jdtls"
@@ -194,9 +194,9 @@ Step "jdtls" (Join-Path $resources "jdtls\config_win") {
 }
 
 # ---- gradle-wrapper.jar ----
-# Gradle 本体は同梱しない (雛形の gradlew が必要な版を自分で取ってくる)。
-# ただし wrapper の jar が欠けている雛形のために 1 つだけ手元に置く。
-# 参照側は desktop/src/main/runner.js の ensureGradleWrapper()。
+# Gradle 本体は同梱しない (雛形の gradlew が必要な版を自分で取ってくる)
+# ただし wrapper の jar が欠けている雛形のために 1 つだけ手元に置く
+# 参照側は desktop/src/main/runner.js の ensureGradleWrapper()
 Step "gradle" (Join-Path $resources "gradle-wrapper\gradle-wrapper.jar") {
   $zip = Join-Path $work "gradle.zip"
   Invoke-WebRequest -Uri $gradleUrl -OutFile $zip -UseBasicParsing

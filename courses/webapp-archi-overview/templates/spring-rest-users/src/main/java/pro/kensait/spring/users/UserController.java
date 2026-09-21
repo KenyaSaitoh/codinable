@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /*
- * Web API (REST) のエンドポイント。
+ * Web API (REST) のエンドポイント
  *
  * サーバーサイド MVC (spring-mvc-calc) との違いは、返すものが HTML ではなく
- * JSON であることと、状態を URL とメソッドで表すこと。
+ * JSON であることと、状態を URL とメソッドで表すこと
  *
  * @RestController は @Controller + @ResponseBody に相当し、
- * 戻り値のオブジェクトを Jackson が JSON に変換して本文にする。
+ * 戻り値のオブジェクトを Jackson が JSON に変換して本文にする
  *
  * 動かしたあと、ターミナルタブで curl を叩いて確かめられる:
  *   curl -s http://localhost:8080/api/users
@@ -55,10 +55,10 @@ public class UserController {
     }
 
     /**
-     * 登録: 201 Created。
+     * 登録: 201 Created
      *
-     * 作ったものの場所を Location ヘッダーで返すのが REST の作法。
-     * 戻り値の型を ResponseEntity にすると、状態コードとヘッダーを自分で決められる。
+     * 作ったものの場所を Location ヘッダーで返すのが REST の作法
+     * 戻り値の型を ResponseEntity にすると、状態コードとヘッダーを自分で決められる
      */
     @PostMapping
     public ResponseEntity<User> create(@Valid @RequestBody User user) {

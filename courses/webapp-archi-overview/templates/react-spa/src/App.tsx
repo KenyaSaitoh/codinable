@@ -4,10 +4,10 @@ import PersonList from './PersonList';
 import type { Person } from './types';
 
 /*
- * 画面全体をまとめるコンポーネント。
+ * 画面全体をまとめるコンポーネント
  *
- * React の考え方は「状態 (state) を書き換えると、それに応じて画面が描き直される」。
- * DOM を自分で組み立てないのが、チャプター3の静的ページとの一番大きな違い。
+ * React の考え方は「状態 (state) を書き換えると、それに応じて画面が描き直される」
+ * DOM を自分で組み立てないのが、チャプター3の静的ページとの一番大きな違い
  */
 export default function App() {
   // state はこの App が持ち、子には値と「変える手段」を渡す (単方向データフロー)
@@ -17,8 +17,8 @@ export default function App() {
   ]);
   const [keyword, setKeyword] = useState('');
 
-  // 配列は書き換えず、新しい配列を作って渡す。
-  // 元の配列を push で変えても React は変化に気づけない。
+  // 配列は書き換えず、新しい配列を作って渡す
+  // 元の配列を push で変えても React は変化に気づけない
   const addPerson = (name: string, department: Person['department']) => {
     setPeople(prev => [...prev, { id: Math.max(0, ...prev.map(p => p.id)) + 1, name, department }]);
   };

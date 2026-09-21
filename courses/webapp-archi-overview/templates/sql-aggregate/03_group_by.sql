@@ -1,5 +1,5 @@
--- グルーピング（GROUP BY）と集約結果の絞り込み（HAVING）。
--- 01_setup.sql を流したあとに実行する。
+-- グルーピング（GROUP BY）と集約結果の絞り込み（HAVING）
+-- 01_setup.sql を流したあとに実行する
 
 -- ── 部署ごとの人数 ──────────────────────────────────
 -- GROUP BY に書いたカラムの値が同じ行が 1 つのグループにまとめられ、
@@ -19,7 +19,7 @@ SELECT DEPARTMENT_NAME,
  ORDER BY 平均月給 DESC;
 
 -- ── SELECT 句に書けるもの ───────────────────────────
--- 書けるのは GROUP BY に挙げたカラムと、集約関数の結果だけである。
+-- 書けるのは GROUP BY に挙げたカラムと、集約関数の結果だけである
 -- 次の 1 文は EMPLOYEE_NAME がグループに 1 つに定まらないためエラーになる
 -- （先頭の -- を外して 1 文だけ選択して実行すると、エラーが確かめられる）
 -- SELECT DEPARTMENT_NAME, EMPLOYEE_NAME, COUNT(*) FROM EMPLOYEE GROUP BY DEPARTMENT_NAME

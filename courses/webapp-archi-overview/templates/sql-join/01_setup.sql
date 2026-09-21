@@ -1,13 +1,13 @@
--- 結合を試すための準備。まずこのファイルを流す。
+-- 結合を試すための準備。まずこのファイルを流す
 --
--- ここまでの演習では、EMPLOYEE が部署名を文字列でそのまま持っていた。
--- その形だと同じ部署名が何度も重複し、部署名が変わったときに全件を直す必要がある。
+-- ここまでの演習では、EMPLOYEE が部署名を文字列でそのまま持っていた
+-- その形だと同じ部署名が何度も重複し、部署名が変わったときに全件を直す必要がある
 --
--- そこで部署を別のテーブルに分け、社員側は部署 ID で参照する形にする。
+-- そこで部署を別のテーブルに分け、社員側は部署 ID で参照する形にする
 -- この参照の仕組みが外部キー（FOREIGN KEY）であり、
--- 分けたテーブルを 1 つの結果にまとめて読むのが結合（JOIN）である。
+-- 分けたテーブルを 1 つの結果にまとめて読むのが結合（JOIN）である
 
--- 参照している側（EMPLOYEE）から先に消す。
+-- 参照している側（EMPLOYEE）から先に消す
 -- 逆順だと「参照されているテーブルは消せない」と言われる
 DROP TABLE EMPLOYEE IF EXISTS CASCADE;
 DROP TABLE DEPARTMENT IF EXISTS CASCADE;
@@ -23,7 +23,7 @@ CREATE TABLE DEPARTMENT (
 CREATE TABLE EMPLOYEE (
     EMPLOYEE_ID   INT PRIMARY KEY,
     EMPLOYEE_NAME VARCHAR(30) NOT NULL,
-    -- 部署テーブルの主キーを指す外部キー。
+    -- 部署テーブルの主キーを指す外部キー
     -- DEPARTMENT に無い ID は入れられない（参照整合性）
     DEPARTMENT_ID INT,
     ENTRANCE_DATE DATE NOT NULL,

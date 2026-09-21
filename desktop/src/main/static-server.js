@@ -1,11 +1,11 @@
 // ═══════════════════════════════════════════════════════════
 //  静的 Web ページ用の簡易 HTTP サーバー
 //
-//  HTML / CSS / JavaScript だけの教材を、file:// ではなく http:// で開けるようにする。
+//  HTML / CSS / JavaScript だけの教材を、file:// ではなく http:// で開けるようにする
 //  file:// だと fetch / ES モジュール / Cookie / localStorage の挙動が
-//  本番と変わってしまい、講座の説明と食い違うため。
+//  本番と変わってしまい、講座の説明と食い違うため
 //
-//  ループバックにのみ bind し、配信ルートの外は出さない。
+//  ループバックにのみ bind し、配信ルートの外は出さない
 // ═══════════════════════════════════════════════════════════
 
 const fs   = require('fs');
@@ -105,7 +105,7 @@ function listenOnFreePort() {
 }
 
 /**
- * ディレクトリの配信を開始する (既に動いていれば配信ルートだけ差し替える)。
+ * ディレクトリの配信を開始する (既に動いていれば配信ルートだけ差し替える)
  * @returns {Promise<{ok: true, url: string, port: number, root: string}|{ok:false,error:string}>}
  */
 async function serve(rootDir) {

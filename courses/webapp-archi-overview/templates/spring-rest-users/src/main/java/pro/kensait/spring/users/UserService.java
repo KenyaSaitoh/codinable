@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Service;
 
 /*
- * 利用者データの出し入れ。
+ * 利用者データの出し入れ
  *
  * 本来はデータベースを使うところだが、ここでは Map をデータベースの代わりにする
- * (アプリを止めると消える)。HTTP のことを知らない層であることが大事。
+ * (アプリを止めると消える)。HTTP のことを知らない層であることが大事
  */
 @Service
 public class UserService {

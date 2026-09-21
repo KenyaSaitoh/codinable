@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Codinable</title>
 
-  <!-- CodeMirror 6 (テーマ・言語・キーバインド・LSP クライアントを 1 つに束ねたもの)。
+  <!-- CodeMirror 6 (テーマ・言語・キーバインド・LSP クライアントを 1 つに束ねたもの)
        CM6 は ESM でしか配布されず素の <script> から読めないため、
-       builder/build-editor.js が esbuild で vendor/cm6.js (IIFE / グローバル CM6) を生成する。 -->
+       builder/build-editor.js が esbuild で vendor/cm6.js (IIFE / グローバル CM6) を生成する -->
   <script src="vendor/cm6.js"></script>
   <!-- PTY ターミナル (xterm.js) -->
   <link rel="stylesheet" href="../../node_modules/@xterm/xterm/css/xterm.css">
@@ -30,7 +30,7 @@
   <header class="app-header">
     <div class="header-left">
       <span class="app-title" id="app-title">Codinable</span>
-      <!-- コース切り替え。インストールされている講座のあいだを移る。
+      <!-- コース切り替え。インストールされている講座のあいだを移る
            コースが 1 つだけのときは、今どの講座かを示す表示として出したままにする -->
       <label class="course-picker" data-i18n-title="coursePickerTitle" title="受講している講座を選びます">
         <span class="course-picker-icon" aria-hidden="true">🎓</span>
@@ -56,8 +56,8 @@
     <span class="current-course-name" id="project-name" data-i18n="noProject">プロジェクト未選択</span>
     <span class="project-kinds" id="project-kinds"></span>
     <span class="project-bar-actions">
-      <!-- 1 プロジェクト = 1 演習なので、ここが「この演習をやり直す」口になる。
-           雛形にあるファイルを上書きして戻す (自分で足したファイルは残す)。
+      <!-- 1 プロジェクト = 1 演習なので、ここが「この演習をやり直す」口になる
+           雛形にあるファイルを上書きして戻す (自分で足したファイルは残す)
            何が初期化されるのかが読めるよう、対象のプロジェクト名の隣に置く
            (右端に置くと、アプリ全体を初期化するように見える) -->
       <button class="btn-lesson-list" id="btn-reset-exercise" data-i18n="btnResetExercise" data-i18n-title="btnResetExerciseTitle" title="この演習のファイルを配布時の状態に戻します">↺ 初期化</button>
@@ -130,8 +130,8 @@
     <div class="settings-sep"></div>
 
     <!-- ── LLM (BYOK) ──
-         3 社のうち使いたいものだけキーを登録すればよい。
-         欄は renderer.js が LLM_MODELS から組み立てる。 -->
+         3 社のうち使いたいものだけキーを登録すればよい
+         欄は renderer.js が LLM_MODELS から組み立てる -->
     <div class="settings-group">
       <div class="settings-label" data-i18n="llmSectionLabel">LLM チャット (任意)</div>
       <div class="api-key-hint" data-i18n="llmSectionHint">
@@ -210,8 +210,8 @@
     <!-- ── 左: 演習一覧 + ファイルエクスプローラ ── -->
     <aside class="sidebar explorer" id="sidebar">
 
-      <!-- 演習 = 講座のレッスンに対応する「動かして確かめる 1 単位」。
-           選ぶだけでプロジェクトが用意され、実行環境（実行対象）も決まる。 -->
+      <!-- 演習 = 講座のレッスンに対応する「動かして確かめる 1 単位」
+           選ぶだけでプロジェクトが用意され、実行環境（実行対象）も決まる -->
       <div class="side-header exercise-header">
         <span data-i18n="exerciseTitle">📚 演習</span>
         <span class="badge" id="exercise-count">0</span>

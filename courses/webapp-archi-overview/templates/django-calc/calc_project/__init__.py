@@ -1,1 +1,1 @@
-# Django プロジェクトの Python パッケージ。
+# Django プロジェクトの Python パッケージ

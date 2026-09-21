@@ -1,8 +1,8 @@
 package pro.kensait.spring.users;
 
 /*
- * 指定された id の利用者がいなかったことを表す例外。
- * これを HTTP の 404 に対応づけるのは GlobalExceptionHandler の仕事。
+ * 指定された id の利用者がいなかったことを表す例外
+ * これを HTTP の 404 に対応づけるのは GlobalExceptionHandler の仕事
  */
 public class UserNotFoundException extends RuntimeException {
 

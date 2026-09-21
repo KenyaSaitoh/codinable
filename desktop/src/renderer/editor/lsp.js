@@ -3,16 +3,16 @@
 //
 //  言語サーバー本体 (Java = Eclipse jdtls) は main プロセスが子プロセスとして起動し、
 //  stdio の Content-Length フレーミングを外した JSON-RPC 本文だけを IPC で流す
-//  (src/lsp-server.js / preload.js の lspStart / lspSend / onLspMessage)。
-//  ここはその IPC を @codemirror/lsp-client の Transport に見せるだけの層。
+//  (src/lsp-server.js / preload.js の lspStart / lspSend / onLspMessage)
+//  ここはその IPC を @codemirror/lsp-client の Transport に見せるだけの層
 //
 //  サーバー → クライアント方向のリクエスト (workspace/configuration など) には
-//  この層で応答する。応答しないと jdtls は初期化の途中で止まってしまう。
+//  この層で応答する。応答しないと jdtls は初期化の途中で止まってしまう
 // ═══════════════════════════════════════════════════════════
 
 import { LSPClient, languageServerExtensions } from '@codemirror/lsp-client';
 
-/** jdtls に渡す設定。フォーマッタ・補完まわりだけ学習用に寄せる。 */
+/** jdtls に渡す設定。フォーマッタ・補完まわりだけ学習用に寄せる */
 function languageSettings(language) {
   if (language !== 'java') return {};
   return {
@@ -31,15 +31,15 @@ function languageSettings(language) {
       // jdtls は「見えないプロジェクト」として扱い、ソースルートが分からないまま
       //   The declared package "pro.kensait.sample"
       //     does not match the expected package ""
-      // という誤った診断を出す。ソースルートを明示して防ぐ。
+      // という誤った診断を出す。ソースルートを明示して防ぐ
       project: {
         sourcePaths: ['src/main/java', 'src/test/java'],
         outputPath: 'bin',
       },
       // Gradle 取り込みの既定は「切」。build.gradle があるプロジェクトだけ
-      // createLspConnection() が main 側の判定 (gradleImport) を見て有効にする。
+      // createLspConnection() が main 側の判定 (gradleImport) を見て有効にする
       // 取り込みは依存解決のためにネットワークアクセスと数分の待ちを伴うので、
-      // 必要のないプロジェクトで走らせたくない。
+      // 必要のないプロジェクトで走らせたくない
       import: {
         gradle: { enabled: false },
         maven:  { enabled: false },
@@ -89,7 +89,7 @@ class ElectronLspTransport {
     } catch {
       return;
     }
-    // id と method の両方を持つ = サーバーからのリクエスト。ここで返す。
+    // id と method の両方を持つ = サーバーからのリクエスト。ここで返す
     if (Object.prototype.hasOwnProperty.call(parsed, 'id') && parsed.method) {
       this.respondToServerRequest(parsed);
       return;
@@ -152,7 +152,7 @@ export function pathToUri(absPath) {
 }
 
 /**
- * 言語サーバーへ接続する。1 プロジェクト = 1 接続。
+ * 言語サーバーへ接続する。1 プロジェクト = 1 接続
  * onStatus: 'starting' | 'ready' | 'error' | 'off'
  */
 export function createLspConnection({ language, project, onStatus }) {
@@ -178,8 +178,8 @@ export function createLspConnection({ language, project, onStatus }) {
     id = res.id;
     rootUri = pathToUri(res.rootPath);
     if (language === 'java') {
-      // build.gradle があるなら Gradle 取り込みに任せたほうが依存解決が正しい。
-      // 無いプロジェクトは referencedLibraries (Gradle キャッシュ) で補う。
+      // build.gradle があるなら Gradle 取り込みに任せたほうが依存解決が正しい
+      // 無いプロジェクトは referencedLibraries (Gradle キャッシュ) で補う
       if (res.gradleImport) settings.java.import.gradle.enabled = true;
       else if (Array.isArray(res.libraryGlobs) && res.libraryGlobs.length) {
         settings.java.project.referencedLibraries = res.libraryGlobs;

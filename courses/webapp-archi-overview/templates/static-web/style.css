@@ -1,4 +1,4 @@
-/* 装飾は CSS だけが担当する。HTML には style 属性を書かない。 */
+/* 装飾は CSS だけが担当する。HTML には style 属性を書かない */
 
 :root {
   --accent: #2f6feb;

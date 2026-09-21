@@ -4,7 +4,7 @@
 //  renderer.js は CodeMirror 5 の API (setOption / getValue / addLineClass …) を
 //  6,000 行超にわたって直接呼んでいる。CM6 への移行でその全部を書き換えると
 //  差分が大きく壊しやすいので、**実際に使われている API だけ**を CM6 の上に
-//  再実装したコントローラを挟む。renderer.js 側の変更は生成箇所だけで済む。
+//  再実装したコントローラを挟む。renderer.js 側の変更は生成箇所だけで済む
 //
 //  再現している API:
 //    getValue / setValue / getOption / setOption(readOnly, mode, theme, keyMap)
@@ -12,7 +12,7 @@
 //    undo / redo / historySize / clearHistory / lineCount / operation
 //    addLineClass / removeLineClass / scrollIntoView / execCommand
 //
-//  行番号は CM5 に合わせて 0 始まりで受け渡しする。
+//  行番号は CM5 に合わせて 0 始まりで受け渡しする
 // ═══════════════════════════════════════════════════════════
 
 import { EditorState, Compartment } from '@codemirror/state';
@@ -169,7 +169,7 @@ export class CmController {
     this.emit('optionChange', name);
   }
 
-  /** LSP プラグイン (ファイル単位) の差し替え。未接続時は空配列を渡す。 */
+  /** LSP プラグイン (ファイル単位) の差し替え。未接続時は空配列を渡す */
   setLspExtension(extension) {
     this.view.dispatch({ effects: this.c.lsp.reconfigure(extension || []) });
   }
@@ -242,7 +242,7 @@ export function create(container, opts) {
   return new CmController(container, opts);
 }
 
-/** CodeMirror.fromTextArea(textarea, opts) 相当。textarea は隠して置き換える。 */
+/** CodeMirror.fromTextArea(textarea, opts) 相当。textarea は隠して置き換える */
 export function fromTextarea(textarea, opts) {
   const parent = document.createElement('div');
   parent.className = 'cm-host';

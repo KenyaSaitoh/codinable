@@ -1,10 +1,10 @@
 // ═══════════════════════════════════════════════════════════
 //  キーバインド (CodeMirror 6)
 //
-//  設定ダイアログの「キーバインド」は CM5 時代から default / vim / emacs / sublime の 4 種。
-//  vim / emacs は CM6 用の実装 (@replit/codemirror-*) がそのまま使える。
+//  設定ダイアログの「キーバインド」は CM5 時代から default / vim / emacs / sublime の 4 種
+//  vim / emacs は CM6 用の実装 (@replit/codemirror-*) がそのまま使える
 //  sublime だけは CM6 版が存在しないため、CM5 の sublime キーマップのうち
-//  実際に使われる範囲 (行操作・複数選択・コメント) を標準コマンドで組み直している。
+//  実際に使われる範囲 (行操作・複数選択・コメント) を標準コマンドで組み直している
 // ═══════════════════════════════════════════════════════════
 
 import { keymap } from '@codemirror/view';
@@ -38,9 +38,9 @@ const SUBLIME_KEYS = [
 ];
 
 /**
- * CM5 の extraKeys 表記 ('Ctrl-D' / 'Shift-Cmd-Z') を CM6 のキー名へ直す。
+ * CM5 の extraKeys 表記 ('Ctrl-D' / 'Shift-Cmd-Z') を CM6 のキー名へ直す
  * CM6 は 1 文字キーを event.key と突き合わせるので、修飾子付きの英字は小文字にする
- * (大文字のままだと Shift 付き扱いになってしまう)。
+ * (大文字のままだと Shift 付き扱いになってしまう)
  */
 function translateKey(cm5Key) {
   const parts = cm5Key.split('-');
@@ -55,13 +55,13 @@ export function extraKeymap(extraKeys, controller) {
   if (!extraKeys) return [];
   const binds = Object.entries(extraKeys).map(([cm5Key, handler]) => ({
     key: translateKey(cm5Key),
-    // CM5 のハンドラは cm を受け取る。互換のためコントローラを渡す。
+    // CM5 のハンドラは cm を受け取る。互換のためコントローラを渡す
     run: () => { handler(controller); return true; },
   }));
   return keymap.of(binds);
 }
 
-/** 基本キーマップ。Tab は補完確定 → インデントの順で試す (LSP 補完と共存させる)。 */
+/** 基本キーマップ。Tab は補完確定 → インデントの順で試す (LSP 補完と共存させる) */
 export function baseKeymap() {
   return keymap.of([
     { key: 'Tab', run: acceptCompletion },
@@ -77,8 +77,8 @@ export function baseKeymap() {
 }
 
 /**
- * 選択中のキーバインド。vim / emacs は各パッケージの拡張ごと差し替える。
- * vim() は他のキーマップより前に置く必要がある (パッケージの指定)。
+ * 選択中のキーバインド。vim / emacs は各パッケージの拡張ごと差し替える
+ * vim() は他のキーマップより前に置く必要がある (パッケージの指定)
  */
 export function keymapExtension(name) {
   if (name === 'vim')    return vim();

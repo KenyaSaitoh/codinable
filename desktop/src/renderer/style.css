@@ -1,12 +1,12 @@
 /* ═══════════════════════════════════════════
    テーマ (6 種)
    VS Code で親しまれている GitHub Dark/Light, One Dark Pro, Tokyo Night,
-   Dracula Official, Solarized Light に準拠する。
+   Dracula Official, Solarized Light に準拠する
    テーマ一覧の正: renderer.js の THEMES。適用は body[data-theme='<id>'] +
-   ダーク系では body.theme-dark クラス (構造系ルールの互換用) を併用する。
-   標準はダークの GitHub Dark Default (:root がその値)。
+   ダーク系では body.theme-dark クラス (構造系ルールの互換用) を併用する
+   標準はダークの GitHub Dark Default (:root がその値)
 
-   --accent-blue は歴史的な変数名。値はテーマのプライマリアクセント。
+   --accent-blue は歴史的な変数名。値はテーマのプライマリアクセント
    ═══════════════════════════════════════════ */
 :root {
   /* ── GitHub Dark Default（標準） ── */
@@ -271,10 +271,10 @@ body.theme-dark .app-header {
 .header-left, .header-right { flex: 0 0 auto; }
 
 /* ── 宣伝マーキー (Lite 版のみ) ──
-   ヘッダー左ブロックと右ボタン群のあいだの余白を横スクロールに使う。
+   ヘッダー左ブロックと右ボタン群のあいだの余白を横スクロールに使う
    幅は残り全部 (flex:1) だが min-width:0 なので、余白が無い狭いウィンドウでも
    左右のボタンを押しつぶさない。両端はマスクでフェードさせ、
-   ヘッダーの枠線に文字がぶつかって見えないようにしている。 */
+   ヘッダーの枠線に文字がぶつかって見えないようにしている */
 .header-marquee {
   flex: 1 1 auto;
   min-width: 0;
@@ -345,8 +345,8 @@ body.theme-dark .app-header {
 }
 
 /* ── クレジット残高バッジ (フル版のみ) ──
-   .btn-settings と同じ高さ・角丸・枠線でヘッダーのトーンを揃える。
-   色は CSS 変数のみを使い、ライト / ダークどちらのテーマでも破綻させない。 */
+   .btn-settings と同じ高さ・角丸・枠線でヘッダーのトーンを揃える
+   色は CSS 変数のみを使い、ライト / ダークどちらのテーマでも破綻させない */
 .credit-badge {
   display: inline-flex;
   align-items: center;
@@ -383,7 +383,7 @@ body.theme-dark .app-header {
   color: var(--text-muted);
 }
 /* ── 読み上げ音量のつまみ (ヘッダー右上) ──
-   .btn-settings と同じ高さ・角丸・枠線でヘッダーのトーンを揃える。 */
+   .btn-settings と同じ高さ・角丸・枠線でヘッダーのトーンを揃える */
 .volume-control {
   display: inline-flex;
   align-items: center;
@@ -417,8 +417,8 @@ body.theme-dark .app-header {
 .volume-control.muted .volume-icon-mute { display: inline; }
 
 /* スライダーはブラウザ既定の見た目 (太いバー + 丸いつまみ) を捨てて、
-   細いトラック + 縦長のフェーダー型つまみで描き直す。
-   トラックの塗り分け位置は renderer.js が --vol (0〜100%) で渡す。 */
+   細いトラック + 縦長のフェーダー型つまみで描き直す
+   トラックの塗り分け位置は renderer.js が --vol (0〜100%) で渡す */
 .volume-range {
   -webkit-appearance: none;
   appearance: none;
@@ -736,10 +736,10 @@ body.theme-dark .app-header {
    ═══════════════════════════════════════════ */
 /* サイドバー(レッスン一覧)は、コース名の左にある「レッスン一覧」ボタンから
    開く左側ドロワー。画面左端に重ねて表示し、エリア内右上の × ボタン / Esc /
-   背景クリック / Ctrl+B で閉じる。
+   背景クリック / Ctrl+B で閉じる
    閉じている間はレイアウトから完全に外れるため、画面の一番左は常にレッスン
-   (問題ペイン) になる。
-   プロジェクト構成はエディタの一番左のタブへ移した (2026-08-22)。 */
+   (問題ペイン) になる
+   プロジェクト構成はエディタの一番左のタブへ移した (2026-08-22) */
 .sidebar {
   position: fixed;
   top: 0;
@@ -766,8 +766,8 @@ body.theme-dark .app-header {
 body:not(.sidebar-open) .sidebar,
 body:not(.sidebar-open) .drawer-backdrop { display: none; }
 
-/* ドロワーを開く「レッスン一覧」ボタン (コース名の左)。
-   帯の高さではハンバーガーのアイコンだと潰れるため、文字ラベルにしている。 */
+/* ドロワーを開く「レッスン一覧」ボタン (コース名の左)
+   帯の高さではハンバーガーのアイコンだと潰れるため、文字ラベルにしている */
 .btn-lesson-list {
   display: inline-flex;
   align-items: center;
@@ -837,9 +837,9 @@ body:not(.sidebar-open) .drawer-backdrop { display: none; }
 /* ── Current course indicator ──
    ヘッダー直下・画面全幅の帯。sidebar/content-area の外（app-layout の直接の子）に
    置くことで、左右の可変バー（サイドバー幅・問題パネル幅の調整ハンドル）を横切らず、
-   かつ背景色が画面右端まで途切れなく伸びる。
-   結果として「レッスン一覧」「📋 設問内容」「💻 エディタ」の見出しの開始位置も自然に揃う。
-   帯の左端にはドロワーを開く「レッスン一覧」ボタンを置く。 */
+   かつ背景色が画面右端まで途切れなく伸びる
+   結果として「レッスン一覧」「📋 設問内容」「💻 エディタ」の見出しの開始位置も自然に揃う
+   帯の左端にはドロワーを開く「レッスン一覧」ボタンを置く */
 .current-course-bar {
   display: flex;
   align-items: center;
@@ -1054,8 +1054,8 @@ body:not(.sidebar-open) .drawer-backdrop { display: none; }
 }
 
 /* ── 設問アイテムの状態アイコン (○ 未着手 / ✓ 完了 / ▶ 現在地) ──
-   .q-item は question-item / sb-question-item / sql-question-item に共通付与される。
-   クリックすると、その設問を開かずに完了/未完了を切り替えられる。 */
+   .q-item は question-item / sb-question-item / sql-question-item に共通付与される
+   クリックすると、その設問を開かずに完了/未完了を切り替えられる */
 .q-status {
   width: 15px;
   flex-shrink: 0;
@@ -1078,8 +1078,8 @@ body:not(.sidebar-open) .drawer-backdrop { display: none; }
   font-size: calc(var(--editor-font-size) - 2px);
   opacity: 1;
 }
-/* 完了したレッスンは行全体を薄く緑に染め、左に細いバーを出す (✓ だけでは見落としやすい)。
-   現在地 (.active) の色は後続の各リストの規則が上書きする。 */
+/* 完了したレッスンは行全体を薄く緑に染め、左に細いバーを出す (✓ だけでは見落としやすい)
+   現在地 (.active) の色は後続の各リストの規則が上書きする */
 .q-item.done {
   background: color-mix(in srgb, var(--accent-green) 7%, transparent);
   border-left-color: color-mix(in srgb, var(--accent-green) 55%, transparent);
@@ -1176,7 +1176,7 @@ body.theme-dark .question-item.active { background: color-mix(in srgb, var(--acc
 }
 
 /* ── 設問はカテゴリの子としてツリー状にぶら下げる ──
-   ガイドライン (縦線) + インデントで、カテゴリ配下であることを視覚化する。 */
+   ガイドライン (縦線) + インデントで、カテゴリ配下であることを視覚化する */
 .q-group-body {
   margin-left: 17px;
   border-left: 2px solid var(--border-color);
@@ -1327,8 +1327,8 @@ body.theme-dark .sql-question-item.active { background: color-mix(in srgb, var(-
   gap: 4px;
   flex-shrink: 0;
 }
-/* 高さは音声操作ボタン (.btn-ai-replay など 44x32) と揃え、幅だけ少し広げてレッスン移動を押しやすくする。
-   色はテーマ非依存の --accent-blue を使い、どのカラーテーマでも一段目立つようにする。 */
+/* 高さは音声操作ボタン (.btn-ai-replay など 44x32) と揃え、幅だけ少し広げてレッスン移動を押しやすくする
+   色はテーマ非依存の --accent-blue を使い、どのカラーテーマでも一段目立つようにする */
 .q-nav-btn {
   width: 50px;
   height: 32px;
@@ -1930,7 +1930,7 @@ body.theme-dark .sql-question-item.active { background: color-mix(in srgb, var(-
 /* ── CodeMirror 6 の配置 ──
    配色 (背景・行番号・カーソル・選択) は editor/themes.js が 6 テーマ分すべて持つので、
    ここでは大きさとフォントだけを決める。CM5 時代にあった
-   body:not(.theme-dark) の色上書きは、ライトテーマが JS 側で完結したため不要。 */
+   body:not(.theme-dark) の色上書きは、ライトテーマが JS 側で完結したため不要 */
 .cm-host { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .cm-editor {
   flex: 1;
@@ -2241,7 +2241,7 @@ body.theme-dark .btn-apply-green:not(:disabled):hover { background: hsl(145, 52%
 .btn-ai-stop:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--accent-blue); }
 .btn-ai-replay:disabled,
 .btn-ai-stop:disabled { opacity: 0.4; cursor: default; }
-/* OS のカラー絵文字を使わず、現在色で単純な一時停止・停止記号を描画する。 */
+/* OS のカラー絵文字を使わず、現在色で単純な一時停止・停止記号を描画する */
 .btn-ai-replay.pause-mode::before {
   content: '';
   width: 4px;
@@ -2259,8 +2259,8 @@ body.theme-dark .btn-apply-green:not(:disabled):hover { background: hsl(145, 52%
   border-radius: 1px;
 }
 /* 生成中のみ ▶ が「やり直す」(↻) に変わる。Gemini Live の応答が返らないときに
-   ユーザー自身が同じ内容を生成し直せるようにするための状態。
-   待たされていることが分かるよう、ゆっくり明滅させる。 */
+   ユーザー自身が同じ内容を生成し直せるようにするための状態
+   待たされていることが分かるよう、ゆっくり明滅させる */
 .btn-ai-replay.retry-mode {
   color: var(--accent-yellow);
   border-color: var(--accent-yellow);
@@ -2327,7 +2327,7 @@ body.theme-dark .btn-apply-green:not(:disabled):hover { background: hsl(145, 52%
 }
 .ai-audio-progress-fill { background: var(--accent-blue); }
 .ai-audio-buffer-fill { display: none; }
-/* 生成中は不確定な総尺で再生位置を描かず、先読みバッファの充足率を表示する。 */
+/* 生成中は不確定な総尺で再生位置を描かず、先読みバッファの充足率を表示する */
 .ai-audio-progress.generating .ai-audio-progress-track { cursor: default; }
 .ai-audio-progress.generating .ai-audio-progress-fill { display: none; }
 .ai-audio-progress.generating .ai-audio-buffer-fill {
@@ -2689,7 +2689,7 @@ body.theme-dark ::-webkit-scrollbar-thumb:hover { background: #4a4a4a; }
 :focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 1px; }
 
 /* CM5 時代はダークテーマ共通で背景・ガター色を上書きしていたが、
-   CM6 では 6 テーマそれぞれが正しい配色を持つため撤去した (editor/themes.js)。 */
+   CM6 では 6 テーマそれぞれが正しい配色を持つため撤去した (editor/themes.js) */
 
 /* ═══════════════════════════════════════════
    Course Selection Dialog (新規コース開始 / 既存コース再開)
@@ -2823,7 +2823,7 @@ body.theme-dark ::-webkit-scrollbar-thumb:hover { background: #4a4a4a; }
 
 /* ═══════════════════════════════════════════
    利用資格切れロック (フル版・期限切れ / 残高切れ / アカウント停止)
-   他のどのモーダルよりも前面に出し、背面の操作を完全に塞ぐ。
+   他のどのモーダルよりも前面に出し、背面の操作を完全に塞ぐ
    ═══════════════════════════════════════════ */
 .credit-lock-overlay {
   z-index: 4000;                     /* 設定・コースダイアログ (1000) より前面 */
@@ -2882,9 +2882,9 @@ body.theme-dark ::-webkit-scrollbar-thumb:hover { background: #4a4a4a; }
   line-height: 1.7;
   white-space: pre-wrap;
 }
-/* API キー取得ページへの導線。
+/* API キー取得ページへの導線
    枠 + 背景を付けると .api-key-input と見分けが付かず入力欄に見えてしまうため、
-   下線付きのリンクとして見せる。 */
+   下線付きのリンクとして見せる */
 .api-setup-cta {
   display: inline-block;
   /* .simple-dialog は flex column なので、指定しないと下線が幅いっぱいに伸びて
@@ -3367,9 +3367,9 @@ body.theme-dark ::-webkit-scrollbar-thumb:hover { background: #4a4a4a; }
 .problem-desc strong, .answer-exp-text strong { font-weight: 700; color: var(--text-main); }
 .problem-desc em, .answer-exp-text em { font-style: italic; }
 .problem-desc hr, .answer-exp-text hr { border: none; border-top: 1px solid var(--border-color); margin: 8px 0; }
-/* 図 (assets/ 参照の画像) はレッスン領域の幅に合わせて表示する。
+/* 図 (assets/ 参照の画像) はレッスン領域の幅に合わせて表示する
    ペイン側の幅は変えず (max-width で収め)、ペインを広げ縮めしたら図も
-   それに追従して拡大・縮小するよう width: 100% で領域幅に固定する。 */
+   それに追従して拡大・縮小するよう width: 100% で領域幅に固定する */
 .problem-desc img, .answer-exp-text img {
   display: block;
   width: 100%;
@@ -3505,8 +3505,8 @@ body.theme-dark ::-webkit-scrollbar-thumb:hover { background: #4a4a4a; }
 
 
 /* ══ AI エージェント対象コース (body.agent-course): 左 = プロジェクト構成 / 中央 = エディタ / 右 = 業務仕様 ══
-   通常コースの 設問 / エディタ / AI Mentor と左右が入れ替わり、AI Mentor は出さない。
-   1 コース = 1 プロジェクトなので、レッスン一覧・前後ナビ・正解セクションも出さない。 */
+   通常コースの 設問 / エディタ / AI Mentor と左右が入れ替わり、AI Mentor は出さない
+   1 コース = 1 プロジェクトなので、レッスン一覧・前後ナビ・正解セクションも出さない */
 .project-panel {
   width: 300px; min-width: 180px; max-width: 700px; min-height: 0;
   display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
@@ -3694,12 +3694,12 @@ body.agent-course #spec-resize-handle { display: none; }
    そのまま流用する。Codinable では画面の骨組みだけが違う
    (レッスンペインが無く、左端が常設のファイルエクスプローラになる) ので、
    その差分をこのセクションに集約する。上を直接書き換えないのは、
-   Chatinable 側の改善を取り込みやすくしておくため。
+   Chatinable 側の改善を取り込みやすくしておくため
    ═══════════════════════════════════════════════════════════ */
 
 /* ── 左サイドバーを「ドロワー」から「常設パネル」へ ──
    Chatinable では position: fixed の引き出しだったが、Codinable では
-   画面の一番左に常に居るファイルエクスプローラにする。 */
+   画面の一番左に常に居るファイルエクスプローラにする */
 .sidebar.explorer {
   position: static;
   z-index: auto;
@@ -3726,11 +3726,11 @@ body:not(.sidebar-open) .sidebar.explorer { display: flex; }
 .sidebar-resize-handle.dragging { background: var(--accent-blue); }
 
 /* ═══ 演習一覧 (サイドバー上段) ═══
-   Chatinable のレッスン一覧と同じ「上からフラットに並ぶリスト」を踏襲する。
+   Chatinable のレッスン一覧と同じ「上からフラットに並ぶリスト」を踏襲する
    違うのは、ここに並ぶのが設問ではなく実行単位だという点で、
-   採点や完了の概念を持たないため、状態記号は置かない。 */
+   採点や完了の概念を持たないため、状態記号は置かない */
 .exercise-list {
-  /* 高さはつまみで変えられる。既定はファイルツリーと半々くらい。
+  /* 高さはつまみで変えられる。既定はファイルツリーと半々くらい
      縮むのは許す (背の低いウィンドウでファイルツリーが潰れないように) */
   height: 240px;
   min-height: 60px;
@@ -3860,7 +3860,7 @@ body.theme-dark .exercise-item.active {
 
 /* ── コース切り替え (ヘッダー左) ──
    受講している講座のあいだを移る。LLM の選択と同じ見た目に揃えて、
-   「上の行は今いる場所を選ぶところ」と分かるようにする。 */
+   「上の行は今いる場所を選ぶところ」と分かるようにする */
 .course-picker {
   display: inline-flex;
   align-items: center;
@@ -3895,9 +3895,9 @@ body.theme-dark .exercise-item.active {
 }
 /* ── API キーのバッジ (ヘッダーと設定画面で共通) ──
    見た目は .lsp-badge や .project-kind と同じ「枠線 + 薄い色混ぜ」に揃える
-   (べた塗りの濃い緑・赤はどのテーマでも浮くため)。
+   (べた塗りの濃い緑・赤はどのテーマでも浮くため)
    .settings-label 付きの形も併記するのは、`.settings-label span` の方が
-   詳細度が高く、これが無いと設定画面で文字色を奪われるため。 */
+   詳細度が高く、これが無いと設定画面で文字色を奪われるため */
 .api-key-badge,
 .settings-label .api-key-badge {
   font-size: calc(var(--editor-font-size) - 5px);
@@ -3947,7 +3947,7 @@ body.theme-dark .exercise-item.active {
 
 /* ── エディタのタブ列 ──
    Chatinable の .editor-tabs はスクロール用の入れ物 (.editor-tabs-scroll) の
-   中に入っていた。Codinable は入れ物を持たないので、タブ列自身を帯にする。 */
+   中に入っていた。Codinable は入れ物を持たないので、タブ列自身を帯にする */
 #editor-tabs {
   width: auto;
   height: auto;
@@ -3961,8 +3961,8 @@ body.theme-dark .exercise-item.active {
 #editor-tabs::-webkit-scrollbar { display: none; }
 #editor-tabs:empty { display: none; }
 
-/* 開いたファイルごとに CodeMirror を 1 つ持ち、表示するものだけ出す。
-   こうするとタブを切り替えても取り消し履歴とスクロール位置が残る。 */
+/* 開いたファイルごとに CodeMirror を 1 つ持ち、表示するものだけ出す
+   こうするとタブを切り替えても取り消し履歴とスクロール位置が残る */
 .editor-hosts {
   flex: 1;
   min-height: 0;
@@ -4184,8 +4184,8 @@ body.theme-dark .exercise-item.active {
 .agent-note.is-error { color: var(--accent-red); }
 
 /* ── コードの書き換え (AI駆動開発) ──
-   Ask の応答に混ざる ```codinable-edit ブロックは「適用」を押してから反映する。
-   Agent は自分で書き換えるので、同じカードを適用済みの形で出して元に戻せるようにする。 */
+   Ask の応答に混ざる ```codinable-edit ブロックは「適用」を押してから反映する
+   Agent は自分で書き換えるので、同じカードを適用済みの形で出して元に戻せるようにする */
 .edit-proposal.is-applied { border-color: color-mix(in srgb, var(--accent-green) 40%, var(--border-color)); }
 
 .edit-proposals {

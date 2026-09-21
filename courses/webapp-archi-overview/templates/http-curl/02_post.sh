@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# POST / PUT / DELETE を送って、メソッドごとの違いを確かめる。
+# POST / PUT / DELETE を送って、メソッドごとの違いを確かめる
 set -u
 
 BASE="https://httpbin.org"

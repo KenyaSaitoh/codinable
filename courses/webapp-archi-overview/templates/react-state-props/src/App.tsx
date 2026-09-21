@@ -8,7 +8,7 @@ const initialUsers: User[] = [
 ];
 
 const App = () => {
-  // Stateの所有者は親。setterを通して更新するとReactが再描画する。
+  // Stateの所有者は親。setterを通して更新するとReactが再描画する
   const [users, setUsers] = useState(initialUsers);
   const [count, setCount] = useState(0);
 

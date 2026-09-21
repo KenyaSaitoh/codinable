@@ -1,7 +1,7 @@
-// 演習の .sql が実際に HSQLDB で流れるかを確かめる検査用プログラム。
+// 演習の .sql が実際に HSQLDB で流れるかを確かめる検査用プログラム
 //
-// 文の分割は main/sql.js (SqlServer) と同じ「; で split して trim」にしてある。
-// アプリと同じ切り方で試さないと、コメント中の ; などの取りこぼしが見つからない。
+// 文の分割は main/sql.js (SqlServer) と同じ「; で split して trim」にしてある
+// アプリと同じ切り方で試さないと、コメント中の ; などの取りこぼしが見つからない
 //
 //   java -cp <hsqldb.jar> SqlCheck.java <expect> <file.sql> ...
 //     expect = ok       … 全文が成功すること

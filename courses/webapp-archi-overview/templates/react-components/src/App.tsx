@@ -16,7 +16,7 @@ const App = () => (
 
     <section className="card-grid">
       {users.map((user) => (
-        // 配列から描画する要素には、一意な key が必要。
+        // 配列から描画する要素には、一意な key が必要
         <UserCard key={user.id} {...user} />
       ))}
     </section>

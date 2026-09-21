@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /*
- * 例外を HTTP のステータスコードに対応づける。
+ * 例外を HTTP のステータスコードに対応づける
  *
- * @RestControllerAdvice に書くと、すべての @RestController に効く。
- * こうしておくと Controller には正常系だけが残り、読みやすくなる。
+ * @RestControllerAdvice に書くと、すべての @RestController に効く
+ * こうしておくと Controller には正常系だけが残り、読みやすくなる
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {

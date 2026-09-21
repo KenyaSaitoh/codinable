@@ -3,7 +3,7 @@
 //
 //  renderer.js はバンドラを通さない素のスクリプトなので、CodeMirror 6 (ESM のみ) を
 //  そのまま <script> で読むことはできない。builder/build-editor.js が esbuild で
-//  この 1 ファイルへまとめ、IIFE として window.CM6 に載せる。
+//  この 1 ファイルへまとめ、IIFE として window.CM6 に載せる
 //    出力: src/renderer/vendor/cm6.js
 // ═══════════════════════════════════════════════════════════
 

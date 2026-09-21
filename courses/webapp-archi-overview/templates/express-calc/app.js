@@ -1,8 +1,8 @@
-// Express で書いた計算アプリケーション。
+// Express で書いた計算アプリケーション
 //
-// Spring MVC 版・Django 版と同じものを Node.js で書いている。
+// Spring MVC 版・Django 版と同じものを Node.js で書いている
 // 違いは「サーバー側で HTML を組み立てる」という点ではなく、
-// フレームワークの書き方だけであることを見比べてほしい。
+// フレームワークの書き方だけであることを見比べてほしい
 //
 //   1. 実行対象で「npm: install」を選んで実行
 //   2. 続けて「npm: start」を選んで実行
@@ -16,8 +16,8 @@ const port = 3000;
 // テンプレートエンジンの設定。views/*.ejs を探すようになる
 app.set('view engine', 'ejs');
 
-// フォーム (application/x-www-form-urlencoded) の本文を req.body に展開する。
-// これを書き忘れると req.body が undefined になる。
+// フォーム (application/x-www-form-urlencoded) の本文を req.body に展開する
+// これを書き忘れると req.body が undefined になる
 app.use(express.urlencoded({ extended: false }));
 
 // ビジネスロジック。Express を知らない関数として切り離しておく

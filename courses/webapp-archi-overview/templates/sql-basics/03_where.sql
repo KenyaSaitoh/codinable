@@ -1,7 +1,7 @@
--- 条件の書き方（WHERE 句）。01_create.sql を流したあとに実行する。
+-- 条件の書き方（WHERE 句）。01_create.sql を流したあとに実行する
 --
--- 主キー検索と違い、条件検索の結果は 0 件・1 件・複数件のいずれにもなる。
--- 1 文ずつ選択して「実行」を押すと、条件と結果の対応が見やすい。
+-- 主キー検索と違い、条件検索の結果は 0 件・1 件・複数件のいずれにもなる
+-- 1 文ずつ選択して「実行」を押すと、条件と結果の対応が見やすい
 
 -- ── AND: 両方を満たすもの ───────────────────────────
 SELECT * FROM EMPLOYEE
@@ -48,7 +48,7 @@ SELECT * FROM EMPLOYEE WHERE DEPARTMENT_NAME LIKE '%部' ORDER BY EMPLOYEE_ID;
 SELECT * FROM EMPLOYEE WHERE EMPLOYEE_NAME LIKE '____' ORDER BY EMPLOYEE_ID;
 
 -- ── NULL の扱い ─────────────────────────────────────
--- NULL は「値が無い」という状態で、= では判定できない。IS NULL を使う。
+-- NULL は「値が無い」という状態で、= では判定できない。IS NULL を使う
 -- まず部署が無い社員を 1 人入れて、動きを確かめる
 INSERT INTO EMPLOYEE VALUES (10009, 'Frank', NULL, 300000);
 

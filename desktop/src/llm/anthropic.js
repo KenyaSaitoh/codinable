@@ -1,5 +1,5 @@
-// Anthropic Messages API (SSE ストリーミング)。
-// Codinable では Claude Haiku を選んだときに使う。
+// Anthropic Messages API (SSE ストリーミング)
+// Codinable では Claude Haiku を選んだときに使う
 
 const { consumeSse, readErrorDetail, toFriendlyHttpError } = require('./sse');
 
@@ -56,7 +56,7 @@ async function streamChat({ apiKey, model, messages, system, signal, onText, max
 // ── 道具つきの呼び出し (Agent モード) ──────────────────────
 //
 // ストリーミングは使わない。道具呼び出しは引数が細切れで届くため組み立てが
-// 面倒な割に、1 ステップの待ちは短いので得るものが少ない。
+// 面倒な割に、1 ステップの待ちは短いので得るものが少ない
 
 /** 中立な履歴 → Anthropic の messages */
 function toToolMessages(messages) {

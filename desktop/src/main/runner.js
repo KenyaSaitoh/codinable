@@ -4,14 +4,14 @@
 //  ワークスペースのプロジェクトディレクトリをそのまま作業ディレクトリにして実行する
 //  (一時ディレクトリへ書き出してから動かすことはしない)。そのため Gradle の
 //  ビルドキャッシュも node_modules も 2 回目以降そのまま効き、同じフォルダを
-//  VS Code や IntelliJ で開いてもプロジェクトとして成立する。
+//  VS Code や IntelliJ で開いてもプロジェクトとして成立する
 //
-//  実行枠は 1 つ。新しく実行すると前のプロセスは止める (⏹ でも止められる)。
-//  常駐させたいプロセスが 2 つ以上あるときはターミナルタブを使う。
+//  実行枠は 1 つ。新しく実行すると前のプロセスは止める (⏹ でも止められる)
+//  常駐させたいプロセスが 2 つ以上あるときはターミナルタブを使う
 //
-//  実行中の出力からは「起動した URL」を拾い、見つかったら renderer に伝える。
+//  実行中の出力からは「起動した URL」を拾い、見つかったら renderer に伝える
 //  Spring Boot / Django / Express / Vite など、どのフレームワークでも
-//  プレビュータブが自動で開くようにするため。
+//  プレビュータブが自動で開くようにするため
 // ═══════════════════════════════════════════════════════════
 
 const fs   = require('fs');
@@ -36,13 +36,13 @@ const CP_SEP = IS_WIN ? ';' : ':';
 let current = null;   // { proc, projectDir, kind, task, isTest }
 
 // 実行の世代番号。前処理 (npm install など) の途中で ⏹ を押されたり、
-// 別の実行が始まったりしたときに、古い実行が続きを走らせないようにする。
+// 別の実行が始まったりしたときに、古い実行が続きを走らせないようにする
 let runToken = 0;
 
 // ── 起動 URL の検出 ────────────────────────────────────────
 //
 // 明示的に URL を書き出すもの (Django / Vite / Next / Nuxt / http-server) と、
-// ポート番号だけを書くもの (Spring Boot / Express の定番ログ) の両方に対応する。
+// ポート番号だけを書くもの (Spring Boot / Express の定番ログ) の両方に対応する
 const URL_PATTERNS = [
   /https?:\/\/(?:localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\]):(\d{2,5})(?:\/\S*)?/i,
   /Tomcat started on port\(?s?\)?:?\s*(\d{2,5})/i,
@@ -63,9 +63,9 @@ function detectUrl(text) {
 }
 
 /**
- * stdout/stderr の data イベントは URL の途中でも分割される。
+ * stdout/stderr の data イベントは URL の途中でも分割される
  * 直近の出力をつないでから調べ、`http://local` / `host:5173` のような
- * 境界で分かれても Web プレビューを開けるようにする。
+ * 境界で分かれても Web プレビューを開けるようにする
  */
 function createUrlDetector() {
   let tail = '';
@@ -77,7 +77,7 @@ function createUrlDetector() {
 
 /**
  * ログの文面がフレームワークの更新で変わっても、既定ポートが実際に
- * 待ち受けを始めたらプレビューへ進めるための予備検出。
+ * 待ち受けを始めたらプレビューへ進めるための予備検出
  */
 function waitForPort(port, { token, proc, onReady, timeoutMs = 300_000 }) {
   const deadline = Date.now() + timeoutMs;
@@ -147,9 +147,9 @@ const GRADLEW_BAT =
   'if "%OS%"=="Windows_NT" endlocal\r\n';
 
 /**
- * プロジェクトに Gradle Wrapper を用意する。
+ * プロジェクトに Gradle Wrapper を用意する
  * 雛形には gradlew を同梱せず、同梱の gradle-wrapper.jar からここで作る
- * (受講者が Gradle を別途インストールしなくても済むようにするため)。
+ * (受講者が Gradle を別途インストールしなくても済むようにするため)
  */
 function ensureGradleWrapper(projectDir) {
   const wrapperDir = path.join(projectDir, 'gradle', 'wrapper');
@@ -217,15 +217,15 @@ function findJavaMain(projectDir, preferred) {
 // ── 依存の自動用意 ─────────────────────────────────────────
 //
 // 演習は「選んで実行を押したら動く」ことを最優先にする。そのため
-// npm install / pip install は受講者に踏ませず、実行の前段として自動で通す。
-// 一度用意できたら次回は飛ばすので、待たされるのは初回だけである。
+// npm install / pip install は受講者に踏ませず、実行の前段として自動で通す
+// 一度用意できたら次回は飛ばすので、待たされるのは初回だけである
 
 /**
- * npm install が要るかを判定する。
+ * npm install が要るかを判定する
  * node_modules の有無だけで見ると、install が途中で切れた木 (ディレクトリは
  * あるが vite などが入っていない) を「用意済み」と誤判定し、
- * 「'vite' は認識されていません」から永久に抜け出せなくなる。
- * そのため宣言された依存が実際に置かれているかまで見る。
+ * 「'vite' は認識されていません」から永久に抜け出せなくなる
+ * そのため宣言された依存が実際に置かれているかまで見る
  */
 function needsNpmInstall(projectDir) {
   const pkg = path.join(projectDir, 'package.json');
@@ -256,7 +256,7 @@ function npmInstallStep(projectDir, env) {
 
 /**
  * npm の起動仕様を作る。node で npm-cli.js を直接動かすのが既定で、
- * それが見つからないときだけ npm.cmd + shell に落とす。
+ * それが見つからないときだけ npm.cmd + shell に落とす
  */
 function npmSpec(args, projectDir, env) {
   const cli = resolveNpmCli();
@@ -269,9 +269,9 @@ function npmSpec(args, projectDir, env) {
 }
 
 /**
- * requirements.txt の内容に対応する済み印。
+ * requirements.txt の内容に対応する済み印
  * 同梱 Python の site-packages の中に置くので、ランタイムを入れ直したら
- * 印も一緒に消える (= パッケージが無いのに「済み」と誤判定しない)。
+ * 印も一緒に消える (= パッケージが無いのに「済み」と誤判定しない)
  */
 function pipMarkerPath(requirementsPath) {
   const hash = crypto.createHash('sha1')
@@ -384,7 +384,7 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
         freePort: vitePort,
         previewUrl: vitePort ? `http://localhost:${vitePort}` : null,
         // npm スクリプトはサーバーやビルドが中心。stdin 欄を出すと、Vite に
-        // 入力を送るための UI に見えてしまうので対話実行とは扱わない。
+        // 入力を送るための UI に見えてしまうので対話実行とは扱わない
         interactive: false,
       };
     }
@@ -469,9 +469,9 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
 // ── 実行 ───────────────────────────────────────────────────
 
 /**
- * 前処理 (javac / npm install / pip install) を 1 つ動かす。
+ * 前処理 (javac / npm install / pip install) を 1 つ動かす
  * npm install は分単位で掛かることがあるので、出力は溜めずに流し、
- * 動いている間も current に入れて ⏹ で止められるようにする。
+ * 動いている間も current に入れて ⏹ で止められるようにする
  */
 function execStep(step, send) {
   return new Promise(resolve => {
@@ -513,7 +513,7 @@ async function stop() {
 }
 
 /**
- * 実行を開始する。出力は run-output / run-exit / run-url / run-test-results で流す。
+ * 実行を開始する。出力は run-output / run-exit / run-url / run-test-results で流す
  */
 async function start(event, { project, kind, relPath, task, uiLang } = {}) {
   const wc   = event.sender;

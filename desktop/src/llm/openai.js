@@ -1,8 +1,8 @@
-// OpenAI Responses API (SSE ストリーミング)。
-// Codinable では GPT Luna を選んだときに使う。
+// OpenAI Responses API (SSE ストリーミング)
+// Codinable では GPT Luna を選んだときに使う
 //
 // GPT-5.6 世代は Responses API (/v1/responses) が正路で、
-// 推論つきモデルの扱いも Chat Completions より素直なためこちらを使う。
+// 推論つきモデルの扱いも Chat Completions より素直なためこちらを使う
 
 const { consumeSse, readErrorDetail, toFriendlyHttpError } = require('./sse');
 

@@ -6,10 +6,10 @@
 //
 //  Chatinable はエディション (収録コース・同梱ランタイム・言語) ごとに
 //  設定を組み立てていたが、Codinable は 1 構成しか作らないため、
-//  ここに直接書いている。
+//  ここに直接書いている
 //
 //  electron-builder の extraMetadata は使わないこと。ソースの package.json を
-//  上書きし、scripts / devDependencies が消えてしまう副作用がある。
+//  上書きし、scripts / devDependencies が消えてしまう副作用がある
 // ═══════════════════════════════════════════════════════════
 
 const { PRODUCT } = require('../src/app-config');
@@ -24,10 +24,10 @@ module.exports = {
     'src/**',
     'node_modules/**',
     'package.json',
-    // コースパック (course.yaml + 雛形) は asar の中に入れる。
-    // 実体が 1 ファイルになり、NSIS の展開と Defender のスキャンが速い。
-    // 読むだけ (実行・書き込みをしない) なので asar 透過読み込みで足りる。
-    // 参照側は src/main/courses.js の getCoursesDir()。
+    // コースパック (course.yaml + 雛形) は asar の中に入れる
+    // 実体が 1 ファイルになり、NSIS の展開と Defender のスキャンが速い
+    // 読むだけ (実行・書き込みをしない) なので asar 透過読み込みで足りる
+    // 参照側は src/main/courses.js の getCoursesDir()
     { from: '../courses', to: 'courses',
       filter: ['**/*', '!**/.gradle/**', '!**/build/**', '!**/bin/**', '!**/node_modules/**'] },
   ],
@@ -63,11 +63,11 @@ module.exports = {
     perMachine: false,
     // 日本語と英語の 2 言語。インストーラの 1 ページ目で切り替え、
     // 選ばれた言語は default-lang.txt 経由でアプリの初期表示言語にもなる
-    // (assets/installer.nsh と src/main/config.js の readInstallerLang)。
+    // (assets/installer.nsh と src/main/config.js の readInstallerLang)
     //
     // multiLanguageInstaller を false にすると electron-builder は
     // installerLanguages を無視して英語固定のインストーラを作るため、
-    // 2 言語でも true のままにする (app-builder-lib の LangConfigurator)。
+    // 2 言語でも true のままにする (app-builder-lib の LangConfigurator)
     multiLanguageInstaller: true,
     // 言語選択は assets/installer.nsh の自前ページで行うので、
     // NSIS 標準の言語選択ダイアログは出さない

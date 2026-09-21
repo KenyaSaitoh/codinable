@@ -1,4 +1,4 @@
--- テーブルの変更と削除。01_create_table.sql を流したあとに実行する。
+-- テーブルの変更と削除。01_create_table.sql を流したあとに実行する
 
 -- ── カラムを足す ────────────────────────────────────
 -- 既にある行のその列は NULL になる（DEFAULT を付ければその値が入る）
@@ -25,7 +25,7 @@ ALTER TABLE PRODUCT DROP COLUMN CATEGORY_NAME;
 SELECT * FROM PRODUCT ORDER BY PRODUCT_ID;
 
 -- ── テーブルを丸ごと消す ────────────────────────────
--- 中身のデータも定義も消える。本番環境では慎重に扱う操作である。
+-- 中身のデータも定義も消える。本番環境では慎重に扱う操作である
 -- ここでは使い捨てのテーブルを作って、消えることを確かめる
 DROP TABLE SCRATCH IF EXISTS;
 
@@ -40,7 +40,7 @@ SELECT * FROM SCRATCH;
 
 DROP TABLE SCRATCH;
 
--- 消えたので、次の 1 行は実行できない。
+-- 消えたので、次の 1 行は実行できない
 -- 先頭の -- を外してその 1 文だけを選択して実行すると、
 -- 「テーブルが見つからない」エラーが確かめられる
 -- SELECT * FROM SCRATCH

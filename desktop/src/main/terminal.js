@@ -2,14 +2,14 @@
 //  ターミナル
 //
 //  同梱 bash (runtime/bash) を PTY (node-pty + ConPTY) で起動して
-//  renderer の xterm.js につなぐ。Ctrl+C・TUI・対話 REPL がそのまま使える。
+//  renderer の xterm.js につなぐ。Ctrl+C・TUI・対話 REPL がそのまま使える
 //
 //  作業ディレクトリは選択中のプロジェクト。環境変数はユーザーの環境をそのまま
-//  引き継ぎ、同梱の java / node / python を PATH の先頭に足す (runtimes.getDevEnv)。
-//  学習用サンドボックスではなく開発環境なので、git など普段のツールも見える。
+//  引き継ぎ、同梱の java / node / python を PATH の先頭に足す (runtimes.getDevEnv)
+//  学習用サンドボックスではなく開発環境なので、git など普段のツールも見える
 //
 //  node-pty (ネイティブモジュール) が読めない環境では、行単位のパイプ接続に
-//  フォールバックする。
+//  フォールバックする
 // ═══════════════════════════════════════════════════════════
 
 const fs   = require('fs');
@@ -66,8 +66,8 @@ function isRunning() {
 }
 
 /**
- * ターミナルを起動する。
- * すでに動いていて cwd も同じなら使い回す (タブを開き直しても履歴が消えない)。
+ * ターミナルを起動する
+ * すでに動いていて cwd も同じなら使い回す (タブを開き直しても履歴が消えない)
  */
 function start(event, { cols, rows, project } = {}) {
   const cwd = resolveCwd(project);

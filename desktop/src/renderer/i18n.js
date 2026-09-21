@@ -1,13 +1,13 @@
 // ═══════════════════════════════════════════════════════════
 //  UI 文言 (日本語 / 英語)
 //
-//  キーは index.html の data-i18n* 属性、または renderer.js の t() / tf() から引く。
+//  キーは index.html の data-i18n* 属性、または renderer.js の t() / tf() から引く
 //    data-i18n             → textContent
 //    data-i18n-title       → title 属性
 //    data-i18n-placeholder → placeholder 属性
 //
 //  対応言語を増やすときは UI_STRINGS にキーを足し、
-//  src/app-config.js の PRODUCT.languages にも追加する。
+//  src/app-config.js の PRODUCT.languages にも追加する
 // ═══════════════════════════════════════════════════════════
 
 const UI_STRINGS = {
@@ -50,13 +50,13 @@ const UI_STRINGS = {
     wsChangedReload:     'ワークスペースを変更しました。プロジェクト一覧を読み込み直します。',
 
     // ── 演習一覧 ──
-    // 演習 = 講座のレッスンに対応する「動かして確かめる 1 単位」。
-    // 問題を解かせるものではないので、正解・採点・完了といった語は使わない。
+    // 演習 = 講座のレッスンに対応する「動かして確かめる 1 単位」
+    // 問題を解かせるものではないので、正解・採点・完了といった語は使わない
     exerciseTitle:       '📚 演習',
     exerciseEmpty:       '演習がありません',
 
     // ── コース (講座) ──
-    // 講座は 1 つずつ足せる。同梱 / 共有 / 個人のどこから読まれたかを設定画面に出す。
+    // 講座は 1 つずつ足せる。同梱 / 共有 / 個人のどこから読まれたかを設定画面に出す
     coursePickerTitle:   '受講している講座を選びます',
     coursesLabel:        'インストールされている講座',
     coursesHint:         '講座を足すと、このアプリを入れ直さなくても演習が増えます。',
@@ -223,7 +223,7 @@ const UI_STRINGS = {
     chatModeTitle:       'Ask は読むだけ。Agent は開いている演習のファイルを書き換えます（実行はしません）',
 
     // ── コードの書き換え (AI駆動開発) ──
-    // Ask で返ってきた変更案は「適用」を押してから反映する。
+    // Ask で返ってきた変更案は「適用」を押してから反映する
     // Agent は自分で書き換えるので、代わりに「元に戻す」を出す
     agentNoProject:      '演習を選んでから Agent に依頼してください。',
     agentToolList:       'ファイル一覧を見る',

@@ -5,7 +5,7 @@ export type User = {
   role: string;
 };
 
-// Props は親コンポーネントから渡される読み取り専用の入力。
+// Props は親コンポーネントから渡される読み取り専用の入力
 const UserCard = ({ name, email, role }: User) => (
   <article className="user-card">
     <span className="role">{role}</span>

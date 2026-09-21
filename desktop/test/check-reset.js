@@ -1,7 +1,7 @@
-// 「初期化」（演習を配布時の状態に戻す）が期待どおり働くかを確かめる検査用スクリプト。
+// 「初期化」（演習を配布時の状態に戻す）が期待どおり働くかを確かめる検査用スクリプト
 //
-// workspace.js は electron を読むので、electron で動かす。
-// ワークスペースは一時ディレクトリに向けるため、実際の %USERPROFILE%\codinable は触らない。
+// workspace.js は electron を読むので、electron で動かす
+// ワークスペースは一時ディレクトリに向けるため、実際の %USERPROFILE%\codinable は触らない
 //
 //   npx electron desktop/test/check-reset.js
 

@@ -1,10 +1,10 @@
--- 結合（JOIN）。01_setup.sql を流したあとに実行する。
+-- 結合（JOIN）。01_setup.sql を流したあとに実行する
 --
--- 分けた 2 つのテーブルを、1 つの結果にまとめて読む。
--- 内部結合と外部結合の違いは「対応する行が無い側をどう扱うか」だけである。
+-- 分けた 2 つのテーブルを、1 つの結果にまとめて読む
+-- 内部結合と外部結合の違いは「対応する行が無い側をどう扱うか」だけである
 
 -- ── 内部結合: 両方に対応する行があるものだけ ───────────
--- E と D はテーブルの別名。長いテーブル名を繰り返さずに済む。
+-- E と D はテーブルの別名。長いテーブル名を繰り返さずに済む
 -- ON にはつなぐ条件（外部キー = 主キー）を書く
 SELECT E.EMPLOYEE_NAME, D.DEPARTMENT_NAME, D.LOCATION, E.SALARY
   FROM EMPLOYEE E
@@ -13,7 +13,7 @@ SELECT E.EMPLOYEE_NAME, D.DEPARTMENT_NAME, D.LOCATION, E.SALARY
 -- 部署が未設定の Eve は出てこない（対応する部署が無いため）
 
 -- ── 左外部結合: 左側は漏らさない ────────────────────
--- 左（EMPLOYEE）の全件を返し、対応する部署が無ければ NULL で埋める。
+-- 左（EMPLOYEE）の全件を返し、対応する部署が無ければ NULL で埋める
 -- Eve の部署名が NULL で出てくる
 SELECT E.EMPLOYEE_NAME, D.DEPARTMENT_NAME
   FROM EMPLOYEE E
@@ -36,7 +36,7 @@ SELECT E.EMPLOYEE_NAME, D.DEPARTMENT_NAME, E.SALARY
  ORDER BY E.SALARY DESC;
 
 -- ── 結合してから集計する ────────────────────────────
--- 部署ごとの人数と平均月給。社員のいない部署も残したいので LEFT JOIN にする。
+-- 部署ごとの人数と平均月給。社員のいない部署も残したいので LEFT JOIN にする
 -- COUNT(E.EMPLOYEE_ID) はカラム指定なので、NULL の行を数えない（監査室が 0 人になる）
 SELECT D.DEPARTMENT_NAME,
        COUNT(E.EMPLOYEE_ID) AS 人数,

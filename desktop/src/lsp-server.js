@@ -1,21 +1,21 @@
 // ═══════════════════════════════════════════════════════════
 //  言語サーバー (LSP) の起動と中継
 //
-//  Java は Eclipse JDT Language Server (jdtls) を子プロセスとして起動する。
+//  Java は Eclipse JDT Language Server (jdtls) を子プロセスとして起動する
 //  jdtls は stdio 上で JSON-RPC を Content-Length ヘッダ付きでやり取りするので、
-//  ここでフレーミングを外し、本文 (JSON 文字列) だけを IPC で renderer へ流す。
-//  renderer 側の受け口は src/renderer/editor/lsp.js。
+//  ここでフレーミングを外し、本文 (JSON 文字列) だけを IPC で renderer へ流す
+//  renderer 側の受け口は src/renderer/editor/lsp.js
 //
 //  ── 配置 ────────────────────────────────────────────────
 //    開発時   : <repo>/resources/jdtls        + <repo>/runtime/java
 //    パッケージ: resources/jdtls              + resources/runtime/java
-//  どちらも scripts/setup-jdtls.ps1 が用意する (jdtls は git 管理外)。
+//  どちらも scripts/setup-jdtls.ps1 が用意する (jdtls は git 管理外)
 //
 //  ── 単位 ────────────────────────────────────────────────
-//  サーバーは「ワークスペースルート (= セッションディレクトリ) ごとに 1 つ」。
-//  同じルートに対する 2 度目の start は既存のサーバーを使い回す。
+//  サーバーは「ワークスペースルート (= セッションディレクトリ) ごとに 1 つ」
+//  同じルートに対する 2 度目の start は既存のサーバーを使い回す
 //  jdtls はメモリを数百 MB 使うため、同時に走らせるのは MAX_SERVERS 個までとし、
-//  超えたら古いものから止める。
+//  超えたら古いものから止める
 // ═══════════════════════════════════════════════════════════
 
 const fs    = require('fs');
@@ -50,7 +50,7 @@ function javaExe(javaHome) {
   return fs.existsSync(bundled) ? bundled : 'java';
 }
 
-/** jdtls の起動コマンドを組み立てる。同梱されていなければ null。 */
+/** jdtls の起動コマンドを組み立てる。同梱されていなければ null */
 function jdtlsLaunch(app, rootPath) {
   const { jdtls, javaHome } = resolveDirs(app);
   const pluginsDir = path.join(jdtls, 'plugins');
@@ -66,8 +66,8 @@ function jdtlsLaunch(app, rootPath) {
     .find(d => fs.existsSync(d));
   if (!configDir) return null;
 
-  // jdtls の作業データ (インデックス) はワークスペースの外に置く。
-  // 学習者のファイル一覧に .metadata が現れると紛らわしいため。
+  // jdtls の作業データ (インデックス) はワークスペースの外に置く
+  // 学習者のファイル一覧に .metadata が現れると紛らわしいため
   const hash = crypto.createHash('sha1').update(rootPath).digest('hex').slice(0, 16);
   const dataDir = path.join(os.tmpdir(), 'codinable-jdtls', hash);
   fs.mkdirSync(dataDir, { recursive: true });
@@ -119,7 +119,7 @@ function isAvailable(app, language = 'java') {
 }
 
 /**
- * 言語サーバーを起動する (同じ rootPath のものがあれば使い回す)。
+ * 言語サーバーを起動する (同じ rootPath のものがあれば使い回す)
  * @returns {{ok: true, id: string, reused: boolean} | {ok: false, error: string}}
  */
 function start(app, sender, { language, rootPath }) {

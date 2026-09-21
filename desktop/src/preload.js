@@ -3,7 +3,7 @@
 //
 //  contextIsolation: true / nodeIntegration: false のため、renderer は
 //  ここで公開したものしか触れない。IPC のチャンネル名を renderer 側に
-//  漏らさず、呼べる操作をこの一覧に限定する。
+//  漏らさず、呼べる操作をこの一覧に限定する
 // ═══════════════════════════════════════════════════════════
 
 const { contextBridge, ipcRenderer } = require('electron');

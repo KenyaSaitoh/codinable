@@ -1,7 +1,7 @@
 import useUsers from './hooks/useUsers';
 
 const App = () => {
-  // 表示側は、データをどう取得するかを知らなくてよい。
+  // 表示側は、データをどう取得するかを知らなくてよい
   const { users, loading, error, reload } = useUsers();
 
   return (

@@ -6,15 +6,15 @@
 //    プロジェクト情報バー
 //    メイン = ファイルツリー | エディタ + 出力タブ | チャット
 //
-//  main プロセスとは preload.js の window.api だけでやり取りする。
+//  main プロセスとは preload.js の window.api だけでやり取りする
 //  この層に fs / child_process は無いので、ファイルもプロセスも
-//  すべて window.api 経由で扱う。
+//  すべて window.api 経由で扱う
 //
 //  状態の持ち方:
 //    - 見た目 (テーマ・フォント・キーバインド・ペイン幅・最後に開いたプロジェクト)
-//      → localStorage。アプリを再起動しても同じ画面で始まる。
+//      → localStorage。アプリを再起動しても同じ画面で始まる
 //    - 設定の本体 (表示言語・API キー・ワークスペース・モデル選択)
-//      → main プロセスの設定ファイル (window.api 経由)。
+//      → main プロセスの設定ファイル (window.api 経由)
 // ═══════════════════════════════════════════════════════════
 
 /* global CM6, marked, DOMPurify, t, tf, setLang, getLang, applyI18nDom */
@@ -49,7 +49,7 @@ let courses     = [];     // コースパック (演習一覧と新規プロジ�
 //  テーマ / フォント / キーバインド
 //
 //  ワークベンチの配色は style.css の body[data-theme='<id>']、
-//  エディタの配色は editor/themes.js が同じ id で持つ。
+//  エディタの配色は editor/themes.js が同じ id で持つ
 // ═══════════════════════════════════════════
 
 const THEMES = [
@@ -129,7 +129,7 @@ function loadLocalSettings() {
 //  汎用ダイアログ (alert / confirm / prompt)
 //
 //  Electron では window.alert / confirm がメインプロセスを止めてしまうため、
-//  自前のモーダルで置き換える。いずれも Promise を返す。
+//  自前のモーダルで置き換える。いずれも Promise を返す
 // ═══════════════════════════════════════════
 
 let dialogResolve = null;
@@ -229,7 +229,7 @@ function renderMarkdown(text) {
 //  エディタ (開いたファイルごとに CodeMirror を 1 つ持つ)
 //
 //  タブを切り替えても取り消し履歴とスクロール位置が残るよう、インスタンスは
-//  閉じるまで捨てずに CSS で出し入れする。
+//  閉じるまで捨てずに CSS で出し入れする
 // ═══════════════════════════════════════════
 
 /** relPath -> { host, cm, dirty, mode } */
@@ -621,11 +621,11 @@ async function refreshProjectInfo() {
 }
 
 /**
- * 演習を配布時の状態に戻す。
+ * 演習を配布時の状態に戻す
  *
  * 試して壊したコードをいつでも捨てられるようにするための機能なので、
  * 編集中のタブも disk の内容に入れ替える (開いたままだと戻したのに古い内容が
- * 見え続け、保存した瞬間に書き戻ってしまう)。
+ * 見え続け、保存した瞬間に書き戻ってしまう)
  */
 async function resetExercise() {
   if (!project) return;
@@ -647,12 +647,12 @@ async function resetExercise() {
 // ═══════════════════════════════════════════
 //  演習一覧
 //
-//  演習 = 講座のレッスンに対応する「動かして確かめる 1 単位」。
-//  問題を出して解かせるものではないので、正解・不正解や採点は持たない。
+//  演習 = 講座のレッスンに対応する「動かして確かめる 1 単位」
+//  問題を出して解かせるものではないので、正解・不正解や採点は持たない
 //
 //  受講者の操作を「演習を選ぶ → 実行を押す」の 2 手に収めるため、
 //  選んだ時点で作業用プロジェクトの用意・ファイルを開く・実行対象の選択
-//  (= 実行環境の切り替え) までを済ませる。
+//  (= 実行環境の切り替え) までを済ませる
 // ═══════════════════════════════════════════
 
 /** runtime → 一覧に出すアイコン。course.yaml の runtime と対応させる */
@@ -666,7 +666,7 @@ async function reloadExercises({ reload = false } = {}) {
                    : await window.api.loadCourses(getLang());
 
   // コースの切り替えはヘッダー左で行う。講座が 1 つだけのときも、
-  // 今どの講座を見ているのかが分かるように出したままにして、選べなくする。
+  // 今どの講座を見ているのかが分かるように出したままにして、選べなくする
   const select = $('active-course-select');
   const previous = select.value || localStorage.getItem('lastCourse') || '';
   select.innerHTML = '';
@@ -699,7 +699,7 @@ function projectForExercise(course, exercise) {
   return matches.find(p => p.name === project) || matches[0] || null;
 }
 
-/** 内部の作業フォルダ名ではなく、講座で見えている演習名を引く。 */
+/** 内部の作業フォルダ名ではなく、講座で見えている演習名を引く */
 function exerciseForProject(info = projectInfo) {
   if (!info?.courseId || !info?.template) return null;
   const course = courses.find(c => c.id === info.courseId);
@@ -754,8 +754,8 @@ function renderExercises() {
 }
 
 /**
- * 演習を開く。
- * 作業用プロジェクトが無ければ雛形から作り、選んで、実行対象まで合わせる。
+ * 演習を開く
+ * 作業用プロジェクトが無ければ雛形から作り、選んで、実行対象まで合わせる
  */
 async function openExercise(course, exercise) {
   let target = projectForExercise(course, exercise);
@@ -791,10 +791,10 @@ function uniqueProjectName(base) {
 }
 
 /**
- * 演習が宣言している実行対象を選ぶ。これが「実行環境の自動切り替え」にあたる。
+ * 演習が宣言している実行対象を選ぶ。これが「実行環境の自動切り替え」にあたる
  *
  * course.yaml の run は実行対象セレクトと同じ書式。ただし file: のときは、
- * 実行対象 'file' が「いま開いているファイル」を指すため、先にそのファイルを開く。
+ * 実行対象 'file' が「いま開いているファイル」を指すため、先にそのファイルを開く
  */
 async function applyExerciseRunTarget(exercise) {
   if (!exercise.run) return;
@@ -820,11 +820,11 @@ function selectRunTarget(value) {
 let running = false;
 
 /**
- * 実行できるものを select に並べる。値は 'kind' または 'kind:引数'。
+ * 実行できるものを select に並べる。値は 'kind' または 'kind:引数'
  *
  * 並ぶ内容はプロジェクトの中身だけで決まり、エディタで選んでいるファイルには
- * 依存しない。README を開いているあいだ実行できなくなる、といったことを避ける。
- * 先頭に来るものが既定になるので、そのプロジェクトの「本命」から並べる。
+ * 依存しない。README を開いているあいだ実行できなくなる、といったことを避ける
+ * 先頭に来るものが既定になるので、そのプロジェクトの「本命」から並べる
  */
 function updateRunTargets() {
   const select = $('run-target-select');
@@ -841,7 +841,7 @@ function updateRunTargets() {
     options.push([`npm:${script}`, tf('runTargetNpm', { script })]);
   }
   // 静的配信は npm スクリプトが無いときだけ。Vite などは index.html が
-  // あっても dev サーバー越しでないと動かないので、並べると壊れた選択肢になる。
+  // あっても dev サーバー越しでないと動かないので、並べると壊れた選択肢になる
   if (projectInfo?.staticRoot !== null && projectInfo?.staticRoot !== undefined &&
       !(projectInfo?.npmScripts || []).length) {
     options.push([`static:${projectInfo.staticRoot}`, t('runTargetStatic')]);
@@ -874,7 +874,7 @@ function setRunning(state, interactive = false) {
   $('btn-run').disabled      = state || !project || !$('run-target-select').value;
   $('btn-run-stop').disabled = !state;
   // 標準入力欄は「実際に届く実行」のときだけ出す。gradlew は shell 経由で
-  // 起動するため届かず、出しておくと押しても何も起きない UI になる。
+  // 起動するため届かず、出しておくと押しても何も起きない UI になる
   $('run-stdin-row').classList.toggle('hidden', !state || !interactive);
 }
 
@@ -903,8 +903,8 @@ async function runSelected() {
   // 静的ページは子プロセスを起こさず、内蔵の静的サーバーで配信する
   if (kind === 'static') { await servePreview(arg); return; }
 
-  // SQL は子プロセスではなく常駐の HSQLDB へ流す。
-  // DB が止まっていればここで起こしてから流す (「DB起動」を先に押させない)。
+  // SQL は子プロセスではなく常駐の HSQLDB へ流す
+  // DB が止まっていればここで起こしてから流す (「DB起動」を先に押させない)
   if (kind === 'sql') { await runSqlFromEditor(arg); return; }
 
   // 保存していない内容で動かして混乱しないよう、先に全部書き出す
@@ -1208,10 +1208,10 @@ async function runSql() {
 }
 
 /**
- * 「実行」ボタンから SQL を流す。
+ * 「実行」ボタンから SQL を流す
  *
  * 対象ファイルをエディタで開いてから、その内容 (選択範囲があればそこだけ) を
- * HSQLDB へ流す。DB が止まっていれば起こすので、編集 → 実行がボタン 1 つで回る。
+ * HSQLDB へ流す。DB が止まっていれば起こすので、編集 → 実行がボタン 1 つで回る
  */
 async function runSqlFromEditor(relPath) {
   // 何が流れたのかが見えるように、対象は必ず画面に出しておく
@@ -1386,9 +1386,9 @@ function restartTerminalIfVisible() {
 //  Web プレビュー
 // ═══════════════════════════════════════════
 
-// プレビューできる先があるか。
+// プレビューできる先があるか
 // 「ボタンはあるが押しても何も起きない」を無くすため、実際に待ち受けている
-// サーバーが見つかるまではプレビューを触れない状態にしておく。
+// サーバーが見つかるまではプレビューを触れない状態にしておく
 let previewAvailable = false;
 
 function setPreviewAvailable(state) {
@@ -1396,8 +1396,8 @@ function setPreviewAvailable(state) {
   $('btn-preview').disabled     = !previewAvailable;
   $('run-tab-browser').disabled = !previewAvailable;
   if (!previewAvailable) {
-    // <webview> の src は触らない (about:blank を入れ直すと ERR_ABORTED になる)。
-    // 触れないタブなので、次にプレビューできたとき previewUrl が入れ替える。
+    // <webview> の src は触らない (about:blank を入れ直すと ERR_ABORTED になる)
+    // 触れないタブなので、次にプレビューできたとき previewUrl が入れ替える
     $('browser-url').value = '';
     // 見えなくなるタブを開いたままにしない
     if (document.querySelector('.run-tab.active')?.id === 'run-tab-browser') {
@@ -1407,9 +1407,9 @@ function setPreviewAvailable(state) {
 }
 
 /**
- * 実行が終わったあとにプレビューの可否を見直す。
+ * 実行が終わったあとにプレビューの可否を見直す
  * 静的ページの内蔵サーバーは実行プロセスとは別に生き続けるので、
- * プロセスが終わったことだけを理由に落とさない。
+ * プロセスが終わったことだけを理由に落とさない
  */
 async function refreshPreviewAvailability() {
   const status = await window.api.previewStatus();
@@ -1557,8 +1557,8 @@ function setChatStreaming(state) {
 
 // ── Ask / Agent の切り替え ─────────────────────────────────
 //
-// Ask は読むだけ。Agent はファイルを書き換えて実行まで試す。
-// どちらを使うかは覚えておく (毎回選び直させない)。
+// Ask は読むだけ。Agent はファイルを書き換えて実行まで試す
+// どちらを使うかは覚えておく (毎回選び直させない)
 
 function setChatMode(mode, { persist = true } = {}) {
   chatMode = mode === 'agent' ? 'agent' : 'ask';
@@ -1594,11 +1594,11 @@ function renderAttachments() {
 }
 
 /**
- * 開いているプロジェクトのファイルを、送信のたびに集め直す。
+ * 開いているプロジェクトのファイルを、送信のたびに集め直す
  *
  * 受講者に「どれを渡すか」を選ばせない。演習のファイルは短く、
- * 相談したい内容もプロジェクト全体にまたがるため、まとめて渡すほうが早い。
- * 編集中の内容を渡すので、先に保存する。
+ * 相談したい内容もプロジェクト全体にまたがるため、まとめて渡すほうが早い
+ * 編集中の内容を渡すので、先に保存する
  */
 async function collectProjectContext() {
   if (!project) return { files: [], skipped: 0 };
@@ -1672,7 +1672,7 @@ async function sendChat() {
 //
 //  道具 (ファイルを読む / 書く / 実行する) を使いながら、モデルが自分で
 //  数手すすめる。何をしたかは経過カードに残し、書き換えは差分で見せて
-//  「元に戻す」で戻せるようにする (勝手に消えたように見せないため)。
+//  「元に戻す」で戻せるようにする (勝手に消えたように見せないため)
 // ═══════════════════════════════════════════
 
 function startAgent(context) {
@@ -1716,7 +1716,7 @@ function renderAgentTool({ name, input, state, output }) {
   if (!row) return;
   row.classList.remove('running');
 
-  // 断られた (演習の外を触ろうとした等) ときは、その理由を出す。
+  // 断られた (演習の外を触ろうとした等) ときは、その理由を出す
   // 書き換えの結果は差分カードで見えるので、ここには出さない
   const refused = /^(演習|生成物|絶対パス|パスが空|使えない道具|エラー)/.test(String(output || ''));
   row.querySelector('.agent-step-spinner').textContent = refused ? '⚠️' : '✓';
@@ -1788,7 +1788,7 @@ function scrollChatToBottom() {
 //  差分の表示 (Agent が書き換えたものを見せる)
 //
 //  Agent はファイルを直接書き換える。勝手に消えたように見えないよう、
-//  変更は必ず差分として出し、「元に戻す」で戻せるようにする。
+//  変更は必ず差分として出し、「元に戻す」で戻せるようにする
 // ═══════════════════════════════════════════
 
 /** 行単位の差分 (LCS)。戻りは [{ kind: 'keep'|'add'|'del', text }] */
@@ -1797,7 +1797,7 @@ function diffLines(before, after) {
   const b = after.split('\n');
 
   // 教材のファイルは短いので素直な DP で足りる。念のため上限を置き、
-  // 超えたときは「全置換」として見せる (計算で固まらせないため)。
+  // 超えたときは「全置換」として見せる (計算で固まらせないため)
   if (a.length * b.length > 4_000_000) {
     return [...a.map(text => ({ kind: 'del', text })),
             ...b.map(text => ({ kind: 'add', text }))];
@@ -1951,8 +1951,8 @@ async function openSettings() {
   $('llm-model-override').value  = appInfo.llmSelection.override || '';
   $('ws-root-input').value       = appInfo.workspaceRoot;
   $('version-badge').textContent = `v${appInfo.version}`;
-  // 入力欄には既存のキーを出さない (伏せ字でも読み出せてしまうため)。
-  // 空のまま保存したときは変更しない扱いにする。
+  // 入力欄には既存のキーを出さない (伏せ字でも読み出せてしまうため)
+  // 空のまま保存したときは変更しない扱いにする
   document.querySelectorAll('[data-key-field]').forEach(input => { input.value = ''; });
   updateModelHint();
   updateKeyBadges();
@@ -1979,8 +1979,8 @@ async function renderRuntimeInfo() {
   const wrap = $('runtime-info');
   wrap.innerHTML = `<div class="runtime-info-row">${escapeHtml(t('loading'))}</div>`;
 
-  // 観測に失敗しても「読み込み中」で固まらせない。
-  // どれが取れなかったのかが分かるほうが原因に近づける。
+  // 観測に失敗しても「読み込み中」で固まらせない
+  // どれが取れなかったのかが分かるほうが原因に近づける
   let status;
   try {
     status = await window.api.runtimeStatus();
@@ -2007,8 +2007,8 @@ async function renderRuntimeInfo() {
 }
 
 /**
- * インストールされている講座と、それがどこから読まれたかを出す。
- * 講座を足したのに出ないときの切り分け (置き場が違う / course.yaml が壊れている) に使う。
+ * インストールされている講座と、それがどこから読まれたかを出す
+ * 講座を足したのに出ないときの切り分け (置き場が違う / course.yaml が壊れている) に使う
  */
 async function renderCoursesInfo() {
   const wrap = $('courses-info');

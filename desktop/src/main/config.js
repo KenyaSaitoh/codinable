@@ -4,7 +4,7 @@
 //  保存先: <userData>/codinable-config.json (JSON)
 //  API キーだけは Electron の safeStorage (OS のキーチェーン由来の鍵) で
 //  暗号化して <field>Encrypted に入れる。safeStorage が使えない環境
-//  (Linux の一部) では平文フィールドにフォールバックする。
+//  (Linux の一部) では平文フィールドにフォールバックする
 // ═══════════════════════════════════════════════════════════
 
 const fs   = require('fs');
@@ -116,11 +116,11 @@ function setWorkspaceRoot(dir) {
 }
 
 /**
- * インストーラが選んだ表示言語を読む (無ければ null)。
+ * インストーラが選んだ表示言語を読む (無ければ null)
  *
  * NSIS のカスタムページ (assets/installer.nsh) が、選ばれた言語を
  * インストール先の default-lang.txt に書き出している。設定ファイルに
- * まだ言語が無いとき、つまり初回起動時だけこれを見る。
+ * まだ言語が無いとき、つまり初回起動時だけこれを見る
  */
 function readInstallerLang() {
   try {

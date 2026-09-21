@@ -1,4 +1,4 @@
-// 子プロセスと出力の取り扱いに関する小道具。
+// 子プロセスと出力の取り扱いに関する小道具
 
 const fs   = require('fs');
 const path = require('path');
@@ -7,9 +7,9 @@ const { exec } = require('child_process');
 const IS_WIN = process.platform === 'win32';
 
 /**
- * 子プロセスの出力をテキストに変換する。
+ * 子プロセスの出力をテキストに変換する
  * Windows の Java / Gradle は環境によって Shift-JIS で書き出すことがあるため、
- * UTF-8 として不正なら Shift-JIS で読み直す。
+ * UTF-8 として不正なら Shift-JIS で読み直す
  */
 function decodeOutput(buf) {
   if (!buf || !buf.length) return '';
@@ -57,7 +57,7 @@ function killPort(port) {
 // ビルド成果物・依存ディレクトリはファイルツリーに出さない
 const SKIP_DIRS = new Set([
   // .codinable はアプリが作る作業用ディレクトリ (project.json / 単体 Java の
-  // クラス出力 / JaCoCo の init script)。受講者が触るものではないので隠す。
+  // クラス出力 / JaCoCo の init script)。受講者が触るものではないので隠す
   '.codinable',
   '.git', '.gradle', '.idea', '.vscode', '.settings', '.venv', 'venv',
   'build', 'out', 'target', 'bin', 'dist', 'node_modules', '__pycache__',
@@ -80,8 +80,8 @@ function isTextFile(relPath) {
 }
 
 /**
- * ディレクトリツリーを走査して { path, dir } の配列を返す (path はルート相対・スラッシュ区切り)。
- * 大きなワークスペースで固まらないよう件数上限を設ける。
+ * ディレクトリツリーを走査して { path, dir } の配列を返す (path はルート相対・スラッシュ区切り)
+ * 大きなワークスペースで固まらないよう件数上限を設ける
  */
 function walkTree(root, { limit = 4000 } = {}) {
   const entries = [];
@@ -113,8 +113,8 @@ function walkTree(root, { limit = 4000 } = {}) {
 }
 
 /**
- * ルート配下に収まる絶対パスへ変換する ('..' や絶対パス指定による逸脱を防ぐ)。
- * 逸脱していれば null。
+ * ルート配下に収まる絶対パスへ変換する ('..' や絶対パス指定による逸脱を防ぐ)
+ * 逸脱していれば null
  */
 function safeJoin(root, relPath) {
   const parts = String(relPath || '').replace(/\\/g, '/').split('/')

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 export type User = { id: number; name: string; email: string };
 
-// データ取得に必要なStateと副作用を、UIから再利用可能な関数へ分離する。
+// データ取得に必要なStateと副作用を、UIから再利用可能な関数へ分離する
 const useUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);

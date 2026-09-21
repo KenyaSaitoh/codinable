@@ -1,9 +1,9 @@
-// イベント処理の基本形は、いつもこの 1 行に尽きる。
+// イベント処理の基本形は、いつもこの 1 行に尽きる
 //
 //   要素.addEventListener('イベント名', 発生したときに呼ばれる関数);
 //
-// 「いつ実行するか」を自分で決めるのではなく、「起きたら呼んでもらう」。
-// この書き方をイベント駆動型プログラミングと呼ぶ。
+// 「いつ実行するか」を自分で決めるのではなく、「起きたら呼んでもらう」
+// この書き方をイベント駆動型プログラミングと呼ぶ
 
 const log = document.getElementById('log');
 
@@ -11,7 +11,7 @@ const log = document.getElementById('log');
 function record(event, detail = '') {
   const li = document.createElement('li');
   const time = new Date().toLocaleTimeString('ja-JP');
-  // event.type はイベント名、event.target はイベントが起きた要素。
+  // event.type はイベント名、event.target はイベントが起きた要素
   // load はページ全体の出来事なので、target は要素ではなく document になる
   const tag = event.target.tagName ? `<${event.target.tagName.toLowerCase()}>` : 'document';
   li.textContent = `${time}  ${event.type}  ${tag}  ${detail}`;

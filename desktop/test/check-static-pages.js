@@ -1,13 +1,13 @@
-// 静的ページの演習が、プレビューで実際に動くかを確かめる検査用スクリプト。
+// 静的ページの演習が、プレビューで実際に動くかを確かめる検査用スクリプト
 //
 // アプリのプレビューは Electron の webview なので、同じ Chromium で読み込んで
 // コンソールのエラーと、ページごとの見どころ（JavaScript が書き換えた結果など）を
-// 確かめる。読み込めるだけでは足りないので、演習ごとに「こうなっていること」を書く。
+// 確かめる。読み込めるだけでは足りないので、演習ごとに「こうなっていること」を書く
 //
 //   node desktop/test/serve-templates.js 4173   （別のターミナルで）
 //   npx electron desktop/test/check-static-pages.js [port]
 //
-// SHOTS=<ディレクトリ> を付けると、各ページの画面も保存する（目で見て確かめたいとき）。
+// SHOTS=<ディレクトリ> を付けると、各ページの画面も保存する（目で見て確かめたいとき）
 
 const { app, BrowserWindow } = require('electron');
 const fs   = require('fs');
@@ -206,7 +206,7 @@ app.whenReady().then(async () => {
   app.exit(ng === 0 ? 0 : 1);
 });
 
-// 連続してウィンドウを作って読み込むと、たまに ERR_FAILED で弾かれる。
+// 連続してウィンドウを作って読み込むと、たまに ERR_FAILED で弾かれる
 // ページ側の問題と紛れるので、少し待って一度だけやり直す
 async function load(win, url) {
   try {

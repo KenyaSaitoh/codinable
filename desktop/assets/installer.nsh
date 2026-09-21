@@ -1,23 +1,23 @@
 ; ═══════════════════════════════════════════════════════════
 ; Codinable NSIS カスタムスクリプト
 ;
-;  1. 先頭に「言語選択 + ようこそ」ページを自分で描く。
+;  1. 先頭に「言語選択 + ようこそ」ページを自分で描く
 ;     NSIS 標準の言語選択ダイアログ (MUI_LANGDLL_DISPLAY) は素の Win32
 ;     コンボボックスで見た目が貧弱なため使わない
-;     (electron-builder.js 側で displayLanguageSelector を false にしている)。
-;     nsDialogs で描き、installerSidebar.bmp を左に出す。
+;     (electron-builder.js 側で displayLanguageSelector を false にしている)
+;     nsDialogs で描き、installerSidebar.bmp を左に出す
 ;
 ;  2. 選ばれた言語 ($LANGUAGE = Windows の LCID) を
-;     $INSTDIR\default-lang.txt に書き出す。
-;     アプリ側は初回起動時だけこれを読む (src/main/config.js の readInstallerLang)。
-;     2 回目以降はアプリの設定画面で切り替えた内容が優先される。
+;     $INSTDIR\default-lang.txt に書き出す
+;     アプリ側は初回起動時だけこれを読む (src/main/config.js の readInstallerLang)
+;     2 回目以降はアプリの設定画面で切り替えた内容が優先される
 ;
 ;  対応言語は日本語と英語の 2 つ。増やすときは
 ;    - ここの DropList / LanguagePageLeave / customInstall
 ;    - builder/electron-builder.js の installerLanguages
 ;    - src/app-config.js の PRODUCT.languages
 ;    - src/renderer/i18n.js の文言
-;  をそろえる。
+;  をそろえる
 ; ═══════════════════════════════════════════════════════════
 
 !include LogicLib.nsh
@@ -25,7 +25,7 @@
 !include nsDialogs.nsh
 
 ; 高 DPI 対応。指定しないと Windows が 96dpi 想定の描画を拡大するため、
-; 高解像度ディスプレイで文字がぼやける。
+; 高解像度ディスプレイで文字がぼやける
 !macro customHeader
   ManifestDPIAware true
 !macroend
@@ -36,9 +36,9 @@
   Page custom LanguagePageCreate LanguagePageLeave
 !macroend
 
-; アンインストーラのコンパイルパスにはこのページが挿入されない。
+; アンインストーラのコンパイルパスにはこのページが挿入されない
 ; 変数と Function を定義だけして使わないと「参照されていない」という
-; 無害だが紛らわしい警告が出るため、インストーラ側に限定する。
+; 無害だが紛らわしい警告が出るため、インストーラ側に限定する
 !ifndef BUILD_UNINSTALLER
 
 Var LangPageBitmapCtl
@@ -59,7 +59,7 @@ Function LanguagePageCreate
   File "/oname=$PLUGINSDIR\lang-side.bmp" "${LANG_PAGE_BITMAP}"
 
   ; 単位に u を付けてダイアログ単位で配置する。省略すると固定ピクセルになり、
-  ; Windows の表示倍率を変えたときに崩れる。
+  ; Windows の表示倍率を変えたときに崩れる
   ${NSD_CreateBitmap} 0 0 62u 130u ""
   Pop $LangPageBitmapCtl
   ${NSD_SetStretchedImage} $LangPageBitmapCtl "$PLUGINSDIR\lang-side.bmp" $LangPageBitmapHandle
@@ -87,7 +87,7 @@ Function LanguagePageCreate
   ${NSD_CB_AddString} $LangPageDropList "English"
 
   ; 既定は OS の表示言語に合わせる。$LANGUAGE には electron-builder が
-  ; installerLanguages から解決した LCID が入っている。
+  ; installerLanguages から解決した LCID が入っている
   ${If} $LANGUAGE == 1041
     ${NSD_CB_SelectString} $LangPageDropList "日本語"
   ${Else}
@@ -131,31 +131,31 @@ FunctionEnd
 
 ; ── アプリ実行中チェックの差し替え ───────────────────────────
 ;  electron-builder 既定の判定は「$INSTDIR 配下から起動しているプロセスが
-;  1 つでもあればアプリが動いている」とみなす。
+;  1 つでもあればアプリが動いている」とみなす
 ;
 ;  Codinable は受講者のコードを同梱 JDK
 ;  ($INSTDIR\resources\runtime\java\bin\java.exe) の子プロセスとして走らせるため、
 ;  アプリを閉じた後も java.exe (Gradle デーモン等) がしばらく居残る。これが既定の
-;  判定に引っかかり、起動していないのに「終了できません」ダイアログが出てしまう。
-;  居残りは $INSTDIR 配下のファイルを掴んだままなので、ファイル展開の失敗も招く。
+;  判定に引っかかり、起動していないのに「終了できません」ダイアログが出てしまう
+;  居残りは $INSTDIR 配下のファイルを掴んだままなので、ファイル展開の失敗も招く
 ;
 ;  そこで順序を変え、
 ;    1. $INSTDIR 配下の居残りプロセスは黙って強制終了する
 ;    2. そのうえでアプリ本体だけを対象に、確認 → 終了 → 再確認する
-;  とする。ダイアログが出るのはアプリ本体が本当に動いているときだけになる。
+;  とする。ダイアログが出るのはアプリ本体が本当に動いているときだけになる
 ;
 ;  このマクロを定義すると electron-builder 側の _CHECK_APP_RUNNING /
 ;  IS_POWERSHELL_AVAILABLE は挿入されない ($IsPowerShellAvailable や $pid も
-;  定義されない) ため、ここではそれらを参照しない。
-;  $CmdPath / $PowerShellPath は CHECK_APP_RUNNING が先に設定している。
+;  定義されない) ため、ここではそれらを参照しない
+;  $CmdPath / $PowerShellPath は CHECK_APP_RUNNING が先に設定している
 !macro customCheckAppRunning
-  ; 1) 居残りプロセス (同梱 JDK など) を静かに落とす。アプリ本体は 2) で扱う。
-  ;    PowerShell が使えない環境では何も起きず、2) の本体チェックだけになる。
+  ; 1) 居残りプロセス (同梱 JDK など) を静かに落とす。アプリ本体は 2) で扱う
+  ;    PowerShell が使えない環境では何も起きず、2) の本体チェックだけになる
   nsExec::Exec `"$PowerShellPath" -NoProfile -NonInteractive -C "Get-CimInstance -ClassName Win32_Process | ? { $$_.Path -and $$_.Path.StartsWith('$INSTDIR\', 'CurrentCultureIgnoreCase') -and $$_.Name -ne '${APP_EXECUTABLE_FILENAME}' } | % { Stop-Process -Id $$_.ProcessId -Force -ErrorAction SilentlyContinue }"`
   Pop $0
 
   ; 2) アプリ本体だけを名前で判定する。findstr /B で CSV 行の先頭に一致させ、
-  ;    部分一致の誤検知を避ける。
+  ;    部分一致の誤検知を避ける
   StrCpy $R1 0
   codinableAppLoop:
     IntOp $R1 $R1 + 1

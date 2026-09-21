@@ -16,13 +16,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 /*
- * UserController のテスト。
+ * UserController のテスト
  *
  * @WebMvcTest は Web の層だけを起動する (組み込み Tomcat は使わず、
- * MockMvc が疑似的にリクエストを流す)。実際に HTTP を喋らないので速い。
+ * MockMvc が疑似的にリクエストを流す)。実際に HTTP を喋らないので速い
  *
  * Spring Boot 4 では @WebMvcTest の置き場所が
- * org.springframework.boot.webmvc.test.autoconfigure に移っている。
+ * org.springframework.boot.webmvc.test.autoconfigure に移っている
  */
 @WebMvcTest(UserController.class)
 // UserService は @WebMvcTest の対象外なので、必要なものを明示して読み込む

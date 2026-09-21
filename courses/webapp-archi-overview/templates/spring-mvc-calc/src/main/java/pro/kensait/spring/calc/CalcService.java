@@ -3,10 +3,10 @@ package pro.kensait.spring.calc;
 import org.springframework.stereotype.Service;
 
 /*
- * 計算のビジネスロジック。
+ * 計算のビジネスロジック
  *
- * 画面や HTTP のことは一切知らない (Model にあたる層)。
- * こうしておくと、Controller を通さずに単体テストできる。
+ * 画面や HTTP のことは一切知らない (Model にあたる層)
+ * こうしておくと、Controller を通さずに単体テストできる
  */
 @Service
 public class CalcService {

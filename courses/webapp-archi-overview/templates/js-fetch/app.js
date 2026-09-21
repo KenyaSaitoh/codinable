@@ -1,8 +1,8 @@
-// Fetch API は、Web ブラウザから HTTP リクエストを送るための標準の仕組みである。
+// Fetch API は、Web ブラウザから HTTP リクエストを送るための標準の仕組みである
 //
-// fetch は「すぐには返らない処理」なので、async / await と組み合わせて書く。
-// await を付けると、応答が返るまでこの関数の続きが待たされる（画面は固まらない）。
-// 非同期処理そのものの詳しい話は 7 章で扱う。
+// fetch は「すぐには返らない処理」なので、async / await と組み合わせて書く
+// await を付けると、応答が返るまでこの関数の続きが待たされる（画面は固まらない）
+// 非同期処理そのものの詳しい話は 7 章で扱う
 
 const status = document.getElementById('status');
 const tbody  = document.getElementById('user-list');
@@ -65,9 +65,9 @@ document.getElementById('load-broken').addEventListener('click', () => {
 // 最初の 1 回は自動で読み込む
 loadUsers('users.json');
 
-// サーバーへ送るときは method と headers、body を指定する。
-// 静的サーバーは受け取れないのでここでは動かないが、形は次のとおりである。
-// 実際に動かすのは 8 章（サーバーサイド）と 9 章（Web API）の演習で扱う。
+// サーバーへ送るときは method と headers、body を指定する
+// 静的サーバーは受け取れないのでここでは動かないが、形は次のとおりである
+// 実際に動かすのは 8 章（サーバーサイド）と 9 章（Web API）の演習で扱う
 //
 //   const response = await fetch('/api/users', {
 //     method:  'POST',

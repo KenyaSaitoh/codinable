@@ -1,9 +1,9 @@
-// Gemini API (streamGenerateContent / SSE)。
-// Codinable では Gemini Flash を選んだときに使う。
+// Gemini API (streamGenerateContent / SSE)
+// Codinable では Gemini Flash を選んだときに使う
 //
 // SDK (@google/genai) は使わず REST を直接叩く。Codinable が必要とするのは
 // 「テキストを投げてテキストを受け取る」だけで、SDK の版差に追随する手間に
-// 見合わないため。
+// 見合わないため
 
 const { consumeSse, readErrorDetail, toFriendlyHttpError } = require('./sse');
 
@@ -87,7 +87,7 @@ async function streamChat(opts) {
 // ── 道具つきの呼び出し (Agent モード) ──────────────────────
 //
 // Gemini の functionCall には ID が無いので、こちら側で名前から作る
-// (結果は functionResponse の name で対応づけられる)。
+// (結果は functionResponse の name で対応づけられる)
 
 /** 中立な履歴 → Gemini の contents */
 function toToolContents(messages) {

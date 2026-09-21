@@ -16,7 +16,7 @@ const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
   const [profile, setProfile] = useState(emptyProfile);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // ページ遷移は行わず、Reactの処理だけを実行する。
+    event.preventDefault(); // ページ遷移は行わず、Reactの処理だけを実行する
     onSubmit(profile);
   };
 

@@ -1,5 +1,5 @@
 // 非同期処理。JavaScript は 1 本のスレッドで動くため、
-// 待ち時間のある処理は「終わったら続きをやる」形で書く。
+// 待ち時間のある処理は「終わったら続きをやる」形で書く
 
 // ── Promise を返す関数 ──
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));

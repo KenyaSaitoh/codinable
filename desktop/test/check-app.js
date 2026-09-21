@@ -1,4 +1,4 @@
-// 画面側の動作確認。アプリを起動して、実際の UI を操作して確かめる。
+// 画面側の動作確認。アプリを起動して、実際の UI を操作して確かめる
 //
 // 確かめること
 //   1. 演習一覧が course.yaml の件数どおりに、チャプターごとに並ぶ
@@ -7,7 +7,7 @@
 //   4. ファイルを汚してから「初期化」で元に戻る
 //   5. SQL の演習を選んで実行すると、SQL タブに結果が出る
 //
-// ワークスペースと設定は一時ディレクトリに向けるので、実際の環境は汚さない。
+// ワークスペースと設定は一時ディレクトリに向けるので、実際の環境は汚さない
 //
 //   node desktop/test/check-app.js
 
@@ -175,8 +175,8 @@ async function run(cdp) {
   check(await cdp.eval(`document.getElementById('btn-mode-ask').classList.contains('is-active')`),
         'Ask に戻せない');
 
-  // 7. 任意の重い検査: 実ランタイムで React / Spring Boot の待受とプレビューを確認する。
-  // 初回は npm / Gradle の依存取得があるため、通常の画面検査では飛ばす。
+  // 7. 任意の重い検査: 実ランタイムで React / Spring Boot の待受とプレビューを確認する
+  // 初回は npm / Gradle の依存取得があるため、通常の画面検査では飛ばす
   if (process.env.CHECK_WEB_SERVERS) {
     await checkWebServerExercise(cdp, 'react-spa', 'npm:dev', /localhost:5173/, 'React');
     await checkWebServerExercise(cdp, 'spring-mvc-calc', 'gradle:bootRun', /localhost:8080/, 'Spring Boot');

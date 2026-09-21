@@ -13,11 +13,11 @@
 //    └── resources/gradle-wrapper/gradle-wrapper.jar
 //
 //  パッケージ後は process.resourcesPath 直下に runtime/ hsqldb/ jdtls/
-//  gradle-wrapper/ が展開される (builder/electron-builder.js の extraResources)。
+//  gradle-wrapper/ が展開される (builder/electron-builder.js の extraResources)
 //
 //  同梱が無い場合は PATH 上のコマンド名にフォールバックするので、
 //  scripts/setup-runtimes.ps1 を実行していない環境でも
-//  ユーザーが自分で入れた Java / Node / Python があれば動く。
+//  ユーザーが自分で入れた Java / Node / Python があれば動く
 // ═══════════════════════════════════════════════════════════
 
 const fs   = require('fs');
@@ -69,7 +69,7 @@ function resolveNode() {
 }
 
 // npm はフルパスで解決する。裸の "npm.cmd" を shell 経由で起動すると
-// %~dp0 が CWD に解決される環境があり、npm-prefix.js が見つからず失敗するため。
+// %~dp0 が CWD に解決される環境があり、npm-prefix.js が見つからず失敗するため
 function resolveNpm() {
   const bundled = path.join(resolveRuntimeDir('node'), IS_WIN ? 'npm.cmd' : 'npm');
   if (fs.existsSync(bundled)) return bundled;
@@ -88,10 +88,10 @@ function resolveNpm() {
 }
 
 /**
- * npm 本体 (npm-cli.js) の場所。
+ * npm 本体 (npm-cli.js) の場所
  * npm.cmd を shell 経由で起動すると (1) 標準入力が cmd.exe に吸われて
- * 子プロセスに届かず、(2) Windows では .cmd の直接 spawn が EINVAL になる。
- * node で npm-cli.js を直接動かせば両方とも起きない。
+ * 子プロセスに届かず、(2) Windows では .cmd の直接 spawn が EINVAL になる
+ * node で npm-cli.js を直接動かせば両方とも起きない
  */
 function resolveNpmCli() {
   const bundled = path.join(resolveRuntimeDir('node'),
@@ -170,8 +170,8 @@ const { applyJavaLocaleToEnv, getJavaRuntimeOptions, getJavacRuntimeOptions } =
   require('../java-locale');
 
 /**
- * 開発作業用の環境変数。
- * ユーザーの環境をそのまま引き継ぎ、同梱ランタイムを PATH の先頭に足す。
+ * 開発作業用の環境変数
+ * ユーザーの環境をそのまま引き継ぎ、同梱ランタイムを PATH の先頭に足す
  * (Codinable は学習用サンドボックスではなく開発環境なので、git や
  *  ユーザーが入れたツールがそのまま見えるほうが望ましい)
  */
@@ -179,7 +179,7 @@ function getDevEnv(uiLang = null, options = {}) {
   let env = { ...process.env };
 
   // 開発時に npm 経由で Codinable を起動すると npm_config_* が子に継がれ、
-  // 同梱 npm が "Unknown env config" を警告する。受講者にはエラーに見えるので落とす。
+  // 同梱 npm が "Unknown env config" を警告する。受講者にはエラーに見えるので落とす
   for (const key of Object.keys(env)) {
     if (key.toLowerCase().startsWith('npm_config_')) delete env[key];
   }
@@ -231,7 +231,7 @@ function probeRuntimes(decodeOutput) {
   const probe = (exe, args) => new Promise(resolve => {
     if (!exe) return resolve(null);
     // Windows の .cmd / .bat は shell 経由でしか起動できない (直接 spawn すると
-    // EINVAL)。npm.cmd がここに来るので、拡張子を見て切り替える。
+    // EINVAL)。npm.cmd がここに来るので、拡張子を見て切り替える
     const viaShell = IS_WIN && /\.(cmd|bat)$/i.test(exe);
     const command  = viaShell ? `"${exe}" ${args.join(' ')}` : exe;
     const options  = { timeout: 6000, encoding: 'buffer', env, windowsHide: true };
@@ -241,7 +241,7 @@ function probeRuntimes(decodeOutput) {
       resolve(text.split('\n')[0] || null);
     };
     // spawn は同期的に投げることがある (EINVAL など)。1 つの失敗で
-    // 設定パネル全体が出なくなると原因が見えないので、ここで閉じ込める。
+    // 設定パネル全体が出なくなると原因が見えないので、ここで閉じ込める
     try {
       if (viaShell) execFile(command, { ...options, shell: true }, done);
       else          execFile(exe, args, options, done);

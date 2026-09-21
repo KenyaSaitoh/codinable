@@ -8,12 +8,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /*
- * UserService の単体テスト。
+ * UserService の単体テスト
  *
  * Spring を起動しないので速い。ビジネスロジックの確認はここで済ませ、
- * HTTP のやりとりは UserControllerTest に任せる、という役割分担にする。
+ * HTTP のやりとりは UserControllerTest に任せる、という役割分担にする
  *
- * 実行対象で「Gradle: test」を選ぶと、テスト結果タブに一覧とカバレッジが出る。
+ * 実行対象で「Gradle: test」を選ぶと、テスト結果タブに一覧とカバレッジが出る
  */
 class UserServiceTest {
 

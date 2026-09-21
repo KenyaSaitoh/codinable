@@ -1,9 +1,9 @@
-// DOM 操作は、いつも次の 2 段階である。
+// DOM 操作は、いつも次の 2 段階である
 //   1. 操作したい要素を取り出す
 //   2. 取り出した要素のプロパティやメソッドを通じて書き換える
 //
 // 書き換えているのは Web ブラウザがメモリ上に持っている DOM ツリーであり、
-// index.html というファイルは変わらない（プレビューを再読み込みすれば元に戻る）。
+// index.html というファイルは変わらない（プレビューを再読み込みすれば元に戻る）
 
 const log = document.getElementById('log');
 
@@ -27,9 +27,9 @@ const message = document.querySelector('#message');
 message.textContent = 'textContent に入れた文字は <b>タグも文字として</b> 扱われる';
 note('querySelector("#message") の textContent を差し替えた');
 
-// innerHTML は HTML として解釈される。
-// 外部から来た文字（ユーザーの入力や API の応答）をそのまま入れてはいけない。
-// スクリプトを混ぜ込まれる（XSS の入口になる）。
+// innerHTML は HTML として解釈される
+// 外部から来た文字（ユーザーの入力や API の応答）をそのまま入れてはいけない
+// スクリプトを混ぜ込まれる（XSS の入口になる）
 const card = document.querySelector('.card');
 card.querySelector('p').innerHTML =
   'innerHTML なら <b>タグとして</b> 解釈される。外部から来た文字には使わない。';
@@ -45,8 +45,8 @@ items.forEach((item, index) => {
 note(`querySelectorAll(".list-item") で ${items.length} 件に色を付けた`);
 
 // ── 4. クラスの付け外し ───────────────────────────────
-// 見た目は CSS 側に定義しておき、JavaScript はクラスを付け外しするだけにする。
-// style を直接書くより、責務が分かれて見通しがよい。
+// 見た目は CSS 側に定義しておき、JavaScript はクラスを付け外しするだけにする
+// style を直接書くより、責務が分かれて見通しがよい
 card.classList.add('highlighted');
 note('classList.add("highlighted") でカードを強調した');
 // 他に classList.remove(...) / classList.toggle(...) / classList.contains(...) がある

@@ -2,11 +2,11 @@ import { useState, type FormEvent } from 'react';
 import { DEPARTMENTS, type Department } from './types';
 
 /*
- * 入力フォーム。
+ * 入力フォーム
  *
  * 自分の入力途中の値だけを state に持ち、確定したら親から渡された
  * onAdd を呼ぶ。「親から props で受け取り、親へは関数で知らせる」のが
- * React での親子のやりとり。
+ * React での親子のやりとり
  */
 interface Props {
   onAdd: (name: string, department: Department) => void;

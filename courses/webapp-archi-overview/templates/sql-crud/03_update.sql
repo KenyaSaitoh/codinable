@@ -1,7 +1,7 @@
--- 更新（UPDATE）。01_setup.sql を流したあとに実行する。
+-- 更新（UPDATE）。01_setup.sql を流したあとに実行する
 --
--- UPDATE と DELETE は WHERE 句を書き忘れると全件が対象になる。
--- 実務では、同じ WHERE で SELECT して対象を確かめてから実行する。
+-- UPDATE と DELETE は WHERE 句を書き忘れると全件が対象になる
+-- 実務では、同じ WHERE で SELECT して対象を確かめてから実行する
 
 -- ── 更新前の状態を見る ──────────────────────────────
 SELECT * FROM EMPLOYEE ORDER BY EMPLOYEE_ID;
@@ -20,7 +20,7 @@ UPDATE EMPLOYEE
 -- まず対象を確かめる
 SELECT * FROM EMPLOYEE WHERE DEPARTMENT_NAME = '営業部' ORDER BY EMPLOYEE_ID;
 
--- 更新前の値を使って計算できる。5% の昇給。
+-- 更新前の値を使って計算できる。5% の昇給
 -- SALARY は INT なので、小数になった結果を CAST で整数に戻している
 UPDATE EMPLOYEE
    SET SALARY = CAST(SALARY * 1.05 AS INT)
@@ -33,7 +33,7 @@ UPDATE EMPLOYEE SET DEPARTMENT_NAME = NULL WHERE EMPLOYEE_ID = 10003;
 UPDATE EMPLOYEE SET DEPARTMENT_NAME = '総務部' WHERE DEPARTMENT_NAME IS NULL;
 
 -- ── WHERE を付け忘れるとどうなるか ───────────────────
--- 次の 1 行の先頭の -- を外して実行すると、全員の月給が同じ値になる。
+-- 次の 1 行の先頭の -- を外して実行すると、全員の月給が同じ値になる
 -- 元に戻すには 01_setup.sql をもう一度流す
 -- UPDATE EMPLOYEE SET SALARY = 1
 

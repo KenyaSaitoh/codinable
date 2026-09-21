@@ -4,7 +4,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 学習用のローカル開発設定。本番では環境変数から安全な値を読み込む。
+# 学習用のローカル開発設定。本番では環境変数から安全な値を読み込む
 SECRET_KEY = "codinable-django-calc-development-only"
 DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
@@ -36,7 +36,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "calc_project.wsgi.application"
 
-# この演習ではデータベースを使わない。Django の既定構成との比較用に SQLite を残す。
+# この演習ではデータベースを使わない。Django の既定構成との比較用に SQLite を残す
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
