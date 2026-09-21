@@ -109,7 +109,7 @@ function waitForPort(port, { token, proc, onReady, timeoutMs = 300_000 }) {
 
 // ── Gradle Wrapper ─────────────────────────────────────────
 
-const GRADLE_DISTRIBUTION = 'gradle-9.4.1-bin.zip';
+const GRADLE_DISTRIBUTION = 'gradle-9.6.1-bin.zip';
 
 const GRADLEW_BAT =
   '@if "%DEBUG%"=="" @echo off\r\n' +
