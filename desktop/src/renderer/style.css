@@ -4117,6 +4117,14 @@ body.theme-dark .exercise-item.active {
 .api-key-hint a:hover { text-decoration: underline; }
 
 /* ── Ask / Agent の切り替え ── */
+.chat-actions { align-items: center; flex-wrap: wrap; }
+.chat-actions .chat-mini-send {
+  flex: 0 0 auto;
+  width: auto;
+  height: 24px;
+  margin-left: 12px;
+  padding: 0 8px;
+}
 .chat-mode-label {
   flex-shrink: 0;
   color: var(--text-sub);

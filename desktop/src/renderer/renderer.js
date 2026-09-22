@@ -2138,6 +2138,7 @@ async function changeWorkspaceRoot() {
 
 /** 言語を切り替えたとき、JS が作った部分を作り直す */
 function retranslateDynamicUi() {
+  renderMessaging();
   updateLlmBadge();
   setChatMode(chatMode, { persist: false });
   updateModelHint();

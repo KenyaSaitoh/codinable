@@ -26,6 +26,15 @@ const { PRODUCT, LLM_MODELS } = require('./app-config');
 
 // userData のディレクトリ名を決めるため、他のモジュールを読む前に呼ぶ
 app.setName(PRODUCT.dataDirName);
+// A profile owns one set of broker data and listening ports.
+if (!app.requestSingleInstanceLock()) app.exit(0);
+app.on('second-instance', () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.show();
+    mainWindow.focus();
+  }
+});
 
 const config     = require('./main/config');
 const runtimes   = require('./main/runtimes');

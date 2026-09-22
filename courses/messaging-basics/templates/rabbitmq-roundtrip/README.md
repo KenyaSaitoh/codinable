@@ -6,7 +6,7 @@
 Run to start RabbitMQ, declare a queue, publish a message, consume it, and acknowledge it.
 The first run downloads Gradle and Java dependencies.
 
-- 接続先 / Broker: `amqp://guest:guest@127.0.0.1:5672/` (`RABBITMQ_URL`)
+- 接続先 / Broker: `amqp://guest:guest@127.0.0.1:5672/%2F` (`RABBITMQ_URL`、`%2F` は vhost `/`)
 - 管理画面 / Management UI: `http://127.0.0.1:15672`
 - ユーザー名・パスワード / Username and password: `guest` / `guest`
 - キュー / Queue: `codinable-example`

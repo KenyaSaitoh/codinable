@@ -8,7 +8,7 @@ import com.rabbitmq.client.MessageProperties;
 public class RabbitExample {
     public static void main(String[] args) throws Exception {
         var factory = new ConnectionFactory();
-        factory.setUri(System.getenv().getOrDefault("RABBITMQ_URL", "amqp://guest:guest@127.0.0.1:5672/"));
+        factory.setUri(System.getenv().getOrDefault("RABBITMQ_URL", "amqp://guest:guest@127.0.0.1:5672/%2F"));
         factory.setConnectionTimeout(10000);
         String queue = "codinable-example";
         String message = "Hello RabbitMQ! " + UUID.randomUUID();

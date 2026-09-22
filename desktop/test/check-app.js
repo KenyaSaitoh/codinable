@@ -197,6 +197,24 @@ async function run(cdp) {
     await checkWebServerExercise(cdp, 'spring-mvc-calc', 'gradle:bootRun', /localhost:8080/, 'Spring Boot');
   }
 
+  if (process.env.CHECK_JAVA_TESTS) {
+    await clickExercise(cdp, 'spring-rest-users');
+    await waitFor(cdp, `projectInfo?.template === 'spring-rest-users' && !running`, 20000, 'Spring REST exercise did not open');
+    await cdp.eval(`(() => { const s = document.getElementById('run-target-select'); s.value = 'gradle:test'; s.dispatchEvent(new Event('change')); document.getElementById('btn-run').click(); })()`);
+    await waitFor(cdp, `/BUILD (SUCCESSFUL|FAILED)/.test(document.getElementById('output-result').textContent)`, 240000, 'JUnit did not finish');
+    check(await cdp.eval(`document.getElementById('output-result').textContent.includes('BUILD SUCCESSFUL')`), 'JUnit failed');
+    await waitFor(cdp, `document.querySelectorAll('.tr-case').length > 0`, 10000, 'JUnit results were not displayed');
+    console.log('Spring Boot / JUnit results checked');
+  }
+
+  if (process.env.CHECK_TERMINAL) {
+    await cdp.eval(`globalThis.runtimeProbe = ''; window.api.onTermOutput(text => { globalThis.runtimeProbe += text; }); document.getElementById('run-tab-terminal').click();`);
+    await sleep(1000);
+    await cdp.eval(`window.api.termInput('java -version\\rnode --version\\rpython --version\\r')`);
+    await waitFor(cdp, `/25\\./.test(globalThis.runtimeProbe) && /v24\\./.test(globalThis.runtimeProbe) && /Python 3\\.13/.test(globalThis.runtimeProbe)`, 15000, 'Terminal bundled runtimes');
+    console.log('Terminal Java / Node / Python checked');
+  }
+
   if (process.env.CHECK_MESSAGING) await checkMessaging(cdp);
 
   if (process.env.SHOTS) {
@@ -216,7 +234,9 @@ async function checkMessaging(cdp) {
     await clickExercise(cdp, id + '-roundtrip');
     await waitFor(cdp, `projectInfo?.template === '${id}-roundtrip' && document.getElementById('run-target-select').value === 'gradle:run' && !document.getElementById('btn-run').disabled`, 20000, id + ' run target');
     await cdp.eval(`document.getElementById('btn-run').click()`);
-    const success = await waitFor(cdp, `document.getElementById('output-result').textContent.includes('BUILD SUCCESSFUL')`, 240000, id + ' sample failed');
+    await waitFor(cdp, `/BUILD (SUCCESSFUL|FAILED)/.test(document.getElementById('output-result').textContent)`, 240000, id + ' sample did not finish');
+    const success = await cdp.eval(`document.getElementById('output-result').textContent.includes('BUILD SUCCESSFUL')`);
+    check(success, id + ' sample failed');
     if (!success) console.log(await cdp.eval(`document.getElementById('output-result').textContent`));
     check(await cdp.eval(`document.getElementById('output-result').textContent.includes('Received:')`), id + ' did not receive a message');
     const state = await cdp.eval(`window.api.messagingStatus().then(s => s.find(s => s.id === '${id}').state)`);
@@ -308,7 +328,7 @@ function open(url) {
       eval: expression => send('Runtime.evaluate',
         { expression, awaitPromise: true, returnByValue: true },
         expression.slice(0, 60)),
-      screenshot: async () => (await send('Page.captureScreenshot', { format: 'png' },
+      screenshot: async () => (await send('Page.captureScreenshot', { format: 'png', fromSurface: false },
                                           'screenshot')).data,
       close: () => ws.close(),
     }));

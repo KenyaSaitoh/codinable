@@ -7,7 +7,7 @@ function connectionEnv(ports = PORTS) {
   return {
     KAFKA_BOOTSTRAP_SERVERS: `127.0.0.1:${ports.kafka}`,
     SPRING_KAFKA_BOOTSTRAP_SERVERS: `127.0.0.1:${ports.kafka}`,
-    RABBITMQ_URL: `amqp://guest:guest@127.0.0.1:${ports.rabbitmq}/`,
+    RABBITMQ_URL: `amqp://guest:guest@127.0.0.1:${ports.rabbitmq}/%2F`,
     SPRING_RABBITMQ_HOST: '127.0.0.1',
     SPRING_RABBITMQ_PORT: String(ports.rabbitmq),
     SPRING_RABBITMQ_USERNAME: 'guest',

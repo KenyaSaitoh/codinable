@@ -11,6 +11,11 @@ const { killTree, decodeOutput } = require('./util');
 
 const IDS = ['kafka', 'rabbitmq'];
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+async function waitForExit(proc, milliseconds) {
+  let timer;
+  try { await Promise.race([proc.done, new Promise(resolve => { timer = setTimeout(resolve, milliseconds); })]); }
+  finally { clearTimeout(timer); }
+}
 
 function requirements(projectDir) {
   const file = path.join(projectDir, 'codinable.services.json');
@@ -81,7 +86,7 @@ class MessagingManager extends EventEmitter {
       const s = this.state(id);
       return { id, state: s.state, error: s.error, available: this.available(id),
         version: VERSIONS[id], log: s.log, dataDir: path.join(this.root, id),
-        endpoint: id === 'kafka' ? `127.0.0.1:${this.ports.kafka}` : `amqp://guest:guest@127.0.0.1:${this.ports.rabbitmq}/`,
+        endpoint: id === 'kafka' ? `127.0.0.1:${this.ports.kafka}` : connectionEnv(this.ports).RABBITMQ_URL,
         managementUrl: id === 'rabbitmq' ? `http://127.0.0.1:${this.ports.management}` : null };
     });
   }
@@ -308,12 +313,12 @@ class MessagingManager extends EventEmitter {
             '-eval', `rpc:call('${r.node}', init, stop, []), halt().`], r.env, 8000);
         } catch { /* Fall back to terminating only our own process tree. */ }
       }
-      await Promise.race([proc.done, delay(s.cancelled ? 500 : 10000)]);
-      if (!proc.closed) { await killTree(proc); await Promise.race([proc.done, delay(3000)]); }
+      await waitForExit(proc, s.cancelled ? 500 : 10000);
+      if (!proc.closed) { await killTree(proc); await waitForExit(proc, 3000); }
     }
     for (const child of s.auxiliaries.splice(0)) {
       if (!child.closed) await killTree(child);
-      await Promise.race([child.done, delay(1000)]);
+      await waitForExit(child, 1000);
     }
   }
 
