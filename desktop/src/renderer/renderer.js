@@ -2089,6 +2089,10 @@ async function renderCoursesInfo() {
       `<span>${escapeHtml(t(`courseSource_${root.source}`))}</span>` +
       `<span>${escapeHtml(root.exists ? root.dir : t('coursesRootMissing'))}</span></div>`);
   }
+  if (info.devFilter) {
+    rows.push(`<div class="runtime-info-row"><span>${escapeHtml(t('coursesDevFilter'))}</span>` +
+      `<span>${escapeHtml(info.devFilter.join(', '))}</span></div>`);
+  }
   wrap.innerHTML = rows.join('') ||
     `<div class="runtime-info-row"><span>${escapeHtml(t('coursesEmpty'))}</span><span></span></div>`;
 }

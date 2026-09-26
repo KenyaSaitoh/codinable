@@ -66,10 +66,25 @@ powershell -ExecutionPolicy Bypass -File scripts/setup.ps1 -Only kafka,rabbitmq
 
 ```bash
 cd desktop
-npm start   # エディタバンドルをビルドしてから起動
+npm start   # エディタバンドルをビルドしてから起動（読み込むコースを聞かれる）
 npm run pack   # dist-installer/win-unpacked (署名なし・動作確認用)
 npm run build  # dist-installer/Codinable-setup-<version>.exe
 ```
+
+`npm start` は起動前に `courses/` のコース一覧を出し、読み込むコースを選ばせる。
+受講者の手元（講座ごとのインストーラで入れたコースが 1 つ以上並ぶ状態）を再現して確かめるためのもの。
+
+```bash
+npm start                                  # 一覧から番号で選ぶ。Enter だけなら全コース（統合版）
+npm start -- all                           # 全コース（聞かずに起動）
+npm start -- spring-advanced               # そのコースだけ
+npm start -- spring-advanced,java-db-access  # 2 つ（一覧の番号でも指定できる: npm start -- 3,7）
+```
+
+絞り込みは同梱・共有・個人のすべての置き場に効き、設定画面の「インストールされている講座」に
+「開発用の絞り込み」として出る。パッケージ後のアプリには効かない。
+コースが 1 つだけのときヘッダーのコース選択は講座名の表示だけになり、
+2 つ以上で選べるようになる（`node test/check-course-filter.js` で確かめられる）。
 
 ## 構成
 

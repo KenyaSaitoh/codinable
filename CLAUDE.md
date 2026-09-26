@@ -125,6 +125,10 @@ Java の言語サーバーを同梱している。
   （2 か所で選べると、どちらが正か分からなくなる）
 - **コースを切り替えても開いているプロジェクトは変えない**。別の講座を見ながら
   今の作業を続けられるようにしてある
+- **開発時は `npm start` で読み込むコースを絞れる**（`scripts/start.js` →
+  環境変数 `CODINABLE_COURSES` → `courses.js` の `getDevCourseFilter`）。
+  全置き場に効き、パッケージ後は無視する。1 コース / 複数コースの画面の違いは
+  `test/check-course-filter.js` で押さえている
 - 手で足して確かめるときは、設定画面の「📂 講座フォルダを開く」で個人フォルダを開き、
   置いたら「↻ 読み直す」を押す（`courses-reload` がキャッシュを捨てて読み直す）
 
@@ -167,7 +171,8 @@ for (const e of yaml.load(fs.readFileSync(dir+'/course.yaml','utf8')).exercises)
 powershell -ExecutionPolicy Bypass -File scripts/setup.ps1 -Only python -Force  # 一部だけ
 
 cd desktop
-npm start            # エディタバンドルをビルドして起動
+npm start            # エディタバンドルをビルドして起動（読み込むコースを選ぶ。Enter で全コース）
+npm start -- all     # 全コース（統合版）で起動 / `-- <id>,<id>` で絞る（scripts/start.js）
 npm run build:editor # エディタバンドルだけ作り直す
 npm run pack         # 署名なしの win-unpacked（動作確認用）
 npm run build        # インストーラ (.exe)

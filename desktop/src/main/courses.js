@@ -98,6 +98,21 @@ function pickLang(map, lang, fallback = '') {
   return map[lang] || map.ja || map.en || Object.values(map)[0] || fallback;
 }
 
+/**
+ * 開発時だけのコースの絞り込み (npm start で選んだコース。scripts/start.js が渡す)
+ * 「全コース入り」「コース A だけ」「A と B」のような受講者の環境を、
+ * 置き場を触らずに手元で再現して確かめるためのもの
+ * パッケージ後は環境変数が残っていても効かせない (受講者の講座が消えて見えるため)
+ *
+ * @returns {Set<string>|null} 絞り込まないときは null
+ */
+function getDevCourseFilter() {
+  if (app.isPackaged) return null;
+  const raw = String(process.env.CODINABLE_COURSES || '').trim();
+  if (!raw || raw === 'all') return null;
+  return new Set(raw.split(',').map(s => s.trim()).filter(Boolean));
+}
+
 let cache = null;
 
 /**
@@ -121,7 +136,10 @@ function loadCourses(lang = 'ja') {
     }
   }
 
+  // 絞り込みは 3 つの置き場すべてに効かせる (個人フォルダに残ったコースも隠す)
+  const filter = getDevCourseFilter();
   const courses = [...byId.values()]
+    .filter(c => !filter || filter.has(c.id))
     .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
   cache = { lang, courses };
   return courses;
@@ -226,6 +244,8 @@ function describeCourses(lang = 'ja') {
   return {
     roots: getCourseRoots(),
     userDir: getUserCoursesDir(),
+    // 開発時の絞り込み中なら、その id 一覧 (「講座が足りない」と迷わないように出す)
+    devFilter: getDevCourseFilter() ? [...getDevCourseFilter()] : null,
     courses: loadCourses(lang).map(c => ({
       id: c.id, name: c.name, version: c.version, source: c.source,
       path: c.path, exerciseCount: c.exercises.length,

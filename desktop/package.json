@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "build:editor": "node builder/build-editor.js",
-    "start": "npm run build:editor && electron .",
+    "start": "npm run build:editor && node scripts/start.js",
     "pack": "npm run build:editor && electron-builder --win --dir --config builder/electron-builder.js",
     "build": "npm run build:editor && electron-builder --win --publish never --config builder/electron-builder.js"
   },
