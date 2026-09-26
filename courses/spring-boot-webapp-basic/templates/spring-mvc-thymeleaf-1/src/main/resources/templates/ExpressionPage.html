@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>ExpressionPage</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <h2>1. 式構文とテキスト出力</h2>
+  <hr />
+
+  <!--===== 変数式 =====-->
+  <!-- ${...} でModelに格納された値を参照する -->
+  <!-- タグの中身（Sample）は、テンプレートを直接ブラウザで開いたときだけ見える -->
+  <div th:text="${memberName}">Sample</div>
+
+  <!--===== リテラル =====-->
+  <!-- 文字列リテラルはシングルクォートで囲む -->
+  <div th:text="'Hello, Thymeleaf'"></div>
+  <!-- 数値リテラルと真偽値リテラル -->
+  <div th:text="100"></div>
+  <div th:text="true"></div>
+
+  <!--===== 文字列の連結 =====-->
+  <!-- +演算子による連結 -->
+  <div th:text="'Hello, ' + ${memberName} + '!'"></div>
+  <!-- リテラル置換（|...|）による連結。上と同じ結果になり、こちらのほうが読みやすい -->
+  <div th:text="|Hello, ${memberName}!|"></div>
+
+  <!--===== 算術演算子 =====-->
+  <!-- + - * / % が使える -->
+  <div th:text="(8 * 2 + 15 / 3 - 1) % 7"></div>
+  <div th:text="|税込金額: ${price} * 1.1 = ${price * 1.1}|"></div>
+
+  <!--===== 比較演算子と論理演算子 =====-->
+  <!-- > < >= <= は、HTMLの記号と衝突するため gt lt ge le とも書ける -->
+  <div th:text="${price} > 1000"></div>
+  <div th:text="${price} gt 1000"></div>
+  <!-- == != は eq ne とも書ける -->
+  <div th:text="${memberName} eq 'Alice'"></div>
+  <!-- and / or / ! -->
+  <div th:text="${admin} and ${price} gt 1000"></div>
+
+  <!--===== 条件演算子 =====-->
+  <!-- 条件 ? 真の場合 : 偽の場合 -->
+  <div th:text="${admin} ? '管理者' : '一般会員'"></div>
+  <!-- 偽の場合を省略すると、偽のときは何も出力されない -->
+  <div th:text="${admin} ? '管理者'"></div>
+
+  <!--===== デフォルト式（エルビス演算子） =====-->
+  <!-- 左辺がnullのときだけ、右辺が使われる -->
+  <div th:text="${nickname} ?: '(ニックネーム未設定)'"></div>
+
+  <!--===== エスケープの有無 =====-->
+  <!-- th:text はHTMLタグをエスケープするので、タグが文字列として表示される（安全） -->
+  <div th:text="${htmlText}"></div>
+  <!-- th:utext はエスケープしないので、タグとして解釈される -->
+  <!-- ユーザー入力をth:utextで出力するとXSSの原因になるため、原則th:textを使うこと -->
+  <div th:utext="${htmlText}"></div>
+
+  <!--===== No-Operation（何もしない） =====-->
+  <!-- _ を指定すると、タグの中身（デザイン用の仮テキスト）がそのまま残る -->
+  <div th:text="${nickname} ?: _">デザイン確認用のテキスト</div>
+
+  <hr />
+  <a th:href="@{/}">目次に戻る</a>
+</body>
+</html>

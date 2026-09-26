@@ -1,0 +1,403 @@
+# ═══════════════════════════════════════════════════════════
+#  Udemy「Spring 高度な仕組み」の演習
+#
+#  講義そのものは動画側にあるため、ここには講座リポジトリ（learn_spring_aidd_advanced）の
+#  projects/master のサンプルを「開いてすぐ動く」形にしたものだけを置く
+#  問題を出して解かせることはしない
+#
+#  サンプルはどれも単独で動く Gradle プロジェクトに直してある（親 build.gradle の共通設定を畳み込み）
+#  2 つ以上のプロセスが要るもの（API とクライアント、プロデューサーとコンシューマー、
+#  バックエンドと React 画面）は、ルート = 実行ボタンで動かす側、サブフォルダ = ターミナルで動かす側
+#  （api/ client/ consumer/ は独立した Gradle プロジェクト、frontend/ は npm パッケージ）にしている
+#
+#  exercises[] の項目:
+#    id           演習の識別子（dir 省略時はディレクトリ名として使う）
+#    dir          templates/ 配下のディレクトリ名（省略時は id）
+#    chapter      対応するチャプター番号。一覧のバッジに出る
+#    lesson       対応するレッスン番号と名前。一覧の副題に出る
+#    runtime      実行環境（java / spring / node / react / python / static / sql / shell）
+#    run          実行対象の既定値（gradle:bootRun など。実行対象セレクトと同じ書式）
+#    suggestName  作業用プロジェクト名の既定値
+#    names        演習名（言語ごと）
+#    descriptions 「何をどう動かすか」の説明（言語ごと）
+#    openFiles    演習を開いた直後に開くファイル（プロジェクト相対パス）
+#
+#  チャプター 1（コース概要）と 2（構成・設定・互換性の総論。特定のサンプルを動かさない）には
+#  演習を付けていない
+# ═══════════════════════════════════════════════════════════
+id: spring-advanced
+order: 3
+# 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
+version: 1.0.0
+
+names:
+  ja: Spring 高度な仕組み
+  en: 'Spring: Advanced Mechanisms'
+
+descriptions:
+  ja: >-
+    社員管理システムを題材に、WebClient と WebSocket、OAuth 2／OIDC、Spring Security、
+    GraphQL、WebFlux、Kafka と RabbitMQ、リトライとサーキットブレーカー、Actuator と
+    OpenTelemetry までを扱う講座の演習です。サンプルは Java 25 / Spring Boot 4.1 で動き、
+    DB は HSQLDB のインメモリ、Kafka と RabbitMQ は Codinable 同梱のものを使います。
+    Keycloak・Google・Jaeger を使う部分だけは、別途用意が必要です。
+  en: >-
+    Exercises for the course that builds on an employee management system: WebClient and
+    WebSocket, OAuth 2 / OIDC, Spring Security, GraphQL, WebFlux, Kafka and RabbitMQ,
+    retry and circuit breakers, Actuator and OpenTelemetry. The samples run on Java 25 /
+    Spring Boot 4.1 with an in-memory HSQLDB, and use the Kafka and RabbitMQ bundled with
+    Codinable. Only the parts that use Keycloak, Google or Jaeger need extra setup.
+
+udemy:
+  url: https://github.com/KenyaSaitoh/learn_spring_aidd_advanced
+
+exercises:
+  # ── チャプター3: HTTPクライアントとWebSocket ──────────────
+  - id: spring-webclient-employee
+    chapter: 3
+    lesson: '3.1 HTTPクライアントとWebSocketによる通信'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-webclient-employee
+    names:
+      ja: WebClientで社員APIを呼び出す
+      en: Call the employee API with WebClient
+    descriptions:
+      ja: >-
+        「実行」で確認用の社員 API（8087）が起動します。続けてターミナルで
+        cd client → ../gradlew.bat run を実行すると、WebClient の Java コンソールが
+        取得・検索・登録・更新・削除と削除後の 404 を順に表示して終了します。
+        実行対象を gradle:test にすると、API のテストがクライアントも含めて流れます。
+      en: >-
+        Run starts the employee API used for checking (port 8087). Then run
+        cd client → ../gradlew.bat run in the terminal: the WebClient console prints
+        get, search, create, update, delete and the 404 after deletion, then exits.
+        Switch the run target to gradle:test to run the API tests, which also drive the client.
+    openFiles:
+      - client/src/main/java/pro/kensait/spring/employee/client/Main_Employee.java
+      - src/main/java/pro/kensait/spring/employee/api/EmployeeController.java
+      - README.md
+
+  - id: spring-websocket-employee
+    chapter: 3
+    lesson: '3.1 HTTPクライアントとWebSocketによる通信'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-websocket-employee
+    names:
+      ja: WebSocket／STOMPで社員通知を配信する
+      en: Broadcast employee notices with WebSocket / STOMP
+    descriptions:
+      ja: >-
+        「実行」で STOMP のバックエンド（8096）が起動します。ターミナルで cd frontend →
+        npm install → npm run dev を実行し、プレビューの URL 欄に http://localhost:5173/ を入れます。
+        同じ URL を外部ブラウザでも開いて 2 画面を接続し、一方の通知が両方に届くことを確かめます。
+      en: >-
+        Run starts the STOMP backend (port 8096). In the terminal run cd frontend →
+        npm install → npm run dev, then enter http://localhost:5173/ in the preview URL box.
+        Open the same URL in an external browser as well, connect both, and watch a notice
+        from one reach both.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/notification/WebSocketConfig.java
+      - src/main/java/pro/kensait/spring/employee/notification/EmployeeNoticeController.java
+      - frontend/src/components/NotificationPanel.tsx
+      - README.md
+
+  # ── チャプター4: OAuth 2・OIDC・JWT ───────────────────────
+  - id: spring-sec-employee-keycloak
+    chapter: 4
+    lesson: '4.1 OAuth 2・OIDC・JWTによる認証連携'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-sec-employee-keycloak
+    names:
+      ja: KeycloakでOIDCログインする
+      en: Sign in with OIDC through Keycloak
+    descriptions:
+      ja: >-
+        Keycloak は同梱していないため、先に Docker Desktop を起動してターミナルで
+        docker compose up -d を実行し、.env.example を .env にコピーします（README 参照）。
+        その後「実行」でバックエンド（8085）を起動し、cd frontend → npm install → npm run dev、
+        プレビューで http://localhost:5173/ を開いて alice（閲覧）と bob（CRUD）でログインを比べます。
+      en: >-
+        Keycloak is not bundled: start Docker Desktop, run docker compose up -d in the
+        terminal and copy .env.example to .env first (see README). Then Run starts the
+        backend (port 8085); run cd frontend → npm install → npm run dev, open
+        http://localhost:5173/ in the preview and compare signing in as alice (read-only)
+        and bob (CRUD).
+    openFiles:
+      - src/main/resources/application.yml
+      - src/main/java/pro/kensait/spring/employee/web/SecurityConfig.java
+      - src/main/java/pro/kensait/spring/employee/web/EmployeeOidcUserService.java
+      - README.md
+
+  - id: spring-sec-employee-google
+    chapter: 4
+    lesson: '4.1 OAuth 2・OIDC・JWTによる認証連携'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-sec-employee-google
+    names:
+      ja: GoogleでOIDCログインする
+      en: Sign in with OIDC through Google
+    descriptions:
+      ja: >-
+        自分の Google Cloud で OAuth クライアントを作成し、リダイレクト URI に
+        http://localhost:8084/login/oauth2/code/google を登録してから、.env.example を .env に
+        コピーしてクライアント ID とシークレットを書きます。「実行」でバックエンド（8084）を起動し、
+        cd frontend → npm install → npm run dev、プレビューで http://localhost:5173/ を開いてログインし、
+        閲覧だけが許されることを確かめます。
+      en: >-
+        Create an OAuth client in your own Google Cloud project with the redirect URI
+        http://localhost:8084/login/oauth2/code/google, then copy .env.example to .env and fill
+        in the client ID and secret. Run starts the backend (port 8084); run cd frontend →
+        npm install → npm run dev, open http://localhost:5173/ in the preview, sign in and see
+        that only reading is allowed.
+    openFiles:
+      - src/main/resources/application.yml
+      - src/main/java/pro/kensait/spring/employee/web/SecurityConfig.java
+      - src/main/java/pro/kensait/spring/employee/web/EmployeeOidcUserService.java
+      - README.md
+
+  # ── チャプター5: Spring Security ─────────────────────────
+  - id: spring-sec-employee
+    chapter: 5
+    lesson: '5.1 Spring Securityの認証・認可とリクエスト保護'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-sec-employee
+    names:
+      ja: フォーム認証・認可・CSRFを確かめる
+      en: Try form login, authorization and CSRF
+    descriptions:
+      ja: >-
+        「実行」でバックエンド（8083）が起動します。ターミナルで cd frontend → npm install →
+        npm run dev を実行し、プレビューの URL 欄に http://localhost:5173/ を入れます。
+        Alice / 1111（閲覧）と Bob / 2222（CRUD）でログインし、401・403 と CSRF トークンの
+        やり取りを画面と出力で確かめます。
+      en: >-
+        Run starts the backend (port 8083). In the terminal run cd frontend → npm install →
+        npm run dev and enter http://localhost:5173/ in the preview URL box. Sign in as
+        Alice / 1111 (read-only) and Bob / 2222 (CRUD) and look at the 401 / 403 responses and
+        the CSRF token exchange.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/web/SecurityConfig.java
+      - src/main/java/pro/kensait/spring/employee/web/EmployeeApi.java
+      - frontend/src/services/api.ts
+      - README.md
+
+  # ── チャプター6: GraphQL ─────────────────────────────────
+  - id: spring-graphql-employee
+    chapter: 6
+    lesson: '6.1 GraphQLのスキーマとデータ取得'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-graphql-employee
+    names:
+      ja: GraphQLで社員を問い合わせる
+      en: Query employees with GraphQL
+    descriptions:
+      ja: >-
+        「実行」で GraphQL のバックエンド（8088）がインメモリ DB で起動します。
+        プレビューの URL 欄に http://localhost:8088/graphiql を入れて Query と Mutation を試し、
+        部署から社員をたどるネスト取得や errors 配列を確かめます。専用の React 画面は
+        cd frontend → npm install → npm run dev で起動し、http://localhost:5173/ で開きます。
+      en: >-
+        Run starts the GraphQL backend (port 8088) on an in-memory database. Enter
+        http://localhost:8088/graphiql in the preview URL box to try queries and mutations,
+        nested department-to-employee fetching and the errors array. The dedicated React
+        screen starts with cd frontend → npm install → npm run dev at http://localhost:5173/.
+    openFiles:
+      - src/main/resources/graphql/schema.graphqls
+      - src/main/java/pro/kensait/spring/employee/graphql/api/EmployeeGraphqlController.java
+      - frontend/src/components/GraphqlPanel.tsx
+      - README.md
+
+  # ── チャプター7: リアクティブ処理と非同期メッセージング ───────
+  - id: spring-webflux-employee
+    chapter: 7
+    lesson: '7.1 リアクティブ処理と非同期メッセージング'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-webflux-employee
+    names:
+      ja: WebFluxとSSEで社員を配信する
+      en: Stream employees with WebFlux and SSE
+    descriptions:
+      ja: >-
+        「実行」で WebFlux のバックエンド（8089、Netty）が起動します。ターミナルで
+        curl -N http://localhost:8089/employees/stream を実行すると、1 秒ごとに社員が届き
+        complete イベントで終わります。React 画面は cd frontend → npm install → npm run dev で起動し、
+        プレビューで http://localhost:5173/ を開いて配信の開始と停止を操作します。
+      en: >-
+        Run starts the WebFlux backend (port 8089, Netty). In the terminal,
+        curl -N http://localhost:8089/employees/stream delivers one employee per second and
+        ends with a complete event. Start the React screen with cd frontend → npm install →
+        npm run dev and open http://localhost:5173/ in the preview to start and stop the stream.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/flux/api/EmployeeFluxApi.java
+      - src/main/java/pro/kensait/spring/employee/flux/service/EmployeeFluxService.java
+      - src/main/java/pro/kensait/spring/employee/flux/repository/EmployeeReactiveRepository.java
+      - README.md
+
+  - id: spring-kafka-employee
+    chapter: 7
+    lesson: '7.1 リアクティブ処理と非同期メッセージング'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-kafka-employee
+    names:
+      ja: Kafkaで社員イベントを送受信する
+      en: Send and receive employee events with Kafka
+    descriptions:
+      ja: >-
+        「実行」で同梱の Kafka とプロデューサー（8091）が起動します。ターミナルで cd consumer →
+        ../gradlew.bat bootRun を実行してコンシューマー（8092）を起動し、別のターミナルから
+        README の curl で POST /events を送って 202 を確かめ、http://localhost:8092/events で
+        実際に受信した履歴を確かめます。
+      en: >-
+        Run starts the bundled Kafka and the producer (port 8091). In the terminal run
+        cd consumer → ../gradlew.bat bootRun to start the consumer (port 8092); from another
+        terminal send POST /events with the curl command in the README, check the 202, and look
+        at the events actually received at http://localhost:8092/events.
+    openFiles:
+      - src/main/java/pro/kensait/spring/kafka/service/EventSendService.java
+      - consumer/src/main/java/pro/kensait/spring/kafka/service/EventReceiveService.java
+      - src/main/resources/application.yml
+      - README.md
+
+  - id: spring-amqp-employee
+    chapter: 7
+    lesson: '7.1 リアクティブ処理と非同期メッセージング'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-amqp-employee
+    names:
+      ja: RabbitMQで社員イベントを送受信する
+      en: Send and receive employee events with RabbitMQ
+    descriptions:
+      ja: >-
+        「実行」で同梱の RabbitMQ とプロデューサー（8093）が起動します。ターミナルで cd consumer →
+        ../gradlew.bat bootRun を実行してコンシューマー（8094）を起動し、別のターミナルで cd frontend →
+        npm install → npm run dev、プレビューで http://localhost:5173/ を開いてイベントを送信し、
+        「受信履歴を取得」で受信を確かめます。エクスチェンジとキューは「メッセージング」タブの管理画面でも見られます。
+      en: >-
+        Run starts the bundled RabbitMQ and the producer (port 8093). In the terminal run
+        cd consumer → ../gradlew.bat bootRun to start the consumer (port 8094); in another
+        terminal run cd frontend → npm install → npm run dev, open http://localhost:5173/ in the
+        preview, send an event and fetch the received history. The exchange and queue are also
+        visible in the management UI from the Messaging tab.
+    openFiles:
+      - src/main/java/pro/kensait/spring/amqp/config/AmqpConfig.java
+      - src/main/java/pro/kensait/spring/amqp/service/EventSendService.java
+      - consumer/src/main/java/pro/kensait/spring/amqp/service/EventReceiveService.java
+      - README.md
+
+  # ── チャプター8: リトライとサーキットブレーカー ──────────────
+  - id: spring-resilience-employee
+    chapter: 8
+    lesson: '8.1 障害への対処とリトライ・サーキットブレーカー'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-resilience-employee
+    names:
+      ja: サーキットブレーカーとレート制限を確かめる
+      en: Watch a circuit breaker and a rate limiter
+    descriptions:
+      ja: >-
+        「実行」で Resilience4j のアプリ（8082）が起動します。ターミナルで cd api →
+        ../gradlew.bat bootRun を実行して呼び出し先 API（8095）を起動し、
+        http://localhost:8082/resilience-demo を呼びます。API を Ctrl+C で止めて呼び出しを重ねると
+        /resilience-status が OPEN になり、再起動して 10 秒後に CLOSED へ戻ります。
+        /ratelimit-demo を続けて呼ぶと 4 回目から 429 になります。
+      en: >-
+        Run starts the Resilience4j app (port 8082). In the terminal run cd api →
+        ../gradlew.bat bootRun to start the API it calls (port 8095) and call
+        http://localhost:8082/resilience-demo. Stop the API with Ctrl+C and keep calling:
+        /resilience-status turns OPEN, and returns to CLOSED 10 seconds after the API is back.
+        Calling /ratelimit-demo in a row gives 429 from the fourth call.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/resilience/service/EmployeeClientService.java
+      - src/main/resources/application.yml
+      - README.md
+
+  - id: spring-retry-employee
+    chapter: 8
+    lesson: '8.1 障害への対処とリトライ・サーキットブレーカー'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-retry-employee
+    names:
+      ja: Spring Retryで通信失敗をリトライする
+      en: Retry failed calls with Spring Retry
+    descriptions:
+      ja: >-
+        「実行」で Spring Retry のアプリ（8081）が起動します。ターミナルで cd api →
+        ../gradlew.bat bootRun を実行して呼び出し先 API（8095）を起動し、
+        http://localhost:8081/retry-demo を呼びます。API を Ctrl+C で止めてもう一度呼ぶと、
+        出力に「試行 1〜3 回目」が 1 秒・2 秒の間隔で並び、代替応答（fallback: true）が返ります。
+      en: >-
+        Run starts the Spring Retry app (port 8081). In the terminal run cd api →
+        ../gradlew.bat bootRun to start the API it calls (port 8095) and call
+        http://localhost:8081/retry-demo. Stop the API with Ctrl+C and call again: the output
+        shows attempts 1 to 3 spaced 1 and 2 seconds apart, then a fallback response
+        (fallback: true) comes back.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/retry/service/EmployeeClientService.java
+      - src/main/java/pro/kensait/spring/employee/retry/Application.java
+      - README.md
+
+  # ── チャプター9: 観測・監視 ──────────────────────────────
+  - id: spring-actuator-employee
+    chapter: 9
+    lesson: '9.1 Springの観測・監視機能'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-actuator-employee
+    names:
+      ja: Actuatorで稼働状態とメトリクスを見る
+      en: Inspect health and metrics with Actuator
+    descriptions:
+      ja: >-
+        「実行」で社員 API（8080）がインメモリ DB で起動します。プレビューやターミナルの curl で
+        /actuator/health（カスタムの database コンポーネント）、/actuator/info、
+        /actuator/metrics/employee.get.count を開き、/employees/1 を呼ぶ前後でカウンターの
+        変化を確かめます。/actuator/loggers でログレベルを再起動なしで変えられます。
+      en: >-
+        Run starts the employee API (port 8080) on an in-memory database. Open
+        /actuator/health (with the custom database component), /actuator/info and
+        /actuator/metrics/employee.get.count in the preview or with curl, and compare the
+        counter before and after calling /employees/1. /actuator/loggers changes the log level
+        without a restart.
+    openFiles:
+      - src/main/resources/application.yml
+      - src/main/java/pro/kensait/spring/employee/rest/health/DatabaseHealthIndicator.java
+      - src/main/java/pro/kensait/spring/employee/rest/service/EmployeeService.java
+      - README.md
+
+  - id: spring-observability-employee
+    chapter: 9
+    lesson: '9.1 Springの観測・監視機能'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-observability-employee
+    names:
+      ja: Observationでメトリクス・トレース・ログをつなぐ
+      en: Tie metrics, traces and logs together with Observation
+    descriptions:
+      ja: >-
+        「実行」で社員 API（8080）がインメモリ DB で起動します。/employees/1 を呼ぶと、出力のログに
+        [spring-observability-employee,traceId,spanId] が付き、/actuator/metrics/employee.get に
+        タイマーが現れます。トレースを画面で見るには Jaeger（同梱なし、Docker で起動）が必要です。
+        Jaeger が無いときは送信エラーがログに出ることがありますが、メトリクスとログはそのまま確かめられます。
+      en: >-
+        Run starts the employee API (port 8080) on an in-memory database. Calling
+        /employees/1 adds [spring-observability-employee,traceId,spanId] to the log lines in the
+        output and a timer appears at /actuator/metrics/employee.get. Viewing traces needs Jaeger
+        (not bundled; start it with Docker). Without Jaeger, export errors may appear in the log, but
+        metrics and logs can still be checked.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/rest/service/EmployeeService.java
+      - src/main/java/pro/kensait/spring/employee/rest/observation/ObservationConfig.java
+      - src/main/resources/application.yml
+      - README.md

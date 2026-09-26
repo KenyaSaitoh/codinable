@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>社員管理 — Spring Data RESTの確認</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <h1>社員管理 — Spring Data RESTの確認</h1>
+  <p>第10章と同じ社員・部署・職種を扱います。APIのリンク、ページ情報、Projection、ETagを確認できます。</p>
+  <form id="connectionForm">
+    <label>APIのURL <input id="apiBase" type="url" value="http://localhost:8080/api" required></label>
+    <button>接続</button>
+    <button id="rootButton" type="button">APIの入口を見る</button>
+    <button id="searchButton" type="button">検索リンクを見る</button>
+  </form>
+  <p id="message" role="status" aria-live="polite"></p>
+  <section>
+    <h2>社員一覧</h2>
+    <form id="searchForm">
+      <label>検索
+        <select id="searchType">
+          <option value="">全件</option>
+          <option value="by-name">氏名（部分一致）</option>
+          <option value="by-department">部署ID</option>
+          <option value="by-job">職種ID</option>
+          <option value="by-salary">月給の下限</option>
+        </select>
+      </label>
+      <label>値 <input id="searchValue"></label>
+      <label><input id="projection" type="checkbox">summaryで取得</label>
+      <button>取得</button>
+    </form>
+    <p id="pageInfo"></p>
+    <div class="table-container">
+      <table id="employeeTable">
+        <thead><tr>
+          <th>社員コード</th><th>氏名</th><th>部署</th><th>職種</th><th>月給</th><th>入社日</th><th>操作</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p><button id="prevButton" type="button" disabled>前へ</button>
+       <button id="nextButton" type="button" disabled>次へ</button></p>
+  </section>
+  <section>
+    <h2 id="formTitle">社員の新規登録</h2>
+    <form id="employeeForm">
+      <label>氏名 <input id="employeeName" maxlength="30" required></label>
+      <label>部署 <select id="departmentId" required></select></label>
+      <label>職種 <select id="jobId" required></select></label>
+      <label>月給 <input id="salary" type="number" min="0" max="9999999" step="1" required></label>
+      <label>入社日 <input id="entranceDate" type="date" required></label>
+      <button id="saveButton">保存</button>
+      <button id="clearButton" type="button">新規登録に戻る</button>
+    </form>
+    <p id="editingInfo">社員コードはサーバーが採番します。</p>
+  </section>
+  <section>
+    <h2>直前のAPI応答</h2>
+    <p>一覧は <code>_embedded</code>、移動先は <code>_links</code>、ページ情報は <code>page</code> を確認します。</p>
+    <pre id="responseInfo"></pre>
+    <pre id="responseBody"></pre>
+  </section>
+  <script src="./js/app.js"></script>
+</body>
+</html>

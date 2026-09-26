@@ -1,0 +1,3 @@
+pro.kensait.mybatis.company.main.DynamicSelectMain1
+pro.kensait.mybatis.company.main.DynamicSelectMain2
+pro.kensait.mybatis.company.main.DynamicSelectMain3

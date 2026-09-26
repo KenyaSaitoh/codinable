@@ -1,0 +1,26 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 1150px;
+  margin: 24px auto;
+  padding: 0 20px;
+  color: #263445;
+  line-height: 1.6;
+}
+h1 { font-size: 1.6rem; }
+h2 { font-size: 1.2rem; }
+section { border-top: 1px solid #ccd4df; margin-top: 24px; }
+form { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+label { display: inline-flex; gap: 6px; align-items: center; }
+input, select, button { font: inherit; padding: 5px 8px; }
+input[type="number"] { width: 110px; }
+#apiBase { width: 300px; }
+button { cursor: pointer; }
+button:disabled { cursor: default; }
+.table-container { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border-bottom: 1px solid #dce1e8; padding: 8px; text-align: left; white-space: nowrap; }
+th { background: #eef3f9; }
+td button { margin-right: 5px; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f3f5f8; padding: 12px; }
+#message { min-height: 1.6em; }
+#message.error { color: #a51c30; }

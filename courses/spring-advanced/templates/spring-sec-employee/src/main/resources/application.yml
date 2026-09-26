@@ -1,0 +1,9 @@
+server:
+  port: 8083
+  servlet:
+    session:
+      cookie:
+        name: SECURITY_SESSION
+        same-site: lax
+frontend:
+  url: ${FRONTEND_URL:http://localhost:5173}

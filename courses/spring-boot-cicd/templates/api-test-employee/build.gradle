@@ -1,0 +1,52 @@
+// 第5章：社員管理 REST API を RANDOM_PORT の実サーバーとして起動し、RestClient で
+// ステータス・JSON・DB 状態（HTTP 契約）を検証する
+// 元のサンプルは親 build.gradle（subprojects{}）に設定を分けたマルチプロジェクトだった。
+// Codinable では単独で動く必要があるため 1 ファイルに畳んでいる
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // 元は files("$rootDir/hsqldb/lib/hsqldb.jar")。単独で動くよう Maven の HSQLDB に置き換えた
+    // （バージョンは Spring Boot の BOM が管理する）
+    runtimeOnly 'org.hsqldb:hsqldb'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// SQL の正本は sql/hsqldb。起動時・テスト時とも同じ DDL と初期データを classpath:db/ から流す
+processResources {
+    from('sql/hsqldb') {
+        include '2_EMPLOYEE_DDL.sql', '3_EMPLOYEE_DML.sql'
+        into 'db'
+    }
+}
+
+// EmployeeApiTest にはタグが無いので、元の設定のまま test で全件が走る
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}

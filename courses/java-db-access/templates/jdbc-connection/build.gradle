@@ -1,0 +1,39 @@
+// ═══════════════════════════════════════════════════════════
+//  jdbc-connection
+//  講座リポジトリ learn_java_db_aidd の projects/master/02_jdbc-connection/jdbc-connection を、
+//  単独で動く Gradle プロジェクトにしたもの
+//  （元は親の build.gradle と共通スクリプトで設定を共有するマルチプロジェクト）
+// ═══════════════════════════════════════════════════════════
+//
+//  このプロジェクトの入口はテスト（main は持たない）。実行対象で「test」を選んで実行する
+//  テストはプロジェクト専用のインメモリ DB を自分で用意するので、DB サーバーは要らない
+
+plugins {
+    id 'java'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 元は $rootDir/hsqldb/lib/hsqldb.jar（2.7.4）を直接参照していた
+    implementation 'org.hsqldb:hsqldb:2.7.4'
+}
+
+// JUnit は親の設定と同じ 6.0.3（Jupiter と Platform Launcher をまとめて入れる）
+testing { suites { test { useJUnitJupiter('6.0.3') } } }
+
+test {
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat = 'full'
+    }
+}

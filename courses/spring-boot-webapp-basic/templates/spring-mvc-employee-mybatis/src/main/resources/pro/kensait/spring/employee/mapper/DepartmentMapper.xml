@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pro.kensait.spring.employee.mapper.DepartmentMapper">
+  <select id="findAll" resultType="pro.kensait.spring.employee.entity.Department">
+    SELECT DEPARTMENT_ID, DEPARTMENT_NAME, LOCATION
+      FROM DEPARTMENT
+     ORDER BY DEPARTMENT_ID
+  </select>
+
+  <select id="findById" resultType="pro.kensait.spring.employee.entity.Department">
+    SELECT DEPARTMENT_ID, DEPARTMENT_NAME, LOCATION
+      FROM DEPARTMENT
+     WHERE DEPARTMENT_ID = #{departmentId}
+  </select>
+</mapper>

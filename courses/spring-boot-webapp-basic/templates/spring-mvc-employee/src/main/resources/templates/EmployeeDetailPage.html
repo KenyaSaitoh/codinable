@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>社員詳細</title>
+</head>
+<body>
+  <h1>社員詳細</h1>
+  <p>受け取り方：<strong th:text="${parameterType}">パラメータ形式</strong></p>
+  <dl>
+    <dt>ID</dt><dd th:text="${employee.employeeId}">1</dd>
+    <dt>氏名</dt><dd th:text="${employee.employeeName}">氏名</dd>
+    <dt>部署名</dt><dd th:text="${employee.departmentName}">部署名</dd>
+    <dt>月給</dt><dd th:text="${employee.salary}">月給</dd>
+  </dl>
+  <a th:href="@{/viewList}">一覧へ戻る</a>
+</body>
+</html>

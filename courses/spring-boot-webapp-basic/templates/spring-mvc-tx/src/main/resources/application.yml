@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # Codinable では HSQLDB サーバーを使わずインメモリで動かす
+    # （サンプルの元の設定: url: jdbc:hsqldb:hsql://localhost:9001/testdb）
+    # 起動のたびに下の SQL で作り直すので、登録・更新した内容は停止すると消える
+    url: jdbc:hsqldb:mem:testdb
+    username: SA
+    password:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+  sql:
+    init:
+      # sql/hsqldb の DDL と初期データ（build.gradle で classpath:db/ へ入れている）を起動時に流す
+      mode: always
+      schema-locations: classpath:db/1_SPRING_TX_DDL.sql
+      data-locations: classpath:db/2_SPRING_TX_DML.sql

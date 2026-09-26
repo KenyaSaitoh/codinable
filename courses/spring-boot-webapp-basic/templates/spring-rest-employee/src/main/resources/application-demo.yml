@@ -1,0 +1,11 @@
+# 第7章や既存DBに触れず確認するための、このプロセス専用DB。
+spring:
+  datasource:
+    url: jdbc:hsqldb:mem:rest_employee_demo
+    username: SA
+    password:
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/2_EMPLOYEE_DDL.sql
+      data-locations: classpath:db/3_EMPLOYEE_DML.sql

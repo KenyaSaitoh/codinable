@@ -1,0 +1,5 @@
+# config-clientアプリケーション用の設定ファイル（デフォルトプロファイル）
+# ファイル名の「config-client」は、クライアント側の spring.application.name と一致させる
+greeting:
+  # 挨拶メッセージ（クライアントの GET /greeting で返される値）
+  message: "こんにちは（デフォルト）"

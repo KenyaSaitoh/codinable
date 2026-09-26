@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<!--
+  共通レイアウト（layouts/BaseLayout）を適用するページ
+  html タグごとレイアウトで置き換え、id="content" の部分だけを本文として渡す
+  ~{:: #content} は「このテンプレート内の id="content" の要素」という意味
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/BaseLayout :: baseLayout('2. 共通レイアウトの適用', ~{:: #content})}">
+<head>
+<meta charset="UTF-8" />
+<title>LayoutPage</title>
+</head>
+<body>
+  <div id="content">
+    <p>
+      このページには head や header を書いていない。<br />
+      それらは共通レイアウト（layouts/BaseLayout.html）側に一度だけ書かれている。
+    </p>
+    <p>
+      ページ側が用意するのは「タイトル」と「本文」だけであり、
+      画面が増えてもレイアウトの重複が発生しない。
+    </p>
+    <div th:replace="~{fragments/CommonFragment :: memberList(${memberList})}"></div>
+  </div>
+</body>
+</html>

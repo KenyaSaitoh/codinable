@@ -1,0 +1,14 @@
+server:
+# バックエンド（rest-employee-restclient-api: 8095）と同時起動するため8081を使う
+  port: 8081
+
+# 呼び出し先REST API（rest-employee-restclient-api）のベースURL
+employee:
+  api:
+    url: ${EMPLOYEE_API_URL:http://localhost:8095}
+
+logging:
+  level:
+    root: INFO
+    org.springframework.retry: DEBUG
+    pro.kensait.spring.employee: INFO

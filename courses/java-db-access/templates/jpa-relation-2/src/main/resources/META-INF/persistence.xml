@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+             https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+  <!-- Hibernate -->
+  <persistence-unit name="MyPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>pro.kensait.jpa.company.entity.Qualification</class>
+    <class>pro.kensait.jpa.company.entity.Project</class>
+    <class>pro.kensait.jpa.company.entity.Phone</class>
+    <class>pro.kensait.jpa.company.entity.Job</class>
+    <class>pro.kensait.jpa.company.entity.Employee</class>
+    <class>pro.kensait.jpa.company.entity.Email</class>
+    <class>pro.kensait.jpa.company.entity.Department</class>
+    <class>pro.kensait.jpa.company.entity.Address</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="jakarta.persistence.jdbc.driver"
+                value="org.hsqldb.jdbc.JDBCDriver" />
+      <!-- Codinable では HSQLDB サーバーを使わずインメモリで動かす
+           （元: jdbc:hsqldb:hsql://localhost:9001/testdb。実行のたびに sql/hsqldb の SQL で初期化する） -->
+      <property name="jakarta.persistence.jdbc.url"
+                value="jdbc:hsqldb:mem:testdb" />
+      <property name="jakarta.persistence.jdbc.user"
+                value="SA" />
+      <property name="jakarta.persistence.jdbc.password"
+                value="" />
+      <property name="hibernate.show_sql"
+                value="true" />
+      <property name="hibernate.format_sql"
+                value="true" />
+    </properties>
+  </persistence-unit>
+
+</persistence>

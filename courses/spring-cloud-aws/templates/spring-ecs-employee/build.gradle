@@ -1,0 +1,37 @@
+// 社員管理 REST API（ECS / Fargate へ配置するアプリケーション）
+// 講座リポジトリではマルチプロジェクトの 1 つだったものを、単独で動く形に畳んである
+// bootJar で作った build/libs/spring-ecs-employee.jar を app.jar としてコピーし、
+// Dockerfile でコンテナイメージにする（手順は README.md）
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // HSQLDB（講座リポジトリ同梱の jar の代わりに Maven Central のものを BOM 管理で使う）
+    runtimeOnly 'org.hsqldb:hsqldb'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}

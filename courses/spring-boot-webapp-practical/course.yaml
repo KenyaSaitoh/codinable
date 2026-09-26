@@ -1,0 +1,284 @@
+# ═══════════════════════════════════════════════════════════
+#  Udemy「Spring Boot Webアプリ応用（ECサイト）」の演習
+#
+#  講義そのものは動画側にあり、ここには講座のサンプル（learn_spring_aidd_practical の
+#  projects/master）を Codinable 単独で動く形にしたものを置く
+#  問題を出して解かせることはしない
+#
+#  サンプルは 3 つのアプリで、チャプターごとに同じアプリを別の観点で読む
+#    leaf-books-mvc  Spring MVC + Thymeleaf の書店（ポート 8080）
+#    leaf-books      REST API + React の書店（API 8080 / Vite 5173）
+#    customer-hub    書店が呼ぶ外部 API（ポート 8081）
+#  同じアプリを使う演習は dir で同じ雛形を指す（作業用プロジェクトは演習ごとに別に作られる）
+#  書店の雛形には customer-hub/（と frontend/）を同梱し、ターミナルから起動する
+#  DB は HSQLDB サーバーではなくインメモリで、起動のたびに sql/hsqldb/ から作り直す
+#
+#  exercises[] の項目:
+#    id           演習の識別子（dir 省略時はディレクトリ名として使う）
+#    dir          templates/ 配下のディレクトリ名（省略時は id）
+#    chapter      対応するチャプター番号。一覧のバッジに出る
+#    lesson       対応するレッスン番号と名前。一覧の副題に出る
+#    runtime      実行環境（java / spring / node / react / python / static / sql / shell）
+#    run          実行対象の既定値（gradle:<タスク> など。実行対象セレクトと同じ書式）
+#    suggestName  作業用プロジェクト名の既定値
+#    names        演習名（言語ごと）
+#    descriptions 「何をどう動かすか」の説明（言語ごと）
+#    openFiles    演習を開いた直後に開くファイル（プロジェクト相対パス）
+# ═══════════════════════════════════════════════════════════
+id: spring-boot-webapp-practical
+order: 7
+# 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
+version: 1.0.0
+
+names:
+  ja: Spring Boot Webアプリ応用（ECサイト）
+  en: 'Spring Boot Web Apps: Advanced (E-commerce Site)'
+
+descriptions:
+  ja: >-
+    書籍の検索・カート・ログイン・注文・在庫更新を持つ書店アプリを、
+    Spring MVC 版と REST API + React 版の両方から読み解く講座の演習です。
+    外部 API 役の Customer Hub も含みます。
+    講座本編は HSQLDB サーバーを使いますが、ここではインメモリの HSQLDB で動くように調整してあります。
+  en: >-
+    Exercises for the course that reads a bookstore app - search, cart, login, orders and
+    stock updates - both as a Spring MVC app and as a REST API + React SPA,
+    together with Customer Hub, the external API it calls.
+    The course itself uses an HSQLDB server; these are adjusted to run on in-memory HSQLDB.
+
+udemy:
+  url: https://github.com/KenyaSaitoh/learn_spring_aidd_practical
+
+exercises:
+  # ── チャプター2: レイヤ設計・DTO・業務処理 ─────────────────
+  - id: leaf-books-api-layers
+    dir: leaf-books
+    chapter: 2
+    lesson: '2.1 レイヤ設計・DTO・業務処理と画面方式の比較'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: leaf-books-api-layers
+    names:
+      ja: SPA版のバックエンドをレイヤで読む
+      en: Read the SPA backend layer by layer
+    descriptions:
+      ja: >-
+        REST API 版の書店です。api / service / repository / entity / external の
+        パッケージが、HTTP 入出力・業務処理・DB・外部 API のどれを受け持つかを対応付けて読みます。
+        「実行」で API が 8080 で起動します。ログインして JSON を確かめる手順
+        （Customer Hub と React の起動を含む）は README.md にあります。
+      en: >-
+        The REST API version of the bookstore. Map the api / service / repository / entity /
+        external packages to what each handles: HTTP I/O, business logic, the DB and the
+        external API. Run starts the API on port 8080. README.md shows how to log in and check
+        the JSON, including starting Customer Hub and React.
+    openFiles:
+      - src/main/java/pro/kensait/leafbooks/api/OrderController.java
+      - src/main/java/pro/kensait/leafbooks/service/order/OrderService.java
+      - src/main/java/pro/kensait/leafbooks/external/CustomerApiClient.java
+      - README.md
+
+  - id: leaf-books-mvc-layers
+    dir: leaf-books-mvc
+    chapter: 2
+    lesson: '2.1 レイヤ設計・DTO・業務処理と画面方式の比較'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: leaf-books-mvc-layers
+    names:
+      ja: MVC版のServiceとDTOを読む
+      en: Read the Service and DTOs of the MVC version
+    descriptions:
+      ja: >-
+        MVC 版の書店です。OrderService.orderBooks（Transaction Script）、注文の入力を運ぶ OrderTO、
+        送料を決める DeliveryFeeService を読みます。先にターミナルで customer-hub を起動し
+        （cd customer-hub → ../gradlew.bat bootRun）、「実行」で書店を 8080 で起動して、
+        alice@gmail.com / password でログインし、カートから注文すると送料と注文履歴が確かめられます。
+      en: >-
+        The MVC version of the bookstore. Read OrderService.orderBooks (a Transaction Script),
+        OrderTO which carries the order input, and DeliveryFeeService which decides the delivery fee.
+        Start customer-hub in a terminal first (cd customer-hub, then ../gradlew.bat bootRun),
+        run the bookstore on port 8080, log in as alice@gmail.com / password and order from the
+        cart to see the delivery fee and the order history.
+    openFiles:
+      - src/main/java/pro/kensait/leafbooks/service/order/OrderService.java
+      - src/main/java/pro/kensait/leafbooks/service/order/OrderTO.java
+      - src/main/java/pro/kensait/leafbooks/service/delivery/DeliveryFeeService.java
+      - README.md
+
+  # ── チャプター3: JPA・トランザクション・外部API・入力検証 ─────
+  - id: leaf-books-mvc-jpa
+    dir: leaf-books-mvc
+    chapter: 3
+    lesson: '3.1 JPA・トランザクション・外部APIと入力検証'
+    runtime: spring
+    run: 'gradle:test'
+    suggestName: leaf-books-mvc-jpa
+    names:
+      ja: JPAの関連・検索・楽観的ロックを動かす
+      en: Run JPA associations, queries and optimistic locking
+    descriptions:
+      ja: >-
+        複合主キーの OrderDetail、JPQL と Criteria の検索（BookRepository / BookService）、
+        version を条件にした在庫の更新（StockRepository）と、それを呼ぶ OrderService の
+        トランザクション境界を読みます。「実行」で test が走り、StockRepositoryTest の
+        「バージョンが一致しない場合、更新が失敗すること」などの結果がテスト結果タブに出ます。
+      en: >-
+        Read OrderDetail with its composite key, JPQL and Criteria queries (BookRepository /
+        BookService), the version-conditioned stock update (StockRepository) and the transaction
+        boundary of OrderService that calls it. Run executes test; results such as the
+        StockRepositoryTest case where the update fails on a version mismatch appear in the test tab.
+    openFiles:
+      - src/main/java/pro/kensait/leafbooks/entity/OrderDetail.java
+      - src/main/java/pro/kensait/leafbooks/repository/StockRepository.java
+      - src/main/java/pro/kensait/leafbooks/service/order/OrderService.java
+      - README.md
+
+  - id: customer-hub
+    chapter: 3
+    lesson: '3.1 JPA・トランザクション・外部APIと入力検証'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: customer-hub
+    names:
+      ja: 外部APIのCustomer Hubを動かす
+      en: Run Customer Hub, the external API
+    descriptions:
+      ja: >-
+        書店から呼ばれる側（プロバイダ）の顧客 API です。「実行」で 8081 で起動します。
+        http://localhost:8081/customers/1 や
+        /customers/query_email?email=alice@gmail.com で JSON を、
+        存在しない ID で 404 を確かめます。CustomerApi が CustomerService を呼び、
+        業務例外を HTTP ステータスへ変換する流れを読みます。
+      en: >-
+        The customer API on the provider side, called by the bookstores. Run starts it on port 8081.
+        Check the JSON at http://localhost:8081/customers/1 and
+        /customers/query_email?email=alice@gmail.com, and a 404 for an ID that does not exist.
+        Read how CustomerApi calls CustomerService and turns business exceptions into HTTP statuses.
+    openFiles:
+      - src/main/java/pro/kensait/customer/api/CustomerApi.java
+      - src/main/java/pro/kensait/customer/service/CustomerService.java
+      - src/main/java/pro/kensait/customer/api/CustomerExceptionHandler.java
+      - README.md
+
+  - id: leaf-books-mvc-external
+    dir: leaf-books-mvc
+    chapter: 3
+    lesson: '3.1 JPA・トランザクション・外部APIと入力検証'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: leaf-books-mvc-external
+    names:
+      ja: 外部APIの呼び出しと入力検証を試す
+      en: Try the external API call and input validation
+    descriptions:
+      ja: >-
+        書店から Customer Hub を呼ぶ CustomerApiClient（RestTemplate・404 の例外変換）と、
+        顧客登録フォームの Bean Validation（CustomerParam）を読みます。
+        ターミナルで customer-hub を起動（cd customer-hub → ../gradlew.bat bootRun）してから「実行」し、
+        存在しないメールアドレスでのログイン、既存メールアドレスでの顧客登録、
+        Customer Hub を止めた状態でのログインで、画面の応答がどう変わるかを確かめます。
+      en: >-
+        Read CustomerApiClient, which calls Customer Hub from the bookstore (RestTemplate, mapping
+        a 404 to an exception), and Bean Validation on the registration form (CustomerParam).
+        Start customer-hub in a terminal (cd customer-hub, then ../gradlew.bat bootRun) and run the
+        bookstore. Compare the responses when logging in with an unknown email, registering an
+        existing email, and logging in while Customer Hub is stopped.
+    openFiles:
+      - src/main/java/pro/kensait/leafbooks/external/CustomerApiClient.java
+      - src/main/java/pro/kensait/leafbooks/config/AppConfig.java
+      - src/main/java/pro/kensait/leafbooks/web/customer/CustomerParam.java
+      - README.md
+
+  # ── チャプター4: Spring MVC の画面生成・セッション・認証・PRG ──
+  - id: leaf-books-mvc-web
+    dir: leaf-books-mvc
+    chapter: 4
+    lesson: '4.1 Spring MVCの画面生成・セッション・認証・PRG'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: leaf-books-mvc-web
+    names:
+      ja: MVC版の画面遷移・セッション・PRGを動かす
+      en: Run screen flow, sessions and PRG in the MVC version
+    descriptions:
+      ja: >-
+        Controller が Model とビュー名を返して Thymeleaf が HTML を作る流れ、
+        @SessionAttributes のカート、TokenProcessor による SecurityContext の保存、
+        注文後の Post/Redirect/Get を読みます。ターミナルで customer-hub を起動
+        （cd customer-hub → ../gradlew.bat bootRun）してから「実行」し、
+        alice@gmail.com / password でログイン → 書籍選択 → カート → 注文 → 注文履歴と進めます。
+        注文完了画面で再読み込みしても注文が二重にならないことも確かめられます。
+      en: >-
+        Read how a Controller returns a Model and a view name for Thymeleaf to render,
+        the cart kept with @SessionAttributes, how TokenProcessor stores the SecurityContext,
+        and Post/Redirect/Get after an order. Start customer-hub in a terminal
+        (cd customer-hub, then ../gradlew.bat bootRun), run the bookstore, log in as
+        alice@gmail.com / password and go through book selection, cart, order and order history.
+        Reloading the order-complete page does not place the order twice.
+    openFiles:
+      - src/main/java/pro/kensait/leafbooks/web/book/BookController.java
+      - src/main/java/pro/kensait/leafbooks/web/login/TokenProcessor.java
+      - src/main/java/pro/kensait/leafbooks/web/order/OrderController.java
+      - README.md
+
+  # ── チャプター5: React・REST API・JWT 認証 ─────────────────
+  - id: leaf-books-spa
+    dir: leaf-books
+    chapter: 5
+    lesson: '5.1 React・REST API・JWT認証と非同期処理の状態管理'
+    runtime: react
+    run: 'gradle:bootRun'
+    suggestName: leaf-books-spa
+    names:
+      ja: ReactのSPAで状態の移り変わりを追う
+      en: Follow state changes in the React SPA
+    descriptions:
+      ja: >-
+        React の画面構成（App.tsx の Router と Provider）、CartContext のカート state、
+        OrderConfirmPage の送信中・成功・失敗の状態遷移を読みます。
+        「実行」で REST API を 8080 で起動し、ターミナルで customer-hub を起動
+        （cd customer-hub → ../gradlew.bat bootRun）、別のターミナルで
+        cd frontend → npm install → npm run dev を実行して、表示された http://localhost:5173 を
+        プレビューの URL 欄に入れます。alice@gmail.com / password でログインして注文まで進めます。
+      en: >-
+        Read the React screen structure (Router and Providers in App.tsx), the cart state in
+        CartContext, and the submitting / success / failure transitions in OrderConfirmPage.
+        Run starts the REST API on port 8080; start customer-hub in a terminal
+        (cd customer-hub, then ../gradlew.bat bootRun), and in another terminal run
+        cd frontend, npm install, npm run dev, then put http://localhost:5173 into the preview URL bar.
+        Log in as alice@gmail.com / password and go through to an order.
+    openFiles:
+      - frontend/src/App.tsx
+      - frontend/src/contexts/CartContext.tsx
+      - frontend/src/pages/OrderConfirmPage.tsx
+      - README.md
+
+  - id: leaf-books-api-jwt
+    dir: leaf-books
+    chapter: 5
+    lesson: '5.1 React・REST API・JWT認証と非同期処理の状態管理'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: leaf-books-api-jwt
+    names:
+      ja: REST APIのJWT認証とエラー応答を確かめる
+      en: Check JWT authentication and error responses in the REST API
+    descriptions:
+      ja: >-
+        AuthController のログインと JWT の Cookie 発行、JwtAuthenticationFilter による検証、
+        OrderController の入出力 DTO と GlobalExceptionHandler のエラー応答を読みます。
+        「実行」で API を 8080 で起動し、ターミナルで customer-hub を起動してから、
+        README.md の curl 手順でログイン前の 403、ログイン後の /api/books と /api/orders/history を確かめます。
+        画面から確かめるときは frontend を npm run dev で起動します。
+      en: >-
+        Read login and JWT cookie issuance in AuthController, verification in
+        JwtAuthenticationFilter, the request / response DTOs of OrderController and the error
+        responses from GlobalExceptionHandler. Run starts the API on port 8080; start customer-hub in
+        a terminal, then follow the curl steps in README.md to see the 403 before login and
+        /api/books and /api/orders/history after it. To check through the UI, start frontend with npm run dev.
+    openFiles:
+      - src/main/java/pro/kensait/leafbooks/api/AuthController.java
+      - src/main/java/pro/kensait/leafbooks/security/JwtAuthenticationFilter.java
+      - src/main/java/pro/kensait/leafbooks/api/OrderController.java
+      - README.md

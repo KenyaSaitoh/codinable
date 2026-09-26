@@ -1,0 +1,12 @@
+# 専用インメモリDB。既存のHSQLDBサーバーのデータには触れない
+spring:
+  datasource:
+    url: jdbc:hsqldb:mem:spring-graphql-employee
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:demo/schema.sql
+      data-locations: classpath:demo/data.sql
+  jpa:
+    hibernate:
+      ddl-auto: none

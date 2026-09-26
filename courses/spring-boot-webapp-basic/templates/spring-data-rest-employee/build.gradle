@@ -1,0 +1,49 @@
+// spring-data-rest-employee: Spring Data REST による Repository の自動公開
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+// 講座のサンプル（learn_spring_aidd_basic）はマルチプロジェクト構成で、共通の設定を
+// 親の build.gradle に置いている。Codinable では演習フォルダ単独で動かすため、
+// 必要な設定だけをこの 1 ファイルに畳んだ（品質ゲート用の Checkstyle / SpotBugs /
+// PIT などは省いた）。依存のバージョンは Spring Boot の BOM に任せる
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // HSQLDB の JDBC ドライバー（サンプルは同梱の hsqldb.jar を参照していた）
+    runtimeOnly 'org.hsqldb:hsqldb'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}
+
+// 第 11 章（REST API）と同じ SQL を demo プロファイルとテストでも使う
+processResources {
+    from('sql/hsqldb') {
+        include '2_EMPLOYEE_DDL.sql', '3_EMPLOYEE_DML.sql'
+        into 'db'
+    }
+}

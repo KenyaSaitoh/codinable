@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>CalcInputPage</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <h2>CalcInputPage</h2>
+  <hr />
+  <form method="POST" th:object="${calcSession}">
+    <div>
+      <span>パラメータ1</span>
+      <input type="text" th:field="*{param1}" />
+      <span th:if="${#fields.hasErrors('param1')}" th:errors="*{param1}"
+            style="color: red"></span>
+    </div>
+    <div>
+      <span>パラメータ2</span>
+      <input type="text" th:field="*{param2}" />
+      <span th:if="${#fields.hasErrors('param2')}" th:errors="*{param2}"
+            style="color: red"></span>
+    </div>
+    <div>
+      <button type="submit" th:formaction="@{/add}">足し算</button>
+      <button type="submit" th:formaction="@{/subtract}">引き算</button>
+      <button type="submit" th:formaction="@{/multiply}">掛け算</button>
+      <button type="submit" th:formaction="@{/divide}">割り算</button>
+    </div>
+  </form>
+</body>
+</html>

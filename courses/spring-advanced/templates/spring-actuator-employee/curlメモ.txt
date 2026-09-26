@@ -1,0 +1,71 @@
+### 事前準備：メトリクスを発生させるため、社員APIを何回か呼び出しておく
+curl -i localhost:8080/employees/1
+curl -i localhost:8080/employees
+
+### health（アプリケーションの稼働状態。ECSのヘルスチェック対象）
+### カスタムのDatabaseHealthIndicatorが"database"コンポーネントとして表示される
+curl -i localhost:8080/actuator/health
+# HTTP/1.1 200
+# {"status":"UP","components":{"database":{"status":"UP","details":{"database":"HSQLDB","employeeCount":6}},"db":{"status":"UP",...},"diskSpace":{"status":"UP",...},"ping":{"status":"UP"}}}
+
+### health（HSQLDBサーバーを停止して再実行すると503でDOWNが返る）
+curl -i localhost:8080/actuator/health
+# HTTP/1.1 503
+# {"status":"DOWN","components":{"database":{"status":"DOWN","details":{"error":"..."}},...}}
+
+### info（application.ymlのinfo.app.*とAppInfoContributorのカスタム情報）
+curl -i localhost:8080/actuator/info
+# HTTP/1.1 200
+# {"app":{"name":"spring-actuator-employee","description":"社員管理REST API（Spring Boot Actuator教材）","version":"1.0.0"},"runtime":{"startupTime":"2026-08-11T10:00:00","javaVersion":"25","availableProcessors":8}}
+
+### metrics（収集されているメトリクス名の一覧）
+curl -i localhost:8080/actuator/metrics
+# HTTP/1.1 200
+# {"names":["employee.get.count","http.server.requests","jvm.memory.used","process.cpu.usage",...]}
+
+### metrics（カスタムメトリクス：社員取得の呼び出し回数）
+curl -i localhost:8080/actuator/metrics/employee.get.count
+# HTTP/1.1 200
+# {"name":"employee.get.count","measurements":[{"statistic":"COUNT","value":1.0}],...}
+
+### metrics（JVMのヒープ使用量）
+curl -i localhost:8080/actuator/metrics/jvm.memory.used
+# HTTP/1.1 200
+# {"name":"jvm.memory.used","baseUnit":"bytes","measurements":[{"statistic":"VALUE","value":1.234567E8}],...}
+
+### metrics（HTTPリクエストの統計。URIやステータスごとのタグで絞り込みも可能）
+curl -i "localhost:8080/actuator/metrics/http.server.requests?tag=uri:/employees/{employeeId}"
+# HTTP/1.1 200
+# {"name":"http.server.requests","measurements":[{"statistic":"COUNT","value":2.0},{"statistic":"TOTAL_TIME","value":0.123},...]}
+
+### env（環境変数・システムプロパティ・application.ymlの設定値一覧）
+curl -i localhost:8080/actuator/env
+# HTTP/1.1 200
+# {"activeProfiles":[],"propertySources":[{"name":"systemProperties",...},{"name":"Config resource 'class path resource [application.yml]'",...}]}
+
+### env（特定のプロパティだけを確認する）
+curl -i localhost:8080/actuator/env/spring.datasource.url
+# HTTP/1.1 200
+# {"property":{"source":"Config resource 'class path resource [application.yml]'","value":"jdbc:hsqldb:hsql://localhost:9001/testdb"},...}
+
+### loggers（ロガーのログレベル一覧）
+curl -i localhost:8080/actuator/loggers
+# HTTP/1.1 200
+# {"levels":["OFF","ERROR","WARN","INFO","DEBUG","TRACE"],"loggers":{"ROOT":{"configuredLevel":"INFO","effectiveLevel":"INFO"},...}}
+
+### loggers（特定パッケージのログレベルを再起動なしでDEBUGに変更する）
+curl -i -X POST localhost:8080/actuator/loggers/pro.kensait.spring.employee -H "Content-Type: application/json" -d {\"configuredLevel\":\"DEBUG\"}
+# HTTP/1.1 204
+curl -i localhost:8080/actuator/loggers/pro.kensait.spring.employee
+# HTTP/1.1 200
+# {"configuredLevel":"DEBUG","effectiveLevel":"DEBUG"}
+
+### mappings（リクエストマッピングの一覧。EmployeeApiの各メソッドが確認できる）
+curl -i localhost:8080/actuator/mappings
+# HTTP/1.1 200
+# {"contexts":{"application":{"mappings":{"dispatcherServlets":{"dispatcherServlet":[{"predicate":"{GET [/employees/{employeeId}]}",...},...]}}}}}
+
+### beans（DIコンテナに登録された全Beanの一覧）
+curl -i localhost:8080/actuator/beans
+# HTTP/1.1 200
+# {"contexts":{"application":{"beans":{"employeeService":{"type":"pro.kensait.spring.employee.rest.service.EmployeeService",...},...}}}}

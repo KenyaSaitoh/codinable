@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!--
+  共通レイアウトを定義するテンプレート
+  ページ側は、このレイアウトに「タイトル」と「本文」を差し込んで利用する
+-->
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="baseLayout(pageTitle, content)">
+<head>
+<meta charset="UTF-8" />
+<!-- 引数で受け取ったタイトルを設定する -->
+<title th:text="${pageTitle}">タイトル</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <!-- ヘッダーは共通フラグメントから取り込む -->
+  <div th:replace="~{fragments/CommonFragment :: pageHeader}"></div>
+
+  <h2 th:text="${pageTitle}">タイトル</h2>
+  <hr />
+
+  <!-- 引数で受け取ったマークアップ片で、このタグごと置き換える -->
+  <div th:replace="${content}">ここにページごとの本文が入る</div>
+
+  <div th:replace="~{fragments/CommonFragment :: pageFooter}"></div>
+  <hr />
+  <a th:href="@{/}">目次に戻る</a>
+</body>
+</html>

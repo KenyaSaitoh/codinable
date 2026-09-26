@@ -1,0 +1,6 @@
+server:
+  address: 127.0.0.1
+  port: 8095
+spring:
+  application:
+    name: rest-employee-restclient-api

@@ -1,0 +1,641 @@
+# ═══════════════════════════════════════════════════════════
+#  Udemy「Spring Boot Webアプリ基礎」の演習
+#
+#  講義そのものは動画側にあり、ここには講座のサンプル（learn_spring_aidd_basic の
+#  projects/master）を Codinable 単独で動く形にしたものを置く
+#  問題を出して解かせることはしない
+#
+#  master のディレクトリ番号（02_〜12_）と講座のチャプター番号は 1 対 1 ではない
+#  （例: 02_spring-mvc-basic はチャプター 3・4、06_rdb-jdbc はチャプター 7）
+#  演習は原稿の各チャプターが使うサンプルに合わせて並べてある
+#  同じサンプルを別のチャプターでも使うときは dir で同じ雛形を指す
+#  （作業用プロジェクトは演習ごとに別に作られる）
+#
+#  DB は HSQLDB サーバーではなくインメモリで、起動のたびに sql/hsqldb/ から作り直す
+#  2 つのプログラムの組（REST API とクライアント）は、ルートを「実行」ボタンで起動し、
+#  client/ をターミナルから動かす
+#
+#  exercises[] の項目:
+#    id           演習の識別子（dir 省略時はディレクトリ名として使う）
+#    dir          templates/ 配下のディレクトリ名（省略時は id）
+#    chapter      対応するチャプター番号。一覧のバッジに出る
+#    lesson       対応するレッスン番号と名前。一覧の副題に出る
+#    runtime      実行環境（java / spring / node / react / python / static / sql / shell）
+#    run          実行対象の既定値（gradle:<タスク> など。実行対象セレクトと同じ書式）
+#    suggestName  作業用プロジェクト名の既定値
+#    names        演習名（言語ごと）
+#    descriptions 「何をどう動かすか」の説明（言語ごと）
+#    openFiles    演習を開いた直後に開くファイル（プロジェクト相対パス）
+# ═══════════════════════════════════════════════════════════
+id: spring-boot-webapp-basic
+order: 2
+# 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
+version: 1.0.0
+
+names:
+  ja: Spring Boot Webアプリ基礎
+  en: 'Spring Boot Web Apps: Fundamentals'
+
+descriptions:
+  ja: >-
+    Spring Boot による Servlet ベースの Web アプリケーションを、DI とレイヤー設計、
+    Spring MVC と Thymeleaf、入力検証と例外処理、リダイレクトとセッション、ファイルの送受信、
+    JDBC / JPA / MyBatis、トランザクション、REST API と Spring Data REST、
+    RestClient / RestTemplate の順に動かして確かめる講座の演習です。
+    講座本編は HSQLDB サーバーを使いますが、ここではインメモリの HSQLDB で動くように調整してあります。
+  en: >-
+    Exercises for the course that runs a servlet-based Spring Boot web application step by step:
+    DI and layering, Spring MVC with Thymeleaf, validation and exception handling, redirects and
+    sessions, file upload and download, JDBC / JPA / MyBatis, transactions, REST APIs and
+    Spring Data REST, and RestClient / RestTemplate.
+    The course itself uses an HSQLDB server; these are adjusted to run on in-memory HSQLDB.
+
+udemy:
+  url: https://github.com/KenyaSaitoh/learn_spring_aidd_basic
+
+exercises:
+  # ── チャプター2: DI とレイヤー設計 ─────────────────────
+  - id: spring-mvc-employee
+    chapter: 2
+    lesson: '2.1 Spring BootとDI・レイヤー設計'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-employee
+    names:
+      ja: メモリー版の社員管理でレイヤーと DI を見る
+      en: See layers and DI in an in-memory employee app
+    descriptions:
+      ja: >-
+        EmployeeController → EmployeeService → EmployeeDAO がコンストラクタで接続された社員管理です。
+        保存先は DB ではなく EmployeeDAO の中の Map です。
+        bootRun で起動して http://localhost:8080/ を開き、一覧・登録・編集・削除を操作してください。
+        実行対象を gradle:test にすると、依存先を Mockito で差し替えたテストが走ります。
+      en: >-
+        An employee app where EmployeeController -> EmployeeService -> EmployeeDAO are wired
+        through constructors. Data lives in a Map inside EmployeeDAO, not in a database.
+        Start it with bootRun, open http://localhost:8080/ and list, create, edit and delete employees.
+        Switch the run target to gradle:test to run the tests that replace dependencies with Mockito.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/service/EmployeeService.java
+      - src/main/java/pro/kensait/spring/employee/web/EmployeeController.java
+      - src/main/java/pro/kensait/spring/employee/service/EmployeeDAO.java
+      - README.md
+
+  # ── チャプター3: Spring MVC と Thymeleaf ──────────────
+  - id: spring-mvc-hello
+    chapter: 3
+    lesson: '3.1 Spring MVCとThymeleafによる画面生成'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-hello
+    names:
+      ja: Controller・Model・View の最小構成
+      en: The smallest Controller / Model / View
+    descriptions:
+      ja: >-
+        HelloController が Model に message を入れ、ビュー名 HelloPage を返すだけのアプリです。
+        bootRun で起動し、http://localhost:8080/hello を開いてください。
+        Model の値やテンプレートの属性名を書き換えて、表示がどう変わるかを確かめます。
+      en: >-
+        HelloController puts message into the Model and returns the view name HelloPage - nothing more.
+        Start it with bootRun and open http://localhost:8080/hello.
+        Change the Model value or the attribute name in the template and see how the page changes.
+    openFiles:
+      - src/main/java/pro/kensait/spring/hello/HelloController.java
+      - src/main/resources/templates/HelloPage.html
+      - README.md
+
+  - id: spring-mvc-thymeleaf-1
+    chapter: 3
+    lesson: '3.1 Spring MVCとThymeleafによる画面生成'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-thymeleaf-1
+    names:
+      ja: Thymeleaf の式とデータ表示
+      en: Thymeleaf expressions and data display
+    descriptions:
+      ja: >-
+        変数式・条件式・エスケープ、record / List / Map の繰り返し、th:if / th:switch、URL 式、
+        #numbers / #strings / #temporals / #lists をページごとに並べたアプリです。
+        bootRun で起動し、http://localhost:8080/ から /expression・/collection・/condition・/link・/utility を開いてください。
+      en: >-
+        One page each for variable / conditional expressions and escaping, iterating over records,
+        Lists and Maps, th:if / th:switch, link expressions, and #numbers / #strings / #temporals / #lists.
+        Start it with bootRun and open /expression, /collection, /condition, /link and /utility
+        from http://localhost:8080/.
+    openFiles:
+      - src/main/java/pro/kensait/spring/thymeleaf/ThymeleafController.java
+      - src/main/resources/templates/ExpressionPage.html
+      - src/main/resources/templates/CollectionPage.html
+      - README.md
+
+  - id: spring-mvc-thymeleaf-2
+    chapter: 3
+    lesson: '3.1 Spring MVCとThymeleafによる画面生成'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-thymeleaf-2
+    names:
+      ja: フォーム・フラグメント・レイアウト・メッセージ
+      en: Forms, fragments, layouts and messages
+    descriptions:
+      ja: >-
+        フォームと入力オブジェクトの対応、フラグメントと共通レイアウト、JavaScript への値の受け渡し、
+        messages.properties によるメッセージとロケール切り替えのアプリです。
+        bootRun で起動し、/form・/fragment・/layout・/inline・/message?lang=en を開いてください。
+        /form では空のまま送信し、エラーの表示を確かめます。
+      en: >-
+        Binding a form to an input object, fragments and a shared layout, passing values to JavaScript,
+        and messages from messages.properties with locale switching.
+        Start it with bootRun and open /form, /fragment, /layout, /inline and /message?lang=en.
+        Submit /form empty to see how errors are shown.
+    openFiles:
+      - src/main/java/pro/kensait/spring/thymeleaf/FormController.java
+      - src/main/resources/templates/FormPage.html
+      - src/main/java/pro/kensait/spring/thymeleaf/config/MessageConfig.java
+      - README.md
+
+  # ── チャプター4: リクエスト処理・入力検証・例外処理 ─────
+  - id: spring-mvc-calc-1-request
+    chapter: 4
+    lesson: '4.1 Spring MVCのリクエスト処理・入力検証・例外処理'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-calc-1-request
+    names:
+      ja: HTTP の入力と Controller の引数
+      en: HTTP input and controller arguments
+    descriptions:
+      ja: >-
+        入力画面（GET /）、フォームの POST（/add）、GET による計算（/addByGet）を持つ計算機です。
+        入力検証はまだありません。bootRun で起動し、http://localhost:8080/ で計算したあと、
+        http://localhost:8080/addByGet?param1=30&param2=10 を直接開いてください。
+      en: >-
+        A calculator with an input page (GET /), a form POST (/add) and a GET calculation (/addByGet).
+        There is no validation yet. Start it with bootRun, calculate from http://localhost:8080/,
+        then open http://localhost:8080/addByGet?param1=30&param2=10 directly.
+    openFiles:
+      - src/main/java/pro/kensait/spring/calc/CalcController.java
+      - src/main/resources/templates/CalcInputPage.html
+      - README.md
+
+  - id: spring-mvc-calc-2-validation
+    chapter: 4
+    lesson: '4.1 Spring MVCのリクエスト処理・入力検証・例外処理'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-calc-2-validation
+    names:
+      ja: データバインディングと Bean Validation
+      en: Data binding and Bean Validation
+    descriptions:
+      ja: >-
+        入力を CalcParam（@NotNull と -1000〜1000 の範囲）へバインドし、BindingResult で入力画面へ戻す計算機です。
+        bootRun で起動し、http://localhost:8080/ で空欄・文字・2000 などを送って、エラーの再表示を確かめてください。
+      en: >-
+        A calculator that binds input to CalcParam (@NotNull and a range of -1000 to 1000) and returns
+        to the input page through BindingResult. Start it with bootRun, open http://localhost:8080/
+        and submit blanks, letters or 2000 to see the errors shown again.
+    openFiles:
+      - src/main/java/pro/kensait/spring/calc/web/CalcParam.java
+      - src/main/java/pro/kensait/spring/calc/web/CalcController.java
+      - src/main/java/pro/kensait/spring/calc/service/CalcService.java
+      - README.md
+
+  - id: spring-mvc-calc-4-prg-rebind
+    dir: spring-mvc-calc-4-prg
+    chapter: 4
+    lesson: '4.1 Spring MVCのリクエスト処理・入力検証・例外処理'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-calc-4-prg-rebind
+    names:
+      ja: BindingResult と入力エラーの再表示
+      en: BindingResult and showing input errors again
+    descriptions:
+      ja: >-
+        CalcInputPage.html が th:object と th:errors で、送信した値とエラーを同じ入力画面に出す例です。
+        bootRun で起動し、http://localhost:8080/ で数値以外や範囲外の値を送り、
+        値が残ったまま項目ごとにエラーが出ることを確かめてください。
+      en: >-
+        CalcInputPage.html uses th:object and th:errors to show the submitted values and the errors
+        on the same input page. Start it with bootRun, open http://localhost:8080/ and submit
+        non-numbers or out-of-range values; the values stay and each field shows its error.
+    openFiles:
+      - src/main/resources/templates/CalcInputPage.html
+      - src/main/java/pro/kensait/spring/calc/web/CalcController.java
+      - README.md
+
+  - id: spring-mvc-calc-3-config-exception
+    chapter: 4
+    lesson: '4.1 Spring MVCのリクエスト処理・入力検証・例外処理'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-calc-3-config-exception
+    names:
+      ja: 外部設定と業務例外
+      en: External configuration and business exceptions
+    descriptions:
+      ja: >-
+        ConfigHolder が config.properties の桁数と上限を受け取り、CalcService が BigDecimal で計算して
+        上限超過・ゼロ除算を例外で知らせます。bootRun で起動し、http://localhost:8080/ で
+        1000 × 1000 や 0 除算、1 ÷ 3 を試して、エラー画面への分岐と丸めを確かめてください。
+      en: >-
+        ConfigHolder reads the scale and the limit from config.properties, and CalcService calculates
+        with BigDecimal and reports overflow or division by zero with exceptions. Start it with bootRun,
+        open http://localhost:8080/ and try 1000 x 1000, dividing by 0 and 1 / 3 to see the error page
+        and the rounding.
+    openFiles:
+      - src/main/java/pro/kensait/spring/calc/config/ConfigHolder.java
+      - src/main/java/pro/kensait/spring/calc/service/CalcService.java
+      - src/main/java/pro/kensait/spring/calc/web/CalcController.java
+      - README.md
+
+  # ── チャプター5: リダイレクトとセッション ─────────────
+  - id: spring-mvc-calc-4-prg
+    chapter: 5
+    lesson: '5.1 リダイレクトとセッションによる状態管理'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-calc-4-prg
+    names:
+      ja: PRG とフラッシュ属性
+      en: PRG and flash attributes
+    descriptions:
+      ja: >-
+        POST /add が結果をフラッシュ属性に入れて /viewAddResult へリダイレクトする計算機です。
+        bootRun で起動し、http://localhost:8080/ で足し算をしたあと、URL が変わっていることと、
+        再読み込みしても POST が再送されないことを確かめてください。
+      en: >-
+        A calculator whose POST /add stores the result as a flash attribute and redirects to /viewAddResult.
+        Start it with bootRun, add two numbers at http://localhost:8080/, and check that the URL has
+        changed and that reloading does not resend the POST.
+    openFiles:
+      - src/main/java/pro/kensait/spring/calc/web/CalcController.java
+      - src/main/resources/templates/CalcOutputPage.html
+      - README.md
+
+  - id: spring-mvc-calc-6-history
+    chapter: 5
+    lesson: '5.1 リダイレクトとセッションによる状態管理'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-calc-6-history
+    names:
+      ja: ID 付き URL と保存済み結果の再取得
+      en: URLs with IDs and reloading saved results
+    descriptions:
+      ja: >-
+        計算結果を履歴として保存し、ID を付けて /viewResult へリダイレクトする計算機です。
+        bootRun で起動して何回か計算し、/viewResult?id=1 を開き直してください。
+        /viewHistory1〜3 で履歴一覧、/viewResultByQuery?id=1 と /viewResultByPath/1 で ID 指定の表示も見られます。
+      en: >-
+        A calculator that saves each result as history and redirects to /viewResult with its ID.
+        Start it with bootRun, calculate a few times and reopen /viewResult?id=1.
+        /viewHistory1 to 3 list the history; /viewResultByQuery?id=1 and /viewResultByPath/1 show one entry by ID.
+    openFiles:
+      - src/main/java/pro/kensait/spring/calc/web/CalcController.java
+      - src/main/java/pro/kensait/spring/calc/service/CalcService.java
+      - src/main/java/pro/kensait/spring/calc/service/CalcDAO.java
+      - README.md
+
+  - id: spring-mvc-calc-5-session
+    chapter: 5
+    lesson: '5.1 リダイレクトとセッションによる状態管理'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-calc-5-session
+    names:
+      ja: '@SessionAttributes で結果を次の画面へ引き継ぐ'
+      en: Carry a result to the next page with @SessionAttributes
+    descriptions:
+      ja: >-
+        計算結果を CalcSession としてセッションに保持し、次の画面の /calcTax で税込金額を求める計算機です。
+        bootRun で起動し、http://localhost:8080/ で計算してから税込計算へ進み、前の結果が使われることを確かめてください。
+      en: >-
+        A calculator that keeps the result in the session as CalcSession and computes the price
+        with tax at /calcTax on the next page. Start it with bootRun, calculate at http://localhost:8080/,
+        then go on to the tax calculation and check that the previous result is used.
+    openFiles:
+      - src/main/java/pro/kensait/spring/calc/web/CalcController.java
+      - src/main/java/pro/kensait/spring/calc/web/CalcSession.java
+      - src/main/java/pro/kensait/spring/calc/service/TaxService.java
+      - README.md
+
+  - id: spring-mvc-employee-session
+    dir: spring-mvc-employee
+    chapter: 5
+    lesson: '5.1 リダイレクトとセッションによる状態管理'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-employee-session
+    names:
+      ja: 入力・確認・確定の複数画面とセッション
+      en: Input, confirm and commit across pages with the session
+    descriptions:
+      ja: >-
+        社員管理の登録と編集は、@SessionAttributes("employeeSession") で入力途中の値を保持しながら
+        /toCreate → /toConfirm → 確定 と画面を進みます。bootRun で起動して http://localhost:8080/ を開き、
+        登録の途中で戻ったり確定したりして、値がどこまで残るかを確かめてください。
+      en: >-
+        Creating and editing an employee moves through /toCreate -> /toConfirm -> commit while
+        @SessionAttributes("employeeSession") keeps the values in progress. Start it with bootRun,
+        open http://localhost:8080/, and go back or commit in the middle of a registration to see
+        how long the values stay.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/web/EmployeeController.java
+      - src/main/java/pro/kensait/spring/employee/web/EmployeeSession.java
+      - README.md
+
+  # ── チャプター6: ファイルのアップロードとダウンロード ──
+  - id: spring-mvc-file-upload
+    chapter: 6
+    lesson: '6.1 Spring MVCによるファイルアップロードとダウンロード'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-file-upload
+    names:
+      ja: MultipartFile でファイルを受け取る
+      en: Receive a file with MultipartFile
+    descriptions:
+      ja: >-
+        multipart/form-data のフォームからタイトルとファイルを受け取り、FileStorageService が
+        アプリの発行したキーで保存します。bootRun で起動し、http://localhost:8080/ でファイルを選んで保存し、
+        結果画面（/files/{id}）で保存内容を確かめてください。
+      en: >-
+        Receives a title and a file from a multipart/form-data form; FileStorageService stores it under
+        a key the app issues. Start it with bootRun, pick a file at http://localhost:8080/ and save it,
+        then check what was stored on the result page (/files/{id}).
+    openFiles:
+      - src/main/java/pro/kensait/spring/upload/FileUploadController.java
+      - src/main/java/pro/kensait/spring/upload/FileStorageService.java
+      - src/main/resources/templates/FileUploadPage.html
+      - README.md
+
+  - id: spring-mvc-file-download
+    chapter: 6
+    lesson: '6.1 Spring MVCによるファイルアップロードとダウンロード'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-file-download
+    names:
+      ja: Resource と ResponseEntity でファイルを返す
+      en: Return a file with Resource and ResponseEntity
+    descriptions:
+      ja: >-
+        C:/tmp/output の下のファイルを Content-Disposition 付きで返します。
+        先にターミナルで mkdir -p /c/tmp/output && echo hello > /c/tmp/output/sample.txt を実行し、
+        bootRun で起動してから Web ブラウザで http://localhost:8080/download/sample.txt を開いてください。
+      en: >-
+        Returns a file under C:/tmp/output with a Content-Disposition header.
+        First run mkdir -p /c/tmp/output && echo hello > /c/tmp/output/sample.txt in the terminal,
+        start the app with bootRun, then open http://localhost:8080/download/sample.txt in a web browser.
+    openFiles:
+      - src/main/java/pro/kensait/spring/download/FileDownloadController.java
+      - README.md
+
+  # ── チャプター7〜9: DB アクセス ───────────────────────
+  - id: spring-mvc-employee-jdbc
+    chapter: 7
+    lesson: '7.1 Spring JDBCによるデータベースアクセス'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-employee-jdbc
+    names:
+      ja: JdbcTemplate による社員管理
+      en: Employee management with JdbcTemplate
+    descriptions:
+      ja: >-
+        EmployeeRepository が JdbcTemplate と RowMapper で検索・登録・更新・論理削除を行う社員管理です。
+        DB はインメモリの HSQLDB で、起動時に sql/hsqldb の SQL で作ります。
+        bootRun で起動し、http://localhost:8080/ で検索・ページ送り・登録・編集・削除を操作してください。
+      en: >-
+        An employee app whose EmployeeRepository searches, inserts, updates and soft-deletes with
+        JdbcTemplate and RowMapper. The database is in-memory HSQLDB built from sql/hsqldb at startup.
+        Start it with bootRun and search, page, create, edit and delete at http://localhost:8080/.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/repository/EmployeeRepository.java
+      - src/main/java/pro/kensait/spring/employee/service/EmployeeService.java
+      - sql/hsqldb/2_EMPLOYEE_DDL.sql
+      - README.md
+
+  - id: spring-mvc-employee-jpa
+    chapter: 8
+    lesson: '8.1 Spring Data JPAと永続化コンテキスト'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-employee-jpa
+    names:
+      ja: Spring Data JPA による社員管理
+      en: Employee management with Spring Data JPA
+    descriptions:
+      ja: >-
+        JDBC 版と同じ画面のまま、永続化をエンティティ・JpaRepository・JPQL・Pageable に置き換えた社員管理です。
+        bootRun で起動し、http://localhost:8080/ で検索・登録・編集・削除を操作して、
+        実行ログに出る SQL と合わせて確かめてください。
+      en: >-
+        The same screens as the JDBC version, with persistence replaced by entities, JpaRepository,
+        JPQL and Pageable. Start it with bootRun, search, create, edit and delete at
+        http://localhost:8080/, and compare with the SQL shown in the log.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/entity/Employee.java
+      - src/main/java/pro/kensait/spring/employee/repository/EmployeeRepository.java
+      - src/main/java/pro/kensait/spring/employee/service/EmployeeService.java
+      - README.md
+
+  - id: spring-mvc-employee-mybatis
+    chapter: 9
+    lesson: '9.1 MyBatisによるSQLマッピングと動的SQL'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-employee-mybatis
+    names:
+      ja: MyBatis による社員管理
+      en: Employee management with MyBatis
+    descriptions:
+      ja: >-
+        Mapper インタフェースと XML の SQL を対応させ、<if> による動的 SQL で一覧と件数をそろえる社員管理です。
+        bootRun で起動し、http://localhost:8080/ で条件を変えて検索し、一覧と総件数・ページ数を確かめてください。
+      en: >-
+        An employee app that pairs Mapper interfaces with SQL in XML and keeps the list and the count
+        consistent with dynamic SQL (<if>). Start it with bootRun, search with different conditions at
+        http://localhost:8080/ and check the list against the total count and pages.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/mapper/EmployeeMapper.java
+      - src/main/resources/pro/kensait/spring/employee/mapper/EmployeeMapper.xml
+      - src/main/java/pro/kensait/spring/employee/service/EmployeeService.java
+      - README.md
+
+  # ── チャプター10: トランザクション ──────────────────
+  - id: spring-mvc-tx
+    chapter: 10
+    lesson: '10.1 Springのトランザクション管理と伝播'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-tx
+    names:
+      ja: REQUIRED と REQUIRES_NEW の伝播
+      en: REQUIRED vs REQUIRES_NEW propagation
+    descriptions:
+      ja: >-
+        FooBean（REQUIRED）が BarBean（REQUIRES_NEW）と QuxBean（REQUIRED）を呼び、
+        QuxBean は引数が負なら例外を送出します。bootRun で起動し、
+        http://localhost:8080/fuga?param=100 と ?param=-5 を開いて、応答と実行ログの流れを確かめてください。
+      en: >-
+        FooBean (REQUIRED) calls BarBean (REQUIRES_NEW) and QuxBean (REQUIRED); QuxBean throws when
+        the argument is negative. Start it with bootRun, open http://localhost:8080/fuga?param=100 and
+        ?param=-5, and follow the responses and the log.
+    openFiles:
+      - src/main/java/pro/kensait/spring/tx/FooBean.java
+      - src/main/java/pro/kensait/spring/tx/BarBean.java
+      - src/main/java/pro/kensait/spring/tx/QuxBean.java
+      - README.md
+
+  - id: spring-mvc-tx-jta
+    chapter: 10
+    lesson: '10.1 Springのトランザクション管理と伝播'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-mvc-tx-jta
+    names:
+      ja: JTA で 2 つのデータソースを 1 つのトランザクションにする
+      en: One JTA transaction across two data sources
+    descriptions:
+      ja: >-
+        Atomikos に登録した 2 つの XA データソースを BarBean と QuxBean が使い分け、
+        FooBean のグローバルトランザクションに参加します。bootRun で起動し、
+        http://localhost:8080/JtaPage.html から 100 と -5 を送って、応答と実行ログを確かめてください。
+      en: >-
+        BarBean and QuxBean each use one of two XA data sources registered with Atomikos and join
+        FooBean's global transaction. Start it with bootRun, send 100 and -5 from
+        http://localhost:8080/JtaPage.html, and check the responses and the log.
+    openFiles:
+      - src/main/java/pro/kensait/spring/tx/XaDataSourceConfig.java
+      - src/main/java/pro/kensait/spring/tx/FooBean.java
+      - src/main/java/pro/kensait/spring/tx/QuxBean.java
+      - README.md
+
+  # ── チャプター11: REST API と Spring Data REST ─────────
+  - id: spring-rest-greet
+    chapter: 11
+    lesson: '11.1 Spring WebとSpring Data RESTによるREST API'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-rest-greet
+    names:
+      ja: REST API で値を受け取る場所
+      en: Where a REST API takes its input from
+    descriptions:
+      ja: >-
+        GreetApi がパス・クエリ・フォーム・JSON 本文・ヘッダーから名前を受け取ります。
+        bootRun で起動し、ターミナルで curl http://localhost:8080/greet/hello/Alice などを送ってください
+        （他の curl は README.md にあります）。
+      en: >-
+        GreetApi takes a name from the path, the query, a form, a JSON body or a header.
+        Start it with bootRun and send requests such as curl http://localhost:8080/greet/hello/Alice
+        from the terminal (README.md lists the rest).
+    openFiles:
+      - src/main/java/pro/kensait/spring/greet/rest/api/GreetApi.java
+      - README.md
+
+  - id: spring-rest-employee
+    chapter: 11
+    lesson: '11.1 Spring WebとSpring Data RESTによるREST API'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-rest-employee
+    names:
+      ja: '@RestController による社員管理 API'
+      en: An employee API with @RestController
+    descriptions:
+      ja: >-
+        EmployeeApi → EmployeeService → EmployeeRepository の社員 API で、検証エラーは 400、
+        未存在は 404、古い version の更新は 409 を返します。bootRun で起動し、
+        ターミナルで curlメモ.txt の curl を順に送ってください。gradle:test で API のテストも走ります。
+      en: >-
+        An employee API (EmployeeApi -> EmployeeService -> EmployeeRepository) that returns 400 for
+        invalid input, 404 for missing employees and 409 for updates with a stale version.
+        Start it with bootRun and send the curl commands in curlメモ.txt from the terminal.
+        gradle:test runs the API tests.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/rest/api/EmployeeApi.java
+      - src/main/java/pro/kensait/spring/employee/rest/api/ApiExceptionHandler.java
+      - curlメモ.txt
+      - README.md
+
+  - id: spring-data-rest-employee
+    chapter: 11
+    lesson: '11.1 Spring WebとSpring Data RESTによるREST API'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-data-rest-employee
+    names:
+      ja: Spring Data REST で Repository を公開する
+      en: Expose a repository with Spring Data REST
+    descriptions:
+      ja: >-
+        自作の Controller を置かず、EmployeeRepository を /api の下に自動公開します（HAL・ページング・
+        検索・Projection・ETag）。bootRun で起動し、ターミナルで client/curlメモ.txt の curl を送ってください。
+        確認用画面は、ターミナルで python -m http.server 5500 --bind 127.0.0.1 --directory client/src を実行し、
+        プレビューの URL に http://127.0.0.1:5500 を入れて開きます。
+      en: >-
+        With no hand-written controller, EmployeeRepository is exposed under /api (HAL, paging, search,
+        projections, ETags). Start it with bootRun and send the curl commands in client/curlメモ.txt
+        from the terminal. For the viewer page, run
+        python -m http.server 5500 --bind 127.0.0.1 --directory client/src in the terminal and enter
+        http://127.0.0.1:5500 in the preview URL.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/repository/EmployeeRepository.java
+      - src/main/java/pro/kensait/spring/employee/config/RestConfig.java
+      - src/main/java/pro/kensait/spring/employee/entity/Employee.java
+      - README.md
+
+  # ── チャプター12: RestClient / RestTemplate ──────────────
+  # ルートが確認用 API（実行ボタン）、client/ がコンソールクライアント（ターミナル）
+  - id: spring-restclient-employee
+    chapter: 12
+    lesson: '12.1 RestClientとRestTemplateによる同期HTTP通信'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-restclient-employee
+    names:
+      ja: RestClient で社員 API を呼ぶ
+      en: Call the employee API with RestClient
+    descriptions:
+      ja: >-
+        ルートは確認用の社員 API（ポート 8095）、client/ は RestClient で API を呼ぶ Java コンソールです。
+        bootRun で API を起動したまま、ターミナルで cd client → ../gradlew.bat run を実行し、
+        取得・検索・登録・更新・削除と削除後の 404 の出力を確かめてください。
+      en: >-
+        The root is a sample employee API (port 8095); client/ is a Java console app that calls it
+        with RestClient. Keep the API running with bootRun, then run cd client -> ../gradlew.bat run in
+        the terminal and read the output for get, search, create, update, delete and the 404 afterwards.
+    openFiles:
+      - client/src/main/java/pro/kensait/spring/employee/client/Main_Employee.java
+      - client/src/main/java/pro/kensait/spring/employee/client/ClientOptions.java
+      - src/main/java/pro/kensait/spring/employee/api/EmployeeController.java
+      - README.md
+
+  - id: spring-resttemplate-employee
+    chapter: 12
+    lesson: '12.1 RestClientとRestTemplateによる同期HTTP通信'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-resttemplate-employee
+    names:
+      ja: RestTemplate で同じ社員 API を呼ぶ
+      en: Call the same employee API with RestTemplate
+    descriptions:
+      ja: >-
+        RestClient 版と同じ通信を RestTemplate（getForObject / exchange / postForEntity など）で書いたものです。
+        ルートの確認用 API（ポート 8086）を bootRun で起動したまま、ターミナルで cd client → ../gradlew.bat run を実行し、
+        RestClient 版と出力を見比べてください。
+      en: >-
+        The same calls as the RestClient version, written with RestTemplate (getForObject, exchange,
+        postForEntity and so on). Keep the sample API at the root (port 8086) running with bootRun,
+        run cd client -> ../gradlew.bat run in the terminal, and compare the output with the RestClient version.
+    openFiles:
+      - client/src/main/java/pro/kensait/spring/employee/client/Main_Employee.java
+      - src/main/java/pro/kensait/spring/employee/api/EmployeeController.java
+      - README.md

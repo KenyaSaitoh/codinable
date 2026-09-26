@@ -1,0 +1,884 @@
+# ═══════════════════════════════════════════════════════════
+#  Udemy「Java DBアクセス」の演習
+#
+#  講座リポジトリ learn_java_db_aidd の projects/master にある 32 プロジェクトを、
+#  それぞれ単独で動く Gradle プロジェクトにして templates/ に置いている
+#  （Spring は使わない。runtime はすべて java）
+#
+#  実行の入口は 2 種類
+#    - テストが入口の小さな教材（jdbc-* / jpa-crud / jpa-relations / mybatis-crud / mybatis-dynamic）
+#      → run: gradle:test。テストがプロジェクト専用のインメモリ DB を用意する
+#    - main を持つ取り込み教材（jpa-basic-1 など 25 プロジェクト）→ run: gradle:run
+#      元は HSQLDB サーバーの testdb を setupHsqldb で初期化してから -PmainClass で 1 つずつ動かしていた。
+#      Codinable ではサーバーも引数も使えないので、接続先をインメモリ（jdbc:hsqldb:mem:testdb）にし、
+#      起動クラス pro.kensait.course.SampleLauncher が mains.txt の main を順に、
+#      main ごとに sql/hsqldb/*.sql で初期化し直してから動かす。
+#      2 ターミナルで行っていたロックの確認は mains.txt の「A & B」行（別スレッド・別セッション）で再現する
+#
+#  exercises[] の項目:
+#    id           演習の識別子（dir 省略時はディレクトリ名として使う）
+#    dir          templates/ 配下のディレクトリ名（省略時は id）
+#                 複数のチャプターで同じプロジェクトを使うときは、別 id で同じ dir を指す
+#    chapter      対応するチャプター番号。一覧のバッジに出る
+#    lesson       対応するレッスン番号と名前（原稿の目次の見出し）。一覧の副題に出る
+#    runtime      実行環境（java / spring / node / react / python / static / sql / shell）
+#    run          実行対象の既定値（gradle:run / gradle:test）
+#    suggestName  作業用プロジェクト名の既定値
+#    names        演習名（言語ごと）
+#    descriptions 「何をどう動かすか」の説明（言語ごと）
+#    openFiles    演習を開いた直後に開くファイル（プロジェクト相対パス）
+# ═══════════════════════════════════════════════════════════
+id: java-db-access
+order: 9
+# 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
+version: 1.0.0
+
+names:
+  ja: Java DBアクセス
+  en: Java Database Access
+
+descriptions:
+  ja: >-
+    JDBC から MyBatis、JPA（Hibernate）へと、データアクセス層の方式を段階的に比較する講座の演習です。
+    接続・CRUD・トランザクション、楽観ロックと悲観ロック、関連のマッピング、JPQL・ネイティブSQL・動的検索、
+    複合主キーや継承までを扱います。講座本編は HSQLDB サーバーを起動して main を 1 つずつ実行しますが、
+    ここでは HSQLDB のインメモリ DB に切り替え、「実行」ボタン 1 つで初期化から実行までが済むようにしてあります。
+  en: >-
+    Exercises for the course that compares data access approaches step by step, from JDBC to MyBatis
+    and JPA (Hibernate): connections, CRUD and transactions, optimistic and pessimistic locking,
+    association mapping, JPQL / native SQL / dynamic queries, composite keys and inheritance.
+    The course itself starts an HSQLDB server and runs each main one at a time; here the samples use an
+    in-memory HSQLDB so a single Run button initializes the data and runs everything.
+
+udemy:
+  url: https://github.com/KenyaSaitoh/learn_java_db_aidd
+
+exercises:
+  # ── チャプター3: JDBC ─────────────────────────────
+  - id: jdbc-connection
+    chapter: 3
+    lesson: '3.1 JDBCの接続・CRUD・トランザクション'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: jdbc-connection
+    names:
+      ja: JDBC URL と Connection の取得
+      en: JDBC URLs and obtaining a Connection
+    descriptions:
+      ja: >-
+        JdbcUrl で JDBC URL を 3 つの要素に分け、ConnectionFactory で DriverManager と DataSource の
+        両方から接続を取ります。Gradle: test を実行し、テスト結果タブで DB 製品名・autoCommit の初期値・
+        不完全な URL の拒否を確かめるテストが通ることを見てください。
+      en: >-
+        JdbcUrl splits a JDBC URL into its three parts, and ConnectionFactory obtains connections from both
+        DriverManager and DataSource. Run Gradle: test and check in the test results tab the tests for the
+        database product name, the initial autoCommit value and rejecting incomplete URLs.
+    openFiles:
+      - src/main/java/pro/kensait/db/connection/JdbcUrl.java
+      - src/main/java/pro/kensait/db/connection/ConnectionFactory.java
+      - src/test/java/pro/kensait/db/connection/ConnectionFactoryTest.java
+      - README.md
+
+  - id: jdbc-crud
+    chapter: 3
+    lesson: '3.1 JDBCの接続・CRUD・トランザクション'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: jdbc-crud
+    names:
+      ja: PreparedStatement による CRUD と DAO
+      en: CRUD and a DAO with PreparedStatement
+    descriptions:
+      ja: >-
+        EmployeeDao が PreparedStatement で登録・検索・更新・削除を行い、ResultSet を Employee に詰め替えます。
+        Gradle: test を実行し、該当なし（Optional の空・更新件数 0）、重複キー、SQL 構文を含む名前が
+        値として保存されることを確かめるテストの結果を見てください。
+      en: >-
+        EmployeeDao inserts, finds, updates and deletes with PreparedStatement and maps the ResultSet to
+        Employee. Run Gradle: test and look at the tests for "not found" (empty Optional / 0 rows updated),
+        duplicate keys, and names containing SQL syntax being stored as plain values.
+    openFiles:
+      - src/main/java/pro/kensait/db/jdbc/EmployeeDao.java
+      - src/test/java/pro/kensait/db/jdbc/EmployeeDaoTest.java
+      - README.md
+
+  - id: jdbc-transaction
+    chapter: 3
+    lesson: '3.1 JDBCの接続・CRUD・トランザクション'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: jdbc-transaction
+    names:
+      ja: commit・rollback・savepoint・一括更新
+      en: commit, rollback, savepoints and batch updates
+    descriptions:
+      ja: >-
+        PayrollService が autoCommit を切り、複数社員の昇給を addBatch でまとめて実行します。
+        Gradle: test を実行し、途中で失敗すると先に済んだ更新も戻ること、savepoint で給与だけ取り消せること、
+        CallableStatement の OUT 引数で部署の社員数を受け取れることをテスト結果で確かめてください。
+      en: >-
+        PayrollService turns autoCommit off and raises several salaries at once with addBatch.
+        Run Gradle: test and confirm in the results that a failure part-way also undoes earlier updates,
+        that a savepoint can undo only the salary change, and that a CallableStatement OUT parameter
+        returns the head count of a department.
+    openFiles:
+      - src/main/java/pro/kensait/db/transaction/PayrollService.java
+      - src/test/java/pro/kensait/db/transaction/PayrollServiceTest.java
+      - README.md
+
+  # ── チャプター4: MyBatis の基本 ─────────────────────
+  - id: mybatis-basic-1
+    chapter: 4
+    lesson: '4.1 Table Data GatewayとMyBatisの基本'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: mybatis-basic-1
+    names:
+      ja: SqlSession と Mapper による CRUD
+      en: CRUD with SqlSession and Mapper interfaces
+    descriptions:
+      ja: >-
+        Gradle: run で、SQL-ID で呼び出す main1 の SelectMain1〜7・InsertMain1・UpdateMain1〜3・DeleteMain1〜2 と、
+        Mapper インターフェースで呼び出す main2 の各 main を順に実行します。出力の「==> Preparing」に出る SQL と
+        パラメータ、「<== Total / Updates」の件数を mybatis-mapper.xml の定義と見比べてください。
+        1 つだけ動かすときは mains.txt のほかの行を # で止めます。
+      en: >-
+        Gradle: run executes, in order, the main1 examples that call statements by SQL ID (SelectMain1-7,
+        InsertMain1, UpdateMain1-3, DeleteMain1-2) and the main2 examples that go through the Mapper interface.
+        Compare the SQL and parameters on the "==> Preparing" lines and the counts on "<== Total / Updates"
+        with mybatis-mapper.xml. To run just one, comment out the other lines of mains.txt with #.
+    openFiles:
+      - src/main/resources/mybatis-config.xml
+      - src/main/resources/mybatis-mapper.xml
+      - src/main/java/pro/kensait/mybatis/company/main1/SelectMain1.java
+      - README.md
+
+  - id: mybatis-basic-2
+    chapter: 4
+    lesson: '4.1 Table Data GatewayとMyBatisの基本'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: mybatis-basic-2
+    names:
+      ja: 型のマッピング・自動採番・集合パラメータ
+      en: Type mapping, generated keys and collection parameters
+    descriptions:
+      ja: >-
+        入社日（LocalDate）・職務（列挙型）・バージョンを持つ社員を扱います。Gradle: run で SelectMain1・2、
+        InsertMain1・2 を順に実行し、foreach で組み立てた IN 句と、INSERT 後に Employee へ戻ってきた
+        採番結果が出力にどう表れるかを確かめてください。
+      en: >-
+        Employees now carry a hire date (LocalDate), a job (enum) and a version. Gradle: run executes
+        SelectMain1-2 and InsertMain1-2; check in the output the IN clause built with foreach and the
+        generated key written back into Employee after the INSERT.
+    openFiles:
+      - src/main/resources/mybatis-mapper.xml
+      - src/main/java/pro/kensait/mybatis/company/main/InsertMain1.java
+      - src/main/java/pro/kensait/mybatis/company/dto/Employee.java
+      - README.md
+
+  - id: mybatis-crud
+    chapter: 4
+    lesson: '4.1 Table Data GatewayとMyBatisの基本'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: mybatis-crud
+    names:
+      ja: Mapper の CRUD をテストで確かめる
+      en: Check Mapper CRUD with tests
+    descriptions:
+      ja: >-
+        EmployeeMapper（インターフェース）と EmployeeMapper.xml の SQL-ID を対応させた小さな教材です。
+        Gradle: test を実行し、登録・検索・更新・削除と commit の関係を確かめるテストの結果を見てください。
+      en: >-
+        A small sample that pairs the EmployeeMapper interface with the SQL IDs in EmployeeMapper.xml.
+        Run Gradle: test and look at the tests covering insert, find, update, delete and commit.
+    openFiles:
+      - src/main/java/pro/kensait/db/mybatis/EmployeeMapper.java
+      - src/main/resources/pro/kensait/db/mybatis/EmployeeMapper.xml
+      - src/test/java/pro/kensait/db/mybatis/EmployeeMapperTest.java
+      - README.md
+
+  # ── チャプター5: JPA の基本 ─────────────────────────
+  - id: jpa-basic-1
+    chapter: 5
+    lesson: '5.1 Data MapperとJPAの基本'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-basic-1
+    names:
+      ja: EntityManager による CRUD と変更検知
+      en: CRUD and change detection with EntityManager
+    descriptions:
+      ja: >-
+        Gradle: run で SelectMain → InsertMain → UpdateMain → DeleteMain を順に実行します。
+        Hibernate が出力する SQL を見て、find・persist・remove と、UpdateMain で setter を呼んだだけの変更が
+        コミット時に UPDATE になることを確かめてください。
+      en: >-
+        Gradle: run executes SelectMain, InsertMain, UpdateMain and DeleteMain in order.
+        Read the SQL Hibernate prints and see how find, persist and remove map to SQL, and how a plain
+        setter call in UpdateMain becomes an UPDATE at commit.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/main/SelectMain.java
+      - src/main/java/pro/kensait/jpa/company/main/UpdateMain.java
+      - README.md
+
+  - id: jpa-basic-2
+    chapter: 5
+    lesson: '5.1 Data MapperとJPAの基本'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-basic-2
+    names:
+      ja: LocalDate・列挙型・LOB のマッピング
+      en: Mapping LocalDate, enums and LOBs
+    descriptions:
+      ja: >-
+        入社日・職務・写真を加えた Employee で、Java の型と列の対応を扱います。Gradle: run で CRUD の 4 つの main を
+        順に実行し、列挙型がどの値で保存され、日付がどう読み戻されるかを出力の SQL と取得結果で確かめてください。
+      en: >-
+        Employee gains a hire date, a job and a photo to show how Java types map to columns. Gradle: run
+        executes the four CRUD mains; use the printed SQL and results to see how the enum is stored and how
+        the date is read back.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/type/JobType.java
+      - src/main/java/pro/kensait/jpa/company/main/InsertMain.java
+      - README.md
+
+  - id: jpa-crud
+    chapter: 5
+    lesson: '5.1 Data MapperとJPAの基本'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: jpa-crud
+    names:
+      ja: Repository とトランザクションの分担
+      en: Repository and transaction responsibilities
+    descriptions:
+      ja: >-
+        EmployeeRepository は EntityManager を引数で受け取り、トランザクションは呼び出し元が開始・確定します。
+        Gradle: test を実行し、テスト結果とテストコードでこの分担を確かめてください。
+      en: >-
+        EmployeeRepository receives the EntityManager as an argument and the caller begins and commits the
+        transaction. Run Gradle: test and follow this split in the test results and the test code.
+    openFiles:
+      - src/main/java/pro/kensait/db/jpa/EmployeeRepository.java
+      - src/test/java/pro/kensait/db/jpa/EmployeeRepositoryTest.java
+      - src/main/resources/META-INF/persistence.xml
+      - README.md
+
+  # ── チャプター6: 楽観ロック・悲観ロック ─────────────
+  - id: mybatis-lock
+    chapter: 6
+    lesson: '6.1 同時更新と楽観ロック・悲観ロック'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: mybatis-lock
+    names:
+      ja: MyBatis の楽観ロックと FOR UPDATE
+      en: Optimistic locking and FOR UPDATE with MyBatis
+    descriptions:
+      ja: >-
+        Gradle: run で OptimisticLockMain1 と 2、PessimisticLockMain1 と 2 を、それぞれ 3 秒ずらして同時に動かします
+        （元は 2 つのターミナルで行う確認）。楽観ロックでは後から UPDATE した 2 が「Updates: 0」で例外になり、
+        悲観ロックでは 2 の SELECT ... FOR UPDATE が 1 のコミットまで待たされることを、出力の経過秒と SQL で
+        確かめてください。Gradle: test では古いバージョンでの更新が 0 件になることをテストで確かめます。
+      en: >-
+        Gradle: run starts OptimisticLockMain1 and 2, then PessimisticLockMain1 and 2, each pair 3 seconds apart
+        in the same run (the course does this in two terminals). With optimistic locking, main 2 updates
+        "Updates: 0" and throws; with pessimistic locking, main 2's SELECT ... FOR UPDATE waits until main 1
+        commits - follow the elapsed seconds and SQL in the output. Gradle: test checks that an update with a
+        stale version affects 0 rows.
+    openFiles:
+      - src/main/java/pro/kensait/mybatis/company/main/OptimisticLockMain1.java
+      - src/main/java/pro/kensait/mybatis/company/main/PessimisticLockMain1.java
+      - mains.txt
+      - README.md
+
+  - id: jpa-lock
+    chapter: 6
+    lesson: '6.1 同時更新と楽観ロック・悲観ロック'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-lock
+    names:
+      ja: JPA の @Version と悲観ロック
+      en: '@Version and pessimistic locks in JPA'
+    descriptions:
+      ja: >-
+        Gradle: run で LockMain と LockConflictor、ReadLock・WriteLock・WriteLockForce の各組を 3 秒ずらして
+        同時に動かします（4 組で 1 分半ほど）。LockMain が OptimisticLockException で終わること、悲観ロックの
+        競合側が先の側のコミット後に終わることを、出力の経過秒と SQL で確かめてください。
+        Gradle: test では OptimisticLockTest が、古いバージョンでの更新の拒否を確かめます。
+      en: >-
+        Gradle: run starts LockMain with LockConflictor and the ReadLock, WriteLock and WriteLockForce pairs,
+        each pair 3 seconds apart (about 90 seconds for all four). Use the elapsed seconds and SQL in the output
+        to see LockMain end with OptimisticLockException and each pessimistic conflicter finish only after the
+        first one commits. Gradle: test runs OptimisticLockTest, which checks that a stale version is rejected.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/optimistic/main/LockMain.java
+      - src/main/java/pro/kensait/jpa/company/pessimistic/main/WriteLockMain.java
+      - README.md
+
+  # ── チャプター7: 関連の読み込み（MyBatis）──────────
+  - id: mybatis-relation
+    chapter: 7
+    lesson: '7.1 関連の読み込み方式とMyBatis'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: mybatis-relation
+    names:
+      ja: flat・join・nest による関連の取得
+      en: Loading associations as flat, join and nested selects
+    descriptions:
+      ja: >-
+        Gradle: run で FlatSelectMain1・2、JoinSelectMain1・2、NestSelectMain1・2、InsertMain、UpdateMain を
+        順に実行します。同じ社員と部署を取るのに、JOIN 1 本で取る方式と入れ子の SELECT で追加取得する方式とで、
+        出力に出る SQL の本数がどう変わるかを見比べてください。
+      en: >-
+        Gradle: run executes FlatSelectMain1-2, JoinSelectMain1-2, NestSelectMain1-2, InsertMain and UpdateMain.
+        Compare how many SQL statements appear in the output when the same employees and departments are loaded
+        with one JOIN versus nested selects.
+    openFiles:
+      - src/main/resources/mybatis-mapper-flat.xml
+      - src/main/resources/mybatis-mapper-join.xml
+      - src/main/resources/mybatis-mapper-nest.xml
+      - README.md
+
+  - id: mybatis-dynamic-summary
+    dir: mybatis-dynamic
+    chapter: 7
+    lesson: '7.1 関連の読み込み方式とMyBatis'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: mybatis-dynamic-summary
+    names:
+      ja: 部署別の集約を DTO で受け取る
+      en: Receiving per-department aggregates as DTOs
+    descriptions:
+      ja: >-
+        CompanyMapper.xml の summarizeDepartments は、関連をたどるオブジェクトではなく、業務に必要な集約値だけを
+        DepartmentSummary で返します。Gradle: test を実行し、CompanyMapperTest の集約のテスト結果を確かめてください。
+        （同じプロジェクトはチャプター 11 の動的 SQL でも使います）
+      en: >-
+        summarizeDepartments in CompanyMapper.xml returns only the aggregate values needed, as DepartmentSummary,
+        instead of an object graph. Run Gradle: test and check the aggregation test in CompanyMapperTest.
+        (The same project is used again for dynamic SQL in chapter 11.)
+    openFiles:
+      - src/main/resources/pro/kensait/db/mybatisdynamic/CompanyMapper.xml
+      - src/main/java/pro/kensait/db/mybatisdynamic/DepartmentSummary.java
+      - src/test/java/pro/kensait/db/mybatisdynamic/CompanyMapperTest.java
+      - README.md
+
+  # ── チャプター8: JPA の関連 ─────────────────────────
+  - id: jpa-relation-1
+    chapter: 8
+    lesson: '8.1 JPAの関連・フェッチ・カスケード'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-relation-1
+    names:
+      ja: 1対多・多対1、fetch と cascade
+      en: One-to-many / many-to-one, fetch and cascade
+    descriptions:
+      ja: >-
+        Gradle: run で SelectMain1・2、InsertMain、MapkeyMain、FetchStrategyMain、CascadeStrategyMain、DeleteMain を
+        順に実行し、最後に CascadeOptimisticLockMain1 と 2 を 3 秒ずらして同時に動かします。
+        EAGER と LAZY で SELECT が出るタイミング、CascadeType.ALL による削除の波及を、出力の SQL で確かめてください。
+        最後の組では、部署の merge でカスケードされた社員の更新が OptimisticLockException になります。
+      en: >-
+        Gradle: run executes SelectMain1-2, InsertMain, MapkeyMain, FetchStrategyMain, CascadeStrategyMain and
+        DeleteMain, then runs CascadeOptimisticLockMain1 and 2 together, 3 seconds apart. Use the printed SQL to
+        see when SELECTs are issued for EAGER vs LAZY and how CascadeType.ALL spreads a delete.
+        In the last pair, the employee update cascaded from merging the department ends with OptimisticLockException.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/entity/Department.java
+      - src/main/java/pro/kensait/jpa/company/main/crud/FetchStrategyMain.java
+      - README.md
+
+  - id: jpa-relations
+    chapter: 8
+    lesson: '8.1 JPAの関連・フェッチ・カスケード'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: jpa-relations
+    names:
+      ja: 双方向の整合と fetch join
+      en: Keeping both sides in sync and fetch join
+    descriptions:
+      ja: >-
+        Department#addEmployee が両方向の参照をそろえ、CompanyQuery が fetch join で部署と社員をまとめて取ります。
+        Gradle: test を実行し、CompanyQueryTest の結果と出力される SQL を確かめてください。
+      en: >-
+        Department#addEmployee keeps both directions in sync and CompanyQuery loads departments with their
+        employees via fetch join. Run Gradle: test and check CompanyQueryTest and the SQL it prints.
+    openFiles:
+      - src/main/java/pro/kensait/db/jparelation/Department.java
+      - src/main/java/pro/kensait/db/jparelation/CompanyQuery.java
+      - src/test/java/pro/kensait/db/jparelation/CompanyQueryTest.java
+      - README.md
+
+  - id: jpa-relation-2
+    chapter: 8
+    lesson: '8.1 JPAの関連・フェッチ・カスケード'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-relation-2
+    names:
+      ja: 1対1・多対多と結合表
+      en: One-to-one, many-to-many and join tables
+    descriptions:
+      ja: >-
+        社員に住所・電話・メール・役職・担当プロジェクト・資格を関連付けたモデルです。Gradle: run で SelectMain と
+        InsertMain を実行し、外部キーや結合表に対して出る SQL を、エンティティのアノテーションと見比べてください。
+      en: >-
+        Employees are linked to an address, phones, emails, a job, projects and qualifications. Gradle: run executes
+        SelectMain and InsertMain; compare the SQL issued against foreign keys and join tables with the entity
+        annotations.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/entity/Project.java
+      - src/main/java/pro/kensait/jpa/company/main/InsertMain.java
+      - README.md
+
+  # ── チャプター9: JPQL ───────────────────────────────
+  - id: jpa-jpql-query
+    chapter: 9
+    lesson: '9.1 JPQLの検索・結合・集約'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-jpql-query
+    names:
+      ja: JPQL の検索・結合・集約
+      en: JPQL queries, joins and aggregates
+    descriptions:
+      ja: >-
+        Gradle: run で JpaQueryMain・JpaTypedQueryMain から条件式、結合、fetch join、集約、DTO（JpaConstructorMain）、
+        ページング、サブクエリ、名前付きクエリまでの main を順に実行します（mains.txt の「9.1」の部分）。
+        各 main の JPQL と、Hibernate が生成した SQL・結果を区切りごとに見比べてください。
+      en: >-
+        Gradle: run executes the mains from JpaQueryMain and JpaTypedQueryMain through conditions, joins, fetch joins,
+        aggregates, DTOs (JpaConstructorMain), paging, subqueries and named queries (the "9.1" part of mains.txt).
+        For each section, compare the JPQL with the SQL Hibernate generated and the results.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/main/JpaQueryMain.java
+      - src/main/java/pro/kensait/jpa/company/main/JpaTypedQueryMain.java
+      - src/main/java/pro/kensait/jpa/company/main/JpaConstructorMain.java
+      - README.md
+
+  # ── チャプター10: 一括更新とネイティブSQL ──────────
+  - id: jpa-jpql-query-bulk
+    dir: jpa-jpql-query
+    chapter: 10
+    lesson: '10.1 JPAの一括更新とネイティブSQL'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-jpql-query-bulk
+    names:
+      ja: 一括更新と flush モード
+      en: Bulk updates and flush modes
+    descriptions:
+      ja: >-
+        チャプター 9 と同じプロジェクトで、mains.txt の「10.1」の部分（JpaBulkUpdateMain1、JpaBulkDeleteMain、
+        JpaBulkUpdateMain2、JpaFlashModeMain）を見ます。9.1 の行を # で止めてから Gradle: run を実行すると、
+        一括更新の件数、取得済みエンティティに古い値が残る様子、AUTO と COMMIT で flush の時期が変わる様子を
+        出力で確かめやすくなります。
+      en: >-
+        The same project as chapter 9, focusing on the "10.1" part of mains.txt (JpaBulkUpdateMain1,
+        JpaBulkDeleteMain, JpaBulkUpdateMain2, JpaFlashModeMain). Comment out the 9.1 lines with # and run
+        Gradle: run to see the bulk update counts, stale values left in managed entities, and how AUTO and
+        COMMIT change when a flush happens.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/main/JpaBulkUpdateMain1.java
+      - src/main/java/pro/kensait/jpa/company/main/JpaBulkUpdateMain2.java
+      - src/main/java/pro/kensait/jpa/company/main/JpaFlashModeMain.java
+      - mains.txt
+
+  - id: jpa-jpql-native
+    chapter: 10
+    lesson: '10.1 JPAの一括更新とネイティブSQL'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-jpql-native
+    names:
+      ja: ネイティブSQLと結果セットのマッピング
+      en: Native SQL and result set mappings
+    descriptions:
+      ja: >-
+        Gradle: run で JpaNativeQueryMain1〜4 と JpaNamedNativeQueryMain を順に実行します。
+        単一値・複数列の配列、結果クラス（EmployeeQueryResult1）、名前付きの結果セットマッピング、
+        SQL による一括更新で、それぞれ結果がどの型で返るかを出力で確かめてください。
+      en: >-
+        Gradle: run executes JpaNativeQueryMain1-4 and JpaNamedNativeQueryMain. Check in the output which types
+        come back for single values, multi-column arrays, a result class (EmployeeQueryResult1), a named result
+        set mapping and a bulk update written in SQL.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/main/JpaNativeQueryMain1.java
+      - src/main/java/pro/kensait/jpa/company/entity/EmployeeQueryResult1.java
+      - src/main/java/pro/kensait/jpa/company/main/JpaNativeQueryMain3.java
+      - README.md
+
+  # ── チャプター11: 動的検索 ─────────────────────────
+  - id: mybatis-dynamic-sample
+    chapter: 11
+    lesson: '11.1 MyBatisとCriteria APIの動的検索'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: mybatis-dynamic-sample
+    names:
+      ja: where・if による任意条件の検索
+      en: Optional search conditions with where and if
+    descriptions:
+      ja: >-
+        部署名・給与下限・給与上限を任意条件にした検索です。Gradle: run で DynamicSelectMain1〜3 を順に実行し、
+        条件の与え方によって「==> Preparing」の WHERE 句がどう組み立てられ、何件返るかを見比べてください。
+      en: >-
+        A search where department name, minimum salary and maximum salary are all optional. Gradle: run executes
+        DynamicSelectMain1-3; compare how the WHERE clause on the "==> Preparing" lines is built for each way of
+        passing conditions, and how many rows come back.
+    openFiles:
+      - src/main/resources/mybatis-mapper.xml
+      - src/main/java/pro/kensait/mybatis/company/dto/EmployeeDynamicParam.java
+      - src/main/java/pro/kensait/mybatis/company/main/DynamicSelectMain1.java
+      - README.md
+
+  - id: mybatis-dynamic
+    chapter: 11
+    lesson: '11.1 MyBatisとCriteria APIの動的検索'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: mybatis-dynamic
+    names:
+      ja: foreach と集合条件
+      en: foreach and collection conditions
+    descriptions:
+      ja: >-
+        EmployeeFilter の部署番号・給与下限・社員番号リストを組み合わせ、CompanyMapper.xml の where・if・foreach で
+        SQL を組み立てます。Gradle: test を実行し、部署・給与・社員番号リストを同時に指定したときの結果を
+        CompanyMapperTest で確かめてください。
+      en: >-
+        EmployeeFilter combines department, minimum salary and a list of employee IDs, and CompanyMapper.xml builds the
+        SQL with where, if and foreach. Run Gradle: test and check in CompanyMapperTest the result when department, salary
+        and the ID list are all given at once.
+    openFiles:
+      - src/main/java/pro/kensait/db/mybatisdynamic/EmployeeFilter.java
+      - src/main/resources/pro/kensait/db/mybatisdynamic/CompanyMapper.xml
+      - src/test/java/pro/kensait/db/mybatisdynamic/CompanyMapperTest.java
+      - README.md
+
+  - id: jpa-criteria
+    chapter: 11
+    lesson: '11.1 MyBatisとCriteria APIの動的検索'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-criteria
+    names:
+      ja: Criteria API による任意条件の検索
+      en: Optional conditions with the Criteria API
+    descriptions:
+      ja: >-
+        Gradle: run で、部署と給与を条件にする固定的な CriteriaMain1 と、条件を任意に組み立てる CriteriaMain2 を
+        実行します。Java のコードで組み立てた条件から、どんな SQL が生成されるかを出力で確かめてください。
+      en: >-
+        Gradle: run executes CriteriaMain1, a fixed query on department and salary, and CriteriaMain2, which adds
+        conditions only when given. Check in the output which SQL is generated from conditions built in Java code.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/main/CriteriaMain1.java
+      - src/main/java/pro/kensait/jpa/company/main/CriteriaMain2.java
+      - README.md
+
+  - id: jpa-relations-criteria
+    dir: jpa-relations
+    chapter: 11
+    lesson: '11.1 MyBatisとCriteria APIの動的検索'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: jpa-relations-criteria
+    names:
+      ja: CompanyQuery の Criteria による給与条件
+      en: Salary conditions with Criteria in CompanyQuery
+    descriptions:
+      ja: >-
+        チャプター 8 と同じプロジェクトで、CompanyQuery にある Criteria API の給与条件の検索を読みます。
+        Gradle: test を実行し、CompanyQueryTest の該当するテストと出力される SQL を確かめてください。
+      en: >-
+        The same project as chapter 8, this time reading the Criteria API salary search in CompanyQuery.
+        Run Gradle: test and check the corresponding test in CompanyQueryTest and the SQL it prints.
+    openFiles:
+      - src/main/java/pro/kensait/db/jparelation/CompanyQuery.java
+      - src/test/java/pro/kensait/db/jparelation/CompanyQueryTest.java
+      - README.md
+
+  # ── チャプター12: 値オブジェクト・複合主キー ──────
+  - id: jpa-embeddable
+    chapter: 12
+    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-embeddable
+    names:
+      ja: '@Embeddable による値オブジェクト'
+      en: Value objects with @Embeddable
+    descriptions:
+      ja: >-
+        Address を @Embeddable にして Employee と Department に埋め込んだモデルです。Gradle: run で
+        EmbeddableSelectMain を実行し、独立した ID を持たない住所が、埋め込み先の表の列として読まれることを
+        SQL と結果で確かめてください。
+      en: >-
+        Address is an @Embeddable embedded in Employee and Department. Gradle: run executes EmbeddableSelectMain;
+        use the SQL and results to see the address, which has no ID of its own, read as columns of the owning table.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Address.java
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/main/EmbeddableSelectMain.java
+      - README.md
+
+  - id: jpa-collection
+    chapter: 12
+    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-collection
+    names:
+      ja: '@ElementCollection による値のリスト'
+      en: Lists of values with @ElementCollection
+    descriptions:
+      ja: >-
+        社員のメールアドレスを List<String> で持つモデルです。Gradle: run で SelectMain を実行し、
+        値のコレクションが別表からどう読まれるかを SQL と結果で確かめてください。
+      en: >-
+        Each employee holds email addresses as a List<String>. Gradle: run executes SelectMain; check in the SQL and
+        results how the value collection is read from a separate table.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/main/SelectMain.java
+      - README.md
+
+  - id: jpa-secondary-table
+    chapter: 12
+    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-secondary-table
+    names:
+      ja: '@SecondaryTable で 2 つの表へ対応させる'
+      en: Mapping one entity to two tables with @SecondaryTable
+    descriptions:
+      ja: >-
+        1 つの Employee を EMPLOYEE と ADDRESS の 2 つの表へ対応させます。Gradle: run で SelectMain1・2 を実行し、
+        2 つの表を結合する SQL が生成されることを確かめてください。
+      en: >-
+        One Employee maps to both the EMPLOYEE and ADDRESS tables. Gradle: run executes SelectMain1-2; confirm that
+        SQL joining the two tables is generated.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/main/SelectMain1.java
+      - README.md
+
+  - id: jpa-embedded-id-1
+    chapter: 12
+    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-embedded-id-1
+    names:
+      ja: '@EmbeddedId による複合主キー'
+      en: Composite keys with @EmbeddedId
+    descriptions:
+      ja: >-
+        分社名と社員番号を EmployeePK にまとめた複合主キーです。Gradle: run で EmbeddedIdSelectMain・InsertMain・
+        UpdateMain・DeleteMain を順に実行し、2 つの列の組で行が特定される SQL を確かめてください。
+      en: >-
+        The subsidiary name and employee number form the composite key EmployeePK. Gradle: run executes the
+        EmbeddedId Select, Insert, Update and Delete mains; check that the SQL identifies rows by the pair of columns.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/EmployeePK.java
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/main/EmbeddedIdSelectMain.java
+      - README.md
+
+  - id: jpa-id-class-1
+    chapter: 12
+    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-id-class-1
+    names:
+      ja: '@IdClass による複合主キー'
+      en: Composite keys with @IdClass
+    descriptions:
+      ja: >-
+        同じ複合主キーを @IdClass で表します。Gradle: run で IdClassSelectMain・InsertMain・UpdateMain・DeleteMain を
+        順に実行し、jpa-embedded-id-1 と同じ SQL になるかを見比べてください。
+      en: >-
+        The same composite key expressed with @IdClass. Gradle: run executes the IdClass Select, Insert, Update and
+        Delete mains; compare the SQL with jpa-embedded-id-1.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/EmployeePK.java
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/main/IdClassSelectMain.java
+      - README.md
+
+  - id: jpa-embedded-id-2
+    chapter: 12
+    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-embedded-id-2
+    names:
+      ja: EmbeddedId と分社エンティティの関連
+      en: EmbeddedId with a Subsidiary association
+    descriptions:
+      ja: >-
+        分社を Subsidiary エンティティに分け、主キーの列を関連とも共有します。Gradle: run で 4 つの main を順に実行し、
+        主キーと外部キーを兼ねる列がどう読み書きされるかを SQL で確かめてください。
+      en: >-
+        The subsidiary becomes its own Subsidiary entity and the key column is shared with the association.
+        Gradle: run executes the four mains; check in the SQL how the column that is both key and foreign key is
+        read and written.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Subsidiary.java
+      - src/main/java/pro/kensait/jpa/company/entity/EmployeePK.java
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - README.md
+
+  - id: jpa-id-class-2
+    chapter: 12
+    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-id-class-2
+    names:
+      ja: IdClass と分社エンティティの関連
+      en: IdClass with a Subsidiary association
+    descriptions:
+      ja: >-
+        jpa-embedded-id-2 と同じモデルを @IdClass で表します。Gradle: run で 4 つの main を順に実行し、
+        SQL と結果を jpa-embedded-id-2 と見比べてください。Gradle: test では主キーの値による比較も確かめます。
+      en: >-
+        The model of jpa-embedded-id-2 expressed with @IdClass. Gradle: run executes the four mains; compare the SQL
+        and results with jpa-embedded-id-2. Gradle: test also checks key comparison by value.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Subsidiary.java
+      - src/main/java/pro/kensait/jpa/company/entity/EmployeePK.java
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - README.md
+
+  # ── チャプター13: 継承とライフサイクル ─────────────
+  - id: jpa-inheritance-1
+    chapter: 13
+    lesson: '13.1 JPAの継承とライフサイクル設計'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-inheritance-1
+    names:
+      ja: SINGLE_TABLE による継承
+      en: Inheritance with SINGLE_TABLE
+    descriptions:
+      ja: >-
+        正社員（Fulltimer）とパート社員（Parttimer）を 1 つの EMPLOYEE 表に置きます。Gradle: run で SelectMain1・2 を実行し、
+        判別列によって取得されたオブジェクトの実際のクラスが決まることを出力で確かめてください。
+      en: >-
+        Full-timers and part-timers share one EMPLOYEE table. Gradle: run executes SelectMain1-2; check in the output
+        that the discriminator column decides the actual class of each loaded object.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/entity/Fulltimer.java
+      - src/main/java/pro/kensait/jpa/company/entity/Parttimer.java
+      - README.md
+
+  - id: jpa-inheritance-2
+    chapter: 13
+    lesson: '13.1 JPAの継承とライフサイクル設計'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-inheritance-2
+    names:
+      ja: JOINED による継承
+      en: Inheritance with JOINED
+    descriptions:
+      ja: >-
+        共通属性を EMPLOYEE、正社員・パート社員に固有の属性を別表に置きます。Gradle: run で SelectMain1・2 を実行し、
+        jpa-inheritance-1 と比べて SQL に結合が加わることを確かめてください。
+      en: >-
+        Common attributes live in EMPLOYEE and subclass-specific ones in separate tables. Gradle: run executes
+        SelectMain1-2; compared with jpa-inheritance-1, confirm that joins appear in the SQL.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/entity/Fulltimer.java
+      - src/main/java/pro/kensait/jpa/company/entity/Parttimer.java
+      - README.md
+
+  - id: jpa-mapped-superclass
+    chapter: 13
+    lesson: '13.1 JPAの継承とライフサイクル設計'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-mapped-superclass
+    names:
+      ja: '@MappedSuperclass による定義の共有'
+      en: Sharing mappings with @MappedSuperclass
+    descriptions:
+      ja: >-
+        SuperEmployee に共通属性を置き、SubEmployee がそれを受け継ぎます。Gradle: run で SelectMain を実行し、
+        SuperEmployee 自体は表にもクエリの対象にもならないことを SQL で確かめてください。
+      en: >-
+        SuperEmployee holds the common attributes and SubEmployee inherits them. Gradle: run executes SelectMain;
+        confirm in the SQL that SuperEmployee itself is neither a table nor a query target.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/SuperEmployee.java
+      - src/main/java/pro/kensait/jpa/company/entity/SubEmployee.java
+      - src/main/java/pro/kensait/jpa/company/main/SelectMain.java
+      - README.md
+
+  - id: jpa-entity-listener-1
+    chapter: 13
+    lesson: '13.1 JPAの継承とライフサイクル設計'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-entity-listener-1
+    names:
+      ja: ライフサイクルコールバックとエンティティリスナー
+      en: Lifecycle callbacks and entity listeners
+    descriptions:
+      ja: >-
+        エンティティ側のコールバックと、外部の EmployeeEntityListener による通知を比べます。Gradle: run で
+        Select・Insert・Update・Delete の 4 つの main を順に実行し、どの操作のどの時点で通知が出るかを、
+        SQL との前後関係で確かめてください。
+      en: >-
+        Compares callbacks on the entity with notifications from the external EmployeeEntityListener.
+        Gradle: run executes the Select, Insert, Update and Delete mains; check when each notification appears
+        relative to the SQL.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
+      - src/main/java/pro/kensait/jpa/company/entity/EmployeeEntityListener.java
+      - src/main/java/pro/kensait/jpa/company/main/ListernerInsertMain.java
+      - README.md
+
+  - id: jpa-entity-listener-2
+    chapter: 13
+    lesson: '13.1 JPAの継承とライフサイクル設計'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-entity-listener-2
+    names:
+      ja: 読み込み通知と残高更新の責務の分離
+      en: Separating load notifications from balance updates
+    descriptions:
+      ja: >-
+        口座と取引明細の例です。AccountListener は通知だけを行い、DB アクセスと残高の更新は AccountBalanceService が
+        明示的に行います。Gradle: run で AccountBalanceMain を実行し、読み込んだだけでは残高が変わらないことと、
+        明細を反映した後の残高を出力で確かめてください。
+      en: >-
+        An account and transaction-detail example. AccountListener only notifies, while AccountBalanceService
+        explicitly does the database access and balance update. Gradle: run executes AccountBalanceMain; check in the
+        output that loading alone does not change the balance, and the balance after the details are applied.
+    openFiles:
+      - src/main/java/pro/kensait/jpa/entity/AccountListener.java
+      - src/main/java/pro/kensait/jpa/service/AccountBalanceService.java
+      - src/main/java/pro/kensait/jpa/main/AccountBalanceMain.java
+      - README.md

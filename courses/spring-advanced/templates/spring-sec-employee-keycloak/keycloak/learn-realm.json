@@ -1,0 +1,91 @@
+{
+  "realm": "learn",
+  "enabled": true,
+  "registrationAllowed": false,
+  "roles": {
+    "client": {
+      "employee-app": [
+        {
+          "name": "ADMIN"
+        },
+        {
+          "name": "BASIC"
+        }
+      ]
+    }
+  },
+  "clients": [
+    {
+      "clientId": "employee-app",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "employee-local-secret",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8085/login/oauth2/code/keycloak"
+      ],
+      "webOrigins": [
+        "http://localhost:5173"
+      ],
+      "protocolMappers": [
+        {
+          "name": "employee-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "config": {
+            "usermodel.clientRoleMapping.clientId": "employee-app",
+            "claim.name": "employee_roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "alice",
+      "enabled": true,
+      "email": "alice@example.test",
+      "emailVerified": true,
+      "firstName": "Alice",
+      "lastName": "Employee",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "1111",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {
+        "employee-app": [
+          "BASIC"
+        ]
+      }
+    },
+    {
+      "username": "bob",
+      "enabled": true,
+      "email": "bob@example.test",
+      "emailVerified": true,
+      "firstName": "Bob",
+      "lastName": "Manager",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "2222",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {
+        "employee-app": [
+          "ADMIN"
+        ]
+      }
+    }
+  ]
+}

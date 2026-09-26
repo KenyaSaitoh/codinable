@@ -1,0 +1,20 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    # nativeプロファイル：Gitリポジトリではなくローカルファイルシステム（クラスパス）から
+    # 設定ファイルを配信する（教材用。実運用ではGitバックエンドが一般的 → READMEを参照）
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          # 配信する設定ファイルの検索場所
+          search-locations: classpath:/config-repo/
+
+logging:
+  level:
+    root: INFO

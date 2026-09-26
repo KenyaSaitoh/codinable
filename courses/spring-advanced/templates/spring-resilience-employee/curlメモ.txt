@@ -1,0 +1,58 @@
+### 前提: 基礎編の確認用API（rest-employee-restclient-api: 8095）+ このアプリ（8082）を起動しておく
+# learn_spring_aidd_basicで ./gradlew :master:rest-employee-restclient-api:bootRun
+# ./gradlew :master:spring-resilience-employee:bootRun
+
+### resilienceDemo（正常系。バックエンド稼働中は普通に社員リストが返る）
+curl -i localhost:8082/resilience-demo
+# HTTP/1.1 200
+# {"employees":[...],"fallback":false,"message":"取得成功"}
+
+### サーキットブレーカーの状態を確認する（最初はCLOSED）
+curl -i localhost:8082/actuator/circuitbreakers
+# HTTP/1.1 200
+# {"circuitBreakers":{"employeeApi":{...,"state":"CLOSED"}}}
+
+### サーキットをOPENに遷移させる手順
+# 1. バックエンド（rest-employee-restclient-api）を停止する
+# 2. /resilience-demo を連打する（5回以上）
+#    最低呼び出し回数（minimum-number-of-calls: 5）に達した時点で
+#    失敗率がしきい値（50%）を超え、サーキットがOPENに遷移する
+curl -i localhost:8082/resilience-demo
+curl -i localhost:8082/resilience-demo
+curl -i localhost:8082/resilience-demo
+curl -i localhost:8082/resilience-demo
+curl -i localhost:8082/resilience-demo
+# いずれも HTTP/1.1 200 と {"employees":[],"fallback":true,"message":"..."}（フォールバック）が返る
+# コンソールログ: 最初はResourceAccessException、OPEN遷移後はCallNotPermittedException
+# （OPEN後はバックエンドを呼び出さず即座にフォールバックするため、応答も速くなる）
+
+### OPENに遷移したことを確認する
+curl -i localhost:8082/actuator/circuitbreakers
+# {"circuitBreakers":{"employeeApi":{...,"state":"OPEN"}}}
+
+### HALF_OPEN→CLOSEDへの復帰を確認する手順
+# 1. バックエンド（rest-employee-restclient-api）を再起動する
+# 2. OPENから10秒（wait-duration-in-open-state）待って /resilience-demo を呼び出す
+#    → HALF_OPENに遷移し、試験呼び出し（3回）が成功するとCLOSEDへ復帰する
+curl -i localhost:8082/resilience-demo
+curl -i localhost:8082/resilience-demo
+curl -i localhost:8082/resilience-demo
+curl -i localhost:8082/actuator/circuitbreakers
+# {"circuitBreakers":{"employeeApi":{...,"state":"CLOSED"}}}
+
+### rateLimitDemo（レートリミッター。10秒あたり3回まで）
+curl -i localhost:8082/ratelimit-demo
+# HTTP/1.1 200
+# {"employeeId":1,"employeeName":"Alice",...}
+
+### rateLimitDemoを短時間に4回以上連打すると、超過分は429が返る
+curl -i localhost:8082/ratelimit-demo
+curl -i localhost:8082/ratelimit-demo
+curl -i localhost:8082/ratelimit-demo
+curl -i localhost:8082/ratelimit-demo
+# 4回目: HTTP/1.1 429
+# レートリミッターにより呼び出しが制限されました
+# （10秒待つと許可回数がリフレッシュされ、再び呼び出せる）
+
+### ヘルスチェック（register-health-indicator: true によりサーキットの状態が反映される）
+curl -i localhost:8082/actuator/health

@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+# Codinable では HSQLDB サーバーを使わず、インメモリで動かす
+# 接続先を環境変数で差し替える形はそのまま残している
+# （ECS ではタスク定義 taskdef/task-definition.json の environment が同じ値を渡す）
+# 講座リポジトリでの既定値は次のとおりだった
+#   url:  ${SPRING_DATASOURCE_URL:jdbc:hsqldb:hsql://localhost:9001/testdb}
+#   mode: ${SPRING_SQL_INIT_MODE:never}
+spring:
+  application:
+    name: spring-ecs-employee
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:hsqldb:mem:testdb}
+    username: ${SPRING_DATASOURCE_USERNAME:SA}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.hsqldb.jdbc.JDBCDriver}
+  sql:
+    init:
+      # 起動時に classpath の schema.sql → data.sql を流す（タスク定義の SPRING_SQL_INIT_MODE=always と同じ）
+      mode: ${SPRING_SQL_INIT_MODE:always}
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+logging:
+  level:
+    pro.kensait.spring.employee: debug

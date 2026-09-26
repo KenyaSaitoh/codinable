@@ -1,0 +1,71 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # HSQLDB (Server mode) - 複数プロジェクトで共有
+    # AWS編のECSデプロイ時（03_ecs）は環境変数SPRING_DATASOURCE_URLで接続先を上書きする
+    # （例：コンテナ単体で動かす場合は jdbc:hsqldb:mem:testdb を指定する）
+    # Codinable では HSQLDB サーバーを使わずインメモリで動かす
+    # （講座リポジトリの既定値: ${SPRING_DATASOURCE_URL:jdbc:hsqldb:hsql://localhost:9001/testdb}）
+    url: ${SPRING_DATASOURCE_URL:jdbc:hsqldb:mem:testdb}
+    username: SA
+    password:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+
+# 起動時のDB初期化（クラスパス直下のschema.sql / data.sqlを実行する）
+# ローカルでは共有HSQLDBサーバーを使うため初期化しない（never）が、
+# コンテナ単体で動かす場合は環境変数SQL_INIT_MODE=alwaysを指定して
+# インメモリDB（mem:testdb）にテーブルと初期データを投入する
+  sql:
+    init:
+      # Codinable ではインメモリ DB に schema.sql / data.sql を毎回流す（講座リポジトリの既定値は never）
+      mode: ${SQL_INIT_MODE:always}
+
+# Spring Data JPA
+  jpa:
+    hibernate:
+      # インメモリ DB では Hibernate が既定でテーブルを作り直す（create-drop）ため、
+      # schema.sql / data.sql で作ったテーブルとデータを消さないよう none にする
+      ddl-auto: none
+    properties:
+      hibernate:
+# これがないとテーブル名が小文字になってしまい、RDSでエラーになる
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+# Spring Boot Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        # Web（HTTP）経由で公開するエンドポイントを指定する（デフォルトはhealthのみ）
+        #   health   : アプリケーションの稼働状態（UP/DOWN。ECSのヘルスチェック対象）
+        #   info     : アプリケーションの基本情報（info.app.*やInfoContributorの内容）
+        #   metrics  : Micrometerが収集したメトリクス（JVMメモリ、HTTPリクエスト数など）
+        #   env      : 環境変数・システムプロパティ・application.ymlの設定値一覧
+        #   loggers  : ロガーのログレベル表示と動的変更（再起動なしで変更できる）
+        #   mappings : リクエストマッピング（URLとハンドラーメソッドの対応）一覧
+        #   beans    : DIコンテナに登録された全Beanの一覧
+        include: health,info,metrics,env,loggers,mappings,beans
+  endpoint:
+    health:
+      # ヘルスチェックの詳細（DB接続状態やディスク容量など）を常に表示する
+      show-details: always
+  info:
+    env:
+      # info.*で始まるプロパティを/actuator/infoに表示する
+      enabled: true
+
+# /actuator/infoに表示するカスタム情報（management.info.env.enabled=trueで有効になる）
+info:
+  app:
+    name: spring-actuator-employee
+    description: 社員管理REST API（Spring Boot Actuator教材）
+    version: 1.0.0
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    pro.kensait.spring.employee: INFO

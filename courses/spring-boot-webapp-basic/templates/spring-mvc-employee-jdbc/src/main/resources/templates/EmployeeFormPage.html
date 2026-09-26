@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>社員管理</title>
+</head>
+<body>
+  <h1>社員管理</h1>
+  <h2 th:text="${employeeParam.employeeId} == null ? '登録' : '更新'">登録</h2>
+
+  <form id="employeeForm" method="post" th:object="${employeeParam}"
+        th:action="${employeeParam.employeeId} == null ? @{/employees} : @{|/employees/${employeeParam.employeeId}|}">
+    <input type="hidden" name="version" th:value="*{version}" />
+    <label for="employeeName">氏名</label>
+    <input id="employeeName" name="employeeName" type="text" th:value="*{employeeName}" />
+    <label for="formDepartmentId">部署</label>
+    <select id="formDepartmentId" name="departmentId">
+      <option value="">選択してください</option>
+      <option th:each="department : ${departments}" th:value="${department.departmentId}"
+              th:text="${department.departmentName}"
+              th:selected="${department.departmentId} == *{departmentId}">部署</option>
+    </select>
+    <label for="formJobId">役職</label>
+    <select id="formJobId" name="jobId">
+      <option value="">選択してください</option>
+      <option th:each="job : ${jobs}" th:value="${job.jobId}"
+              th:text="${job.jobName}" th:selected="${job.jobId} == *{jobId}">役職</option>
+    </select>
+    <label for="salary">月給</label>
+    <input id="salary" name="salary" type="text" th:value="*{salary}" />
+    <label for="entranceDate">入社日</label>
+    <input id="entranceDate" name="entranceDate" type="text" th:value="*{entranceDate}" />
+    <button id="save" type="submit">保存</button>
+  </form>
+
+  <form method="get" th:action="@{/employees}">
+    <button id="cancel" type="submit">一覧へ戻る</button>
+  </form>
+
+  <p class="error" th:each="message : ${errors}" th:text="${message}">エラー</p>
+</body>
+</html>

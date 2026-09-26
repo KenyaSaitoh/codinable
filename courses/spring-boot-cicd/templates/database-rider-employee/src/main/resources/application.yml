@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: employee-app
+  datasource:
+    generate-unique-name: true
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  sql:
+    init:
+      mode: always
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+      accept-float-as-int: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+server:
+  shutdown: graceful

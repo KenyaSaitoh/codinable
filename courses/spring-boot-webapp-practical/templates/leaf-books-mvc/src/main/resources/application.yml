@@ -1,0 +1,56 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  # Java 21 Virtual Threads有効化（Spring Boot 3.2+）
+  threads:
+    virtual:
+      enabled: true
+  session:
+    timeout: 3600
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+  datasource:
+    # 元の設定: HSQLDB サーバー（localhost:9001）を複数プロジェクトで共有していた
+    #   url: jdbc:hsqldb:hsql://localhost:9001/testdb
+    # Codinable では HSQLDB サーバーを使わずインメモリで動かす
+    # （プロセスごとに別の DB になる。停止するとデータは消え、次の起動で初期データに戻る）
+    url: jdbc:hsqldb:mem:testdb
+    username: SA
+    password: 
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+  # 起動時に sql/hsqldb/ の DDL と DML を流す（build.gradle で classpath の db/ に入れている）
+  # 元の構成では gradlew setupHsqldb で事前に流していた
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+      schema-locations: classpath:db/2_BOOKSTORE_DDL.sql
+      data-locations: classpath:db/3_BOOKSTORE_DML.sql
+# Spring Data JPA
+# これがないと、以下の例外が出てしまう
+# Unable to determine Dialect without JDBC metadata
+  jpa:
+    # インメモリ DB だと Hibernate が既定でテーブルを作り直すため、SQL で作ったものを使うよう止める
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+# これがないとテーブル名が小文字になってしまい、RDSでエラーになる
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+logging:
+  level:
+    root: INFO
+
+

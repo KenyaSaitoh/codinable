@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>社員入力</title>
+</head>
+<body>
+  <h1>社員入力</h1>
+  <form th:action="@{/toConfirm}" th:object="${employeeSession}" method="post">
+    <p th:if="*{employeeId} != null" th:text="|社員ID: *{employeeId}|">社員ID</p>
+    <label for="employeeName">氏名</label>
+    <input id="employeeName" type="text" th:field="*{employeeName}" />
+    <span th:errors="*{employeeName}" style="color:red">氏名エラー</span>
+    <label for="departmentName">部署名</label>
+    <input id="departmentName" type="text" th:field="*{departmentName}" />
+    <span th:errors="*{departmentName}" style="color:red">部署名エラー</span>
+    <label for="salary">月給</label>
+    <input id="salary" type="text" th:field="*{salary}" />
+    <span th:errors="*{salary}" style="color:red">月給エラー</span>
+    <p th:if="${errorMessage}" th:text="${errorMessage}" style="color:red">エラー</p>
+    <input type="hidden" th:field="*{employeeId}" />
+    <button type="submit">確認画面へ</button>
+  </form>
+</body>
+</html>

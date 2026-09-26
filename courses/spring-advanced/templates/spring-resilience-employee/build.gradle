@@ -1,0 +1,48 @@
+// 講座リポジトリ（learn_spring_aidd_advanced）の親 build.gradle の共通設定と、
+// このプロジェクトの依存関係を 1 ファイルにまとめたもの
+// バージョン変数（springBootVer など）は外して Spring Boot の BOM に任せている
+// 品質ゲート用の Checkstyle / SpotBugs / PIT などは Codinable では使わないので入れていない
+// 呼び出し先の確認用 API（基礎編の rest-employee-restclient-api・8095）は api/ に別の Gradle プロジェクトとして置いてある
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+// Java 25 で動かす（Codinable 同梱の JDK 25 をそのまま使う）
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Actuator（/actuator/circuitbreakers でサーキットブレーカーの状態を確認する）
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // Resilience4jのアノテーション（@CircuitBreaker等）はAOPプロキシで実現されるため必須
+    // （Spring Boot 4ではspring-boot-starter-aopが廃止されたため、spring-aspectsを直接指定する）
+    implementation 'org.springframework:spring-aspects'
+    // Resilience4j本体（Spring Boot 3向けスターター。Boot 4でも利用可能）
+    implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.3.0'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:10.0.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "failed", "skipped"
+        exceptionFormat "full"
+    }
+}

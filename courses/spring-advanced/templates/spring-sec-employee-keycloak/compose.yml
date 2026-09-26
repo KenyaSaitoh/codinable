@@ -1,0 +1,16 @@
+# ローカル教材用の Keycloak（講座リポジトリ projects/master/compose.yml の keycloak サービスと同じ）
+# Docker Desktop を起動し、このフォルダで docker compose up -d を実行する
+# 管理画面: http://localhost:8180/ （教材用 admin/admin）
+# 最初の起動で keycloak/learn-realm.json（realm: learn、client: employee-app）が読み込まれる
+name: spring-advanced-keycloak
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2
+    command: ["start-dev", "--import-realm"]
+    ports:
+      - "127.0.0.1:8180:8080"
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import:ro
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin

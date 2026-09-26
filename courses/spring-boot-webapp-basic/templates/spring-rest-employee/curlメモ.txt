@@ -1,0 +1,48 @@
+# 第7章と同じEmployee・Department・Jobを扱うAPI
+# Codinable では実行対象「gradle:bootRun」で起動する（demo プロファイル＝インメモリ DB が既定で使われる）。
+# Codinable のターミナル（Git Bash）で次の curl を実行する。
+# 以下のcurl例はGit Bash用。8080が使用中なら起動時に--server.portを変更する。
+
+### 部署マスタ（4件）と役職マスタ（5件）
+curl -i http://127.0.0.1:8080/departments
+curl -i http://127.0.0.1:8080/jobs
+
+### 社員を1件取得。versionを確認する。
+curl -i http://127.0.0.1:8080/employees/1
+
+### 社員一覧（content、totalPages、totalElements）。1ページ5件。
+curl -i 'http://127.0.0.1:8080/employees?page=1'
+curl -i 'http://127.0.0.1:8080/employees?page=2'
+
+### 部署・役職・月給範囲でAND検索
+curl -i 'http://127.0.0.1:8080/employees?departmentId=2&jobId=1&salaryFrom=300000&salaryTo=400000'
+
+### 日本語の氏名をURLエンコードして検索
+curl -i --get http://127.0.0.1:8080/employees --data-urlencode 'keyword=山田'
+
+### 既存教材の月給下限検索（こちらは配列）
+curl -i 'http://127.0.0.1:8080/employees/query_by_salary?lowerSalary=500000'
+
+### 社員を登録。201とLocation、採番されたemployeeIdを確認する。
+curl -i -X POST http://127.0.0.1:8080/employees \
+  -H 'Content-Type: application/json' \
+  -d '{"employeeName":"高橋 健","departmentId":1,"jobId":1,"salary":340000,"entranceDate":"2024-04-01"}'
+
+### 初期状態で最初に登録した社員はID=11、version=0。
+### 繰り返す場合は、直前の登録応答にあるIDとversionへ置き換える。
+curl -i -X PUT http://127.0.0.1:8080/employees/11 \
+  -H 'Content-Type: application/json' \
+  -d '{"employeeName":"高橋 健","departmentId":2,"jobId":2,"salary":460000,"entranceDate":"2024-04-01","version":0}'
+
+### 同じPUTをversion=0のまま再実行すると409（更新競合）。
+### GETでversion=1になっていることを確認する。
+curl -i http://127.0.0.1:8080/employees/11
+
+### 論理削除。成功は204で本文なし。再取得は404。
+curl -i -X DELETE http://127.0.0.1:8080/employees/11
+curl -i http://127.0.0.1:8080/employees/11
+
+### 存在しない部署は400
+curl -i -X POST http://127.0.0.1:8080/employees \
+  -H 'Content-Type: application/json' \
+  -d '{"employeeName":"検証 社員","departmentId":999,"jobId":1,"salary":300000,"entranceDate":"2024-04-01"}'

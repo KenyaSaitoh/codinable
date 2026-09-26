@@ -1,0 +1,40 @@
+# 第11章: Spring Data RESTの自動公開API
+# Codinable で実行対象「gradle:bootRun」を実行してから使う（demo プロファイル＝インメモリ DB が既定で使われる）。
+# PowerShellではcurlが別コマンドの別名になることがあるため、curl.exeを使う。
+# Git Bash / macOS / Linuxではcurl.exeをcurlに読み替える。
+
+# 1. 自動公開された3つのRepositoryを発見する
+curl.exe -i "http://localhost:8080/api"
+
+# 2. HALの_embedded・_links・pageを見る（pageは0始まり）
+curl.exe "http://localhost:8080/api/employees?page=0&size=5&sort=employeeId,asc"
+curl.exe "http://localhost:8080/api/employees?page=1&size=5&sort=employeeId,asc"
+
+# 3. 部署・職種もHAL形式の独立したリソース
+curl.exe "http://localhost:8080/api/departments?sort=departmentId,asc"
+curl.exe "http://localhost:8080/api/jobs?sort=grade,asc"
+
+# 4. Repositoryの検索メソッドを/search配下から呼ぶ
+curl.exe "http://localhost:8080/api/employees/search"
+curl.exe "http://localhost:8080/api/employees/search/by-salary?lowerSalary=500000&sort=employeeId,asc"
+curl.exe "http://localhost:8080/api/employees/search/by-department?departmentId=2&sort=employeeId,asc"
+curl.exe "http://localhost:8080/api/employees/search/by-job?jobId=1&sort=employeeId,asc"
+
+# 5. Projection。通常の社員JSONと比較する
+curl.exe "http://localhost:8080/api/employees/1"
+curl.exe "http://localhost:8080/api/employees/1?projection=summary"
+
+# 6. Controllerを追加せずPOSTできる。employeeId/code/status/versionは送らない。
+# リポジトリルートで実行。JSONファイルを使い、シェルによる引用符の違いを避ける。
+curl.exe -i -X POST "http://localhost:8080/api/employees" -H "Content-Type: application/json" --data-binary "@projects/master/11_data-rest/spring-data-rest-employee/client/employee-create.json"
+
+# 7. ETagと更新・削除
+# 次のファイルにPUT/PATCH/DELETEの具体例がある:
+# projects/master/11_data-rest/spring-data-rest-employee/client/requests.http
+# 単一GETで得たETagを、If-Matchヘッダーに引用符付きのまま指定する。
+# 新規作成直後のETagも0とは限らない。必ずレスポンスから取得する。
+curl.exe -i "http://localhost:8080/api/employees/1"
+
+# 8. 非公開の検索メソッドは404、マスターへの書き込みは405
+curl.exe -i "http://localhost:8080/api/employees/search/findByStatus?status=active"
+curl.exe -i -X DELETE "http://localhost:8080/api/departments/1"

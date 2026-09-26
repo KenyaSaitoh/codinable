@@ -1,0 +1,35 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: spring-session-employee-jdbc
+  # Codinable では HSQLDB サーバーを使わず、プロジェクト内のファイル DB（hsqldb-data/）で動かす
+  # インメモリにしないのは、アプリを再起動してもセッション（SPRING_SESSION テーブル）が
+  # 残ることを確かめるため（プロセスとセッションの寿命を分けるのが本チャプターの主題）
+  # 講座リポジトリでの既定値は jdbc:hsqldb:hsql://localhost:9001/testdb だった
+  # Aurora へ接続するときは、これまでどおり環境変数 SPRING_DATASOURCE_* で差し替える
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:hsqldb:file:./hsqldb-data/testdb;hsqldb.write_delay=false}
+    username: ${SPRING_DATASOURCE_USERNAME:SA}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.hsqldb.jdbc.JDBCDriver}
+  # 社員・部署・役職テーブルを起動時に用意する（講座リポジトリでは setupHsqldb で流していたもの）
+  # 2 回目以降は既存のテーブルと行があるので失敗するが、continue-on-error で読み飛ばし、
+  # 登録済みの社員を消さない。PostgreSQL へ切り替えるときは SPRING_SQL_INIT_MODE=never にして
+  # sql/postgresql を手で流す
+  sql:
+    init:
+      mode: ${SPRING_SQL_INIT_MODE:always}
+      schema-locations: classpath:db/schema-hsqldb.sql
+      data-locations: classpath:db/data-hsqldb.sql
+      continue-on-error: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  thymeleaf:
+    cache: false
+  session:
+    timeout: 30m
+    jdbc:
+      initialize-schema: ${SPRING_SESSION_JDBC_INITIALIZE_SCHEMA:always}

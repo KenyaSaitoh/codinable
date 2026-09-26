@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>ConditionPage</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <h2>3. 条件分岐</h2>
+  <hr />
+
+  <!--===== th:if =====-->
+  <h3>th:if</h3>
+  <!-- 条件が真のときだけ、タグごと出力される -->
+  <!-- 「表示されない」のではなく「HTMLに出力されない」点に注意 -->
+  <div th:if="${editable}">
+    <button>編集</button>
+  </div>
+
+  <!--===== th:unless =====-->
+  <h3>th:unless</h3>
+  <!-- th:if の逆で、条件が偽のときだけ出力される -->
+  <!-- Thymeleafには else が無いため、th:if と th:unless を対で使う -->
+  <div th:if="${member.admin}">管理者としてログイン中</div>
+  <div th:unless="${member.admin}">一般会員としてログイン中</div>
+
+  <!--===== 真として扱われる値 =====-->
+  <h3>真として扱われる値</h3>
+  <!-- Thymeleafでは、null・0・"false"・"off"・"no" 以外は真として扱われる -->
+  <!-- そのため、nullチェックの代わりに th:if="${obj}" と書けてしまうが、
+       意図が伝わりにくいので、条件は明示的に書くことが望ましい -->
+  <div th:if="${member != null}" th:text="'memberはnullではない'"></div>
+
+  <!--===== th:switch / th:case =====-->
+  <h3>th:switch / th:case</h3>
+  <!-- 多分岐には th:switch と th:case を使う -->
+  <!-- th:case="*" は、どのcaseにも一致しなかった場合（default）を表す -->
+  <div th:switch="${orderStatus}">
+    <span th:case="'ORDERED'">注文受付</span>
+    <span th:case="'SHIPPED'">発送済み</span>
+    <span th:case="'CANCELED'">キャンセル</span>
+    <span th:case="*">不明なステータス</span>
+  </div>
+
+  <!--===== th:block =====-->
+  <h3>th:block</h3>
+  <!-- 複数のタグをまとめて制御したいが、余計なタグを出力したくない場合に使う -->
+  <!-- th:block 自体はHTMLに出力されない -->
+  <th:block th:if="${created}">
+    <div>この行は、createdが真のときだけ出力される（1）</div>
+    <div>この行は、createdが真のときだけ出力される（2）</div>
+  </th:block>
+  <th:block th:unless="${created}">
+    <div>createdが偽なので、こちらが出力される</div>
+  </th:block>
+
+  <!--===== 繰り返しと条件分岐の組み合わせ =====-->
+  <h3>繰り返しと条件分岐の組み合わせ</h3>
+  <!-- 同じタグに th:each と th:if を書くと、th:each が先に評価される -->
+  <ul>
+    <li th:each="member : ${memberList}" th:if="${member.age} ge 30"
+        th:text="|${member.memberName}（${member.age}歳）|"></li>
+  </ul>
+
+  <hr />
+  <a th:href="@{/}">目次に戻る</a>
+</body>
+</html>

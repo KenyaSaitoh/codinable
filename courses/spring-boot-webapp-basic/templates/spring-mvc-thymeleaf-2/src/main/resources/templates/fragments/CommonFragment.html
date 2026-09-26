@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!--
+  共通部品（フラグメント）を定義するテンプレート
+  このファイル自体は画面として表示されず、他のテンプレートから部品として参照される
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>共通フラグメント</title>
+</head>
+<body>
+
+  <!-- th:fragment でフラグメント名を付ける -->
+  <div th:fragment="pageHeader" class="page-header">
+    <span>Thymeleaf 応用編</span>
+  </div>
+
+  <div th:fragment="pageFooter" class="page-footer">
+    <span>&copy; Kensait Spring Course</span>
+  </div>
+
+  <!-- 引数付きフラグメント。呼び出し側から値を受け取れる -->
+  <div th:fragment="card(cardTitle, cardBody)" class="card">
+    <div class="card-title" th:text="${cardTitle}">タイトル</div>
+    <div th:text="${cardBody}">本文</div>
+  </div>
+
+  <!-- コレクションを受け取って一覧を描画するフラグメント -->
+  <ul th:fragment="memberList(members)">
+    <li th:each="member : ${members}"
+        th:text="|${member.memberName}（${member.age}歳）|"></li>
+  </ul>
+
+</body>
+</html>

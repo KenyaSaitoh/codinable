@@ -1,0 +1,19 @@
+# プロデューサー（spring-amqp-producer、ポート8093）と同時起動するため、ポートをずらす
+server:
+  port: 8094
+
+spring:
+  rabbitmq:
+    # RabbitMQブローカーの接続先
+    # Codinable では同梱の RabbitMQ（127.0.0.1:5672、guest/guest）に接続する
+    # 実行時は Codinable が環境変数 SPRING_RABBITMQ_HOST / SPRING_RABBITMQ_PORT などを渡し、こちらより優先される
+    host: ${RABBITMQ_HOST:127.0.0.1}
+    port: 5672
+    # ローカル学習専用のダミー認証情報（RabbitMQ公式イメージの初期値 guest/guest）
+    # 本番の認証情報は環境変数などで外部化し、平文で書かないこと
+    username: guest
+    password: guest
+
+logging:
+  level:
+    root: INFO

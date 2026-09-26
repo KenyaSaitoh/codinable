@@ -1,0 +1,31 @@
+### 事前準備：config-server（8888）→ config-client（8080）の順に起動する
+# config-server: Codinable の「実行」（gradle:bootRun）
+# config-client: ターミナルで cd client → ../gradlew.bat bootRun
+
+### Config Serverが配信する設定を直接確認する（/{アプリケーション名}/{プロファイル}）
+curl -i localhost:8888/config-client/default
+curl -i localhost:8888/config-client/prod
+
+### greeting（デフォルトプロファイル）
+curl -i localhost:8080/greeting
+# → こんにちは（デフォルト）
+
+### プロファイル切り替え（prodプロファイルで起動し直した場合）
+# cd client → ../gradlew.bat bootRun --args='--spring.profiles.active=prod'
+# または java -Dspring.profiles.active=prod -jar config-client.jar
+curl -i localhost:8080/greeting
+# → こんにちは（本番）
+
+### 設定変更 → 再読込（refresh）のデモ
+# 1. src/main/resources/config-repo/config-client.yml（サーバー側）の
+#    greeting.message を変更する
+# 2. config-serverを再起動する（「停止」→「実行」。nativeプロファイルはクラスパスから配信するため）
+# 3. この時点ではクライアントの応答は変わらないことを確認する
+curl -i localhost:8080/greeting
+# 4. クライアントに設定の再読込を指示する（変更されたプロパティ名が応答される）
+curl -i -X POST localhost:8080/actuator/refresh -H "Content-Type: application/json"
+# 5. 変更後のメッセージが返ることを確認する（アプリケーションは再起動していない）
+curl -i localhost:8080/greeting
+
+### ヘルスチェック
+curl -i localhost:8080/actuator/health

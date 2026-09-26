@@ -1,0 +1,50 @@
+// 第5章：社員管理 REST API を実 HTTP で呼び、Database Rider（DBUnit）で
+// 前提データ（@DataSet）と実行後の DB 状態（@ExpectedDataSet）を YAML で管理する
+// 元のサンプルは親 build.gradle と gradle/employee-app.gradle に設定を分けたマルチプロジェクト
+// だった。Codinable では単独で動く必要があるため 1 ファイルに畳んでいる
+// DB は元のサンプルどおり組み込みの H2（インメモリ）。HSQLDB サーバーは使わない
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    // 元の共通設定には Thymeleaf も入っていたが、この章は画面を持たない REST API なので外した
+    runtimeOnly 'com.h2database:h2'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // Database Rider（@DBRider / @DataSet / @ExpectedDataSet）
+    testImplementation 'com.github.database-rider:rider-junit5:1.44.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// 元のサンプルは test から @Tag("it") を除外し、別タスク integrationTest で流していた
+// この章のテスト（EmployeeDatabaseRiderTest）はすべて @Tag("it") なので、そのままでは
+// Codinable の「test」ボタンで 1 件も走らない。ここでは除外タグを外して test で流す
+// （アプリはランダムポートで、H2 はテストごとに自動で起動する）
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}

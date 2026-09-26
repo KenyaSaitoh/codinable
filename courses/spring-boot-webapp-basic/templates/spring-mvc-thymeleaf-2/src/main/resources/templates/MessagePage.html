@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{title.message}">MessagePage</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <h2>4. <span th:text="#{title.message}">メッセージ式と国際化</span></h2>
+  <hr />
+
+  <!--===== 言語の切り替え =====-->
+  <!-- MessageConfigで登録したLocaleChangeInterceptorが、
+       リクエストパラメータ lang を見てロケールを切り替える -->
+  <div>
+    <a th:href="@{/message(lang='ja')}">日本語</a> |
+    <a th:href="@{/message(lang='en')}">English</a>
+  </div>
+  <hr />
+
+  <!--===== メッセージ式（#{...}） =====-->
+  <h3>メッセージ式</h3>
+  <!-- messages.properties / messages_en.properties のキーを指定する -->
+  <!-- 画面の固定文言をテンプレートに直接書かず、外部ファイルに追い出せる -->
+  <div th:text="#{greeting}"></div>
+  <div th:text="#{label.member.name}"></div>
+
+  <!--===== パラメータ付きメッセージ =====-->
+  <h3>パラメータ付きメッセージ</h3>
+  <!-- プロパティ側の {0} {1} に、括弧で渡した値が埋め込まれる -->
+  <div th:text="#{welcome.message(${memberName})}"></div>
+  <div th:text="#{cart.item.count(${itemCount})}"></div>
+
+  <!--===== キーを変数で指定する =====-->
+  <h3>キーを変数で指定する</h3>
+  <!-- #{${変数}} と書くと、キー自体を動的に決められる -->
+  <div th:text="#{${messageKey}}"></div>
+
+  <!--===== インライン記法との組み合わせ =====-->
+  <h3>インライン記法との組み合わせ</h3>
+  <!--/* 文章の途中にメッセージを埋め込む場合は [[#{キー}]] を使う */-->
+  <p>[[#{greeting}]]、[[${memberName}]]さん。</p>
+
+  <hr />
+  <a th:href="@{/}">目次に戻る</a>
+</body>
+</html>

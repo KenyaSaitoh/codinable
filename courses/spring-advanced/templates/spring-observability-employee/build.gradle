@@ -1,0 +1,57 @@
+// 講座リポジトリ（learn_spring_aidd_advanced）の親 build.gradle の共通設定と、
+// このプロジェクトの依存関係を 1 ファイルにまとめたもの
+// バージョン変数（springBootVer など）は外して Spring Boot の BOM に任せている
+// 品質ゲート用の Checkstyle / SpotBugs / PIT などは Codinable では使わないので入れていない
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+// Java 25 で動かす（Codinable 同梱の JDK 25 をそのまま使う）
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // Spring Boot Actuator（メトリクスの収集と/actuator/*エンドポイント）
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // これがないと@Observedアノテーション（ObservedAspect）が動作しない
+    // （Spring Boot 4ではspring-boot-starter-aopが廃止されたため、AspectJを直接追加する
+    // 　バージョンはSpring BootのBOMで管理されるため指定しない）
+    implementation 'org.aspectj:aspectjweaver'
+    // Spring Boot 4ではトレーシングの自動構成が専用モジュールに分離されたため、明示的に追加する
+    implementation 'org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry'
+    // Micrometer TracingとOpenTelemetryのブリッジ（バージョンはSpring BootのBOMで管理されるため指定しない）
+    implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+    // トレース（スパン）をOTLPプロトコルで送信するエクスポーター（バージョンはSpring BootのBOMで管理されるため指定しない）
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:10.0.0'
+    // HSQLDB JDBC Driver
+    // 講座リポジトリではリポジトリ直下の hsqldb/lib/hsqldb.jar を参照しているが、ここでは Maven Central から取る
+    runtimeOnly 'org.hsqldb:hsqldb'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "failed", "skipped"
+        exceptionFormat "full"
+    }
+}

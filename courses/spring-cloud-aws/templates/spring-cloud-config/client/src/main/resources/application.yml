@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    # Config Serverが配信する設定ファイル名（config-client.yml）と対応する
+    name: config-client
+  config:
+    # Spring Boot 2.4以降の正式なConfig Server取り込み方（spring.config.import方式）
+    # かつてのbootstrap.yml方式に代わるもの。optional: を付けると、
+    # Config Serverが停止していてもアプリケーションを起動できる
+    import: "optional:configserver:http://localhost:8888"
+
+# Actuatorのrefreshエンドポイントを有効化する
+# POST /actuator/refresh で、Config Serverから設定を再取得し、
+# @RefreshScopeが付いたBeanを再生成する
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh,health,info
+
+logging:
+  level:
+    root: INFO

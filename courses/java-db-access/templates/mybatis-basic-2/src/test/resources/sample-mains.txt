@@ -1,0 +1,4 @@
+pro.kensait.mybatis.company.main.InsertMain1
+pro.kensait.mybatis.company.main.InsertMain2
+pro.kensait.mybatis.company.main.SelectMain1
+pro.kensait.mybatis.company.main.SelectMain2

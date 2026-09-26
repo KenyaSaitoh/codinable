@@ -1,0 +1,24 @@
+server:
+  port: 8091
+
+spring:
+  kafka:
+    # Kafkaブローカーの接続先
+    # Codinable では同梱の Kafka（127.0.0.1:9092）に接続する
+    # 実行時は Codinable が環境変数 KAFKA_BOOTSTRAP_SERVERS / SPRING_KAFKA_BOOTSTRAP_SERVERS を渡す
+    # （講座リポジトリの docker compose では localhost:9094 を使っている）
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:127.0.0.1:9092}
+    producer:
+      acks: all
+      properties:
+        max.block.ms: 3000
+        request.timeout.ms: 3000
+        delivery.timeout.ms: 5000
+      # メッセージのキー（社員ID）は文字列としてシリアライズする
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # メッセージの値（EmployeeEvent）はJSONにシリアライズして送信する
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+
+logging:
+  level:
+    root: INFO

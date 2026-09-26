@@ -137,6 +137,14 @@ Java の言語サーバーを同梱している。
   `spring-boot-starter-webmvc`、`@WebMvcTest` は `spring-boot-webmvc-test` へ移動
 - `gradlew` は同梱しなくてよい（無ければ `runner.js` が
   `resources/gradle-wrapper/` から補う）
+- **雛形は単独で動く Gradle プロジェクトにする**。講座リポジトリの親 build.gradle や
+  HSQLDB サーバー（9001）に頼らず、DB はインメモリ（`jdbc:hsqldb:mem:`）で起動時に SQL を流す
+- **2 プロセス要る演習**（API とクライアント、Spring と React の画面など）は、主役を雛形直下に置き、
+  もう片方はサブフォルダ（`api/` `client/` `frontend/` など）の独立プロジェクトにして
+  ターミナルから起動する。サブフォルダの `package.json` 配下は実行対象に出さない
+  （`workspace.js` の `inNestedPackage`）
+- Mockito を使う雛形は `mockito-core` を `-javaagent` で渡す（jlink 版 JDK に
+  `jdk.attach` が入る前に作った runtime でもモックを作れるようにするため）
 - 雛形を増やしたら `course.yaml` の `exercises[]` に追記し、`openFiles` に
   実在するパスを書く。次のコマンドで両方を確かめられる
 

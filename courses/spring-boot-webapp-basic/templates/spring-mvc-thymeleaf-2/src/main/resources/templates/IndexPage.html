@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Thymeleaf 応用編</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <div th:replace="~{fragments/CommonFragment :: pageHeader}"></div>
+
+  <h2>Thymeleaf 応用編 ― テンプレートの構造化とSpring連携</h2>
+  <hr />
+  <ul>
+    <li><a th:href="@{/fragment}">1. フラグメントによる部品化</a></li>
+    <li><a th:href="@{/layout}">2. 共通レイアウトの適用</a></li>
+    <li><a th:href="@{/inline}">3. インライン記法とJavaScript連携</a></li>
+    <li><a th:href="@{/message}">4. メッセージ式と国際化</a></li>
+    <li><a th:href="@{/form}">5. フォームバインディングとエラー表示</a></li>
+  </ul>
+
+  <div th:replace="~{fragments/CommonFragment :: pageFooter}"></div>
+</body>
+</html>

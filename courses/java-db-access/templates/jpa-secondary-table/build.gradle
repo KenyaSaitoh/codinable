@@ -1,0 +1,72 @@
+// ═══════════════════════════════════════════════════════════
+//  jpa-secondary-table
+//  講座リポジトリ learn_java_db_aidd の projects/master/06_jpa-relations/jpa-secondary-table を、
+//  単独で動く Gradle プロジェクトにしたもの
+//  （元は親の build.gradle と共通スクリプトで設定を共有するマルチプロジェクト）
+// ═══════════════════════════════════════════════════════════
+//
+//  元の手順は「HSQLDB サーバーを起動 → setupHsqldb で testdb を初期化 → -PmainClass で main を 1 つ実行」
+//  Codinable はサーバーも引数も使えないので、次のように変えてある
+//    - persistence.xml の接続先をインメモリ（jdbc:hsqldb:mem:testdb）に切り替えた
+//    - 「run」は起動クラス pro.kensait.course.SampleLauncher を動かす。mains.txt に書いた main を
+//      上から順に実行し、main ごとに sql/hsqldb/*.sql を流して初期データに戻す
+//      （ロックの確認のように 2 つを同時に動かす行は「A & B」と書く）
+//    - 1 つだけ動かすときは、ターミナルで .\gradlew.bat run -PmainClass=完全修飾クラス名
+//  教材の main・エンティティ・Mapper は元のまま
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.2.0'
+    // 親では Spring Boot 4.1.0 の依存管理で解決していた版（7.4.1.Final）を直書きする
+    implementation 'org.hibernate.orm:hibernate-core:7.4.1.Final'
+    // 元は $rootDir/hsqldb/lib/hsqldb.jar（2.7.4）を直接参照していた
+    implementation 'org.hsqldb:hsqldb:2.7.4'
+}
+
+// JUnit は親の設定と同じ 6.0.3（Jupiter と Platform Launcher をまとめて入れる）
+testing { suites { test { useJUnitJupiter('6.0.3') } } }
+
+test {
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat = 'full'
+    }
+}
+
+application {
+    mainClass = 'pro.kensait.course.SampleLauncher'
+}
+
+tasks.named('run', JavaExec) {
+    // -PmainClass=完全修飾クラス名 を付けたときは、mains.txt ではなくその main だけを動かす
+    if (project.hasProperty('mainClass')) {
+        args project.property('mainClass')
+    }
+    systemProperty 'sample.db.url', 'jdbc:hsqldb:mem:testdb'
+    systemProperty 'sample.sql.dir', file('sql/hsqldb').absolutePath
+    systemProperty 'sample.mains', file('mains.txt').absolutePath
+}
+
+// テストも同じインメモリ DB 名を使う（テストは run とは別のプロセスなので干渉しない）
+// SampleDatabase（テスト用の初期化）は jdbc:hsqldb:mem:<sample.project> に sql/hsqldb/*.sql を流す
+// 元は persistence.xml / mybatis-config.xml をテスト用に書き換えてコピーしていたが、
+// 接続先がもともとインメモリになったので不要になった
+tasks.named('test') {
+    systemProperty 'sample.project', 'testdb'
+    systemProperty 'sample.sql.dir', file('sql/hsqldb').absolutePath
+}

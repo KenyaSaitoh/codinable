@@ -1,0 +1,28 @@
+server:
+  port: 8085
+  servlet:
+    session:
+      cookie:
+        name: KEYCLOAK_SESSION
+        same-site: lax
+frontend:
+  url: ${FRONTEND_URL:http://localhost:5173}
+spring:
+  # Codinable の実行ボタンでは環境変数を渡せないため、プロジェクト直下の .env も読み込む
+  # .env.example を .env にコピーして KEYCLOAK_CLIENT_SECRET を書く（.env が無ければ環境変数だけを見る）
+  # .env は秘密の値を含むので、他人に渡したり Git に登録したりしない
+  config:
+    import: optional:file:.env[.properties]
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: ${KEYCLOAK_CLIENT_ID:employee-app}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET}
+            scope: openid, profile, email
+            authorization-grant-type: authorization_code
+            redirect-uri: ${KEYCLOAK_REDIRECT_URI:http://localhost:8085/login/oauth2/code/keycloak}
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8180/realms/learn}

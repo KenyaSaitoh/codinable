@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>LinkPage</title>
+<!-- 静的リソース（src/main/resources/static配下）もリンクURL式で参照する -->
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <h2>4. リンクURL式と属性の動的設定</h2>
+  <hr />
+
+  <!--===== リンクURL式（@{...}） =====-->
+  <h3>リンクURL式</h3>
+  <!-- @{...} は、コンテキストパスを自動的に補ってURLを組み立てる -->
+  <!-- URLを直接 href に書くと、コンテキストパスが変わったときに壊れる -->
+  <div><a th:href="@{/collection}">/collection へのリンク</a></div>
+
+  <!-- クエリパラメータは (名前=値) の形式で指定する。値は自動的にURLエンコードされる -->
+  <div>
+    <a th:href="@{/link(keyword=${keyword}, page=1)}">
+      クエリパラメータ付きのリンク
+    </a>
+  </div>
+
+  <!-- パス変数は {名前} を埋め込み、(名前=値) で値を渡す -->
+  <ul>
+    <li th:each="member : ${memberList}">
+      <a th:href="@{/members/{id}(id=${member.memberId})}"
+         th:text="${member.memberName}"></a>
+    </li>
+  </ul>
+
+  <!--===== 属性の動的設定 =====-->
+  <h3>属性の動的設定</h3>
+  <!-- th:属性名 の形式で、任意の属性を動的に設定できる -->
+  <div th:title="|登録会員数は${memberList.size()}名です|">
+    この行にマウスカーソルを合わせると、title属性の内容が表示される
+  </div>
+
+  <!-- th:attr で複数の属性をまとめて設定することもできるが、
+       th:属性名 のほうが読みやすいため、通常はそちらを使う -->
+  <div>
+    <input type="text" th:attr="value=${keyword}, placeholder='検索キーワード'" />
+  </div>
+
+  <!--===== 真偽属性 =====-->
+  <h3>真偽属性</h3>
+  <!-- disabled / checked / selected のような真偽属性は、
+       値が偽のときは属性そのものが出力されない -->
+  <div>
+    <button th:disabled="${!submittable}">送信</button>
+  </div>
+
+  <!--===== class属性への追加 =====-->
+  <h3>class属性への追加</h3>
+  <!-- th:class は class属性を置き換えるが、th:classappend は既存のclassに追加する -->
+  <div class="label" th:classappend="${submittable} ? '' : 'highlight'">
+    送信できない状態のときだけ、highlightクラスが追加される
+  </div>
+
+  <hr />
+  <a th:href="@{/}">目次に戻る</a>
+</body>
+</html>

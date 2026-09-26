@@ -1,0 +1,406 @@
+openapi: 3.0.3
+info:
+  title: Employee / Department / Job API
+  version: 2.0.0
+  description: 第7章のJPA版社員管理をREST API化。EmployeeはDepartmentとJobをIDで参照する。
+servers:
+- url: http://127.0.0.1:8080
+paths:
+  /employees:
+    get:
+      summary: 有効な社員を検索し、1ページ5件で取得
+      parameters:
+      - name: page
+        in: query
+        required: false
+        description: 1始まり。0以下は1に補正。
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: keyword
+        in: query
+        required: false
+        description: 氏名の部分一致。前後の空白は除去。
+        schema:
+          type: string
+      - name: departmentId
+        in: query
+        required: false
+        description: 部署IDで絞り込み
+        schema:
+          type: integer
+          format: int32
+      - name: jobId
+        in: query
+        required: false
+        description: 役職IDで絞り込み
+        schema:
+          type: integer
+          format: int32
+      - name: salaryFrom
+        in: query
+        required: false
+        description: 月給の下限（含む）
+        schema:
+          type: integer
+          format: int32
+      - name: salaryTo
+        in: query
+        required: false
+        description: 月給の上限（含む）。下限未満は400。
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: ID順の検索結果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeePage'
+        '400':
+          $ref: '#/components/responses/400'
+    post:
+      summary: 社員を登録
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeRequest'
+      responses:
+        '201':
+          description: 登録した社員。ID・社員コード・状態・versionはサーバーが決定。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+          headers:
+            Location:
+              description: 登録した社員の相対URI
+              schema:
+                type: string
+                example: /employees/11
+        '400':
+          $ref: '#/components/responses/400'
+        '409':
+          $ref: '#/components/responses/409'
+  /employees/{employeeId}:
+    parameters:
+    - name: employeeId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int32
+    get:
+      summary: 有効な社員を1件取得
+      responses:
+        '200':
+          description: 社員
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+    put:
+      summary: 社員を更新（新規作成はしない）
+      description: versionを照合して更新し、成功時に1加算。同じversionの同時更新は一方のみ成功。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeUpdateRequest'
+      responses:
+        '200':
+          description: 更新した社員
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+    delete:
+      summary: 社員を論理削除
+      description: DBには残し、statusをdeletedに変更。以後の一覧・詳細・給与検索から除外。
+      responses:
+        '204':
+          description: 削除成功。本文なし。
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+  /employees/query_by_salary:
+    get:
+      summary: 指定した月給以上の有効な社員を取得（既存教材の互換エンドポイント）
+      parameters:
+      - name: lowerSalary
+        in: query
+        required: true
+        description: 月給の下限（含む）
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 9999999
+      responses:
+        '200':
+          description: ID順の全該当社員。ページングなし。
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+        '400':
+          $ref: '#/components/responses/400'
+  /departments:
+    get:
+      summary: 部署マスタをID順で取得
+      responses:
+        '200':
+          description: 部署一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+  /jobs:
+    get:
+      summary: 役職マスタをgrade順で取得
+      responses:
+        '200':
+          description: 役職一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Job'
+components:
+  schemas:
+    Employee:
+      type: object
+      required:
+      - employeeId
+      - employeeCode
+      - employeeName
+      - departmentId
+      - jobId
+      - salary
+      - entranceDate
+      - version
+      - status
+      properties:
+        employeeId:
+          type: integer
+          format: int32
+          readOnly: true
+        employeeCode:
+          type: string
+          readOnly: true
+          example: E0001
+        employeeName:
+          type: string
+          minLength: 1
+          maxLength: 30
+          description: 前後の空白を除去。空白のみは不可。
+        departmentId:
+          type: integer
+          format: int32
+          minimum: 1
+          description: Departmentに存在するID
+        jobId:
+          type: integer
+          format: int32
+          minimum: 1
+          description: Jobに存在するID
+        salary:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 9999999
+        entranceDate:
+          type: string
+          format: date
+        version:
+          type: integer
+          format: int32
+          minimum: 0
+          description: 更新時は取得した値を必ず指定。登録時はサーバーが0に初期化。
+        status:
+          type: string
+          enum:
+          - active
+          - deleted
+          readOnly: true
+    EmployeeRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - employeeName
+      - departmentId
+      - jobId
+      - salary
+      - entranceDate
+      properties:
+        employeeName:
+          type: string
+          minLength: 1
+          maxLength: 30
+          description: 前後の空白を除去。空白のみは不可。
+        departmentId:
+          type: integer
+          format: int32
+          minimum: 1
+          description: Departmentに存在するID
+        jobId:
+          type: integer
+          format: int32
+          minimum: 1
+          description: Jobに存在するID
+        salary:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 9999999
+        entranceDate:
+          type: string
+          format: date
+        version:
+          type: integer
+          format: int32
+          minimum: 0
+          description: 更新時は取得した値を必ず指定。登録時はサーバーが0に初期化。
+    EmployeeUpdateRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - employeeName
+      - departmentId
+      - jobId
+      - salary
+      - entranceDate
+      - version
+      properties:
+        employeeName:
+          type: string
+          minLength: 1
+          maxLength: 30
+          description: 前後の空白を除去。空白のみは不可。
+        departmentId:
+          type: integer
+          format: int32
+          minimum: 1
+          description: Departmentに存在するID
+        jobId:
+          type: integer
+          format: int32
+          minimum: 1
+          description: Jobに存在するID
+        salary:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 9999999
+        entranceDate:
+          type: string
+          format: date
+        version:
+          type: integer
+          format: int32
+          minimum: 0
+          description: 更新時は取得した値を必ず指定。登録時はサーバーが0に初期化。
+    Department:
+      type: object
+      required:
+      - departmentId
+      - departmentName
+      - location
+      properties:
+        departmentId:
+          type: integer
+          format: int32
+        departmentName:
+          type: string
+        location:
+          type: string
+    Job:
+      type: object
+      required:
+      - jobId
+      - jobName
+      - grade
+      properties:
+        jobId:
+          type: integer
+          format: int32
+        jobName:
+          type: string
+        grade:
+          type: integer
+          format: int32
+    EmployeePage:
+      type: object
+      required:
+      - content
+      - totalPages
+      - totalElements
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employee'
+        totalPages:
+          type: integer
+          format: int32
+          minimum: 0
+        totalElements:
+          type: integer
+          format: int64
+          minimum: 0
+    ApiError:
+      type: object
+      required:
+      - status
+      - message
+      - errors
+      properties:
+        status:
+          type: integer
+          format: int32
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string
+  responses:
+    '400':
+      description: 入力・JSON・検索範囲・マスタIDが不正
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    '404':
+      description: 社員が存在しない、または論理削除済み
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    '409':
+      description: 更新競合、またはDBの整合性制約違反
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'

@@ -48,8 +48,12 @@ $gradleVer  = "9.6.1"
 $gradleUrl  = "https://services.gradle.org/distributions/gradle-$gradleVer-bin.zip"
 
 # jlink に含めるモジュール (javac + Spring Boot + HSQLDB + JUnit が動く構成)
+# jdk.attach は Mockito の inline mock maker が自分をアタッチするのに要る
+# (無いと "No compatible attachment provider" でモック生成が失敗する)
+# jdk.net は Redis クライアント Lettuce (Netty) が jdk.net.ExtendedSocketOptions を読むのに要る
 $jlinkModules = "java.se,jdk.compiler,jdk.zipfs,jdk.charsets,jdk.crypto.ec," +
-                "jdk.crypto.cryptoki,jdk.unsupported,jdk.management,jdk.httpserver,jdk.localedata"
+                "jdk.crypto.cryptoki,jdk.unsupported,jdk.management,jdk.httpserver,jdk.localedata," +
+                "jdk.attach,jdk.net"
 
 # Windows 標準の bsdtar を **フルパスで** 呼ぶ。PATH 上に Git for Windows の
 # GNU tar があると "C:\..." をリモートホスト指定と解釈して失敗する

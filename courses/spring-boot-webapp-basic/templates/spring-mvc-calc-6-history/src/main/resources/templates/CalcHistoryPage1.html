@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>CalcHistoryPage1</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <h2>CalcHistoryPage1</h2>
+  <hr />
+  <table border="1">
+    <thead>
+      <tr>
+        <th>パラメータ1</th>
+        <th>パラメータ2</th>
+        <th>計算種別</th>
+        <th>結果</th>
+        <th>計算日時</th>
+      </tr>
+    </thead>
+    <tbody th:each="calc: ${calcResults}" th:object="${calc}">
+      <tr>
+        <td th:text="*{param1}"></td>
+        <td th:text="*{param2}"></td>
+        <td th:text="*{calcType}"></td>
+        <td th:text="*{result}"></td>
+        <td th:text="*{dateTimeStr}"></td>
+      </tr>
+    </tbody>
+  </table>
+  <form method="GET">
+    <button type="submit" th:formaction="@{/}">入力画面へ</button>
+  </form>
+</body>
+</html>

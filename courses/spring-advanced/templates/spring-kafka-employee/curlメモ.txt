@@ -1,0 +1,6 @@
+### sendEvent（社員登録イベントをKafkaに送信する）
+curl -i -X POST localhost:8091/events -H "Content-Type: application/json" -d {\"eventType\":\"EMPLOYEE_CREATED\",\"employeeId\":1,\"employeeName\":\"Alice\",\"occurredAt\":\"2026-04-01T09:00:00\"}
+
+### 送信後は、同時起動したコンシューマ（spring-kafka-consumer、ポート8081）の
+### コンソールログに受信メッセージが出力されることを確認する
+### Kafka UI（http://localhost:8090）でもトピック"employee-events"の中身を確認できる

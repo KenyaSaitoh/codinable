@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head><meta charset="UTF-8" /><title>社員管理：入力確認</title></head>
+<body>
+  <h1>社員管理</h1><h2>入力確認</h2>
+  <dl th:object="${employeeParam}">
+    <dt>氏名</dt><dd th:text="*{employeeName}"></dd>
+    <dt>部署</dt><dd th:text="${departmentName}"></dd>
+    <dt>役職</dt><dd th:text="${jobName}"></dd>
+    <dt>月給</dt><dd th:text="*{salary}"></dd>
+    <dt>入社日</dt><dd th:text="*{entranceDate}"></dd>
+  </dl>
+  <form method="post" th:action="@{/employees/save}">
+    <input type="hidden" name="draftToken" th:value="${employeeDraft.token}" />
+    <button id="save" type="submit">保存</button>
+  </form>
+  <a th:href="@{/employees/draft}">入力へ戻る</a>
+  <form method="post" th:action="@{/employees/cancel}">
+    <button type="submit">入力を破棄して一覧へ</button>
+  </form>
+</body></html>

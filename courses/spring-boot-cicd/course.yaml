@@ -1,0 +1,287 @@
+# ═══════════════════════════════════════════════════════════
+#  Udemy「Spring Boot CI/CD」の演習
+#
+#  講義そのものは動画側にあるため、ここには「開いてすぐ動く最小構成」だけを置く
+#  受講者は演習を選んで実行し、動きを確かめながら動画を進める
+#  問題を出して解かせることはしない
+#
+#  テストが主題の講座なので、ほとんどの演習は run: gradle:test にしてある
+#  Codinable は test のあと JUnit の結果をメソッド単位で表示し、JaCoCo のカバレッジを重ねる
+#  元のサンプル（learn_spring_aidd_cicd）は @Tag("it") / @Tag("e2e") を test から除外して
+#  integrationTest / e2eTest で流していたが、各雛形では原稿で扱うテストが「test」1 つで
+#  走るように調整した（理由は各 build.gradle のコメント）
+#
+#  exercises[] の項目:
+#    id           演習の識別子（dir 省略時はディレクトリ名として使う）
+#    dir          templates/ 配下のディレクトリ名（省略時は id）
+#                 同じ雛形を複数のチャプターで使うときは dir で共有する
+#    chapter      対応するチャプター番号。一覧のバッジに出る
+#    lesson       対応するレッスン番号と名前。一覧の副題に出る
+#    runtime      実行環境（java / spring / node / react / python / static / sql / shell）
+#    run          実行対象の既定値（gradle:<タスク> など。実行対象セレクトと同じ書式）
+#    suggestName  作業用プロジェクト名の既定値
+#    names        演習名（言語ごと）
+#    descriptions 「何をどう動かすか」の説明（言語ごと）
+#    openFiles    演習を開いた直後に開くファイル（プロジェクト相対パス）
+# ═══════════════════════════════════════════════════════════
+id: spring-boot-cicd
+order: 4
+# 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
+version: 1.0.0
+
+names:
+  ja: Spring Boot CI/CD
+  en: Spring Boot CI/CD
+
+descriptions:
+  ja: >-
+    JUnit・Mockito によるテスト設計から、Spring Boot Test（DataJpaTest / MockMvc）、
+    Database Rider と RestClient による HTTP の結合テスト、Playwright による E2E、
+    Gatling による負荷試験、GitHub Actions による CI と成果物までを扱う講座の演習です。
+    DB は組み込みの H2 またはインメモリの HSQLDB で動くため、DB サーバーを別に起動する必要はありません。
+  en: >-
+    Exercises for the course that goes from test design with JUnit and Mockito through
+    Spring Boot Test (DataJpaTest / MockMvc), HTTP integration tests with Database Rider and
+    RestClient, E2E tests with Playwright and load tests with Gatling, to CI and build artifacts
+    with GitHub Actions. The database is embedded H2 or in-memory HSQLDB, so no separate DB server is needed.
+
+udemy:
+  url: https://github.com/KenyaSaitoh/learn_spring_aidd_cicd
+
+exercises:
+  # ── チャプター2: テスト設計とJUnit・Mockito（Spring を使わない Java）──
+  - id: junit-shipping
+    chapter: 2
+    lesson: '2.1 テスト設計とJUnit・Mockito'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: junit-shipping
+    names:
+      ja: JUnitで配送料金の境界値と例外を検証する
+      en: Test shipping-fee boundaries and exceptions with JUnit
+    descriptions:
+      ja: >-
+        配送料金の割引計算（ShippingFeePolicy）を、@ParameterizedTest と assertThrows で検証します。
+        「test」を実行すると、@CsvSource の各行（例: GOLD・3,334円 → 3,001円）が別々のケースとして
+        テスト結果に並びます。期待値や丸め方を書き換えて、どのケースが失敗するかを確かめてください。
+        「run」に切り替えると、GOLD 会員・4,000円の割引例がコンソールに出ます。
+      en: >-
+        Tests the shipping-fee discount (ShippingFeePolicy) with @ParameterizedTest and assertThrows.
+        Run "test" and every @CsvSource row (e.g. GOLD, 3,334 yen -> 3,001 yen) appears as its own case
+        in the test results. Change an expected value or the rounding and see which cases fail.
+        Switch to "run" to print the GOLD member / 4,000 yen example to the console.
+    openFiles:
+      - src/test/java/pro/kensait/shipping/ShippingFeePolicyTest.java
+      - src/main/java/pro/kensait/shipping/ShippingFeePolicy.java
+      - README.md
+
+  - id: mockito-shipping
+    chapter: 2
+    lesson: '2.1 テスト設計とJUnit・Mockito'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: mockito-shipping
+    names:
+      ja: Mockitoで依存先と副作用を制御する
+      en: Control dependencies and side effects with Mockito
+    descriptions:
+      ja: >-
+        配送注文の処理（ShippingService）を、料金 Client と Repository のモック、固定した Clock で検証します。
+        「test」を実行し、保存した注文を ArgumentCaptor で取り出して比べるケース、料金取得の失敗時に
+        保存しないケース、不正な入力で依存先を呼ばないケースの結果を確かめてください。
+      en: >-
+        Tests the order processing (ShippingService) with mocked rate client and repository and a fixed Clock.
+        Run "test" and check the case that captures the saved order with ArgumentCaptor, the case that
+        saves nothing when the rate lookup fails, and the case that never calls the dependencies on invalid input.
+    openFiles:
+      - src/test/java/pro/kensait/shipping/ShippingServiceTest.java
+      - src/main/java/pro/kensait/shipping/ShippingService.java
+      - README.md
+
+  # ── チャプター3: 業務ルールとSpringの結合テスト（社員管理 Web アプリ）──
+  - id: spring-test-service
+    dir: spring-test-employee
+    chapter: 3
+    lesson: '3.1 業務ルールとSpringの結合テスト'
+    runtime: spring
+    run: 'gradle:test'
+    suggestName: spring-test-service
+    names:
+      ja: 入力値・Serviceの単体テストとSpringの結合テスト
+      en: Unit tests for input and Service, and a Spring integration test
+    descriptions:
+      ja: >-
+        社員管理システムの入力変換（EmployeeParamTest）と Service（EmployeeServiceTest）の単体テスト、
+        @SpringBootTest で Service と Repository をつないだ結合テスト（EmployeeApplicationIntegrationTest）を読みます。
+        「test」を実行すると、この講座のほかのテストもまとめて流れ、テスト結果とカバレッジが表示されます。
+        「bootRun」に切り替えると、プレビューで http://localhost:8080/employees の画面を操作できます。
+      en: >-
+        Read the unit tests for input conversion (EmployeeParamTest) and the Service (EmployeeServiceTest),
+        and the @SpringBootTest integration test that wires Service and Repository (EmployeeApplicationIntegrationTest).
+        Run "test" to run them together with the other tests of this app and see the results and coverage.
+        Switch to "bootRun" to use the screen at http://localhost:8080/employees in the preview.
+    openFiles:
+      - src/test/java/pro/kensait/spring/employee/web/EmployeeParamTest.java
+      - src/test/java/pro/kensait/spring/employee/service/EmployeeServiceTest.java
+      - src/test/java/pro/kensait/spring/employee/EmployeeApplicationIntegrationTest.java
+      - README.md
+
+  # ── チャプター4: RepositoryとControllerのテスト（同じ雛形を使う）──
+  - id: spring-test-slice
+    dir: spring-test-employee
+    chapter: 4
+    lesson: '4.1 RepositoryとControllerのテスト'
+    runtime: spring
+    run: 'gradle:test'
+    suggestName: spring-test-slice
+    names:
+      ja: DataJpaTestとMockMvcで範囲を絞って検証する
+      en: Narrow the scope with DataJpaTest and MockMvc
+    descriptions:
+      ja: >-
+        @DataJpaTest で検索条件・並び順・DB 制約を確かめる EmployeeRepositoryTest と、
+        @WebMvcTest と MockMvc で入力・モデル・画面の選択を確かめる EmployeeControllerWebTest を読みます。
+        「test」を実行し、テスト結果で 2 つのクラスのケースを確かめてください。
+        DB は組み込みの H2 で、テストが自動で初期化します。
+      en: >-
+        Read EmployeeRepositoryTest, which checks search conditions, ordering and DB constraints with @DataJpaTest,
+        and EmployeeControllerWebTest, which checks input, model and view selection with @WebMvcTest and MockMvc.
+        Run "test" and look at the cases of both classes in the test results.
+        The database is embedded H2 and the tests initialize it automatically.
+    openFiles:
+      - src/test/java/pro/kensait/spring/employee/repository/EmployeeRepositoryTest.java
+      - src/test/java/pro/kensait/spring/employee/web/EmployeeControllerWebTest.java
+      - src/main/java/pro/kensait/spring/employee/web/EmployeeController.java
+      - README.md
+
+  # ── チャプター5: HTTPとデータセットによる結合テスト ──────
+  - id: database-rider-employee
+    chapter: 5
+    lesson: '5.1 HTTPとデータセットによる結合テスト'
+    runtime: spring
+    run: 'gradle:test'
+    suggestName: database-rider-employee
+    names:
+      ja: Database Riderで前提データと保存結果を比べる
+      en: Compare prepared data and saved results with Database Rider
+    descriptions:
+      ja: >-
+        社員 API を実 HTTP で呼び、@DataSet の YAML で前提データを用意し、@ExpectedDataSet の YAML と
+        実行後の DB を比べます。「test」を実行すると、アプリがランダムポートで起動して 6 件のケースが走ります。
+        datasets/employees-updated.yml の値を書き換えて、どの比較で失敗するかを確かめてください。
+      en: >-
+        Calls the employee API over real HTTP, prepares data from the @DataSet YAML and compares the DB
+        after the call with the @ExpectedDataSet YAML. Run "test" and the app starts on a random port and six cases run.
+        Change a value in datasets/employees-updated.yml and see which comparison fails.
+    openFiles:
+      - src/test/java/pro/kensait/spring/employee/database/EmployeeDatabaseRiderTest.java
+      - src/test/resources/datasets/employees.yml
+      - src/test/resources/datasets/employees-updated.yml
+      - README.md
+
+  - id: api-test-employee
+    chapter: 5
+    lesson: '5.1 HTTPとデータセットによる結合テスト'
+    runtime: spring
+    run: 'gradle:test'
+    suggestName: api-test-employee
+    names:
+      ja: RestClientでHTTP契約を検証する
+      en: Verify the HTTP contract with RestClient
+    descriptions:
+      ja: >-
+        RANDOM_PORT で起動した実サーバーへ RestClient でリクエストを送り、ステータス・JSON・DB 状態を検証します。
+        「test」を実行し、登録後の再取得、エラーレスポンス、論理削除後の読み取り、更新競合のケースを確かめてください。
+        「bootRun」に切り替えると、API が http://localhost:8080/employees で応答します（DB はインメモリの HSQLDB）。
+      en: >-
+        Sends requests with RestClient to a real server started on RANDOM_PORT and checks status, JSON and DB state.
+        Run "test" and check the cases for re-reading after create, error responses, reads after logical delete
+        and update conflicts. Switch to "bootRun" and the API answers at http://localhost:8080/employees (in-memory HSQLDB).
+    openFiles:
+      - src/test/java/pro/kensait/spring/employee/rest/api/EmployeeApiTest.java
+      - src/main/java/pro/kensait/spring/employee/rest/api/EmployeeApi.java
+      - README.md
+
+  # ── チャプター6: Playwrightによる画面操作と状態の検証 ──────
+  - id: playwright-employee
+    chapter: 6
+    lesson: '6.1 Playwrightによる画面操作と状態の検証'
+    runtime: spring
+    run: 'gradle:test'
+    suggestName: playwright-employee
+    names:
+      ja: Playwrightでブラウザから画面を操作する
+      en: Drive the screens from a browser with Playwright
+    descriptions:
+      ja: >-
+        本物の Chromium で社員の登録・編集・削除、入力エラー、検索、ページ切り替えを操作し、表示と状態を検証します。
+        「test」を実行すると、アプリはテストがランダムポートで自動起動します（別に bootRun する必要はありません）。
+        初回は Chromium のダウンロードがあるため時間がかかります。
+        ケースごとの画面（PNG）と Trace（ZIP）が build/reports/playwright/ に保存されます。
+      en: >-
+        Uses a real Chromium to register, edit and delete employees, trigger input errors, search and page,
+        and checks what is displayed and stored. Run "test": the test starts the app on a random port by itself
+        (no separate bootRun needed). The first run downloads Chromium and takes a while.
+        A screenshot (PNG) and a trace (ZIP) per case are saved in build/reports/playwright/.
+    openFiles:
+      - src/test/java/pro/kensait/spring/employee/e2e/EmployeePlaywrightTest.java
+      - src/test/java/pro/kensait/spring/employee/e2e/EmployeePage.java
+      - README.md
+
+  # ── チャプター7: Gatlingによる負荷と応答時間の検証 ──────
+  # gatlingRun は実行対象に出ないので、負荷を受けるアプリを bootRun で起動し、
+  # Gatling はターミナルから流す
+  - id: gatling-employee
+    chapter: 7
+    lesson: '7.1 Gatlingによる負荷と応答時間の検証'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: gatling-employee
+    names:
+      ja: Gatlingで負荷をかけて応答時間を測る
+      en: Apply load and measure response times with Gatling
+    descriptions:
+      ja: >-
+        「実行」で負荷を受けるアプリを http://localhost:8080 に起動し、起動したままターミナルで
+        ./gradlew.bat gatlingRun を実行します。20 人・60 リクエストの結果として、件数・失敗 0 件・p95 の
+        assertions がターミナルと build/reports/gatling/ の HTML レポートに出ます。
+        「test」に切り替えると、負荷の前に一覧・health・CSV と初期データの対応を確かめる結合テストが走ります。
+      en: >-
+        Press Run to start the app under load at http://localhost:8080, then, while it keeps running,
+        run ./gradlew.bat gatlingRun in the terminal. For 20 users and 60 requests, the count, zero-failure and p95
+        assertions are shown in the terminal and in the HTML report under build/reports/gatling/.
+        Switch to "test" to run the integration test that checks the list page, health and the CSV against the initial data.
+    openFiles:
+      - src/gatling/java/pro/kensait/spring/employee/load/EmployeeSimulation.java
+      - src/gatling/resources/employees.csv
+      - README.md
+
+  # ── チャプター8: CIと成果物・デリバリーの設計 ──────────
+  # GitHub Actions のワークフローは Codinable の外で動くもの。第3・4章と同じ雛形に
+  # 収録したワークフロー定義を読み、手元では build で「テスト → 成果物（JAR）」を確かめる
+  - id: ci-delivery
+    dir: spring-test-employee
+    chapter: 8
+    lesson: '8.1 CIと成果物・デリバリーの設計'
+    runtime: spring
+    run: 'gradle:build'
+    suggestName: ci-delivery
+    names:
+      ja: CIのワークフローを読み、成果物のJARを作る
+      en: Read the CI workflows and build the JAR artifact
+    descriptions:
+      ja: >-
+        github/workflows/ にサンプルリポジトリの GitHub Actions 定義（ci.yml / container.yml / sonar.yml）を
+        収録しています。イベント、needs によるジョブの依存、if: always() のレポート保存、タグでの公開条件を読みます。
+        これらは GitHub 上で動くもので、Codinable では実行しません。
+        手元では「build」を実行し、テストを通したうえで build/libs/employee-app.jar ができることを確かめます。
+      en: >-
+        github/workflows/ holds the GitHub Actions definitions from the sample repository (ci.yml / container.yml / sonar.yml).
+        Read the events, job dependencies via needs, report upload with if: always() and the tag-based publish condition.
+        They run on GitHub, not inside Codinable. Locally, run "build" and check that the tests pass and
+        build/libs/employee-app.jar is produced.
+    openFiles:
+      - github/workflows/ci.yml
+      - github/workflows/container.yml
+      - build.gradle
+      - README.md

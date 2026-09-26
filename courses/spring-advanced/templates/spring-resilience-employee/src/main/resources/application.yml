@@ -1,0 +1,53 @@
+server:
+# バックエンド（rest-employee-restclient-api: 8095）や spring-retry-employee（8081）と同時起動するため8082を使う
+  port: 8082
+
+# 呼び出し先REST API（rest-employee-restclient-api）のベースURL
+employee:
+  api:
+    url: ${EMPLOYEE_API_URL:http://localhost:8095}
+
+# Resilience4jの設定
+resilience4j:
+  circuitbreaker:
+    instances:
+      employeeApi:
+# 失敗率の計測方法（COUNT_BASED: 直近N回の呼び出し結果で計測する）
+        sliding-window-type: COUNT_BASED
+# 失敗率を計測する呼び出し回数（直近10回）
+        sliding-window-size: 10
+# 失敗率を計算し始めるまでの最低呼び出し回数（教材として少なめに設定）
+        minimum-number-of-calls: 5
+# 失敗率がこの割合（%）を超えるとOPENに遷移する
+        failure-rate-threshold: 50
+# OPENのまま維持する時間。経過後にHALF_OPENへ遷移する
+        wait-duration-in-open-state: 10s
+# HALF_OPEN状態で試験的に許可する呼び出し回数
+        permitted-number-of-calls-in-half-open-state: 3
+# Actuatorのヘルスチェックにサーキットの状態を反映する
+        register-health-indicator: true
+  ratelimiter:
+    instances:
+      employeeApi:
+# 期間内に許可する呼び出し回数
+        limit-for-period: 3
+# 許可回数がリフレッシュされる周期（10秒ごとに3回まで許可）
+        limit-refresh-period: 10s
+# 上限超過時に空きを待つ時間（0なら待たずに即RequestNotPermittedを送出する）
+        timeout-duration: 0
+
+# Actuatorの設定（/actuator/circuitbreakers でサーキットの状態を確認できる）
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+    io.github.resilience4j: INFO
+    pro.kensait.spring.employee: INFO

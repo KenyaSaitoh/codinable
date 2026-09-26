@@ -229,31 +229,21 @@ async function checkMessaging(cdp) {
   await waitFor(cdp, `document.querySelectorAll('.messaging-service').length === 2`, 10000, 'Messaging controls missing');
   check(await cdp.eval(`document.querySelectorAll('.messaging-service button[data-action="start"]:not(:disabled)').length`) === 2,
     'Bundled brokers not available');
-  await cdp.eval(`(() => { const s = document.getElementById('active-course-select'); s.value = 'messaging-basics'; s.dispatchEvent(new Event('change')); })()`);
+  // 講座の演習 (Spring の producer / consumer) は常駐するため、ここでは同梱ブローカーの起動だけを見る
   for (const id of ['kafka', 'rabbitmq']) {
-    await clickExercise(cdp, id + '-roundtrip');
-    await waitFor(cdp, `projectInfo?.template === '${id}-roundtrip' && document.getElementById('run-target-select').value === 'gradle:run' && !document.getElementById('btn-run').disabled`, 20000, id + ' run target');
-    await cdp.eval(`document.getElementById('btn-run').click()`);
-    await waitFor(cdp, `/BUILD (SUCCESSFUL|FAILED)/.test(document.getElementById('output-result').textContent)`, 240000, id + ' sample did not finish');
-    const success = await cdp.eval(`document.getElementById('output-result').textContent.includes('BUILD SUCCESSFUL')`);
-    check(success, id + ' sample failed');
-    if (!success) console.log(await cdp.eval(`document.getElementById('output-result').textContent`));
-    check(await cdp.eval(`document.getElementById('output-result').textContent.includes('Received:')`), id + ' did not receive a message');
-    const state = await cdp.eval(`window.api.messagingStatus().then(s => s.find(s => s.id === '${id}').state)`);
-    check(state === 'running', id + ' broker stopped when the exercise ended');
-    await waitFor(cdp, `!running`, 15000, id + ' exercise did not finish');
+    await cdp.eval(`document.querySelector('[data-service="${id}"] [data-action="start"]').click()`);
+    await waitFor(cdp, `document.querySelector('[data-service="${id}"] .messaging-state').dataset.state === 'running'`, 120000, id + ' start button');
   }
-  await cdp.eval(`document.getElementById('run-tab-messaging').click()`);
   if (process.env.SHOTS) {
     fs.mkdirSync(process.env.SHOTS, { recursive: true });
     fs.writeFileSync(path.join(process.env.SHOTS, 'app-messaging.png'), Buffer.from(await cdp.screenshot(), 'base64'));
   }
-  // Exercise the Stop/Start controls as well as automatic startup.
+  // 停止 → 再起動のボタンも確かめる
   await cdp.eval(`document.querySelector('[data-service="rabbitmq"] [data-action="stop"]').click()`);
   await waitFor(cdp, `document.querySelector('[data-service="rabbitmq"] .messaging-state').dataset.state === 'stopped'`, 30000, 'RabbitMQ stop button');
   await cdp.eval(`document.querySelector('[data-service="rabbitmq"] [data-action="start"]').click()`);
   await waitFor(cdp, `document.querySelector('[data-service="rabbitmq"] .messaging-state').dataset.state === 'running'`, 90000, 'RabbitMQ start button');
-  console.log('Messaging UI and both sample exercises checked');
+  console.log('Messaging UI and both brokers checked');
 }
 
 async function checkWebServerExercise(cdp, exerciseId, target, urlPattern, label) {

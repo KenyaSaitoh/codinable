@@ -1,0 +1,8 @@
+pro.kensait.mybatis.company.main.FlatSelectMain1
+pro.kensait.mybatis.company.main.FlatSelectMain2
+pro.kensait.mybatis.company.main.InsertMain
+pro.kensait.mybatis.company.main.JoinSelectMain1
+pro.kensait.mybatis.company.main.JoinSelectMain2
+pro.kensait.mybatis.company.main.NestSelectMain1
+pro.kensait.mybatis.company.main.NestSelectMain2
+pro.kensait.mybatis.company.main.UpdateMain

@@ -1,0 +1,102 @@
+# VS Code REST Client拡張用。curlだけで確認する場合はcurlメモ.txtを参照。
+@base = http://localhost:8080/api
+
+### Repositoryの入口
+GET {{base}}
+Accept: application/hal+json
+
+### 一覧（第10章のpage=1に相当）
+GET {{base}}/employees?page=0&size=5&sort=employeeId,asc
+
+### 部署と職種
+GET {{base}}/departments?sort=departmentId,asc
+
+###
+GET {{base}}/jobs?sort=grade,asc
+
+### 検索リソースの一覧
+GET {{base}}/employees/search
+
+###
+GET {{base}}/employees/search/by-salary?lowerSalary=500000&sort=employeeId,asc
+
+###
+GET {{base}}/employees/search/by-department?departmentId=2&sort=employeeId,asc
+
+###
+GET {{base}}/employees/search/by-job?jobId=1&sort=employeeId,asc
+
+###
+GET {{base}}/employees/search/by-name?keyword=山田
+
+### Projection（月給・入社日を省略）
+GET {{base}}/employees?projection=summary&sort=employeeId,asc
+
+### 入力検証エラー（400）
+POST {{base}}/employees
+Content-Type: application/json
+
+{"employeeName":"", "salary":-1}
+
+### 登録。LocationとETagを確認する
+# @name create
+POST {{base}}/employees
+Content-Type: application/json
+
+{
+  "employeeName": "新入 社員",
+  "departmentId": 2,
+  "jobId": 1,
+  "salary": 300000,
+  "entranceDate": "2026-04-01"
+}
+
+### 直前に作った社員を取得（GETを実行してから次のPUTへ）
+# @name current
+GET {{create.response.headers.Location}}
+
+### 取得したETagで全項目更新
+# @name replace
+PUT {{create.response.headers.Location}}
+Content-Type: application/json
+If-Match: {{current.response.headers.ETag}}
+
+{
+  "employeeName": "更新 社員",
+  "departmentId": 1,
+  "jobId": 2,
+  "salary": 380000,
+  "entranceDate": "2026-04-01"
+}
+
+### 古いETagで更新すると412（currentのGETを実行し直さずに送る）
+PATCH {{create.response.headers.Location}}
+Content-Type: application/json
+If-Match: {{current.response.headers.ETag}}
+
+{"salary": 390000}
+
+### 最新のETagなら部分更新できる
+# @name patch
+PATCH {{create.response.headers.Location}}
+Content-Type: application/json
+If-Match: {{replace.response.headers.ETag}}
+
+{"salary": 400000}
+
+### 未変更なら304
+GET {{create.response.headers.Location}}
+If-None-Match: {{patch.response.headers.ETag}}
+
+### 論理削除（204）
+DELETE {{create.response.headers.Location}}
+If-Match: {{patch.response.headers.ETag}}
+
+### 削除済みは404
+GET {{create.response.headers.Location}}
+
+### マスターは参照専用（405）
+DELETE {{base}}/departments/1
+
+### 内部検索は非公開（404）
+GET {{base}}/employees/search/findByStatus?status=active

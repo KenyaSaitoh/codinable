@@ -1,0 +1,38 @@
+server:
+  port: 8088
+
+spring:
+# Codinable では HSQLDB サーバーを使わずインメモリで動かす
+# 実行ボタンでは --spring.profiles.active=demo を渡せないため、demo を既定のプロファイルにしている
+# （application-demo.yml が下の datasource をインメモリ DB に置き換え、schema.sql / data.sql を流す）
+# 講座と同じく HSQLDB サーバー（localhost:9001）に接続したいときは、この 2 行を消す
+  profiles:
+    default: demo
+
+# Spring for GraphQL
+  graphql:
+# GraphiQL（ブラウザ上でクエリを対話的に試せる開発用ツール）を有効化する
+# http://localhost:8088/graphiql で開ける
+    graphiql:
+      enabled: true
+
+  datasource:
+    # HSQLDB (Server mode) - 複数プロジェクトで共有
+    url: jdbc:hsqldb:hsql://localhost:9001/testdb
+    username: SA
+    password:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+
+# Spring Data JPA
+  jpa:
+    properties:
+      hibernate:
+# これがないとテーブル名が小文字になってしまい、RDSでエラーになる
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    pro.kensait.spring.employee: INFO

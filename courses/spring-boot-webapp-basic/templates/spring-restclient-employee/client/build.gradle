@@ -1,0 +1,53 @@
+// コンソールの HTTP クライアント。処理が終わると終了し、待ち受けポートは開かない
+// ルートの確認用 API とは別の、独立した Gradle プロジェクト（ルートの settings.gradle には含めない）
+// ターミナルで cd client → ../gradlew.bat run で動かす
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // JSON 変換と HTTP クライアント（RestClient / RestTemplate）を使う。SpringApplication は起動しない
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+springBoot {
+    mainClass = 'pro.kensait.spring.employee.client.Main_Employee'
+}
+
+// Spring Boot プラグインは run タスクを持たないので、サンプルと同じく JavaExec で用意する
+// 接続先は第 1 引数 → 環境変数 EMPLOYEE_API_URL → 既定値の順で決まる
+tasks.register('run', JavaExec) {
+    group = 'application'
+    description = 'Call the employee REST API from the console and exit'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'pro.kensait.spring.employee.client.Main_Employee'
+}
+
+tasks.withType(JavaExec).configureEach {
+    jvmArgs '-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}

@@ -1,0 +1,50 @@
+// WebClient の Java コンソール（rest-client-employee-webclient）
+// Spring Boot アプリとしては起動せず、main を実行して終了する（待受ポートは開かない）
+// ルートの API を起動してから、ターミナルで cd client → ../gradlew.bat run で実行する
+plugins {
+    id 'java'
+    id 'application'
+    // Spring Boot の BOM でライブラリのバージョンをそろえるためだけに使う
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:4.1.0'
+    }
+}
+
+dependencies {
+    // JSON変換とHTTPクライアントを利用する。SpringApplicationは起動しない。
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// 接続先は、第 1 引数（../gradlew.bat run --args='http://127.0.0.1:8087'）、
+// 環境変数 EMPLOYEE_API_URL、既定 URL http://localhost:8087 の順で決まる
+application {
+    mainClass = 'pro.kensait.spring.employee.client.Main_Employee'
+    applicationDefaultJvmArgs = ['-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8']
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "failed", "skipped"
+        exceptionFormat "full"
+    }
+}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>MemberDetailPage</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <h2>会員詳細</h2>
+  <hr />
+  <!-- リンクURL式のパス変数で渡された会員を表示する -->
+  <th:block th:if="${member != null}">
+    <div th:text="|会員ID: ${member.memberId}|"></div>
+    <div th:text="|会員名: ${member.memberName}|"></div>
+    <div th:text="|年齢: ${member.age}|"></div>
+    <div th:text="|メールアドレス: ${member.email}|"></div>
+  </th:block>
+  <div th:if="${member == null}">該当する会員が見つかりませんでした。</div>
+
+  <hr />
+  <a th:href="@{/link}">リンクのページに戻る</a>
+</body>
+</html>

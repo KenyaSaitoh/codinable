@@ -1,0 +1,59 @@
+// spring-mvc-employee: メモリー版の社員管理（Controller / Service / DAO）
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+// 講座のサンプル（learn_spring_aidd_basic）はマルチプロジェクト構成で、共通の設定を
+// 親の build.gradle に置いている。Codinable では演習フォルダ単独で動かすため、
+// 必要な設定だけをこの 1 ファイルに畳んだ（品質ゲート用の Checkstyle / SpotBugs /
+// PIT などは省いた）。依存のバージョンは Spring Boot の BOM に任せる
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // ソースに付いている @SuppressFBWarnings（静的解析 SpotBugs 向けの注記）をコンパイルするため
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.3'
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}
+
+// JDK 21 以降は実行中のエージェント読み込みが制限され、JDK 25 では Mockito が
+// 自分自身をアタッチできずにモックの生成に失敗する。mockito-core を -javaagent で渡しておく
+// （Codinable の「test」も同じ指定を自動で足すが、build やターミナルからの実行でも動くようにする）
+configurations {
+    mockitoAgent
+}
+
+dependencies {
+    mockitoAgent('org.mockito:mockito-core') {
+        transitive = false
+    }
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgumentProviders.add({ ["-javaagent:${configurations.mockitoAgent.singleFile}"] } as CommandLineArgumentProvider)
+}

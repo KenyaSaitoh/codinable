@@ -1,0 +1,49 @@
+# 社員管理システムのGraphQLスキーマ定義
+# GraphQLは「スキーマ駆動」であり、APIの型と操作をこのファイルで先に定義する
+# Spring for GraphQLは src/main/resources/graphql/ 配下の *.graphqls を自動的に読み込む
+
+# 社員を表す型
+# （どのフィールドを取得するかはクライアントのクエリが決めるため、
+# RESTのようなオーバーフェッチ（不要な項目まで返る）が起きない）
+type Employee {
+    id: ID!                     # 社員ID
+    employeeName: String!       # 社員名
+    jobName: String             # 職種
+    salary: Int                 # 給与
+    entranceDate: String            # 入社日（標準スカラーに日付型がないため文字列で表す）
+    department: Department      # 所属部署（ネストして一度に取得できる）
+}
+
+# 部署を表す型
+type Department {
+    id: ID!                     # 部署ID
+    departmentName: String!     # 部署名
+    location: String            # 所在地
+    employees: [Employee!]!     # 所属する社員のリスト（@SchemaMappingで解決される）
+}
+
+# 問い合わせ（参照系）の操作
+# エンドポイントは /graphql の1つだけで、操作はクエリ本文で指定する（単一エンドポイント）
+type Query {
+    employee(id: ID!): Employee                             # 主キー検索
+    employees: [Employee!]!                                 # 全件取得
+    employeesByDepartment(departmentId: ID!): [Employee!]!  # 部署IDをキーに検索
+    departments: [Department!]!                             # 全部署取得
+}
+
+# 社員の作成・更新のための入力型
+# （出力用のtypeとは別に、引数専用のinputとして定義する）
+input EmployeeInput {
+    employeeName: String!       # 社員名
+    departmentId: ID!           # 部署ID
+    jobName: String             # 職種
+    salary: Int                 # 給与
+    entranceDate: String            # 入社日（"yyyy-MM-dd"形式）
+}
+
+# 更新（更新系）の操作
+type Mutation {
+    createEmployee(input: EmployeeInput!): Employee!        # 新規作成
+    updateEmployee(id: ID!, input: EmployeeInput!): Employee!  # 更新
+    deleteEmployee(id: ID!): ID!                            # 削除（削除したIDを返す）
+}

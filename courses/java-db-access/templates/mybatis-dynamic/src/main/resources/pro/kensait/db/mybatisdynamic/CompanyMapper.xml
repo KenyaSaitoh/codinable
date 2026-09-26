@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pro.kensait.db.mybatisdynamic.CompanyMapper">
+  <select id="search" resultType="pro.kensait.db.mybatisdynamic.EmployeeView">
+    SELECT e.EMPLOYEE_ID AS id,
+           e.EMPLOYEE_NAME AS name,
+           d.DEPARTMENT_NAME AS departmentName,
+           e.SALARY AS salary
+    FROM EMPLOYEE e
+    JOIN DEPARTMENT d ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+    <where>
+      <if test="departmentId != null">AND e.DEPARTMENT_ID = #{departmentId}</if>
+      <if test="minimumSalary != null">AND e.SALARY &gt;= #{minimumSalary}</if>
+      <if test="ids != null and !ids.isEmpty()">
+        AND e.EMPLOYEE_ID IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">#{id}</foreach>
+      </if>
+    </where>
+    ORDER BY e.EMPLOYEE_ID
+  </select>
+
+  <select id="summarizeDepartments" resultType="pro.kensait.db.mybatisdynamic.DepartmentSummary">
+    SELECT d.DEPARTMENT_ID AS departmentId,
+           d.DEPARTMENT_NAME AS departmentName,
+           COUNT(e.EMPLOYEE_ID) AS employeeCount,
+           COALESCE(AVG(e.SALARY), 0) AS averageSalary
+    FROM DEPARTMENT d
+    LEFT JOIN EMPLOYEE e ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+    GROUP BY d.DEPARTMENT_ID, d.DEPARTMENT_NAME
+    ORDER BY d.DEPARTMENT_ID
+  </select>
+</mapper>

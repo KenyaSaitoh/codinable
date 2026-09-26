@@ -1,0 +1,20 @@
+### 前提: 基礎編の確認用API（rest-employee-restclient-api: 8095）+ このアプリ（8081）を起動しておく
+# learn_spring_aidd_basicで ./gradlew :master:rest-employee-restclient-api:bootRun
+# ./gradlew :master:spring-retry-employee:bootRun
+
+### retryDemo（正常系。バックエンド稼働中は1回目の試行で成功する）
+curl -i localhost:8081/retry-demo
+# HTTP/1.1 200
+# {"employees":[...],"fallback":false,"message":"取得成功"}
+# コンソールログ: [ EmployeeClientService#getEmployees ] 試行 1 回目
+
+### retryDemo（リトライ観察。rest-employee-restclient-apiを停止してから実行する）
+curl -i localhost:8081/retry-demo
+# 約3秒（1秒+2秒の指数バックオフ）待たされた後、HTTP/1.1 200 と {"employees":[],"fallback":true,"message":"..."} が返る
+# コンソールログ:
+#   [ EmployeeClientService#getEmployees ] 試行 1 回目
+#   （1秒待機）
+#   [ EmployeeClientService#getEmployees ] 試行 2 回目
+#   （2秒待機）
+#   [ EmployeeClientService#getEmployees ] 試行 3 回目
+#   [ EmployeeClientService#recoverEmployees ] リトライ上限に達したため代替応答を返します => ...

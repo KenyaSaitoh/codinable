@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.2">
+  <persistence-unit name="jpa-relations" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>pro.kensait.db.jparelation.Department</class>
+    <class>pro.kensait.db.jparelation.Employee</class>
+    <properties>
+      <property name="jakarta.persistence.jdbc.driver" value="org.hsqldb.jdbc.JDBCDriver"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:hsqldb:mem:jpa_relations"/>
+      <property name="jakarta.persistence.jdbc.user" value="SA"/>
+      <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+    </properties>
+  </persistence-unit>
+</persistence>

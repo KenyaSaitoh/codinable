@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+# 元のサンプルは HSQLDB サーバー（localhost:9001）へ接続し、初期化はしない設定だった
+#   url: ${EMPLOYEE_DB_URL:jdbc:hsqldb:hsql://127.0.0.1:9001/testdb}
+#   spring.sql.init.mode: never
+# Codinable では HSQLDB サーバーを使わずインメモリで動かす。起動のたびに
+# sql/hsqldb の DDL と初期データ（build.gradle の processResources で classpath:db/ へ入る）を流す
+# 環境変数 EMPLOYEE_DB_URL などを与えれば、元どおり外部の DB へ向けられる
+spring:
+  datasource:
+    url: ${EMPLOYEE_DB_URL:jdbc:hsqldb:mem:testdb}
+    username: ${EMPLOYEE_DB_USER:SA}
+    password: ${EMPLOYEE_DB_PASSWORD:}
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/2_EMPLOYEE_DDL.sql
+      data-locations: classpath:db/3_EMPLOYEE_DML.sql
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+      accept-float-as-int: false
+
+logging:
+  level:
+    root: INFO

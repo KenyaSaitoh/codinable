@@ -1,0 +1,7 @@
+pro.kensait.jpa.company.main.crud.CascadeStrategyMain
+pro.kensait.jpa.company.main.crud.DeleteMain
+pro.kensait.jpa.company.main.crud.FetchStrategyMain
+pro.kensait.jpa.company.main.crud.InsertMain
+pro.kensait.jpa.company.main.crud.MapkeyMain
+pro.kensait.jpa.company.main.crud.SelectMain1
+pro.kensait.jpa.company.main.crud.SelectMain2

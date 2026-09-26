@@ -1,0 +1,27 @@
+package pro.kensait.leafbooks.web;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import pro.kensait.leafbooks.web.login.LoginParam;
+
+/*
+ * index機能のコントローラー
+ */
+@Controller
+@Configuration
+public class IndexController {
+    private static final Logger logger = LoggerFactory.getLogger(
+            IndexController.class);
+
+    // アクションメソッド：トップ画面にフォワード
+    @GetMapping("/")
+    public String index(@ModelAttribute("loginParam") LoginParam loginParam) {
+        logger.info("[ IndexController#index ]");
+        return "TopPage";
+    }
+}

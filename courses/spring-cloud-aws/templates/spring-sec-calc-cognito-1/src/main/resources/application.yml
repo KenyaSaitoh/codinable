@@ -1,0 +1,34 @@
+server:
+  port: 8080
+
+spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+    servlet:
+      content-type: text/html
+  security:
+    oauth2:
+      client:
+        registration:
+          cognito:
+            # クライアントID・クライアントシークレットは環境変数から取得する（平文で書かない）
+            client-id: ${COGNITO_CLIENT_ID}
+            client-secret: ${COGNITO_CLIENT_SECRET}
+            scope: openid, profile, email
+            # redirect-uriを指定しない場合、Spring Securityの既定値
+            # {baseUrl}/login/oauth2/code/{registrationId}
+            # （このアプリでは http://localhost:8080/login/oauth2/code/cognito）が使われる
+            # この既定値を、Cognito側アプリクライアントの
+            # 「許可されているコールバックURL」として登録しておく必要がある
+        provider:
+          cognito:
+            # issuer-uriからOIDCの各エンドポイント（認可・トークン・JWKS等）が自動解決される
+            issuer-uri: https://cognito-idp.${AWS_REGION:ap-northeast-1}.amazonaws.com/${COGNITO_USER_POOL_ID}
+
+logging:
+  level:
+    root: INFO

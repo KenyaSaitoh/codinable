@@ -1,0 +1,83 @@
+// Leaf Books API（SPA 版のバックエンド）: React に JSON を返す REST API。ポート 8080
+// 元はリポジトリ learn_spring_aidd_practical のマルチプロジェクト
+// （ルート build.gradle の subprojects {} と project 固有ブロック）で、
+// それを単独で動く 1 ファイルに畳んだもの
+// checkstyle / spotbugs / pitest / dependency-check / jacoco（品質ゲート用）と
+// dbunit / archunit（master のテストでは未使用）は入れていない
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+// Mockito のエージェントだけを取り出すための構成
+configurations {
+    mockitoAgent
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Spring Security と JWT
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // 元は $rootDir/hsqldb/lib/hsqldb.jar。ここでは BOM 管理のものを使う
+    runtimeOnly 'org.hsqldb:hsqldb'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // Spring Boot 4 ではテストスライスがモジュールごとに分かれた
+    // @DataJpaTest は spring-boot-data-jpa-test、@WebMvcTest は spring-boot-webmvc-test
+    testImplementation 'org.springframework.boot:spring-boot-data-jpa-test'
+    testImplementation 'org.springframework.boot:spring-boot-webmvc-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Mockito を -javaagent で読み込ませるための構成（下の test を参照）
+    mockitoAgent('org.mockito:mockito-core') { transitive = false }
+}
+
+// Codinable では HSQLDB サーバーを使わずインメモリで動かす
+// 起動時に流す DDL / DML は sql/hsqldb/ のものをそのまま classpath の db/ へ入れる
+// （application.yml の spring.sql.init が classpath:db/... を読む）
+// sql/hsqldb/ を書き換えれば、次の起動からその内容で DB が作られる
+processResources {
+    from('sql/hsqldb') {
+        include '2_*.sql', '3_*.sql'
+        into 'db'
+    }
+}
+
+test {
+    // Codinable 同梱の JDK は jlink で最小化しており jdk.attach を含まないため、
+    // Mockito が実行中に自分自身をエージェントとして読み込めない
+    // （JDK 21 以降で推奨されている）-javaagent 指定で起動時に読み込ませる
+    jvmArgs "-javaagent:${configurations.mockitoAgent.asPath}"
+    // 元の構成では @Tag("it") / @Tag("e2e") を除外しているが、
+    // master のテストにはタグ付きのものが無いため、ここでは除外しない
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}

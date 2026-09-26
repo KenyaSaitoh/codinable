@@ -1,0 +1,45 @@
+body {
+    font-family: sans-serif;
+    margin: 24px;
+}
+
+h2 {
+    color: #2c5f8a;
+}
+
+.page-header {
+    border-bottom: 2px solid #2c5f8a;
+    padding-bottom: 4px;
+    margin-bottom: 16px;
+}
+
+.page-footer {
+    border-top: 1px solid #ccc;
+    margin-top: 24px;
+    padding-top: 4px;
+    color: #888;
+    font-size: 0.85em;
+}
+
+.card {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+}
+
+.card-title {
+    font-weight: bold;
+    color: #2c5f8a;
+}
+
+/* th:errorclass によって、エラーのある入力項目に付与されるクラス */
+.input-error {
+    border: 2px solid #c0392b;
+    background-color: #fdecea;
+}
+
+.error-message {
+    color: #c0392b;
+    font-size: 0.85em;
+}

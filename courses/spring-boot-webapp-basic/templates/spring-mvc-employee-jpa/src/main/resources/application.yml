@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+endpoints:
+  shutdown:
+    sensitive: false # No auth protected
+    enabled: true # Enable shutdown endpoint
+
+spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+  datasource:
+    # Codinable では HSQLDB サーバーを使わずインメモリで動かす
+    # （サンプルの元の設定: url: jdbc:hsqldb:hsql://localhost:9001/testdb）
+    # 起動のたびに下の SQL で作り直すので、登録・更新した内容は停止すると消える
+    url: jdbc:hsqldb:mem:testdb
+    username: SA
+    password:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+  sql:
+    init:
+      # sql/hsqldb の DDL と初期データ（build.gradle で classpath:db/ へ入れている）を起動時に流す
+      mode: always
+      schema-locations: classpath:db/2_EMPLOYEE_DDL.sql
+      data-locations: classpath:db/3_EMPLOYEE_DML.sql
+
+# Spring Data JPA
+# これがないと、以下の例外が出てしまう
+# Unable to determine Dialect without JDBC metadata
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+# これがないとテーブル名が小文字になってしまい、RDSでエラーになる
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    pro.kensait.spring.employee: INFO

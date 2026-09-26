@@ -1,0 +1,92 @@
+// 第3・4・8章：社員管理 Web アプリ（Spring MVC + Thymeleaf + JPA）と、その単体・スライス・結合テスト
+// 元のサンプルは親 build.gradle（subprojects{}）と gradle/employee-app.gradle に設定を分けた
+// マルチプロジェクトだった。Codinable では単独で動く必要があるため 1 ファイルに畳んでいる
+// Checkstyle / SpotBugs / PIT / OWASP Dependency-Check / ArchUnit / SonarQube の設定は
+// このコースのテスト本編では使わないので入れていない
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    // DB は組み込みの H2（インメモリ）。起動のたびに schema.sql / data.sql で初期化される
+    // HSQLDB サーバーなどを別に起動する必要はない
+    runtimeOnly 'com.h2database:h2'
+    // EmployeeController の @SuppressFBWarnings（SpotBugs の抑止指定）をコンパイルするためだけに使う
+    // SpotBugs 自体は動かさない
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.3'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // Spring Boot 4 では @WebMvcTest / @DataJpaTest が専用モジュールへ移動した
+    testImplementation 'org.springframework.boot:spring-boot-webmvc-test'
+    testImplementation 'org.springframework.boot:spring-boot-data-jpa-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// 実行可能 JAR の名前（第8章で「成果物」として build/libs/employee-app.jar を確かめる）
+tasks.named('bootJar') {
+    archiveFileName = 'employee-app.jar'
+}
+
+// 元のサンプルは test から @Tag("it") / @Tag("e2e") を除外し、結合テストを
+// 別タスク integrationTest で流していた（第8章の CI もこの分け方を前提にしている）
+// Codinable の「test」ボタンは test タスクの結果だけを表示するため、ここでは除外タグを外し、
+// 単体テスト（EmployeeParamTest / EmployeeServiceTest）・Web スライス（EmployeeControllerWebTest）・
+// @Tag("it") の結合テスト（EmployeeRepositoryTest / EmployeeApplicationIntegrationTest）を
+// 1 回でまとめて流す。タグ自体はソースに残してあるので、分け方はテストクラスで確かめられる
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}
+
+// 原稿・CI と同じ分け方で流したいときに使う（ターミナルから gradlew.bat integrationTest）
+tasks.register('integrationTest', Test) {
+    group = 'verification'
+    description = 'Run integration tests tagged with @Tag("it")'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'it'
+    }
+}
+
+// JDK 21 以降は実行中のエージェント読み込みが制限され、JDK 25 では Mockito が
+// 自分自身をアタッチできずにモックの生成に失敗する。mockito-core を -javaagent で渡しておく
+// （バージョンは Spring Boot の BOM が管理する。Codinable の「test」も同じ指定を自動で足すが、
+//   build やターミナルからの実行でも動くようにする）
+configurations {
+    mockitoAgent
+}
+
+dependencies {
+    mockitoAgent('org.mockito:mockito-core') {
+        transitive = false
+    }
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgumentProviders.add({ ["-javaagent:${configurations.mockitoAgent.singleFile}"] } as CommandLineArgumentProvider)
+}

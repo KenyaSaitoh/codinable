@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>CalcErrorPage</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <h2>CalcErrorPage</h2>
+  <hr />
+  <div>計算エラーが発生しました</div>
+  <div>詳細情報：<span th:text="${errorMessage}"></span></div>
+  <a th:href="@{/viewHistory}">履歴画面へ</a><br />
+  <a th:href="@{/toInput}">入力画面へ</a><br />
+</body>
+</html>

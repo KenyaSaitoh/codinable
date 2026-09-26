@@ -1,0 +1,51 @@
+### GraphQLの動作確認メモ
+# エンドポイントは /graphql の1つだけ（単一エンドポイント）。
+# すべて「POST + JSONボディ（queryプロパティ）」で送信する点がRESTとの大きな違い。
+# クエリが長くなるためcurlでは読みにくい。まずはGraphiQLで試すのがおすすめ。
+
+### GraphiQL（ブラウザでGraphQLを対話的に試せる開発用ツール）
+# アプリケーション起動後、ブラウザで以下を開く
+# http://localhost:8088/graphiql
+# 左ペインにクエリを入力して実行ボタンを押すと、右ペインに結果が表示される。
+# 補完（Ctrl+Space）やスキーマドキュメントの参照もできる（スキーマ駆動の恩恵）。
+
+### employees（全件取得。必要なフィールドだけを指定できる＝オーバーフェッチが起きない）
+curl -i -X POST localhost:8088/graphql -H "Content-Type: application/json" -d "{\"query\":\"{ employees { id employeeName salary } }\"}"
+# HTTP/1.1 200
+# {"data":{"employees":[{"id":"1","employeeName":"Alice","salary":300000},...]}}
+
+### employee（主キー検索。部署までネストして一度に取得できる＝アンダーフェッチが起きない）
+curl -i -X POST localhost:8088/graphql -H "Content-Type: application/json" -d "{\"query\":\"{ employee(id: 1) { id employeeName jobName salary entranceDate department { id departmentName location } } }\"}"
+# HTTP/1.1 200
+# {"data":{"employee":{"id":"1","employeeName":"Alice","jobName":"Sales","salary":300000,"entranceDate":"2018-04-01","department":{"id":"10","departmentName":"営業部","location":"東京"}}}}
+
+### employee（存在しない場合。HTTPステータスは200のまま、errors配列で返る点がRESTと異なる）
+curl -i -X POST localhost:8088/graphql -H "Content-Type: application/json" -d "{\"query\":\"{ employee(id: 999) { id employeeName } }\"}"
+# HTTP/1.1 200
+# {"errors":[{"message":"INTERNAL_ERROR for ...","extensions":{"classification":"INTERNAL_ERROR"}}],"data":{"employee":null}}
+
+### employeesByDepartment（部署IDをキーに条件検索）
+curl -i -X POST localhost:8088/graphql -H "Content-Type: application/json" -d "{\"query\":\"{ employeesByDepartment(departmentId: 20) { id employeeName jobName } }\"}"
+# HTTP/1.1 200
+# {"data":{"employeesByDepartment":[{"id":"2","employeeName":"Bob","jobName":"Engineer"},{"id":"3","employeeName":"Carol","jobName":"Engineer"}]}}
+
+### departments（全部署取得。employeesフィールドは@SchemaMappingにより部署ごとに解決される。
+### 部署がN件あるとSQLがN回発行される「N+1問題」をログで観察できる）
+curl -i -X POST localhost:8088/graphql -H "Content-Type: application/json" -d "{\"query\":\"{ departments { id departmentName location employees { employeeName } } }\"}"
+# HTTP/1.1 200
+# {"data":{"departments":[{"id":"10","departmentName":"営業部","location":"東京","employees":[{"employeeName":"Alice"},{"employeeName":"Dave"}]},...]}}
+
+### createEmployee（新規作成。variablesで入力値を分離して渡すのがGraphQLの流儀）
+curl -i -X POST localhost:8088/graphql -H "Content-Type: application/json" -d "{\"query\":\"mutation($input: EmployeeInput!) { createEmployee(input: $input) { id employeeName department { departmentName } } }\",\"variables\":{\"input\":{\"employeeName\":\"George\",\"departmentId\":20,\"jobName\":\"Engineer\",\"salary\":280000,\"entranceDate\":\"2023-04-01\"}}}"
+# HTTP/1.1 200
+# {"data":{"createEmployee":{"id":"7","employeeName":"George","department":{"departmentName":"開発部"}}}}
+
+### updateEmployee（更新）
+curl -i -X POST localhost:8088/graphql -H "Content-Type: application/json" -d "{\"query\":\"mutation($id: ID!, $input: EmployeeInput!) { updateEmployee(id: $id, input: $input) { id employeeName salary } }\",\"variables\":{\"id\":2,\"input\":{\"employeeName\":\"Bob\",\"departmentId\":10,\"jobName\":\"Sales\",\"salary\":360000,\"entranceDate\":\"2015-04-01\"}}}"
+# HTTP/1.1 200
+# {"data":{"updateEmployee":{"id":"2","employeeName":"Bob","salary":360000}}}
+
+### deleteEmployee（削除。削除したIDが返る）
+curl -i -X POST localhost:8088/graphql -H "Content-Type: application/json" -d "{\"query\":\"mutation { deleteEmployee(id: 2) }\"}"
+# HTTP/1.1 200
+# {"data":{"deleteEmployee":"2"}}

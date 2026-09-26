@@ -1,0 +1,4 @@
+pro.kensait.jpa.company.main.EmbeddedIdDeleteMain
+pro.kensait.jpa.company.main.EmbeddedIdInsertMain
+pro.kensait.jpa.company.main.EmbeddedIdSelectMain
+pro.kensait.jpa.company.main.EmbeddedIdUpdateMain

@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  # Codinable の「実行」（bootRun）は引数を渡さないので、プロファイルを指定しないときは
+  # demo（このプロセス専用のインメモリ HSQLDB。起動のたびに初期データへ戻る）を使う
+  # サンプルでは --spring.profiles.active=demo を付けて起動していた。
+  # HSQLDB サーバー（localhost:9001）につなぐときは --spring.profiles.active=server など demo 以外を指定する（下の datasource を使う）
+  profiles:
+    default: demo
+  datasource:
+    url: ${EMPLOYEE_DB_URL:jdbc:hsqldb:hsql://127.0.0.1:9001/testdb}
+    username: ${EMPLOYEE_DB_USER:SA}
+    password: ${EMPLOYEE_DB_PASSWORD:}
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  sql:
+    init:
+      mode: never
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+      accept-float-as-int: false
+
+logging:
+  level:
+    root: INFO

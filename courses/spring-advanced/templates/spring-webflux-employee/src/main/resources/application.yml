@@ -1,0 +1,8 @@
+server:
+  port: 8089
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    pro.kensait.spring.employee: INFO

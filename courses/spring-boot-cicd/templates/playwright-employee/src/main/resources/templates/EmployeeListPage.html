@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>社員管理</title>
+</head>
+<body>
+  <h1>社員管理</h1>
+
+  <form id="searchForm" method="get" th:action="@{/employees}">
+    <label for="keyword">キーワード</label>
+    <input id="keyword" name="keyword" type="text" th:value="${keyword}" />
+    <label for="departmentId">部署</label>
+    <select id="departmentId" name="departmentId">
+      <option value="">すべて</option>
+      <option th:each="department : ${departments}" th:value="${department.departmentId}"
+              th:text="${department.departmentName}"
+              th:selected="${department.departmentId == departmentId}">部署</option>
+    </select>
+    <label for="jobId">役職</label>
+    <select id="jobId" name="jobId">
+      <option value="">すべて</option>
+      <option th:each="job : ${jobs}" th:value="${job.jobId}"
+              th:text="${job.jobName}" th:selected="${job.jobId == jobId}">役職</option>
+    </select>
+    <label for="salaryFrom">月給（下限）</label>
+    <input id="salaryFrom" name="salaryFrom" type="text" th:value="${salaryFrom}" />
+    <label for="salaryTo">月給（上限）</label>
+    <input id="salaryTo" name="salaryTo" type="text" th:value="${salaryTo}" />
+    <button id="search" type="submit" name="page" value="1">検索</button>
+    <button id="prev" type="submit" name="page" th:value="${page - 1}"
+            th:disabled="${!hasPrev}">前へ</button>
+    <button id="next" type="submit" name="page" th:value="${page + 1}"
+            th:disabled="${!hasNext}">次へ</button>
+  </form>
+
+  <form method="get" th:action="@{/employees/new}">
+    <button id="new" type="submit">新規登録</button>
+  </form>
+
+  <p class="empty" th:if="${#lists.isEmpty(employees)}">該当する社員はいません</p>
+  <table id="employees" th:unless="${#lists.isEmpty(employees)}">
+    <tr>
+      <th>氏名</th><th>部署</th><th>役職</th><th>月給</th><th>入社日</th><th></th>
+    </tr>
+    <tr th:each="row : ${employees}">
+      <td th:text="${row.employeeName}">氏名</td>
+      <td th:text="${row.departmentName}">部署</td>
+      <td th:text="${row.jobName}">役職</td>
+      <td th:text="${row.salaryText}">月給</td>
+      <td th:text="${row.entranceDateText}">入社日</td>
+      <td>
+        <form method="get" th:action="@{|/employees/${row.employeeId}/edit|}"
+              style="display:inline">
+          <button class="edit" type="submit">編集</button>
+        </form>
+        <form method="post" th:action="@{|/employees/${row.employeeId}/delete|}"
+              style="display:inline">
+          <button class="delete" type="submit">削除</button>
+        </form>
+      </td>
+    </tr>
+  </table>
+
+  <p id="paging" th:text="|${page}/${totalPages}ページ（${totalCount}件）|">
+    1/1ページ（0件）
+  </p>
+  <p class="error" th:each="message : ${errors}" th:text="${message}">エラー</p>
+</body>
+</html>

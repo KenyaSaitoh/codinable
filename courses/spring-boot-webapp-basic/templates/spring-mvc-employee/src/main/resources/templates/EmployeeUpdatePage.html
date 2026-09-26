@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>社員確認</title>
+</head>
+<body>
+  <h1>社員確認</h1>
+  <form th:object="${employeeSession}" method="post">
+    <p th:if="*{employeeId} != null" th:text="|社員ID: *{employeeId}|">社員ID</p>
+    <p th:text="|氏名: *{employeeName}|">氏名</p>
+    <p th:text="|部署名: *{departmentName}|">部署名</p>
+    <p th:text="|月給: *{salary}|">月給</p>
+    <button type="submit" th:formaction="@{/back}">戻る</button>
+    <button type="submit" th:formaction="@{/update}">保存</button>
+  </form>
+</body>
+</html>

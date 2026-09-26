@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pro.kensait.mybatis.company.mapper.EmployeeMapper">
+
+  <!--=== INSERT ===-->
+  <insert id="insertEmployee"
+    parameterType="pro.kensait.mybatis.company.dto.Employee">
+    INSERT INTO EMPLOYEE (EMPLOYEE_ID, EMPLOYEE_NAME, DEPARTMENT_ID,
+    ENTRANCE_DATE, JOB_ID, SALARY)
+    VALUES (#{employeeId},
+    #{employeeName,jdbcType=VARCHAR},
+    #{department.departmentId,jdbcType=NUMERIC},
+    #{entranceDate,jdbcType=DATE},
+    #{jobType,jdbcType=NUMERIC},
+    #{salary,jdbcType=NUMERIC})
+  </insert>
+
+  <!--=== UPDATE ===-->
+  <update id="updateEmployee"
+    parameterType="pro.kensait.mybatis.company.dto.Employee">
+    UPDATE EMPLOYEE
+    SET EMPLOYEE_NAME = #{employeeName,jdbcType=VARCHAR},
+    DEPARTMENT_ID = #{department.departmentId,jdbcType=NUMERIC},
+    ENTRANCE_DATE = #{entranceDate,jdbcType=DATE},
+    JOB_ID = #{jobType,jdbcType=NUMERIC},
+    SALARY = #{salary,jdbcType=NUMERIC}
+    WHERE EMPLOYEE_ID = #{employeeId}
+  </update>
+
+</mapper>

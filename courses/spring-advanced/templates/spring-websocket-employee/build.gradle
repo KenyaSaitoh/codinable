@@ -1,0 +1,43 @@
+// 講座リポジトリ（learn_spring_aidd_advanced）の親 build.gradle の共通設定と、
+// このプロジェクトの依存関係を 1 ファイルにまとめたもの
+// バージョン変数（springBootVer など）は外して Spring Boot の BOM に任せている
+// 品質ゲート用の Checkstyle / SpotBugs / PIT などは Codinable では使わないので入れていない
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+// Java 25 で動かす（Codinable 同梱の JDK 25 をそのまま使う）
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // WebSocket（STOMP）サポート
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:10.0.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "failed", "skipped"
+        exceptionFormat "full"
+    }
+}

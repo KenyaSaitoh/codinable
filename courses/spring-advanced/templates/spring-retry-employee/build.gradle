@@ -1,0 +1,46 @@
+// 講座リポジトリ（learn_spring_aidd_advanced）の親 build.gradle の共通設定と、
+// このプロジェクトの依存関係を 1 ファイルにまとめたもの
+// バージョン変数（springBootVer など）は外して Spring Boot の BOM に任せている
+// 品質ゲート用の Checkstyle / SpotBugs / PIT などは Codinable では使わないので入れていない
+// 呼び出し先の確認用 API（基礎編の rest-employee-restclient-api・8095）は api/ に別の Gradle プロジェクトとして置いてある
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+// Java 25 で動かす（Codinable 同梱の JDK 25 をそのまま使う）
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Spring Retry本体（@EnableRetry / @Retryable / @Recover）
+    implementation 'org.springframework.retry:spring-retry:2.0.12'
+    // Spring RetryはAOPプロキシで実現されるため、AspectJサポートが必須
+    // （これがないと@Retryableを付けてもリトライされない）
+    implementation 'org.springframework:spring-aspects'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:10.0.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "failed", "skipped"
+        exceptionFormat "full"
+    }
+}

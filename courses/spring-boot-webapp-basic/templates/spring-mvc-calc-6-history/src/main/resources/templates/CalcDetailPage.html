@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>CalcDetailPage</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <h2>CalcDetailPage</h2>
+  <hr />
+  <div th:text="|パラメータ1 => ${calcResult.param1}|"></div>
+  <div th:text="|パラメータ2 => ${calcResult.param2}|"></div>
+  <div th:text="|計算種別 => ${calcResult.calcType}|"></div>
+  <div th:text="|結果 => ${calcResult.result}|"></div>
+  <div th:text="|計算日時 => ${calcResult.dateTimeStr}|"></div>
+  <form method="GET">
+    <button type="submit" th:formaction="@{/}">入力画面へ</button>
+  </form>
+</body>
+</html>

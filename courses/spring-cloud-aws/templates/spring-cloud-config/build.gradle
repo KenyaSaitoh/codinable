@@ -1,0 +1,35 @@
+// Spring Cloud Config Server（8888 番）
+// この演習はサーバーとクライアントの 2 つのアプリで動く。「実行」ボタンで動かすのはこのサーバー側で、
+// クライアントは client/ にある独立した Gradle プロジェクトをターミナルから起動する（README.md 参照）
+// client/ は settings.gradle に include していない（ここのソースセットは src/ だけ）
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Cloud BOM（Boot 4.x 対応の 2025.1 系）を platform 指定で取り込む
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:2025.1.2")
+    // Config Server 本体（バージョンは BOM が管理するため指定しない）
+    implementation "org.springframework.cloud:spring-cloud-config-server"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}

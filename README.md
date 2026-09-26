@@ -97,8 +97,9 @@ IntelliJ で開いても成立する。
 
 ### Kafka / RabbitMQ
 
-講座選択から **「Kafka・RabbitMQ サンプル」** を選び、演習を開いて「実行」を押すと、
-必要なサーバーが起動して Java の送受信サンプルが動く。
+講座 **「Spring 高度な仕組み」** のチャプター 7 の演習（`spring-kafka-employee` /
+`spring-amqp-employee`）を開いて「実行」を押すと、必要なサーバーが起動して
+Spring の送信側（producer）が動く。受信側（consumer）はターミナルから起動する。
 初回の Gradle / ライブラリ取得にはインターネット接続が必要。
 サーバー本体・Erlang はインストーラに含まれ、受講者による Docker や Windows サービスの導入は不要。
 
@@ -218,7 +219,20 @@ courses/<講座ID>/
 | 講座ID | 対応する Udemy 講座 | 演習 |
 |---|---|---|
 | `webapp-archi-overview` | Web システム＋生成AI 技術概要編 | 全 30 件（下記） |
-| `messaging-basics` | Kafka・RabbitMQ の動作確認用サンプル | Kafka / RabbitMQ 各 1 件 |
+| `spring-boot-webapp-basic` | Spring Boot Webアプリ基礎 | 24 件（DI / MVC・Thymeleaf / 入力検証 / PRG・セッション / ファイル / JDBC・JPA・MyBatis / トランザクション / REST / RestClient） |
+| `spring-advanced` | Spring 高度な仕組み | 13 件（WebClient・WebSocket / OAuth2・OIDC / Security / GraphQL / WebFlux・Kafka・RabbitMQ / Resilience・Retry / Actuator・Observability） |
+| `spring-boot-cicd` | Spring Boot CICD | 9 件（JUnit・Mockito / Spring の結合テスト / Database Rider・API テスト / Playwright / Gatling / CI） |
+| `spring-cloud-aws` | Springクラウド機能 on AWS | 6 件（ECS / Spring Session・Cloud Config / Cognito） |
+| `spring-boot-webapp-practical` | Spring Boot Webアプリ応用（ECサイト） | 8 件（書店アプリ MVC 版・REST+React 版と、外部 API 役の customer-hub） |
+| `java-db-access` | Java DBアクセス | 35 件（JDBC / MyBatis / JPA のロック・関連・JPQL・Criteria・複合主キー・継承） |
+
+講座のサンプルリポジトリ（`learn_spring_aidd_*` / `learn_java_db_aidd`）は、ルートの
+共通 build.gradle と HSQLDB サーバー（9001）を前提にしたマルチプロジェクトになっている。
+雛形はそれを**演習ごとに単独で動く Gradle プロジェクト**に畳み、DB はインメモリ
+（一部はファイル）の HSQLDB に切り替えて起動時に SQL を流す形にしてある。
+2 つのプロセスが要る演習（API とクライアント、Spring と React の画面、producer と consumer）は、
+主役を雛形直下に置いて「実行」で動かし、もう片方はサブフォルダからターミナルで起動する
+（手順は各雛形の README.md）。
 
 `webapp-archi-overview` の演習は次のとおり。チャプター 3 と 6 は、
 Web ブラウザと DB の仕組みをその場で動かして確かめられるよう細かく分けてある。

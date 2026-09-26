@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>CalcOutputPage</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <h2>CalcOutputPage</h2>
+  <hr />
+  <div th:text="|パラメータ1 => ${calcSession.param1}|"></div>
+  <div th:text="|パラメータ2 => ${calcSession.param2}|"></div>
+  <div th:text="|計算結果 => ${calcSession.result}|"></div>
+  <form method="POST">
+    <button type="submit" th:formaction="@{/calcTax}">
+      消費税込み金額計算
+    </button>
+  </form>
+  <form method="GET">
+    <button type="submit" th:formaction="@{/}">入力画面へ</button>
+  </form>
+</body>
+</html>

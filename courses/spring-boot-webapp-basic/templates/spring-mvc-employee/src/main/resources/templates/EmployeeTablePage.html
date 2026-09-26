@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>社員一覧</title>
+</head>
+<body>
+  <h1>社員一覧</h1>
+  <form method="post">
+    <table border="1">
+      <thead>
+        <tr>
+          <th>ID</th><th>氏名</th><th>部署名</th><th>月給</th>
+          <th>詳細表示</th><th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="employee : ${employeeList}">
+          <td th:text="${employee.employeeId}">1</td>
+          <td th:text="${employee.employeeName}">氏名</td>
+          <td th:text="${employee.departmentName}">部署名</td>
+          <td th:text="${employee.salary}">月給</td>
+          <td>
+            <a th:href="@{/employees/by-query(employeeId=${employee.employeeId})}">
+              クエリ形式</a>
+            <a th:href="@{/employees/{employeeId}(employeeId=${employee.employeeId})}">
+              パス形式</a>
+          </td>
+          <td>
+            <button type="submit" th:formaction="@{/edit}" name="employeeId"
+                    th:value="${employee.employeeId}">編集</button>
+            <button type="submit" th:formaction="@{/remove}" name="employeeId"
+                    th:value="${employee.employeeId}">削除</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button type="submit" th:formaction="@{/toCreate}">新規登録</button>
+  </form>
+</body>
+</html>

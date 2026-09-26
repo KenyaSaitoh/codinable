@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pro.kensait.spring.employee.mapper.EmployeeMapper">
+  <sql id="activeConditions">
+    WHERE STATUS = 'active'
+    <if test="criteria.keyword != null">
+      AND EMPLOYEE_NAME LIKE CONCAT('%', #{criteria.keyword}, '%')
+    </if>
+    <if test="criteria.departmentId != null">
+      AND DEPARTMENT_ID = #{criteria.departmentId}
+    </if>
+    <if test="criteria.jobId != null">
+      AND JOB_ID = #{criteria.jobId}
+    </if>
+    <if test="criteria.salaryFrom != null">
+      AND SALARY <![CDATA[>=]]> #{criteria.salaryFrom}
+    </if>
+    <if test="criteria.salaryTo != null">
+      AND SALARY <![CDATA[<=]]> #{criteria.salaryTo}
+    </if>
+  </sql>
+
+  <select id="search" resultType="pro.kensait.spring.employee.entity.Employee">
+    SELECT EMPLOYEE_ID, EMPLOYEE_CODE, EMPLOYEE_NAME, DEPARTMENT_ID,
+           JOB_ID, SALARY, ENTRANCE_DATE, STATUS, VERSION
+      FROM EMPLOYEE
+    <include refid="activeConditions" />
+     ORDER BY EMPLOYEE_ID
+    OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+  </select>
+
+  <select id="count" resultType="long">
+    SELECT COUNT(*) FROM EMPLOYEE
+    <include refid="activeConditions" />
+  </select>
+
+  <select id="findById" resultType="pro.kensait.spring.employee.entity.Employee">
+    SELECT EMPLOYEE_ID, EMPLOYEE_CODE, EMPLOYEE_NAME, DEPARTMENT_ID,
+           JOB_ID, SALARY, ENTRANCE_DATE, STATUS, VERSION
+      FROM EMPLOYEE
+     WHERE EMPLOYEE_ID = #{employeeId}
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="employeeId">
+    INSERT INTO EMPLOYEE (EMPLOYEE_CODE, EMPLOYEE_NAME, DEPARTMENT_ID, JOB_ID,
+      SALARY, ENTRANCE_DATE, STATUS, VERSION)
+    VALUES (#{employeeCode}, #{employeeName}, #{departmentId}, #{jobId},
+      #{salary}, #{entranceDate}, #{status}, #{version})
+  </insert>
+
+  <update id="updateCode">
+    UPDATE EMPLOYEE SET EMPLOYEE_CODE = #{employeeCode}
+     WHERE EMPLOYEE_ID = #{employeeId}
+  </update>
+
+  <update id="update">
+    UPDATE EMPLOYEE
+       SET EMPLOYEE_NAME = #{employeeName}, DEPARTMENT_ID = #{departmentId},
+           JOB_ID = #{jobId}, SALARY = #{salary}, ENTRANCE_DATE = #{entranceDate},
+           VERSION = #{version}
+     WHERE EMPLOYEE_ID = #{employeeId}
+  </update>
+
+  <update id="updateStatus">
+    UPDATE EMPLOYEE SET STATUS = #{status} WHERE EMPLOYEE_ID = #{employeeId}
+  </update>
+</mapper>

@@ -1,0 +1,65 @@
+// 第2章：配送注文の処理を Mockito で検証する（Spring も DB も使わない）
+// 料金サービス（ShippingRateClient）と保存先（ShippingRepository）をモックにし、
+// 固定した Clock で注文時刻を決めて、戻り値と保存内容を確かめる
+// 元のサンプルは親 build.gradle で Spring Boot プラグインを当てたうえで bootJar を止めていたが、
+// ここでは素の Java アプリ（java + application）として 1 ファイルに畳んでいる
+// ライブラリのバージョンはサンプルと同じ Spring Boot 4.1.0 の管理値に合わせて直書きする
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:6.0.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    // @ParameterizedTest / @CsvSource / @MethodSource
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+    testImplementation 'org.assertj:assertj-core:3.27.7'
+    // @ExtendWith(MockitoExtension.class) / @Mock / ArgumentCaptor
+    testImplementation 'org.mockito:mockito-core:5.23.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.23.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// 「実行」で固定料金のクライアントとメモリ内保存を使い、3,600 円の注文を 1 件保存する例を出す
+application {
+    mainClass = 'pro.kensait.shipping.ShippingApplication'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}
+
+// JDK 21 以降は実行中のエージェント読み込みが制限され、JDK 25 では Mockito が
+// 自分自身をアタッチできずにモックの生成に失敗する。mockito-core を -javaagent で渡しておく
+// （Codinable の「test」も同じ指定を自動で足すが、build やターミナルからの実行でも動くようにする）
+configurations {
+    mockitoAgent
+}
+
+dependencies {
+    mockitoAgent('org.mockito:mockito-core:5.23.0') {
+        transitive = false
+    }
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgumentProviders.add({ ["-javaagent:${configurations.mockitoAgent.singleFile}"] } as CommandLineArgumentProvider)
+}

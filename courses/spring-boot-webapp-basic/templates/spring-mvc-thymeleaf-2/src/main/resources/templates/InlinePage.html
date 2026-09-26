@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>InlinePage</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <h2>3. インライン記法とJavaScript連携</h2>
+  <hr />
+
+  <!--===== インライン記法 =====-->
+  <h3>インライン記法</h3>
+  <!-- th:text は「タグの中身をすべて置き換える」ため、
+       文章の一部だけを差し込みたい場合には使いにくい -->
+  <p>
+    こんにちは、<span th:text="${memberName}"></span>さん。（th:textの場合）
+  </p>
+
+  <!--/*
+    以下はパーサレベルコメント。Thymeleafが解析前に取り除くため、
+    中にインライン記法を書いても実行されないし、HTMLにも出力されない
+    逆に、通常のHTMLコメントにインライン記法を書くと式として解析され、
+    エラーになるので注意すること
+
+    ・二重角括弧の記法 … テキストの途中に値を埋め込む（エスケープあり）
+    ・角括弧＋丸括弧の記法 … エスケープしない（th:utext に相当）
+  */-->
+  <p>こんにちは、[[${memberName}]]さん。（インライン記法の場合）</p>
+
+  <p>エスケープあり: [[${htmlText}]]</p>
+  <p>エスケープなし: [(${htmlText})]</p>
+
+  <!-- インライン記法を無効にしたい場合は th:inline="none" を指定する -->
+  <p th:inline="none">この行は [[${memberName}]] と、そのまま出力される。</p>
+
+  <!--===== JavaScriptインライン =====-->
+  <h3>JavaScriptインライン</h3>
+  <!--/*
+    th:inline="javascript" を指定すると、JavaScript内でもインライン記法が使える
+    文字列は自動的にクォートとエスケープが行われるため、
+    自前でクォートを書く必要はなく、XSS対策にもなる
+  */-->  <script th:inline="javascript">
+    /*<![CDATA[*/
+
+    // 変数に値が埋め込まれる（文字列は自動でクォートされる）
+    const memberName = [[${memberName}]];
+
+    // JavaScriptコメントの中に式を書く形式。テンプレートを直接ブラウザで開いたときは
+    // 右側の値（'（未設定）'）が使われるため、静的なプロトタイプとしても確認できる
+    const fallbackName = /*[[${memberName}]]*/ '（未設定）';
+
+    // オブジェクトやコレクションはJSONに変換される
+    const memberList = [[${memberList}]];
+
+    window.onload = function () {
+        const target = document.getElementById('scriptResult');
+        target.textContent =
+            'memberName=' + memberName
+            + ' / fallbackName=' + fallbackName
+            + ' / memberList.length=' + memberList.length;
+    };
+
+    /*]]>*/
+  </script>
+  <div id="scriptResult"></div>
+
+  <hr />
+  <a th:href="@{/}">目次に戻る</a>
+</body>
+</html>

@@ -1,0 +1,86 @@
+// 第6章：Playwright で本物の Chromium を操作し、社員管理 Web アプリを画面から DB まで検証する
+// 元のサンプルは親 build.gradle と gradle/employee-app.gradle に設定を分けたマルチプロジェクト
+// だった。Codinable では単独で動く必要があるため 1 ファイルに畳んでいる
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    // Playwright の CLI（ブラウザの取得・Trace Viewer）を動かすためのクラスパス
+    playwrightCli
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    // DB は組み込みの H2（インメモリ）。起動のたびに schema.sql / data.sql で初期化される
+    runtimeOnly 'com.h2database:h2'
+    // EmployeeController の @SuppressFBWarnings（SpotBugs の抑止指定）をコンパイルするためだけに使う
+    // SpotBugs 自体は動かさない
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.3'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'com.microsoft.playwright:playwright:1.61.0'
+
+    playwrightCli 'com.microsoft.playwright:playwright:1.61.0'
+}
+
+// テストで使う Chromium を取得する（初回だけダウンロードが走り、2 回目以降はすぐ終わる）
+tasks.register('installPlaywright', JavaExec) {
+    group = 'playwright'
+    description = 'Install the Chromium browser used by Playwright tests'
+    classpath = configurations.playwrightCli
+    mainClass = 'com.microsoft.playwright.CLI'
+    args = System.getenv('CI') == 'true'
+            ? ['install', '--with-deps', 'chromium']
+            : ['install', 'chromium']
+}
+
+// 元のサンプルは test から @Tag("e2e") を除外し、別タスク e2eTest（installPlaywright に依存）で
+// E2E を流していた。この章のテスト（EmployeePlaywrightTest）はすべて @Tag("e2e") なので、
+// Codinable の「test」ボタンで走るよう e2eTest の設定を test へ移している
+// アプリはテストがランダムポートで自前で起動するので、別に bootRun しておく必要はない
+tasks.named('test') {
+    dependsOn tasks.named('installPlaywright')
+    useJUnitPlatform()
+    // Chromium は installPlaywright で取得済みなので、テスト中に 3 種類のブラウザを取りに行かせない
+    environment 'PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD', '1'
+    // ブラウザを表示して動きを見たいときは gradlew.bat test -Dplaywright.headless=false --rerun-tasks
+    systemProperty 'playwright.headless',
+            System.getProperty('playwright.headless', 'true')
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}
+
+// 保存した Trace（build/reports/playwright/<テストメソッド名>.zip）を
+// テストと同じバージョンの Trace Viewer で開く（ターミナルから gradlew.bat showPlaywrightTrace）
+tasks.register('showPlaywrightTrace', JavaExec) {
+    group = 'playwright'
+    description = 'Open a saved trace with the same Playwright version as the tests'
+    classpath = configurations.playwrightCli
+    mainClass = 'com.microsoft.playwright.CLI'
+    args 'show-trace', providers.gradleProperty('trace')
+            .getOrElse('build/reports/playwright/registersEditsAndDeletesEmployee.zip')
+}

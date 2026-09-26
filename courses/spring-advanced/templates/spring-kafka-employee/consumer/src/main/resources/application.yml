@@ -1,0 +1,30 @@
+# プロデューサー（spring-kafka-producer、ポート8091）と同時起動するため、ポートをずらす
+server:
+  port: 8092
+
+spring:
+  kafka:
+    # Kafkaブローカーの接続先
+    # Codinable では同梱の Kafka（127.0.0.1:9092）に接続する
+    # 実行時は Codinable が環境変数 KAFKA_BOOTSTRAP_SERVERS / SPRING_KAFKA_BOOTSTRAP_SERVERS を渡す
+    # （講座リポジトリの docker compose では localhost:9094 を使っている）
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:127.0.0.1:9092}
+    consumer:
+      # コンシューマグループID（@KafkaListenerのgroupId指定と同じ値）
+      group-id: employee-group
+      # オフセット（読み出し位置）が未保存の状態で起動したとき、トピックの先頭から読む
+      # （プロデューサーを先に動かしても、後から起動したコンシューマが受信できる）
+      auto-offset-reset: earliest
+      # メッセージのキー（社員ID）は文字列としてデシリアライズする
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # メッセージの値はJSONからEmployeeEventに復元する
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      properties:
+        # JacksonJsonDeserializerがデシリアライズを許可するパッケージ
+        # （メッセージヘッダーの型情報を無条件に信用すると任意のクラスを生成される
+        #   恐れがあるため、信頼できるパッケージを明示するのが定石）
+        spring.json.trusted.packages: pro.kensait.spring.kafka.service
+
+logging:
+  level:
+    root: INFO

@@ -1,0 +1,43 @@
+// 第2章：配送料金の計算を JUnit Jupiter と AssertJ で検証する（Spring も DB も使わない）
+// 元のサンプルは親 build.gradle で Spring Boot プラグインを当てたうえで bootJar を止めていたが、
+// ここでは素の Java アプリ（java + application）として 1 ファイルに畳んでいる
+// ライブラリのバージョンはサンプルと同じ Spring Boot 4.1.0 の管理値に合わせて直書きする
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:6.0.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    // @ParameterizedTest / @CsvSource / @MethodSource
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+    testImplementation 'org.assertj:assertj-core:3.27.7'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// 「実行」で GOLD 会員 4,000 円の割引例をコンソールに出す
+application {
+    mainClass = 'pro.kensait.shipping.ShippingApplication'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}

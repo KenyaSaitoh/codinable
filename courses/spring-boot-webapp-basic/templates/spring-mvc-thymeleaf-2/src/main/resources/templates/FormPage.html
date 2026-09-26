@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>FormPage</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <h2>5. フォームバインディングとエラー表示</h2>
+  <hr />
+
+  <!--===== th:object =====-->
+  <!-- th:object でフォームオブジェクトを指定すると、
+       その内側では *{プロパティ名} で選択オブジェクト式が使える -->
+  <form th:action="@{/form}" th:object="${memberForm}" method="POST">
+
+    <!--===== エラーの一覧表示 =====-->
+    <!-- #fields.hasErrors('*') は「いずれかの項目にエラーがある」を意味する -->
+    <div th:if="${#fields.hasErrors('*')}" class="error-message">
+      <div>入力内容に誤りがあります。</div>
+      <!-- #fields.allErrors() で全エラーメッセージを取得できる -->
+      <ul>
+        <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+      </ul>
+    </div>
+
+    <!--===== テキストフィールド =====-->
+    <!-- th:field="*{プロパティ名}" と書くと、
+         id属性・name属性・value属性がまとめて生成される -->
+    <div>
+      <label th:text="#{label.member.name}">会員名</label>
+      <!-- th:errorclass は、その項目にエラーがあるときだけクラスを追加する -->
+      <input type="text" th:field="*{memberName}" th:errorclass="input-error" />
+      <!-- th:errors は、その項目のエラーメッセージを出力する -->
+      <span class="error-message" th:if="${#fields.hasErrors('memberName')}"
+            th:errors="*{memberName}"></span>
+    </div>
+
+    <!--===== 数値フィールド =====-->
+    <div>
+      <label th:text="#{label.member.age}">年齢</label>
+      <input type="text" th:field="*{age}" th:errorclass="input-error" />
+      <span class="error-message" th:errors="*{age}"></span>
+    </div>
+
+    <!--===== メールアドレス =====-->
+    <div>
+      <label th:text="#{label.member.email}">メールアドレス</label>
+      <input type="text" th:field="*{email}" th:errorclass="input-error" />
+      <span class="error-message" th:errors="*{email}"></span>
+    </div>
+
+    <!--===== ラジオボタン =====-->
+    <!-- 繰り返しの中で th:field を使うと、id属性に連番が付与される -->
+    <!-- ラベルと結び付けるため、#ids.seq / #ids.prev でid属性を明示する -->
+    <div>
+      <label th:text="#{label.member.gender}">性別</label>
+      <span th:each="gender : ${genderMap}">
+        <input type="radio" th:field="*{gender}" th:value="${gender.value}"
+               th:id="${#ids.seq('gender')}" />
+        <label th:for="${#ids.prev('gender')}" th:text="${gender.key}"></label>
+      </span>
+      <span class="error-message" th:errors="*{gender}"></span>
+    </div>
+
+    <!--===== セレクトボックス =====-->
+    <!-- th:field をselectに付けると、選択中の値に自動でselectedが付く -->
+    <div>
+      <label th:text="#{label.member.prefecture}">都道府県</label>
+      <select th:field="*{prefecture}" th:errorclass="input-error">
+        <option value="">選択してください</option>
+        <option th:each="pref : ${prefectureMap}" th:value="${pref.value}"
+                th:text="${pref.key}"></option>
+      </select>
+      <span class="error-message" th:errors="*{prefecture}"></span>
+    </div>
+
+    <!--===== チェックボックス（複数選択） =====-->
+    <!-- バインド先をListにすると、複数選択の値をまとめて受け取れる -->
+    <div>
+      <label th:text="#{label.member.hobby}">趣味</label>
+      <span th:each="hobby : ${hobbyMap}">
+        <input type="checkbox" th:field="*{hobbyList}" th:value="${hobby.value}"
+               th:id="${#ids.seq('hobby')}" />
+        <label th:for="${#ids.prev('hobby')}" th:text="${hobby.key}"></label>
+      </span>
+    </div>
+
+    <!--===== テキストエリア =====-->
+    <div>
+      <label th:text="#{label.member.remarks}">備考</label>
+      <textarea th:field="*{remarks}" rows="3" cols="40"
+                th:errorclass="input-error"></textarea>
+      <span class="error-message" th:errors="*{remarks}"></span>
+    </div>
+
+    <div>
+      <button type="submit" th:text="#{button.register}">登録する</button>
+    </div>
+  </form>
+
+  <hr />
+  <a th:href="@{/}">目次に戻る</a>
+</body>
+</html>

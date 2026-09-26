@@ -1,0 +1,73 @@
+// 社員管理システム（MVC）+ Spring Session（Redis 版）
+// 講座リポジトリではマルチプロジェクトの 1 つだったものを、単独で動く形に畳んである
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation "org.springframework.boot:spring-boot-starter-webmvc"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    // Boot 4 では Session の自動構成を含むスターターを使用する
+    // JDBC 版の spring-boot-starter-session-jdbc の代わりに、こちらを使う
+    implementation("org.springframework.boot:spring-boot-starter-session-data-redis") {
+        // Codinable 同梱の JDK（jlink で最小化したもの）には jdk.net モジュールが無く、
+        // 既定の Redis クライアント Lettuce は jdk.net.ExtendedSocketOptions を読めずに起動時に失敗する
+        // そこで Lettuce を外し、Jedis に差し替えている（Spring Boot は Jedis を見つけると自動でそちらを使う）
+        // 講座リポジトリ（通常の JDK）では Lettuce のままで動く。セッションの保存先・設定は変わらない
+        exclude group: 'io.lettuce', module: 'lettuce-core'
+    }
+    implementation "redis.clients:jedis"
+    // 社員用 RDB のドライバ。Codinable では HSQLDB、Aurora へ接続するときは PostgreSQL を使う
+    // ソースの @SuppressFBWarnings（SpotBugs の抑止注釈）をコンパイルするためだけに使う
+    compileOnly "com.github.spotbugs:spotbugs-annotations:4.8.3"
+    runtimeOnly "org.hsqldb:hsqldb"
+    runtimeOnly "org.postgresql:postgresql"
+    testImplementation "org.springframework.boot:spring-boot-starter-webmvc-test"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+// テストは MockMvc（standaloneSetup）で画面遷移とセッション属性を確かめるもので、
+// DB や Redis には接続しない（Redis が無くても test は通る）
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "failed", "skipped"
+        exceptionFormat "full"
+    }
+}
+
+// JDK 21 以降は実行中のエージェント読み込みが制限され、JDK 25 では Mockito が
+// 自分自身をアタッチできずにモックの生成に失敗する。mockito-core を -javaagent で渡しておく
+// （バージョンは Spring Boot の BOM が管理する。Codinable の「test」も同じ指定を自動で足すが、
+//   build やターミナルからの実行でも動くようにする）
+configurations {
+    mockitoAgent
+}
+
+dependencies {
+    mockitoAgent('org.mockito:mockito-core') {
+        transitive = false
+    }
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgumentProviders.add({ ["-javaagent:${configurations.mockitoAgent.singleFile}"] } as CommandLineArgumentProvider)
+}

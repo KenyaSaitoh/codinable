@@ -1,0 +1,68 @@
+// 電卓アプリ + Spring Security の OIDC ログイン（Amazon Cognito）
+// 講座リポジトリではマルチプロジェクトの 1 つだったものを、単独で動く形に畳んである
+// bootRun には Cognito のユーザープールと環境変数 COGNITO_* が必要（README.md 参照）
+// Cognito なしで確かめられるよう、Codinable 版では URL ごとの認可と権限の変換を確かめるテストを足してある
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation "org.springframework.boot:spring-boot-starter-webmvc"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    // Thymeleaf extras - Spring Boot で管理されないため明示的に指定（講座リポジトリと同じ版）
+    implementation "org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE"
+    implementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE"
+    // OAuth2 / OIDC クライアント（バージョンは Spring Boot に任せる）
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    // MockMvc を @AutoConfigureMockMvc で使う（Spring Boot 4 では別モジュール）
+    testImplementation "org.springframework.boot:spring-boot-webmvc-test"
+    // oidcLogin() など、ログイン済みの利用者を擬似的に作るテスト支援
+    testImplementation "org.springframework.security:spring-security-test"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "failed", "skipped"
+        exceptionFormat "full"
+    }
+}
+
+// JDK 21 以降は実行中のエージェント読み込みが制限され、JDK 25 では Mockito が
+// 自分自身をアタッチできずにモックの生成に失敗する。mockito-core を -javaagent で渡しておく
+// （バージョンは Spring Boot の BOM が管理する。Codinable の「test」も同じ指定を自動で足すが、
+//   build やターミナルからの実行でも動くようにする）
+configurations {
+    mockitoAgent
+}
+
+dependencies {
+    mockitoAgent('org.mockito:mockito-core') {
+        transitive = false
+    }
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgumentProviders.add({ ["-javaagent:${configurations.mockitoAgent.singleFile}"] } as CommandLineArgumentProvider)
+}

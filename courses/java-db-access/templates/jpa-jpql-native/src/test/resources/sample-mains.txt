@@ -1,0 +1,5 @@
+pro.kensait.jpa.company.main.JpaNamedNativeQueryMain
+pro.kensait.jpa.company.main.JpaNativeQueryMain1
+pro.kensait.jpa.company.main.JpaNativeQueryMain2
+pro.kensait.jpa.company.main.JpaNativeQueryMain3
+pro.kensait.jpa.company.main.JpaNativeQueryMain4

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>UtilityPage</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <h2>5. ユーティリティオブジェクト</h2>
+  <hr />
+
+  <!--===== #numbers：数値のフォーマット =====-->
+  <h3>#numbers</h3>
+  <!-- 整数を、最小3桁・3桁区切りカンマ付きで出力する -->
+  <div th:text="|${bigNumber} => ${#numbers.formatInteger(bigNumber, 3, 'COMMA')}|"></div>
+  <!-- 小数を、整数部最小1桁・小数部10桁で出力する -->
+  <div th:text="|${smallNumber} => ${#numbers.formatDecimal(smallNumber, 1, 10)}|"></div>
+  <!-- 3桁区切りカンマ付き・小数部2桁 -->
+  <div th:text="${#numbers.formatDecimal(bigNumber, 3, 'COMMA', 2, 'POINT')}"></div>
+
+  <!--===== #strings：文字列の操作 =====-->
+  <h3>#strings</h3>
+  <div th:text="|前後の空白を除去 => [${#strings.trim(rawText)}]|"></div>
+  <div th:text="|大文字化 => ${#strings.toUpperCase(rawText)}|"></div>
+  <div th:text="|文字数 => ${#strings.length(#strings.trim(rawText))}|"></div>
+  <div th:text="|部分一致 => ${#strings.contains(rawText, 'Thyme')}|"></div>
+  <!-- nullや空文字の判定。nullを渡してもエラーにならない -->
+  <div th:text="|空判定 => ${#strings.isEmpty(rawText)}|"></div>
+  <!-- 指定文字数で切り詰め、末尾に...を付ける -->
+  <div th:text="${#strings.abbreviate('Thymeleafはテンプレートエンジンです', 12)}"></div>
+
+  <!--===== #temporals：java.time型のフォーマット =====-->
+  <h3>#temporals</h3>
+  <!-- LocalDateTime / LocalDate などのフォーマットには #temporals を使う -->
+  <div th:text="|現在時刻 => ${#temporals.format(now, 'yyyy/MM/dd HH:mm:ss')}|"></div>
+  <div th:text="|年 => ${#temporals.year(now)}|"></div>
+  <!-- java.util.Date 用のユーティリティとして #dates もあるが、
+       現在はjava.time型を使うのが原則なので #temporals を使う -->
+
+  <!--===== #lists：コレクションの操作 =====-->
+  <h3>#lists</h3>
+  <div th:text="|要素数 => ${#lists.size(memberList)}|"></div>
+  <div th:text="|空判定（memberList） => ${#lists.isEmpty(memberList)}|"></div>
+  <div th:text="|空判定（emptyList） => ${#lists.isEmpty(emptyList)}|"></div>
+  <!-- リストが空のときの表示を切り替える、という典型的な使い方 -->
+  <div th:if="${#lists.isEmpty(emptyList)}">対象のデータがありません。</div>
+
+  <hr />
+  <a th:href="@{/}">目次に戻る</a>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Hibernate関連のログを抑止する -->
+    <logger name="org.hibernate" level="WARN"/>
+
+    <!-- ルートロガーの設定 -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

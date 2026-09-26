@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>CalcOutputPage</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <h2>CalcOutputPage</h2>
+  <hr />
+  <div th:text="|パラメータ1 => ${calcResult.param1}|"></div>
+  <div th:text="|パラメータ2 => ${calcResult.param2}|"></div>
+  <div th:text="|計算結果 => ${calcResult.result}|"></div>
+  <form method="GET">
+    <button type="submit" th:formaction="@{/viewHistory1}">
+      履歴画面1へ
+    </button>
+    <button type="submit" th:formaction="@{/viewHistory2}">
+      履歴画面2へ
+    </button>
+    <button type="submit" th:formaction="@{/viewHistory3}">
+      履歴画面3へ
+    </button>
+    <button type="submit" th:formaction="@{/}">入力画面へ</button>
+  </form>
+</body>
+</html>

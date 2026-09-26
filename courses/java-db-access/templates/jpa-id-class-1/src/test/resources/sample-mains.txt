@@ -1,0 +1,4 @@
+pro.kensait.jpa.company.main.IdClassDeleteMain
+pro.kensait.jpa.company.main.IdClassInsertMain
+pro.kensait.jpa.company.main.IdClassSelectMain
+pro.kensait.jpa.company.main.IdClassUpdateMain

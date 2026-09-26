@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>FragmentPage</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <h2>1. フラグメントによる部品化</h2>
+  <hr />
+
+  <!--===== th:replace =====-->
+  <h3>th:replace</h3>
+  <!-- 「~{テンプレート名 :: フラグメント名}」でフラグメントを指定する -->
+  <!-- th:replace は、このタグ自体をフラグメントで置き換える -->
+  <!-- 通常はこちらを使う（余計なタグが残らないため） -->
+  <div th:replace="~{fragments/CommonFragment :: pageHeader}"></div>
+
+  <!--===== th:insert =====-->
+  <h3>th:insert</h3>
+  <!-- th:insert は、このタグの「中身」としてフラグメントを挿入する -->
+  <!-- そのため、下のsectionタグはHTMLに残る -->
+  <section th:insert="~{fragments/CommonFragment :: pageHeader}"></section>
+
+  <!--===== 引数付きフラグメント =====-->
+  <h3>引数付きフラグメント</h3>
+  <!-- 呼び出し側から値を渡すことで、同じ部品を使い回せる -->
+  <div th:replace="~{fragments/CommonFragment :: card('お知らせ', '本日メンテナンスを実施します。')}"></div>
+  <div th:replace="~{fragments/CommonFragment :: card('会員数', |現在の会員数は${memberList.size()}名です。|)}"></div>
+
+  <!--===== コレクションを渡すフラグメント =====-->
+  <h3>コレクションを渡すフラグメント</h3>
+  <div th:replace="~{fragments/CommonFragment :: memberList(${memberList})}"></div>
+
+  <!--===== th:with によるローカル変数 =====-->
+  <h3>th:with によるローカル変数</h3>
+  <!-- 長い式を何度も書かずに済むよう、その場限りの変数を定義できる -->
+  <!-- th:with を書いたタグの内側でのみ有効 -->
+  <div th:with="firstMember=${memberList[0]}, memberCount=${memberList.size()}">
+    <div th:text="|先頭の会員: ${firstMember.memberName}|"></div>
+    <div th:text="|会員数: ${memberCount}|"></div>
+  </div>
+
+  <div th:replace="~{fragments/CommonFragment :: pageFooter}"></div>
+  <hr />
+  <a th:href="@{/}">目次に戻る</a>
+</body>
+</html>

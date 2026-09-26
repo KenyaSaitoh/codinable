@@ -89,10 +89,16 @@ function detectProject(projectDir) {
     kinds.push('python');
   }
 
+  // サブディレクトリに置かれた npm パッケージ (Spring の隣の frontend/ など)
+  // その中身は npm スクリプトが入口なので、静的配信やファイル単体の実行対象にしない
+  const inNestedPackage = relPath => [...names].some(n =>
+    n !== 'package.json' && n.endsWith('/package.json') &&
+    relPath.startsWith(n.slice(0, -'package.json'.length)));
+
   // ── 静的 Web ページ ──
   // index.html があるディレクトリのうち、もっとも浅いものを配信ルートにする
   const htmlRoots = entries
-    .filter(e => !e.dir && /(^|\/)index\.html$/i.test(e.path))
+    .filter(e => !e.dir && /(^|\/)index\.html$/i.test(e.path) && !inNestedPackage(e.path))
     .map(e => e.path.replace(/(^|\/)index\.html$/i, '').replace(/^\//, ''))
     .sort((a, b) => a.split('/').length - b.split('/').length || a.length - b.length);
   const staticRoot = htmlRoots.length ? htmlRoots[0] : null;
@@ -114,6 +120,7 @@ function detectProject(projectDir) {
       hasPackageJson: names.has('package.json'),
       isStatic: staticRoot !== null,
       isGradle: kinds.includes('gradle'),
+      inNestedPackage,
     }),
     hasGradleWrapper: names.has('gradlew') || names.has('gradlew.bat'),
   };
@@ -128,7 +135,7 @@ function detectProject(projectDir) {
  *
  * @returns {Array<{ relPath: string, kind: 'file'|'sql' }>}
  */
-function collectRunnableFiles(projectDir, entries, { hasPackageJson, isStatic, isGradle }) {
+function collectRunnableFiles(projectDir, entries, { hasPackageJson, isStatic, isGradle, inNestedPackage }) {
   const files = entries.filter(e => !e.dir).map(e => e.path);
   const out   = [];
 
@@ -147,7 +154,9 @@ function collectRunnableFiles(projectDir, entries, { hasPackageJson, isStatic, i
   // ブラウザで読まれる側なので、node で直接動かすと必ず失敗する
   if (!hasPackageJson && !isStatic) {
     for (const relPath of files) {
-      if (/\.(js|mjs|cjs|ts|mts)$/i.test(relPath)) out.push({ relPath, kind: 'file' });
+      if (/\.(js|mjs|cjs|ts|mts)$/i.test(relPath) && !inNestedPackage(relPath)) {
+        out.push({ relPath, kind: 'file' });
+      }
     }
   }
 

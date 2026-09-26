@@ -1,0 +1,6 @@
+# config-clientアプリケーション用の設定ファイル（prodプロファイル）
+# クライアントが -Dspring.profiles.active=prod で起動されたときに、
+# デフォルト（config-client.yml）に上書きして適用される（環境別の出し分け）
+greeting:
+  # 挨拶メッセージ（本番環境用の値で上書きする）
+  message: "こんにちは（本番）"

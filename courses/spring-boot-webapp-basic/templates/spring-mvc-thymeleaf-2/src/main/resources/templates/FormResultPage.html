@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>FormResultPage</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <h2>登録内容</h2>
+  <hr />
+
+  <!-- th:object はform以外のタグでも使える。内側では *{...} で参照できる -->
+  <div th:object="${memberForm}">
+    <div>会員名: <span th:text="*{memberName}"></span></div>
+    <div>年齢: <span th:text="*{age}"></span></div>
+    <div>メールアドレス: <span th:text="*{email}"></span></div>
+    <div>性別: <span th:text="*{gender}"></span></div>
+    <div>都道府県: <span th:text="*{prefecture}"></span></div>
+    <div>趣味: <span th:text="*{hobbyList}"></span></div>
+    <div>備考: <span th:text="*{remarks}"></span></div>
+  </div>
+
+  <hr />
+  <a th:href="@{/form}">入力画面に戻る</a>
+</body>
+</html>

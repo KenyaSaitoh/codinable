@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+# JTA（Atomikos）で管理するXAデータソースの接続情報
+# ローカルトランザクション版と異なりspring.datasourceの自動構成は使わず、
+# XaDataSourceConfigクラスでAtomikosDataSourceBeanとして構成する
+#
+# Codinable では HSQLDB サーバーを使わずインメモリで動かす
+# （サンプルの元の設定: 2 つとも url: jdbc:hsqldb:hsql://localhost:9001/testdb）
+# サンプルも「同じ testdb を論理的に 2 つのデータソースとして登録する」構成なので、
+# 同じ JVM 内のインメモリ DB（mem:testdb）を 2 つの XA データソースから指す形にしても
+# 2 つのリソースが 1 つのグローバルトランザクションに参加する点は変わらない
+# hsqldb.tx=mvcc は行単位で更新を扱うための指定。HSQLDB の既定（テーブル単位のロック）だと、
+# BarBean の更新が終わる前に QuxBean の接続が同じ BUSINESS_JTA 表を待ち続け、
+# トランザクションがタイムアウトするまで応答が返らない
+app:
+  datasource1:
+    url: jdbc:hsqldb:mem:testdb;hsqldb.tx=mvcc
+    username: SA
+    password:
+  datasource2:
+    # 同じtestdbを、論理的に2つめのデータソースとして登録する
+    url: jdbc:hsqldb:mem:testdb;hsqldb.tx=mvcc
+    username: SA
+    password:
+
+spring:
+  sql:
+    init:
+      # sql/hsqldb の DDL と初期データ（build.gradle で classpath:db/ へ入れている）を起動時に流す
+      # 流す先は @Primary の dataSource1
+      mode: always
+      schema-locations: classpath:db/1_SPRING_TX_JTA_DDL.sql
+      data-locations: classpath:db/2_SPRING_TX_JTA_DML.sql
+
+atomikos:
+  properties:
+    # Atomikos のトランザクションログ（tmlog*.log）の置き場。既定はカレントディレクトリ
+    # （= プロジェクト直下）なので、生成物の build/ の下へ寄せる
+    log-base-dir: build/atomikos

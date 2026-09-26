@@ -1,0 +1,62 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    # トレースのサービス名やログの出力に使用される
+    name: spring-observability-employee
+
+  datasource:
+    # Codinable では HSQLDB サーバーを使わずインメモリで動かす
+    # （講座リポジトリでは HSQLDB (Server mode) jdbc:hsqldb:hsql://localhost:9001/testdb を共有している）
+    url: jdbc:hsqldb:mem:testdb
+    username: SA
+    password:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+
+# 起動時にインメモリ DB へ schema.sql / data.sql（src/main/resources）を流す
+  sql:
+    init:
+      mode: always
+
+# Spring Data JPA
+  jpa:
+    hibernate:
+      # インメモリ DB では Hibernate が既定でテーブルを作り直す（create-drop）ため、
+      # schema.sql / data.sql で作ったテーブルとデータを消さないよう none にする
+      ddl-auto: none
+    properties:
+      hibernate:
+# これがないとテーブル名が小文字になってしまい、RDSでエラーになる
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+# Observability（メトリクスとトレース）
+management:
+  endpoints:
+    web:
+      exposure:
+        # メトリクス確認用にhealth/info/metricsを公開する
+        include: health,info,metrics
+  tracing:
+    sampling:
+      # トレースのサンプリング率（1.0=全リクエストを記録する教材用の設定
+      # 本番ではコストを考慮して0.1（10%）などに下げるのが一般的）
+      probability: 1.0
+  otlp:
+    tracing:
+      # トレース（スパン）の送信先となるOTLP/HTTPエンドポイント
+      # ローカルではOpenTelemetry Collector（またはJaeger）の4318番ポートに送る
+      # AWSではECSタスクにサイドカーとして同居させたADOTコレクター経由でX-Rayに送るため、
+      # 環境変数OTLP_ENDPOINTで送信先を上書きする
+      endpoint: ${OTLP_ENDPOINT:http://localhost:4318/v1/traces}
+
+logging:
+  pattern:
+    # ログレベルの後ろに[アプリケーション名,traceId,spanId]を出力する定型パターン
+    # トレースIDがログにも記録されるため、ログとトレースを相互に紐付けられる
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+  level:
+    root: INFO
+    org.springframework: INFO
+    pro.kensait.spring.employee: INFO

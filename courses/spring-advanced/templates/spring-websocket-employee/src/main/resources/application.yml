@@ -1,0 +1,6 @@
+server:
+  port: 8096
+
+logging:
+  level:
+    root: INFO

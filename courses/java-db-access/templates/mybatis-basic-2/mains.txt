@@ -1,0 +1,13 @@
+# 「実行」（gradle run）で動かす main の一覧です。上から順に実行します。
+# 各行の前に sql/hsqldb/*.sql を流し直すので、どの main も初期データの状態から始まります。
+#
+# - 行頭に # を付けた行は実行しません（1 つだけ動かしたいときは他の行を # で止める）
+# - 「A & B」の行は A を起動し、3 秒後に B を別スレッドで起動します
+#   （元の教材で 2 つのターミナルから同時に動かしていた確認を、1 回の実行で再現する）
+# - ターミナルから 1 つだけ動かすこともできます:
+#     .\gradlew.bat run -PmainClass=完全修飾クラス名
+
+pro.kensait.mybatis.company.main.SelectMain1
+pro.kensait.mybatis.company.main.SelectMain2
+pro.kensait.mybatis.company.main.InsertMain1
+pro.kensait.mybatis.company.main.InsertMain2

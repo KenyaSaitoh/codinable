@@ -1,0 +1,233 @@
+# ═══════════════════════════════════════════════════════════
+#  Udemy「Springクラウド機能 on AWS」の演習
+#
+#  講義そのものは動画側にあるため、ここには「開いてすぐ動く最小構成」だけを置く
+#  受講者は演習を選んで実行し、動きを確かめながら動画を進める
+#  問題を出して解かせることはしない
+#
+#  AWS（ECR / ECS / Aurora / Cognito）と Redis は Codinable に含まれない
+#  ソースの確認・ローカル実行・ログの確認・チャットでの解説とレビューは Codinable で行い、
+#  AWS が必要な手順は各雛形の README.md に書いてある。ローカルでの動かし方は次のとおり
+#    - ECS の社員管理 API は、タスク定義と同じインメモリ HSQLDB で bootRun する
+#    - Spring Session JDBC は、プロジェクト内のファイル DB（hsqldb-data/）で bootRun し、
+#      アプリを再起動してもセッションが残ることを確かめられるようにしてある
+#    - Redis 版と Cognito 版は run: gradle:test を既定にしている
+#      （Cognito 版のテストは Codinable 版で追加したもの。URL ごとの認可と権限の変換を確かめる）
+#  講座リポジトリの 02_aws-setup（boto3 スクリプト・IAM ポリシー）は
+#  spring-ecs-employee の aws-setup/ に同梱した
+#
+#  exercises[] の項目:
+#    id           演習の識別子（dir 省略時はディレクトリ名として使う）
+#    dir          templates/ 配下のディレクトリ名（省略時は id）
+#    chapter      対応するチャプター番号。一覧のバッジに出る
+#    lesson       対応するレッスン番号と名前。一覧の副題に出る
+#    runtime      実行環境（java / spring / node / react / python / static / sql / shell）
+#    run          実行対象の既定値（gradle:<タスク> など。実行対象セレクトと同じ書式）
+#    suggestName  作業用プロジェクト名の既定値
+#    names        演習名（言語ごと）
+#    descriptions 「何をどう動かすか」の説明（言語ごと）
+#    openFiles    演習を開いた直後に開くファイル（プロジェクト相対パス）
+# ═══════════════════════════════════════════════════════════
+id: spring-cloud-aws
+order: 5
+# 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
+version: 1.0.0
+
+names:
+  ja: Springクラウド機能 on AWS
+  en: Spring Cloud Features on AWS
+
+descriptions:
+  ja: >-
+    AWS の権限・ネットワークと ECS（Fargate）によるコンテナ実行、Spring Session（JDBC / Redis）と
+    Spring Cloud Config によるセッション・設定の外部化、Cognito と Spring Security による
+    OIDC 認証・認可を扱う講座の演習です。
+    AWS と Redis は Codinable に含まれないため、ローカルで動かせる部分（HSQLDB での起動、
+    テスト、Config Server / Client）を Codinable で確かめ、AWS の手順は各演習の README.md を参照します。
+  en: >-
+    Exercises for the course covering AWS permissions and networking, running containers on
+    ECS (Fargate), externalizing sessions and settings with Spring Session (JDBC / Redis) and
+    Spring Cloud Config, and OIDC authentication and authorization with Cognito and Spring Security.
+    AWS and Redis are not bundled with Codinable, so the parts that run locally (startup on HSQLDB,
+    tests, Config Server / Client) are checked in Codinable; see each exercise's README.md for the AWS steps.
+
+udemy:
+  url: https://github.com/KenyaSaitoh/learn_spring_aidd_aws
+
+exercises:
+  # ── チャプター2: AWS の権限・ネットワークとコンテナの実行基盤 ──────────
+  # 講座リポジトリの 02_aws-setup（common.py など）は aws-setup/ に同梱している
+  - id: spring-ecs-employee
+    chapter: 2
+    lesson: '2.1 AWSの権限・ネットワークとコンテナの実行基盤'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-ecs-employee
+    names:
+      ja: ECSへ配置する社員管理APIをローカルで動かす
+      en: Run the employee API for ECS locally
+    descriptions:
+      ja: >-
+        ECR・ECS（Fargate）へ配置する社員管理 REST API と、Dockerfile・タスク定義・デプロイスクリプト、
+        boto3 の準備スクリプト（aws-setup/）です。「実行」でタスク定義と同じインメモリ HSQLDB を使って起動し、
+        /employees と /departments の応答をプレビューかターミナルの curl で確かめます。
+        /employees が空配列になるのは、SQL 初期化の後に Hibernate の自動 DDL がテーブルを作り直すためで、
+        application.yml に spring.jpa.hibernate.ddl-auto: none を足して再実行すると社員が返ります。
+        ECR への push と ECS へのデプロイには AWS アカウントと Docker が必要で、手順は README.md にあります。
+      en: >-
+        The employee REST API deployed to ECR / ECS (Fargate), with its Dockerfile, task definition,
+        deploy script and the boto3 setup scripts (aws-setup/). Run it to start with the same in-memory
+        HSQLDB as the task definition, then check /employees and /departments in the preview or with curl.
+        /employees returns an empty array because Hibernate's automatic DDL recreates the tables after
+        SQL initialization; add spring.jpa.hibernate.ddl-auto: none to application.yml and run again to
+        get the employees. Pushing to ECR and deploying to ECS need an AWS account and Docker; see README.md.
+    openFiles:
+      - aws-setup/scripts/common.py
+      - Dockerfile
+      - taskdef/task-definition.json
+      - scripts/deploy_ecs.py
+      - README.md
+
+  # ── チャプター3: セッションとアプリケーション設定の外部化 ──────────────
+  - id: spring-session-employee-jdbc
+    chapter: 3
+    lesson: '3.1 セッションとアプリケーション設定の外部化'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-session-employee-jdbc
+    names:
+      ja: Spring Session JDBCで入力途中の値を保持する
+      en: Keep in-progress input with Spring Session JDBC
+    descriptions:
+      ja: >-
+        入力 → 確認 → 保存の間の値（employeeDraft）を Spring Session JDBC で保持する社員管理アプリです。
+        「実行」でプロジェクト内のファイル DB（hsqldb-data/）を使って起動し、プレビューで /employees を開きます。
+        新規登録で「確認へ」まで進めたら「停止」→「実行」でアプリを再起動し、同じプレビューで
+        /employees/confirm を開いて入力が復元されることを確かめます。
+        実行対象を gradle:test に切り替えると、画面遷移とセッション属性の MVC テスト 9 件が走ります。
+      en: >-
+        An employee management app that keeps the value between input, confirmation and save
+        (employeeDraft) with Spring Session JDBC. Run it to start on a file database inside the project
+        (hsqldb-data/) and open /employees in the preview. After reaching the confirmation page for a
+        new employee, stop and run the app again, then open /employees/confirm in the same preview to see
+        the input restored. Switch the run target to gradle:test to run the nine MVC tests of the page flow.
+    openFiles:
+      - src/main/java/pro/kensait/spring/employee/web/EmployeeController.java
+      - src/main/java/pro/kensait/spring/employee/web/EmployeeDraft.java
+      - src/main/resources/application.yml
+      - README.md
+
+  - id: spring-session-employee-redis
+    chapter: 3
+    lesson: '3.1 セッションとアプリケーション設定の外部化'
+    runtime: spring
+    run: 'gradle:test'
+    suggestName: spring-session-employee-redis
+    names:
+      ja: Spring Session Redisと保存先の違いを確かめる
+      en: Compare the store with Spring Session Redis
+    descriptions:
+      ja: >-
+        JDBC 版と同じ社員管理アプリで、セッションの保存先だけを Redis に替えたものです。
+        Redis は Codinable に含まれないため、「実行」では MVC テスト 9 件を流して画面制御を確かめます。
+        gradle:bootRun に切り替えると社員一覧は表示できますが、新規登録などセッションに書き込む操作で
+        localhost:6379 への接続エラーになり、業務データとセッションの保存経路が別であることがログで分かります。
+        Redis を用意できる場合の起動と再起動の手順は README.md にあります。
+      en: >-
+        The same employee app as the JDBC version with only the session store switched to Redis.
+        Redis is not bundled with Codinable, so Run executes the nine MVC tests of the page flow.
+        With gradle:bootRun the employee list works, but operations that write the session (such as a
+        new registration) fail to connect to localhost:6379, showing in the log that business data and
+        sessions take separate paths. README.md describes how to run it when Redis is available.
+    openFiles:
+      - src/main/resources/application.yml
+      - build.gradle
+      - src/test/java/pro/kensait/spring/employee/web/EmployeeSessionFlowTest.java
+      - README.md
+
+  # サーバー（8888）が主役で「実行」で起動し、クライアント（8080）は client/ をターミナルで起動する
+  - id: spring-cloud-config
+    chapter: 3
+    lesson: '3.1 セッションとアプリケーション設定の外部化'
+    runtime: spring
+    run: 'gradle:bootRun'
+    suggestName: spring-cloud-config
+    names:
+      ja: Config Server・Clientで設定を配信して反映する
+      en: Deliver and refresh settings with Config Server and Client
+    descriptions:
+      ja: >-
+        「実行」で Config Server（8888）を起動し、ターミナルで cd client → ../gradlew.bat bootRun として
+        Config Client（8080）を起動します。curl localhost:8888/config-client/default と
+        curl localhost:8080/greeting で配信値と取り込んだ値を確かめます。
+        config-repo/config-client.yml を書き換えてサーバーを再実行し、
+        POST /actuator/refresh の前後で /greeting の応答が変わる時点を確かめます。
+      en: >-
+        Run starts the Config Server (8888); in the terminal, cd client and run ../gradlew.bat bootRun to
+        start the Config Client (8080). Check the delivered and imported values with
+        curl localhost:8888/config-client/default and curl localhost:8080/greeting.
+        Edit config-repo/config-client.yml, run the server again, and see when the /greeting response
+        changes before and after POST /actuator/refresh.
+    openFiles:
+      - src/main/resources/config-repo/config-client.yml
+      - src/main/resources/application.yml
+      - client/src/main/resources/application.yml
+      - client/src/main/java/pro/kensait/spring/config/web/GreetingController.java
+      - README.md
+
+  # ── チャプター4: Cognito と Spring Security による OIDC 認証・認可 ─────────
+  # ログインフローには実 AWS の Cognito が要るので、既定は Codinable 版で追加したテストにしている
+  - id: spring-sec-calc-cognito-1
+    chapter: 4
+    lesson: '4.1 CognitoとSpring SecurityによるOIDC認証・認可'
+    runtime: spring
+    run: 'gradle:test'
+    suggestName: spring-sec-calc-cognito-1
+    names:
+      ja: CognitoのOIDCログインとURLごとの認可（基本形）
+      en: OIDC login with Cognito and per-URL authorization (basic)
+    descriptions:
+      ja: >-
+        Spring Security の oauth2Login で Cognito にログインを委譲する電卓アプリです。
+        Cognito は Codinable に含まれないため、「実行」では Cognito に接続せずに SecurityConfig の認可
+        （未認証はログインへ、ADMIN が無ければ履歴は 403、CSRF トークンの無い POST は 403）と、
+        全員に ADMIN を付ける CustomOidcUserService をテストで確かめます。
+        Cognito のユーザープールを用意して環境変数 COGNITO_* を設定し、ターミナルから bootRun する手順は README.md にあります。
+      en: >-
+        A calculator app that delegates login to Cognito via Spring Security's oauth2Login.
+        Cognito is not bundled with Codinable, so Run tests, without contacting Cognito, the
+        authorization in SecurityConfig (unauthenticated users go to login, history is 403 without ADMIN,
+        POST without a CSRF token is 403) and the CustomOidcUserService that grants ADMIN to everyone.
+        README.md explains how to prepare a Cognito user pool, set COGNITO_* and bootRun from the terminal.
+    openFiles:
+      - src/main/resources/application.yml
+      - src/main/java/pro/kensait/spring/calc/web/SecurityConfig.java
+      - src/main/java/pro/kensait/spring/calc/web/CustomOidcUserService.java
+      - README.md
+
+  - id: spring-sec-calc-cognito-2
+    chapter: 4
+    lesson: '4.1 CognitoとSpring SecurityによるOIDC認証・認可'
+    runtime: spring
+    run: 'gradle:test'
+    suggestName: spring-sec-calc-cognito-2
+    names:
+      ja: cognito:groupsクレームをADMIN権限へ変換する
+      en: Map the cognito:groups claim to the ADMIN authority
+    descriptions:
+      ja: >-
+        cognito-1 との差分は CustomOidcUserService だけで、cognito:groups クレームに ADMIN を含む
+        ユーザーにだけ ADMIN 権限を付けます。「実行」では Cognito に接続せずに、ADMIN 所属なら権限が付き、
+        非所属・クレーム無し・小文字の admin では付かないこと、URL ごとの認可の結果をテストで確かめます。
+        実際に ADMIN 所属と非所属の 2 ユーザーでログインして履歴表示を比べるには Cognito が必要で、手順は README.md にあります。
+      en: >-
+        The only difference from cognito-1 is CustomOidcUserService, which grants ADMIN only to users whose
+        cognito:groups claim contains ADMIN. Run tests, without contacting Cognito, that the authority is
+        granted to ADMIN members and not to non-members, users without the claim or a lowercase admin
+        group, along with the per-URL authorization. Logging in with two real users to compare the history
+        page needs Cognito; see README.md.
+    openFiles:
+      - src/main/java/pro/kensait/spring/calc/web/CustomOidcUserService.java
+      - src/main/java/pro/kensait/spring/calc/web/SecurityConfig.java
+      - src/test/java/pro/kensait/spring/calc/web/CustomOidcUserServiceTest.java
+      - README.md

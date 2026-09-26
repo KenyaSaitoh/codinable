@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+<title>CalcOutputPage</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <h2>CalcOutputPage</h2>
+  <hr />
+  <form method="POST">
+    <div th:text="|パラメータ1 => ${calcResult.param1}|"></div>
+    <div th:text="|パラメータ2 => ${calcResult.param2}|"></div>
+    <div th:text="|計算結果 => ${calcResult.result}|"></div>
+    <div sec:authorize="hasAuthority('ADMIN')">
+      <a th:href="@{/viewHistory}">履歴画面へ</a><br />
+    </div>
+    <a th:href="@{/toInput}">入力画面へ</a><br />
+    <button type="submit" th:formaction="@{/processLogout}">ログアウト</button>
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+  </form>
+</body>
+</html>

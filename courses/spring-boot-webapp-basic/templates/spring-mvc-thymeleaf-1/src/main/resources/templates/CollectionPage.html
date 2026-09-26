@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>CollectionPage</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <h2>2. オブジェクトとコレクション</h2>
+  <hr />
+
+  <!--===== プロパティへのアクセス =====-->
+  <h3>プロパティへのアクセス</h3>
+  <!-- ドット記法でプロパティを参照する。レコードの場合はアクセサ名がそのままプロパティ名になる -->
+  <div th:text="${member.memberName}"></div>
+  <!-- ブラケット記法でも同じ結果になる -->
+  <div th:text="${member['memberName']}"></div>
+  <div th:text="|${member.memberName}（${member.age}歳）|"></div>
+
+  <!--===== リストへのアクセス =====-->
+  <h3>リストへのアクセス</h3>
+  <!-- リストをそのまま出力すると、toString()の結果が出力される -->
+  <div th:text="${memberList}"></div>
+  <!-- インデックスを指定して要素を取り出す -->
+  <div th:text="${memberList[0].memberName}"></div>
+  <!-- 要素数 -->
+  <div th:text="|会員数: ${memberList.size()}|"></div>
+
+  <!--===== 繰り返し（th:each） =====-->
+  <h3>繰り返し（th:each）</h3>
+  <!-- 「要素の変数名 : コレクション」の形式で書く -->
+  <!-- th:each が付いたタグ自体が、要素の数だけ繰り返される -->
+  <ul>
+    <li th:each="member : ${memberList}" th:text="${member.memberName}"></li>
+  </ul>
+
+  <!--===== 繰り返しのステータス変数 =====-->
+  <h3>繰り返しのステータス変数</h3>
+  <!-- 「要素の変数名, ステータス変数名 : コレクション」でループの状態を参照できる -->
+  <table border="1">
+    <tr>
+      <th>index</th>
+      <th>count</th>
+      <th>会員名</th>
+      <th>first / last</th>
+    </tr>
+    <!-- 偶数行だけ背景色を付ける（stat.evenを利用） -->
+    <tr th:each="member, stat : ${memberList}"
+        th:class="${stat.even} ? 'highlight'">
+      <!-- index は0始まり、count は1始まり -->
+      <td th:text="${stat.index}"></td>
+      <td th:text="${stat.count}"></td>
+      <td th:text="${member.memberName}"></td>
+      <!-- 先頭・末尾の判定にはfirst / lastを使う -->
+      <td th:text="${stat.first} ? '先頭' : (${stat.last} ? '末尾' : '')"></td>
+    </tr>
+  </table>
+  <!-- ステータス変数には、他に size / current / odd も用意されている -->
+
+  <!--===== マップへのアクセスと繰り返し =====-->
+  <h3>マップへのアクセスと繰り返し</h3>
+  <!-- キーを指定して値を取り出す -->
+  <div th:text="${cityMap['Japan']}"></div>
+  <!-- マップを繰り返すと、要素はMap.Entryになる。キーは.key、値は.valueで参照する -->
+  <ul>
+    <li th:each="entry : ${cityMap}"
+        th:text="|${entry.key} の首都は ${entry.value}|"></li>
+  </ul>
+
+  <hr />
+  <a th:href="@{/}">目次に戻る</a>
+</body>
+</html>

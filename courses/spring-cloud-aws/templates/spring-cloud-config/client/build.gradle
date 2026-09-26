@@ -1,0 +1,39 @@
+// Spring Cloud Config Client（8080 番）
+// 親フォルダの Config Server（8888 番）を先に起動してから、ターミナルで起動する
+//   cd client
+//   ../gradlew.bat bootRun
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Cloud BOM（Boot 4.x 対応の 2025.1 系）を platform 指定で取り込む
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:2025.1.2")
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation "org.springframework.boot:spring-boot-starter-webmvc"
+    // refresh エンドポイント（POST /actuator/refresh）を使うために Actuator が必要
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    // Config Server から設定を取得するクライアント（バージョンは BOM が管理するため指定しない）
+    implementation "org.springframework.cloud:spring-cloud-starter-config"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}

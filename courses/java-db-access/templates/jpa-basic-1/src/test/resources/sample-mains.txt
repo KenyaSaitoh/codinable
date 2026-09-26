@@ -1,0 +1,4 @@
+pro.kensait.jpa.company.main.DeleteMain
+pro.kensait.jpa.company.main.InsertMain
+pro.kensait.jpa.company.main.SelectMain
+pro.kensait.jpa.company.main.UpdateMain

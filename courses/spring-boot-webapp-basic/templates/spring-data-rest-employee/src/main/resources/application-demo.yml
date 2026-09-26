@@ -1,0 +1,11 @@
+# 第10章と同じDDL・10社員・4部署・5職種。既存DBから独立した確認用DB。
+spring:
+  datasource:
+    url: jdbc:hsqldb:mem:data_rest_employee_demo
+    username: SA
+    password:
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/2_EMPLOYEE_DDL.sql
+      data-locations: classpath:db/3_EMPLOYEE_DML.sql

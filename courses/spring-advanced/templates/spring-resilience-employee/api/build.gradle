@@ -1,0 +1,30 @@
+// 呼び出し先の確認用 API（基礎編 learn_spring_aidd_basic の rest-employee-restclient-api・8095）
+// ルートのアプリとは別の Gradle プロジェクト。ターミナルで cd api → ../gradlew.bat bootRun で起動し、
+// Ctrl+C で止めて「障害」、もう一度起動して「復旧」を観察する
+// 社員データはメモリ内にあり、再起動で初期状態（6 件）に戻る
+// （基礎編ではコンソールクライアントと組にしたテストがあるが、ここでは API 本体だけを置いている）
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+// Java 25 で動かす（Codinable 同梱の JDK 25 をそのまま使う）
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+}
