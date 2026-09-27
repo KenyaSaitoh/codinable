@@ -108,6 +108,10 @@ public class EmployeeService {
 
     // 指定した部署の名称の取得
     public String departmentNameOf(Integer departmentId) {
+        // 部署なし（DEPARTMENT_ID が NULL）の社員もいるので、そのときは空欄にする
+        if (departmentId == null) {
+            return "";
+        }
         return departmentRepository.findById(departmentId)
                 .map(Department::getDepartmentName).orElse("");
     }

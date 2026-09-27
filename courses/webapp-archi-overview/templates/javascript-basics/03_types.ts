@@ -4,7 +4,7 @@
 // 型は「実行前に間違いを見つけるための注釈」であり、実行時には消える
 
 // ── 型エイリアスとインターフェース ──
-type Department = '営業部' | '企画部' | '人事部';
+type Department = 'SALES' | 'PLANNING' | 'HR' | 'PRODUCT';
 
 interface Person {
   name: string;
@@ -15,9 +15,9 @@ interface Person {
 }
 
 const people: Person[] = [
-  { name: 'Alice', department: '営業部', salary: 500000, email: 'alice@example.com' },
-  { name: 'Bob',   department: '企画部', salary: 450000 },
-  { name: 'Carol', department: '人事部', salary: 350000 },
+  { name: 'Alice', department: 'SALES', salary: 500000, email: 'alice@example.com' },
+  { name: 'Bob',   department: 'PLANNING', salary: 450000 },
+  { name: 'Carol', department: 'HR', salary: 350000 },
 ];
 
 // ── 引数と戻り値の型 ──

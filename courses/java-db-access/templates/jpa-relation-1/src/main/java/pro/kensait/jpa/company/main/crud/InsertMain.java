@@ -28,9 +28,9 @@ public class InsertMain {
                 Department department = entityManager.find(Department.class, 3);
 
                 // 新しいEmployeeを生成する
-                Integer employeeId = 10021;
-                Employee employee = new Employee(employeeId, "Steve", department,
-                        LocalDate.of(2017, 10, 1), JobType.LEADER, 380000, null);
+                Integer employeeId = 10017;
+                Employee employee = new Employee(employeeId, "Walter", department,
+                        LocalDate.of(2018, 4, 1), JobType.ASSOCIATE, 230000, null);
 
                 // Employeeを保存する
                 entityManager.persist(employee);

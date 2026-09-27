@@ -1,6 +1,6 @@
 // 画面をまたいで使う型はここにまとめる
 
-export type Department = '営業部' | '企画部' | '人事部';
+export type Department = 'SALES' | 'PLANNING' | 'HR' | 'PRODUCT';
 
 export interface Person {
   id: number;
@@ -8,4 +8,4 @@ export interface Person {
   department: Department;
 }
 
-export const DEPARTMENTS: Department[] = ['営業部', '企画部', '人事部'];
+export const DEPARTMENTS: Department[] = ['SALES', 'PLANNING', 'HR', 'PRODUCT'];

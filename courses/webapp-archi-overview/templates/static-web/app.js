@@ -3,8 +3,8 @@
 // この「状態 → 描画」の流れは、チャプター10のReactでも同じ考え方になる
 
 const people = [
-  { name: 'Alice', department: '営業部' },
-  { name: 'Bob',   department: '企画部' },
+  { name: 'Alice', department: 'SALES' },
+  { name: 'Bob',   department: 'PLANNING' },
 ];
 
 const form    = document.getElementById('person-form');

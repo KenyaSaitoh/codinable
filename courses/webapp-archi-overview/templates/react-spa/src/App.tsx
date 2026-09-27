@@ -12,8 +12,8 @@ import type { Person } from './types';
 export default function App() {
   // state はこの App が持ち、子には値と「変える手段」を渡す (単方向データフロー)
   const [people, setPeople] = useState<Person[]>([
-    { id: 1, name: 'Alice', department: '営業部' },
-    { id: 2, name: 'Bob', department: '企画部' },
+    { id: 1, name: 'Alice', department: 'SALES' },
+    { id: 2, name: 'Bob', department: 'PLANNING' },
   ]);
   const [keyword, setKeyword] = useState('');
 

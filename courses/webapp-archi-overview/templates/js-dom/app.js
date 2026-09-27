@@ -53,9 +53,9 @@ note('classList.add("highlighted") でカードを強調した');
 
 // ── 5. 要素を作って入れる ─────────────────────────────
 const people = [
-  { name: 'Alice', department: '営業部' },
-  { name: 'Bob',   department: '企画部' },
-  { name: 'Carol', department: '人事部' },
+  { name: 'Alice', department: 'SALES' },
+  { name: 'Bob',   department: 'PLANNING' },
+  { name: 'Carol', department: 'HR' },
 ];
 
 const tbody = document.getElementById('person-list');

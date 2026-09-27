@@ -24,10 +24,10 @@ public class EmbeddedIdInsertMain {
                 entityTransaction.begin();
 
                 // 主キーを表すEmployeePKを生成する
-                EmployeePK pk = new EmployeePK("TECH", 10021);
+                EmployeePK pk = new EmployeePK("TECH", 10017);
 
                 // 保存対象のEmployeeインスタンスを生成する
-                Employee employee = new Employee(pk, "Steve", 380000);
+                Employee employee = new Employee(pk, "Walter", 230000);
 
                 // 生成したEmployeeを保存する
                 entityManager.persist(employee);

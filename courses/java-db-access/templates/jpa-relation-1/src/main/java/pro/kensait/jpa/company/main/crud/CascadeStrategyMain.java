@@ -30,9 +30,9 @@ public class CascadeStrategyMain {
                     entityTransaction.begin();
 
                     List<Employee> employees = new ArrayList<Employee>();
-                    Department department = new Department(5, "総務部", "TOKYO HQ", employees, null);
-                    Employee employee = new Employee(10051, "Steve", department, LocalDate.now(),
-                            JobType.LEADER, 380000, null);
+                    Department department = new Department(5, "GENERAL AFFAIRS", "TOKYO HQ", employees, null);
+                    Employee employee = new Employee(10017, "Walter", department, LocalDate.now(),
+                            JobType.ASSOCIATE, 230000, null);
                     department.getEmployees().add(employee);
                     entityManager.persist(employee);
                     entityTransaction.commit();
@@ -59,9 +59,9 @@ public class CascadeStrategyMain {
                     entityTransaction.begin();
 
                     List<Employee> employees = new ArrayList<Employee>();
-                    Department department = new Department(6, "管理部", "TOKYO HQ", employees, null);
-                    Employee employee = new Employee(10052, "Trent", department, LocalDate.now(),
-                            JobType.CHIEF, 310000, null);
+                    Department department = new Department(6, "ADMINISTRATION", "TOKYO HQ", employees, null);
+                    Employee employee = new Employee(10018, "Wendy", department, LocalDate.now(),
+                            JobType.ASSOCIATE, 230000, null);
                     department.getEmployees().add(employee);
                     entityManager.persist(department);
                     entityTransaction.commit();
@@ -140,7 +140,7 @@ public class CascadeStrategyMain {
                     Department department = employee.getDepartment();
                     entityManager.clear(); // mergeのテストのために、取得したエンティティを意図的にDETACHED状態にする
                     employee.setSalary(500000);
-                    department.setLocation("品川支社"); // もともとはTOKYO HQ
+                    department.setLocation("SHINAGAWA BRANCH"); // もともとはYOKOHAMA BRANCH
                     employee.setDepartment(department);
                     entityManager.merge(employee);
                     entityTransaction.commit();
@@ -168,7 +168,7 @@ public class CascadeStrategyMain {
                     Employee employee = entityManager.find(Employee.class, 10002);
                     Department department = employee.getDepartment();
                     employee.setSalary(999999);
-                    department.setDepartmentName("経営PLANNING"); // もともとはPLANNING
+                    department.setDepartmentName("CORPORATE PLANNING"); // もともとはPLANNING
                     entityManager.refresh(employee);
                     entityTransaction.commit();
                     System.out.println("[ test6 ] End\n");

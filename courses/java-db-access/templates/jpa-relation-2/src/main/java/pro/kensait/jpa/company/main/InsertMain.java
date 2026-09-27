@@ -35,7 +35,7 @@ public class InsertMain {
                 Address address = new Address(101, "152-0000", "東京都", "目黒区");
 
                 // 役職を取得する
-                Job job = entityManager.find(Job.class, 2);
+                Job job = entityManager.find(Job.class, 1);
 
                 // プロジェクトを取得する
                 Project project = entityManager.find(Project.class, 3);
@@ -43,12 +43,12 @@ public class InsertMain {
                 projects.add(project);
 
                 // 新しい社員を生成する
-                Integer employeeId = 10021;
-                Employee employee = new Employee(employeeId, "Steve", address,
-                        LocalDate.of(2017, 10, 1), job, 380000, projects);
+                Integer employeeId = 10017;
+                Employee employee = new Employee(employeeId, "Walter", address,
+                        LocalDate.of(2018, 4, 1), job, 230000, projects);
 
                 // 新しいメールを生成する
-                Email email = new Email(201, employeeId, "steve@gmail.com");
+                Email email = new Email(201, employeeId, "walter@gmail.com");
                 List<Email> emails = new ArrayList<Email>();
                 emails.add(email);
                 employee.setEmails(emails);
@@ -65,7 +65,7 @@ public class InsertMain {
                 employee.setQualifications(qualifications);
 
                 // 部署を取得する
-                Department department = entityManager.find(Department.class, 2);
+                Department department = entityManager.find(Department.class, 3);
                 employee.setDepartment(department);
 
                 // すべてのエンティティを保存する

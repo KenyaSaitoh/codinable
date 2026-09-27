@@ -33,7 +33,7 @@ public class EmployeeRepository {
         employee.setEmployeeId(resultSet.getInt("EMPLOYEE_ID"));
         employee.setEmployeeCode(resultSet.getString("EMPLOYEE_CODE"));
         employee.setEmployeeName(resultSet.getString("EMPLOYEE_NAME"));
-        employee.setDepartmentId(resultSet.getInt("DEPARTMENT_ID"));
+        employee.setDepartmentId(resultSet.getObject("DEPARTMENT_ID", Integer.class));
         employee.setJobId(resultSet.getInt("JOB_ID"));
         employee.setSalary(resultSet.getInt("SALARY"));
         employee.setEntranceDate(resultSet.getDate("ENTRANCE_DATE").toLocalDate());

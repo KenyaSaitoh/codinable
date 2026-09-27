@@ -21,7 +21,7 @@ class DynamicSqlTest {
         SampleDatabase.reset();
         try (var session = SqlSessionHolder.getInstance().getSqlSession()) {
             var mapper = session.getMapper(EmployeeMapper.class);
-            assertEquals(14, mapper.selectDynamicEmployees(
+            assertEquals(16, mapper.selectDynamicEmployees(
                     new EmployeeDynamicParam(null, null, null)).size());
             var employees = mapper.selectDynamicEmployees(
                     new EmployeeDynamicParam("SALES", 300000, 400000));

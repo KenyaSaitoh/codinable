@@ -30,12 +30,12 @@ public class JpaIdClassRelationTest extends JpaTestBase {
         System.out.println("[ test2 ] Start");
         Subsidiary subsidiary = em.find(Subsidiary.class, 2);
         Employee employee = 
-                new Employee(6, "なかがわ せいじ", subsidiary, 360000);
+                new Employee(10017, "Walter", subsidiary, 230000);
         em.persist(employee);
         commit();
         em.clear();
-        assertEquals(360000, em.find(Employee.class, new EmployeePK(2, 6)).getSalary());
-        ResultUtil.showEmployeeFromDatabase(2, 6);
+        assertEquals(230000, em.find(Employee.class, new EmployeePK(2, 10017)).getSalary());
+        ResultUtil.showEmployeeFromDatabase(2, 10017);
         System.out.println("[ test2 ] End\n");
     }
 

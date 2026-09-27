@@ -4,10 +4,10 @@ package pro.kensait.mybatis.company.type;
  * 役職型を表す列挙型
  */
 public enum JobType {
-    MANAGER("マネージャ"),
-    LEADER("リーダー"),
-    CHIEF("チーフ"),
-    ASSOCIATE("アソシエイト");
+    MANAGER("MANAGER"),
+    LEADER("LEADER"),
+    CHIEF("CHIEF"),
+    ASSOCIATE("ASSOCIATE");
 
     private final String jobType;
 

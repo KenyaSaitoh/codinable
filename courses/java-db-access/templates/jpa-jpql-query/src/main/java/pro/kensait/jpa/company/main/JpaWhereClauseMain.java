@@ -116,7 +116,7 @@ public class JpaWhereClauseMain {
                 Query query = entityManager.createQuery(
                         "SELECT d FROM Department d " +
                         "WHERE d.location LIKE :location")
-                        .setParameter("location", "新宿%");
+                        .setParameter("location", "TOKYO%");
                 List<Department> resultList = query.getResultList();
                 showEntityList(resultList); // 検索結果を表示
                 System.out.println("##### TEST8 END #####\n");
@@ -127,7 +127,7 @@ public class JpaWhereClauseMain {
                 System.out.println("##### TEST9 START #####");
                 Query query = entityManager.createQuery(
                         "SELECT d FROM Department d " +
-                        "WHERE d.location LIKE '新宿%'");
+                        "WHERE d.location LIKE 'TOKYO%'");
                 List<Department> resultList = query.getResultList();
                 showEntityList(resultList); // 検索結果を表示
                 System.out.println("##### TEST9 END #####\n");
@@ -139,7 +139,7 @@ public class JpaWhereClauseMain {
                 Query query = entityManager.createQuery(
                         "SELECT d FROM Department d " +
                         "WHERE d.location NOT LIKE :location")
-                        .setParameter("location", "新宿%");
+                        .setParameter("location", "TOKYO%");
                 List<Department> resultList = query.getResultList();
                 showEntityList(resultList); // 検索結果を表示
                 System.out.println("##### TEST10 END #####\n");

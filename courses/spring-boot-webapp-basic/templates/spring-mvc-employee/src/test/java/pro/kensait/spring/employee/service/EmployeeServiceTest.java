@@ -27,7 +27,7 @@ class EmployeeServiceTest {
     @Test
     void returnsAllEmployees() {
         List<Employee> expected = List.of(
-                new Employee(1, "山田 太郎", "営業部", 320_000));
+                new Employee(10001, "Alice", "SALES", 500_000));
         when(employeeDao.findAll()).thenReturn(expected);
 
         assertEquals(expected, employeeService.getEmployeesAll());
@@ -36,12 +36,12 @@ class EmployeeServiceTest {
     // 「次のIDを使用した社員登録」の検証
     @Test
     void createsEmployeeWithNextId() {
-        Employee employee = new Employee("新人 太郎", "開発部", 250_000);
-        when(employeeDao.getMaxEmployeeId()).thenReturn(5);
+        Employee employee = new Employee("Walter", "SALES", 230_000);
+        when(employeeDao.getMaxEmployeeId()).thenReturn(10016);
 
         Employee created = employeeService.createEmployee(employee);
 
-        assertEquals(6, created.getEmployeeId());
+        assertEquals(10017, created.getEmployeeId());
         verify(employeeDao).save(employee);
     }
 }

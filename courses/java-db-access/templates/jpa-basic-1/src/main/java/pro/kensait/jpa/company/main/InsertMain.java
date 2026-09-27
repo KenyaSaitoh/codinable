@@ -23,7 +23,7 @@ public class InsertMain {
                 entityTransaction.begin();
 
                 // 保存対象のEmployeeクラスのインスタンスを生成する
-                Employee employee = new Employee(10021, "Steve", "SALES", 380000);
+                Employee employee = new Employee(10017, "Walter", "SALES", 230000);
 
                 // 生成したEmployeeを保存する
                 entityManager.persist(employee);

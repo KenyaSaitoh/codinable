@@ -27,7 +27,7 @@ public class IdClassInsertMain {
                 Subsidiary subsidiary = entityManager.find(Subsidiary.class, 3);
 
                 // 保存対象のEmployeeインスタンスを生成する
-                Employee employee = new Employee(10021, "Steve", subsidiary, 380000);
+                Employee employee = new Employee(10017, "Walter", subsidiary, 230000);
 
                 // 生成したEmployeeを保存する
                 entityManager.persist(employee);

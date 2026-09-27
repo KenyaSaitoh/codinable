@@ -33,9 +33,9 @@ class CompanyQueryTest {
     void queriesRelationsAndCriteria() {
         EntityManager entityManager = factory.createEntityManager();
         entityManager.getTransaction().begin();
-        Department sales = new Department(10, "営業部");
-        sales.addEmployee(new Employee(101, "佐藤 花子", new BigDecimal("420000")));
-        sales.addEmployee(new Employee(102, "鈴木 一郎", new BigDecimal("380000")));
+        Department sales = new Department(3, "SALES");
+        sales.addEmployee(new Employee(10001, "Alice", new BigDecimal("500000")));
+        sales.addEmployee(new Employee(10005, "Ellen", new BigDecimal("300000")));
         entityManager.persist(sales);
         entityManager.getTransaction().commit();
         entityManager.clear();
@@ -43,7 +43,7 @@ class CompanyQueryTest {
         CompanyQuery query = new CompanyQuery();
         assertEquals(2, query.findDepartmentsWithEmployees(entityManager)
                 .getFirst().getEmployees().size());
-        assertEquals(101, query.findEmployeesWithSalaryAtLeast(entityManager,
+        assertEquals(10001, query.findEmployeesWithSalaryAtLeast(entityManager,
                 new BigDecimal("400000"), 0, 10).getFirst().getId());
         entityManager.close();
     }

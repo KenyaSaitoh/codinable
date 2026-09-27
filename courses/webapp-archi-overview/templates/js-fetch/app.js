@@ -72,5 +72,5 @@ loadUsers('users.json');
 //   const response = await fetch('/api/users', {
 //     method:  'POST',
 //     headers: { 'Content-Type': 'application/json' },
-//     body:    JSON.stringify({ name: 'Eve', department: '営業部', salary: 380000 }),
+//     body:    JSON.stringify({ name: 'Walter', department: 'SALES', salary: 230000 }),
 //   });

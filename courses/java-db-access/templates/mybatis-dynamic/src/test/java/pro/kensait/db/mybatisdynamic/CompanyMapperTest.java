@@ -30,12 +30,19 @@ class CompanyMapperTest {
             statement.executeUpdate("CREATE TABLE DEPARTMENT (DEPARTMENT_ID INTEGER PRIMARY KEY, "
                     + "DEPARTMENT_NAME VARCHAR(100) NOT NULL)");
             statement.executeUpdate("CREATE TABLE EMPLOYEE (EMPLOYEE_ID INTEGER PRIMARY KEY, "
-                    + "DEPARTMENT_ID INTEGER NOT NULL REFERENCES DEPARTMENT, "
+                    + "DEPARTMENT_ID INTEGER REFERENCES DEPARTMENT, "
                     + "EMPLOYEE_NAME VARCHAR(100) NOT NULL, SALARY DECIMAL(12, 2) NOT NULL)");
-            statement.executeUpdate("INSERT INTO DEPARTMENT VALUES (10, '営業部'), (20, '開発部')");
+            statement.executeUpdate("INSERT INTO DEPARTMENT VALUES "
+                    + "(1, 'PLANNING'), (2, 'HR'), (3, 'SALES'), (4, 'PRODUCT')");
             statement.executeUpdate("INSERT INTO EMPLOYEE VALUES "
-                    + "(101, 10, '佐藤 花子', 420000), (102, 10, '鈴木 一郎', 380000), "
-                    + "(201, 20, '田中 次郎', 520000)");
+                    + "(10001, 3, 'Alice', 500000), (10002, 1, 'Bob', 450000), "
+                    + "(10003, 2, 'Carol', 350000), (10004, 3, 'Dave', 400000), "
+                    + "(10005, 3, 'Ellen', 300000), (10006, 1, 'Frank', 250000), "
+                    + "(10007, 4, 'Ivan', 480000), (10008, 2, 'Justin', 460000), "
+                    + "(10009, 4, 'Mallory', 420000), (10010, 3, 'Matilda', 280000), "
+                    + "(10011, 4, 'Oscar', 320000), (10012, 4, 'Pat', 240000), "
+                    + "(10013, 3, 'Peggy', 270000), (10014, NULL, 'Victor', 220000), "
+                    + "(10015, 1, 'Steve', 380000), (10016, 4, 'Trent', 310000)");
         }
         try (Reader reader = Resources.getResourceAsReader("mybatis-config.xml")) {
             factory = new SqlSessionFactoryBuilder().build(reader);
@@ -47,11 +54,11 @@ class CompanyMapperTest {
     void buildsDynamicWhereAndMapsAggregates() {
         try (SqlSession session = factory.openSession()) {
             CompanyMapper mapper = session.getMapper(CompanyMapper.class);
-            EmployeeFilter filter = new EmployeeFilter(10, new BigDecimal("400000"),
-                    List.of(101, 102, 201));
+            EmployeeFilter filter = new EmployeeFilter(3, new BigDecimal("400000"),
+                    List.of(10001, 10005, 10007));
             List<EmployeeView> employees = mapper.search(filter);
-            assertEquals(List.of(101), employees.stream().map(EmployeeView::id).toList());
-            assertEquals(2, mapper.summarizeDepartments().getFirst().employeeCount());
+            assertEquals(List.of(10001), employees.stream().map(EmployeeView::id).toList());
+            assertEquals(3, mapper.summarizeDepartments().getFirst().employeeCount());
         }
     }
 }

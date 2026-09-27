@@ -17,11 +17,11 @@ class MyBatisMappingTest {
         SampleDatabase.reset();
         try (var session = SqlSessionHolder.getInstance().getSqlSession()) {
             assertFalse(session.getConfiguration().getMappedStatementNames().isEmpty());
-            // 全章共通の初期データは14人（未所属社員を含む）
+            // 全章共通の初期データは16人（未所属社員を含む）
             try (var statement = session.getConnection().createStatement();
                     var result = statement.executeQuery("SELECT COUNT(*) FROM EMPLOYEE")) {
                 result.next();
-                assertEquals(14, result.getInt(1));
+                assertEquals(16, result.getInt(1));
             }
         }
     }

@@ -13,10 +13,10 @@ class PrimaryKeyTest {
     // 「Integerキャッシュ外の値比較」の検証
     @Test
     void comparesValuesOutsideTheIntegerCache() {
-        var first = new EmployeePK(1000, Integer.valueOf("10021"));
-        var second = new EmployeePK(1000, Integer.valueOf("10021"));
+        var first = new EmployeePK(1000, Integer.valueOf("10017"));
+        var second = new EmployeePK(1000, Integer.valueOf("10017"));
         assertEquals(first, second);
         assertEquals(first.hashCode(), second.hashCode());
-        assertNotEquals(first, new EmployeePK(1000, 10022));
+        assertNotEquals(first, new EmployeePK(1000, 10018));
     }
 }

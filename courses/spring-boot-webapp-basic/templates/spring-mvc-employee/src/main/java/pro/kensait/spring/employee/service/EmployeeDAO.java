@@ -11,13 +11,24 @@ import org.springframework.stereotype.Repository;
 public class EmployeeDAO {
     private final Map<Integer, Employee> employees = new ConcurrentHashMap<>();
 
-    // 社員daoの初期化
+    // 社員daoの初期化（Victor は部署なし）
     public EmployeeDAO() {
-        employees.put(1, new Employee(1, "山田 太郎", "営業部", 320_000));
-        employees.put(2, new Employee(2, "佐藤 花子", "開発部", 450_000));
-        employees.put(3, new Employee(3, "鈴木 一郎", "人事部", 300_000));
-        employees.put(4, new Employee(4, "高橋 美咲", "総務部", 380_000));
-        employees.put(5, new Employee(5, "田中 健太", "営業部", 280_000));
+        employees.put(10001, new Employee(10001, "Alice", "SALES", 500_000));
+        employees.put(10002, new Employee(10002, "Bob", "PLANNING", 450_000));
+        employees.put(10003, new Employee(10003, "Carol", "HR", 350_000));
+        employees.put(10004, new Employee(10004, "Dave", "SALES", 400_000));
+        employees.put(10005, new Employee(10005, "Ellen", "SALES", 300_000));
+        employees.put(10006, new Employee(10006, "Frank", "PLANNING", 250_000));
+        employees.put(10007, new Employee(10007, "Ivan", "PRODUCT", 480_000));
+        employees.put(10008, new Employee(10008, "Justin", "HR", 460_000));
+        employees.put(10009, new Employee(10009, "Mallory", "PRODUCT", 420_000));
+        employees.put(10010, new Employee(10010, "Matilda", "SALES", 280_000));
+        employees.put(10011, new Employee(10011, "Oscar", "PRODUCT", 320_000));
+        employees.put(10012, new Employee(10012, "Pat", "PRODUCT", 240_000));
+        employees.put(10013, new Employee(10013, "Peggy", "SALES", 270_000));
+        employees.put(10014, new Employee(10014, "Victor", null, 220_000));
+        employees.put(10015, new Employee(10015, "Steve", "PLANNING", 380_000));
+        employees.put(10016, new Employee(10016, "Trent", "PRODUCT", 310_000));
     }
 
     // 主キー検索

@@ -26,9 +26,9 @@ public class InsertMain {
                 entityTransaction.begin();
 
                 // 保存対象のEmployeeクラスのインスタンスを生成する
-                LocalDate entranceDate = LocalDate.of(2024, 4, 1);
-                Employee employee = new Employee(10021, "Steve", "SALES",
-                        entranceDate, JobType.LEADER, 380000);
+                LocalDate entranceDate = LocalDate.of(2018, 4, 1);
+                Employee employee = new Employee(10017, "Walter", "SALES",
+                        entranceDate, JobType.ASSOCIATE, 230000);
                 // 生成したEmployeeを保存する
                 entityManager.persist(employee);
 

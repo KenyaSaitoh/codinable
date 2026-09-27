@@ -434,11 +434,11 @@ exercises:
       en: Create a table and query it with SELECT
     descriptions:
       ja: >-
-        講義と同じ EMPLOYEE テーブル（4 件）を作り、SELECT で取り出します。
+        講義と同じ EMPLOYEE テーブル（講義の 4 件を含む 16 件）を作り、SELECT で取り出します。
         主キー検索・射影・比較演算子と、AND / OR / IN / BETWEEN / LIKE / IS NULL の
         条件の書き方が入っています。どのファイルも実行のたびに初期データから始まります。
       en: >-
-        Creates the EMPLOYEE table from the lectures (4 rows) and queries it with SELECT.
+        Creates the EMPLOYEE table from the lectures (16 rows, including the 4 from the lecture) and queries it with SELECT.
         Covers primary-key lookups, projection, comparison operators and the
         AND / OR / IN / BETWEEN / LIKE / IS NULL conditions.
         Every file starts from the initial data each time you run it.
@@ -459,12 +459,12 @@ exercises:
       ja: >-
         登録・更新・削除を実際に実行して、SELECT で結果を確かめます。
         主キー指定と条件指定の違い、WHERE を書き忘れたときに何が起きるかも扱います。
-        実行のたびに元の 4 件から始まるので、何度でも試せます。
+        実行のたびに元の 16 件から始まるので、何度でも試せます。
       en: >-
         Actually inserts, updates and deletes rows, checking the result with SELECT.
         Covers the difference between targeting by primary key and by condition, and
         what happens when you forget the WHERE clause.
-        Every run starts again from the original 4 rows, so you can try as often as you like.
+        Every run starts again from the original 16 rows, so you can try as often as you like.
     # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
     openFiles:
       - SCHEMA.md

@@ -13,13 +13,13 @@ echo
 echo "=== JSON 形式 (application/json) ==="
 curl -s -X POST "$BASE/post" \
   -H "Content-Type: application/json" \
-  -d '{"name":"Alice","department":"営業部"}'
+  -d '{"name":"Alice","department":"SALES"}'
 
 echo
 echo "=== PUT (置き換え) ==="
 curl -s -X PUT "$BASE/put" \
   -H "Content-Type: application/json" \
-  -d '{"name":"Alice","department":"企画部"}'
+  -d '{"name":"Alice","department":"PLANNING"}'
 
 echo
 echo "=== DELETE ==="

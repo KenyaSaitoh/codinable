@@ -37,24 +37,24 @@ class EmployeeRepositoryTest {
 
         entityManager.getTransaction().begin();
         repository.add(entityManager,
-                new Employee(101, 10, "佐藤 花子", new BigDecimal("420000")));
+                new Employee(10017, 3, "Walter", new BigDecimal("230000")));
         entityManager.getTransaction().commit();
         entityManager.clear();
 
         entityManager.getTransaction().begin();
-        Employee employee = repository.find(entityManager, 101).orElseThrow();
-        employee.changeSalary(new BigDecimal("450000"));
+        Employee employee = repository.find(entityManager, 10017).orElseThrow();
+        employee.changeSalary(new BigDecimal("250000"));
         entityManager.getTransaction().commit();
         entityManager.clear();
 
-        Employee changed = repository.find(entityManager, 101).orElseThrow();
-        assertEquals(new BigDecimal("450000.00"), changed.getSalary());
+        Employee changed = repository.find(entityManager, 10017).orElseThrow();
+        assertEquals(new BigDecimal("250000.00"), changed.getSalary());
         assertEquals(1, changed.getVersion());
 
         entityManager.getTransaction().begin();
         repository.remove(entityManager, changed);
         entityManager.getTransaction().commit();
-        assertTrue(repository.find(entityManager, 101).isEmpty());
+        assertTrue(repository.find(entityManager, 10017).isEmpty());
         entityManager.close();
     }
 }

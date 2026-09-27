@@ -30,7 +30,7 @@
     <!-- label の for と input の id を一致させると、ラベルを押して入力欄に移れる -->
     <p>
       <label for="name">氏名（必須・3〜20文字）</label>
-      <input type="text" id="name" name="name" placeholder="山田太郎"
+      <input type="text" id="name" name="name" placeholder="Walter"
              required minlength="3" maxlength="20">
     </p>
 
@@ -81,9 +81,10 @@
       <label for="department">部署（select）</label>
       <select id="department" name="department">
         <option value="">選択してください</option>
-        <option value="dev">開発部</option>
-        <option value="plan">企画部</option>
-        <option value="sales">営業部</option>
+        <option value="PLANNING">PLANNING</option>
+        <option value="HR">HR</option>
+        <option value="SALES">SALES</option>
+        <option value="PRODUCT">PRODUCT</option>
       </select>
     </p>
 
@@ -124,7 +125,7 @@
 
     <p>
       <label for="readonly-id">社員番号（readonly：変更できないが送信される）</label>
-      <input type="text" id="readonly-id" name="employee_id" value="10005" readonly>
+      <input type="text" id="readonly-id" name="employee_id" value="10017" readonly>
     </p>
 
     <p>

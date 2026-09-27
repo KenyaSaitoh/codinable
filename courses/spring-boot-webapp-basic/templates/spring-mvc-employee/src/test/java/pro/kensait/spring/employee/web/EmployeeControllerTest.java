@@ -54,7 +54,7 @@ class EmployeeControllerTest {
     @Test
     void showsEmployeeList() throws Exception {
         List<Employee> employees = List.of(
-                new Employee(1, "山田 太郎", "営業部", 320_000));
+                new Employee(10001, "Alice", "SALES", 500_000));
         when(employeeService.getEmployeesAll()).thenReturn(employees);
 
         mockMvc.perform(get("/viewList"))
@@ -67,9 +67,9 @@ class EmployeeControllerTest {
     @Test
     void confirmsValidEmployee() throws Exception {
         mockMvc.perform(post("/toConfirm")
-                        .param("employeeName", "新人 太郎")
-                        .param("departmentName", "開発部")
-                        .param("salary", "250000"))
+                        .param("employeeName", "Walter")
+                        .param("departmentName", "SALES")
+                        .param("salary", "230000"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("EmployeeUpdatePage"))
                 .andExpect(model().hasNoErrors());
@@ -78,10 +78,10 @@ class EmployeeControllerTest {
     // 「クエリパラメータで選択した社員の表示」の検証
     @Test
     void showsEmployeeSelectedByQueryParameter() throws Exception {
-        Employee employee = new Employee(1, "山田 太郎", "営業部", 320_000);
-        when(employeeService.getEmployee(1)).thenReturn(employee);
+        Employee employee = new Employee(10001, "Alice", "SALES", 500_000);
+        when(employeeService.getEmployee(10001)).thenReturn(employee);
 
-        mockMvc.perform(get("/employees/by-query").param("employeeId", "1"))
+        mockMvc.perform(get("/employees/by-query").param("employeeId", "10001"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("EmployeeDetailPage"))
                 .andExpect(model().attribute("employee", employee))
@@ -91,10 +91,10 @@ class EmployeeControllerTest {
     // 「パス変数で選択した社員の表示」の検証
     @Test
     void showsEmployeeSelectedByPathVariable() throws Exception {
-        Employee employee = new Employee(2, "佐藤 花子", "開発部", 450_000);
-        when(employeeService.getEmployee(2)).thenReturn(employee);
+        Employee employee = new Employee(10002, "Bob", "PLANNING", 450_000);
+        when(employeeService.getEmployee(10002)).thenReturn(employee);
 
-        mockMvc.perform(get("/employees/2"))
+        mockMvc.perform(get("/employees/10002"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("EmployeeDetailPage"))
                 .andExpect(model().attribute("employee", employee))
