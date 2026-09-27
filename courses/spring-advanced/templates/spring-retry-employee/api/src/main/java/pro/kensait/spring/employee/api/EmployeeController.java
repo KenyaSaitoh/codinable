@@ -41,7 +41,8 @@ public class EmployeeController {
     @GetMapping("/query_by_department")
     public List<Employee> byDepartment(@RequestParam int departmentId) {
         return store.findAll().stream()
-                .filter(employee -> employee.departmentId() == departmentId).toList();
+                .filter(employee -> Integer.valueOf(departmentId).equals(employee.departmentId()))
+                .toList();
     }
 
     // による月給の実行
