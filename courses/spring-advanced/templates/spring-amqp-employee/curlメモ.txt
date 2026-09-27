@@ -1,5 +1,5 @@
 ### sendEvent（社員登録イベントをRabbitMQに送信する）
-curl -i -X POST localhost:8093/events -H "Content-Type: application/json" -d {\"eventType\":\"EMPLOYEE_CREATED\",\"employeeId\":1,\"employeeName\":\"Alice\",\"occurredAt\":\"2026-04-01T09:00:00\"}
+curl -i -X POST localhost:8093/events -H "Content-Type: application/json" -d {\"eventType\":\"EMPLOYEE_CREATED\",\"employeeId\":10001,\"employeeName\":\"Alice\",\"occurredAt\":\"2026-04-01T09:00:00\"}
 
 ### 送信後は、同時起動したコンシューマ（spring-amqp-consumer、ポート8081）の
 ### コンソールログに受信メッセージが出力されることを確認する

@@ -43,7 +43,7 @@ curl -i localhost:8082/actuator/circuitbreakers
 ### rateLimitDemo（レートリミッター。10秒あたり3回まで）
 curl -i localhost:8082/ratelimit-demo
 # HTTP/1.1 200
-# {"employeeId":1,"employeeName":"Alice",...}
+# {"employeeId":10001,"employeeName":"Alice",...}
 
 ### rateLimitDemoを短時間に4回以上連打すると、超過分は429が返る
 curl -i localhost:8082/ratelimit-demo

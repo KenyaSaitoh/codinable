@@ -1,12 +1,12 @@
 ### 事前準備：メトリクスを発生させるため、社員APIを何回か呼び出しておく
-curl -i localhost:8080/employees/1
+curl -i localhost:8080/employees/10001
 curl -i localhost:8080/employees
 
 ### health（アプリケーションの稼働状態。ECSのヘルスチェック対象）
 ### カスタムのDatabaseHealthIndicatorが"database"コンポーネントとして表示される
 curl -i localhost:8080/actuator/health
 # HTTP/1.1 200
-# {"status":"UP","components":{"database":{"status":"UP","details":{"database":"HSQLDB","employeeCount":6}},"db":{"status":"UP",...},"diskSpace":{"status":"UP",...},"ping":{"status":"UP"}}}
+# {"status":"UP","components":{"database":{"status":"UP","details":{"database":"HSQLDB","employeeCount":16}},"db":{"status":"UP",...},"diskSpace":{"status":"UP",...},"ping":{"status":"UP"}}}
 
 ### health（HSQLDBサーバーを停止して再実行すると503でDOWNが返る）
 curl -i localhost:8080/actuator/health
