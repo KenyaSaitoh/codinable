@@ -46,10 +46,11 @@ export async function graphql<T>(query: string, variables: Record<string, unknow
   if (result.errors?.length) throw new Error(result.errors.map((error) => error.message).join('\n'));
   return result.data;
 }
-type GraphEmployee = Omit<Employee, 'departmentId' | 'departmentName'> & { department: { departmentId: number; departmentName: string } };
+type GraphEmployee = Omit<Employee, 'departmentId' | 'departmentName'> & { department: { departmentId: number; departmentName: string } | null };
 const fields = 'employeeId:id employeeName salary jobName entranceDate department { departmentId:id departmentName }';
 const flatten = (employee: GraphEmployee): Employee => ({ ...employee, employeeId: Number(employee.employeeId),
-  departmentId: Number(employee.department.departmentId), departmentName: employee.department.departmentName });
+  departmentId: employee.department ? Number(employee.department.departmentId) : null,
+  departmentName: employee.department?.departmentName ?? null });
 export async function employees(chapter: ChapterId, filter = '', value = ''): Promise<Employee[]> {
   if (chapter === 'graphql') {
     if (filter === 'id') {

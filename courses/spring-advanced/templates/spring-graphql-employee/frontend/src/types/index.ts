@@ -1,7 +1,7 @@
 export interface Employee {
   employeeId: number | null;
   employeeName: string;
-  departmentId: number;
+  departmentId: number | null;
   departmentName: string | null;
   jobName: string | null;
   salary: number;

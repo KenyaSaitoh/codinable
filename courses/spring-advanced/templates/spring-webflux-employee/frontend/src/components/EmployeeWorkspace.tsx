@@ -14,8 +14,8 @@ export default function EmployeeWorkspace({ chapter }: { chapter: Chapter }) {
   const [session, setSession] = useState<Session | null>(null);
   const [editing, setEditing] = useState<Employee | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [id, setId] = useState('1');
-  const [department, setDepartment] = useState('10');
+  const [id, setId] = useState('10001');
+  const [department, setDepartment] = useState('3');
   const [lower, setLower] = useState('0');
   const [upper, setUpper] = useState('500000');
   const task = useTask();
@@ -35,7 +35,7 @@ export default function EmployeeWorkspace({ chapter }: { chapter: Chapter }) {
         <button disabled={task.busy}>ID検索</button>
       </form>
       {['rest', 'graphql'].includes(chapter.id) && <form className="inline" onSubmit={(event) => { event.preventDefault(); void load('department', department); }}>
-        <label>検索する部署<select value={department} onChange={(event) => setDepartment(event.target.value)}><option value="10">営業部</option><option value="20">開発部</option><option value="30">総務部</option></select></label>
+        <label>検索する部署<select value={department} onChange={(event) => setDepartment(event.target.value)}><option value="1">PLANNING</option><option value="2">HR</option><option value="3">SALES</option><option value="4">PRODUCT</option></select></label>
         <button disabled={task.busy}>部署検索</button>
       </form>}
       {['rest', 'webflux'].includes(chapter.id) && <form className="inline" onSubmit={(event) => { event.preventDefault(); void load('salary', new URLSearchParams({ lowerSalary: lower, upperSalary: upper }).toString()); }}>

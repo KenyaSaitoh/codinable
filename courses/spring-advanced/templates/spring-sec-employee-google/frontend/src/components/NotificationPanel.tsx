@@ -5,9 +5,9 @@ export default function NotificationPanel() {
   const connection = useRef<Client | null>(null);
   const [connected, setConnected] = useState(false);
   const [status, setStatus] = useState('未接続');
-  const [employeeId, setEmployeeId] = useState(1);
+  const [employeeId, setEmployeeId] = useState(10001);
   const [employeeName, setEmployeeName] = useState('Alice');
-  const [message, setMessage] = useState('開発部へ異動しました');
+  const [message, setMessage] = useState('PRODUCTへ異動しました');
   const [notices, setNotices] = useState<Notice[]>([]);
   useEffect(() => () => { void connection.current?.deactivate(); }, []);
   function connect() {
