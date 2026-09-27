@@ -53,7 +53,7 @@ public class ResilienceController {
 
         // ビジネスロジックを呼び出す
         // （短時間に連打すると、上限超過分はRequestNotPermittedが送出される）
-        EmployeeTO employee = employeeClientService.getEmployee(1);
+        EmployeeTO employee = employeeClientService.getEmployee(10001);
 
         // ステータスが200でボディにEmployeeTOを保持するResponseEntityを生成し、返す
         return ResponseEntity.ok().body(employee);
