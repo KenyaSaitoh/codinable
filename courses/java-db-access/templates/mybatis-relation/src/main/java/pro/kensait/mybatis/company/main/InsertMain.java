@@ -27,8 +27,8 @@ public class InsertMain {
             department.setDepartmentId(3);
 
             // 保存対象のEmployeeインスタンスを生成する
-            Employee employee = new Employee(10021, "Steve", department, LocalDate.now(),
-                    JobType.CHIEF, 500000);
+            Employee employee = new Employee(10017, "Walter", department, LocalDate.now(),
+                    JobType.ASSOCIATE, 230000);
 
             // INSERT文を発行しコミットする
             mapper.insertEmployee(employee);

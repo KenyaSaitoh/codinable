@@ -34,10 +34,26 @@ class PayrollServiceTest {
             statement.executeUpdate("DROP PROCEDURE COUNT_EMPLOYEES IF EXISTS");
             statement.executeUpdate("DROP TABLE EMPLOYEE IF EXISTS");
             statement.executeUpdate("CREATE TABLE EMPLOYEE (EMPLOYEE_ID INTEGER PRIMARY KEY, "
-                    + "DEPARTMENT_ID INTEGER NOT NULL, EMPLOYEE_NAME VARCHAR(100) NOT NULL, "
+                    + "DEPARTMENT_ID INTEGER, EMPLOYEE_NAME VARCHAR(100) NOT NULL, "
                     + "SALARY DECIMAL(12, 2) NOT NULL CHECK (SALARY >= 0))");
-            statement.executeUpdate("INSERT INTO EMPLOYEE VALUES (101, 10, '佐藤 花子', 400000)");
-            statement.executeUpdate("INSERT INTO EMPLOYEE VALUES (102, 10, '鈴木 一郎', 380000)");
+            // 初期データ16人（部署ID 1=PLANNING / 2=HR / 3=SALES / 4=PRODUCT、Victorは未所属）
+            statement.executeUpdate("INSERT INTO EMPLOYEE VALUES "
+                    + "(10001, 3, 'Alice', 500000), "
+                    + "(10002, 1, 'Bob', 450000), "
+                    + "(10003, 2, 'Carol', 350000), "
+                    + "(10004, 3, 'Dave', 400000), "
+                    + "(10005, 3, 'Ellen', 300000), "
+                    + "(10006, 1, 'Frank', 250000), "
+                    + "(10007, 4, 'Ivan', 480000), "
+                    + "(10008, 2, 'Justin', 460000), "
+                    + "(10009, 4, 'Mallory', 420000), "
+                    + "(10010, 3, 'Matilda', 280000), "
+                    + "(10011, 4, 'Oscar', 320000), "
+                    + "(10012, 4, 'Pat', 240000), "
+                    + "(10013, 3, 'Peggy', 270000), "
+                    + "(10014, NULL, 'Victor', 220000), "
+                    + "(10015, 1, 'Steve', 380000), "
+                    + "(10016, 4, 'Trent', 310000)");
             statement.executeUpdate("CREATE PROCEDURE COUNT_EMPLOYEES(IN P_DEPARTMENT_ID INTEGER, "
                     + "OUT P_TOTAL INTEGER) READS SQL DATA BEGIN ATOMIC SET P_TOTAL = "
                     + "(SELECT COUNT(*) FROM EMPLOYEE WHERE DEPARTMENT_ID = P_DEPARTMENT_ID); END");
@@ -49,12 +65,12 @@ class PayrollServiceTest {
     @Test
     void commitsBatchAndCallsStoredProcedure() throws Exception {
         Map<Integer, BigDecimal> raises = new LinkedHashMap<>();
-        raises.put(101, new BigDecimal("10000"));
-        raises.put(102, new BigDecimal("20000"));
+        raises.put(10004, new BigDecimal("10000"));
+        raises.put(10015, new BigDecimal("20000"));
         assertArrayEquals(new int[] {1, 1}, service.applyRaises(raises));
-        assertEquals(new BigDecimal("410000.00"), salaryOf(101));
-        assertEquals(new BigDecimal("400000.00"), salaryOf(102));
-        assertEquals(2, service.countEmployees(10));
+        assertEquals(new BigDecimal("410000.00"), salaryOf(10004));
+        assertEquals(new BigDecimal("400000.00"), salaryOf(10015));
+        assertEquals(5, service.countEmployees(3));
         assertEquals(0, service.countEmployees(99));
     }
 
@@ -62,38 +78,38 @@ class PayrollServiceTest {
     @Test
     void rollsBackWholeBatchOnConstraintViolation() throws Exception {
         Map<Integer, BigDecimal> raises = new LinkedHashMap<>();
-        raises.put(101, new BigDecimal("10000"));
-        raises.put(102, new BigDecimal("-999999"));
+        raises.put(10004, new BigDecimal("10000"));
+        raises.put(10015, new BigDecimal("-999999"));
         assertThrows(SQLException.class, () -> service.applyRaises(raises));
-        assertEquals(new BigDecimal("400000.00"), salaryOf(101));
-        assertEquals(new BigDecimal("380000.00"), salaryOf(102));
+        assertEquals(new BigDecimal("400000.00"), salaryOf(10004));
+        assertEquals(new BigDecimal("380000.00"), salaryOf(10015));
     }
 
     // 「セーブポイントまでの限定ロールバック」の検証
     @Test
     void rollsBackOnlyToSavepoint() throws Exception {
-        service.updateNameButCancelSalary(101, "佐藤 華子", new BigDecimal("500000"));
-        assertEquals("佐藤 華子", nameOf(101));
-        assertEquals(new BigDecimal("400000.00"), salaryOf(101));
+        service.updateNameButCancelSalary(10004, "David", new BigDecimal("500000"));
+        assertEquals("David", nameOf(10004));
+        assertEquals(new BigDecimal("400000.00"), salaryOf(10004));
     }
 
     // 「社員未存在時の一括処理全体のロールバック」の検証
     @Test
     void rollsBackWholeBatchWhenEmployeeIsMissing() throws Exception {
         Map<Integer, BigDecimal> raises = new LinkedHashMap<>();
-        raises.put(101, new BigDecimal("10000"));
+        raises.put(10004, new BigDecimal("10000"));
         raises.put(999, new BigDecimal("20000"));
         assertThrows(SQLException.class, () -> service.applyRaises(raises));
-        assertEquals(new BigDecimal("400000.00"), salaryOf(101));
+        assertEquals(new BigDecimal("400000.00"), salaryOf(10004));
     }
 
     // 「月給更新失敗時の氏名更新のロールバック」の検証
     @Test
     void rollsBackNameWhenSalaryUpdateFails() throws Exception {
         assertThrows(SQLException.class, () -> service.updateNameButCancelSalary(
-                101, "取り消される名前", new BigDecimal("-1")));
-        assertEquals("佐藤 花子", nameOf(101));
-        assertEquals(new BigDecimal("400000.00"), salaryOf(101));
+                10004, "取り消される名前", new BigDecimal("-1")));
+        assertEquals("Dave", nameOf(10004));
+        assertEquals(new BigDecimal("400000.00"), salaryOf(10004));
     }
 
     // 「セーブポイント設定前の未存在社員の拒否」の検証

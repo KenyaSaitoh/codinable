@@ -32,15 +32,17 @@ class GeneratedKeyTest {
     void returnsTheGeneratedKeyAndCommitsTheRow() throws Exception {
         SampleDatabase.reset();
         var holder = SqlSessionHolder.getInstance();
-        var employee = new Employee(null, "Generated", "SALES", LocalDate.of(2026, 1, 1),
-                JobType.CHIEF, 380000, 0L);
+        var employee = new Employee(null, "Walter", "SALES", LocalDate.of(2018, 4, 1),
+                JobType.ASSOCIATE, 230000, 0L);
         try (var session = holder.getSqlSession()) {
             session.getMapper(EmployeeMapper.class).insertEmployeeWithKeyGen(employee);
             assertNotNull(employee.getEmployeeId());
+            // 初期データ16人（10001〜10016）の次から採番される
+            assertEquals(10017, employee.getEmployeeId());
             session.commit();
         }
         try (var session = holder.getSqlSession()) {
-            assertEquals("Generated", session.getMapper(EmployeeMapper.class)
+            assertEquals("Walter", session.getMapper(EmployeeMapper.class)
                     .selectEmployee(employee.getEmployeeId()).getEmployeeName());
         }
     }

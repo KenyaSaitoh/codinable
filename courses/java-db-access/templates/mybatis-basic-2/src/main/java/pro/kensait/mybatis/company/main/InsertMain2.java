@@ -25,8 +25,8 @@ public class InsertMain2 {
             // 保存対象のEmployeeを生成する
             Calendar cal = Calendar.getInstance();
             cal.set(2017, 11, 1);
-            Employee param = new Employee("Trent", "PRODUCT", LocalDate.now(),
-                    JobType.CHIEF, 310000, 0L);
+            Employee param = new Employee("Wendy", "SALES", LocalDate.now(),
+                    JobType.ASSOCIATE, 230000, 0L);
 
             // INSERT文を発行しコミットする
             mapper.insertEmployeeWithKeyGen(param);

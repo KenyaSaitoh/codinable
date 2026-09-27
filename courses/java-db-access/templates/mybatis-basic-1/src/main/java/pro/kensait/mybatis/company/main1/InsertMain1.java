@@ -15,7 +15,7 @@ public class InsertMain1 {
         try (SqlSession sqlSession = SqlSessionHolder.getInstance().getSqlSession()) {
 
             // 保存対象のEmployeeを生成する
-            Employee param = new Employee(10021, "Steve", "PLANNING", 380000);
+            Employee param = new Employee(10017, "Walter", "SALES", 230000);
 
             // INSERT文を発行しコミットする
             sqlSession.insert("insertEmployee", param);
