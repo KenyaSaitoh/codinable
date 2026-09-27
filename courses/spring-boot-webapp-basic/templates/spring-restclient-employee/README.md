@@ -5,7 +5,7 @@
 
 | 場所 | 中身 | 動かし方 |
 |---|---|---|
-| ルート（`src/`） | 確認用の社員 API（Spring Boot、ポート 8095、DB 不要でメモリ内に社員 6 件） | 「実行」ボタン（`gradle:bootRun`） |
+| ルート（`src/`） | 確認用の社員 API（Spring Boot、ポート 8095、DB 不要でメモリ内に社員 16 件） | 「実行」ボタン（`gradle:bootRun`） |
 | `client/` | RestClient で API を呼ぶ Java コンソール（`Main_Employee`）。処理が終わると終了する | ターミナル |
 
 講義の中心は `client/src/main/java/pro/kensait/spring/employee/client/Main_Employee.java` です。

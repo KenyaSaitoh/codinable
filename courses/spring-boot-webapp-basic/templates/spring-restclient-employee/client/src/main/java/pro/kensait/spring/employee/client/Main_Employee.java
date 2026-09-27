@@ -28,9 +28,9 @@ public class Main_Employee {
     // 社員の取得
     private static void readEmployees(RestClient client) {
         // body()はJSONをDTOへ変換するtoEntity()ならステータスとヘッダーも参照できる
-        EmployeeTO employee = client.get().uri("/employees/1").retrieve().body(EmployeeTO.class);
+        EmployeeTO employee = client.get().uri("/employees/10001").retrieve().body(EmployeeTO.class);
         System.out.println("Employee => " + employee);
-        ResponseEntity<EmployeeTO> response = client.get().uri("/employees/1")
+        ResponseEntity<EmployeeTO> response = client.get().uri("/employees/10001")
                 .retrieve().toEntity(EmployeeTO.class);
         System.out.println("Status => " + response.getStatusCode());
         System.out.println("Headers => " + response.getHeaders());
@@ -44,7 +44,7 @@ public class Main_Employee {
     private static void searchEmployees(RestClient client) {
         List<EmployeeTO> department = client.get()
                 .uri(builder -> builder.path("/employees/query_by_department")
-                        .queryParam("departmentId", 10).build())
+                        .queryParam("departmentId", 3).build())
                 .retrieve().body(new ParameterizedTypeReference<List<EmployeeTO>>() { });
         System.out.println("Department => " + department);
         List<EmployeeTO> salary = client.get()
@@ -57,8 +57,8 @@ public class Main_Employee {
     // updatedeleteの生成
     private static void createUpdateDelete(RestClient client) {
         // 既存社員には書き込まず、この実行で採番された社員だけを更新・削除する
-        EmployeeTO draft = new EmployeeTO(null, "CLI sample", 10, null,
-                "Sales", 300000, LocalDate.of(2021, 4, 1));
+        EmployeeTO draft = new EmployeeTO(null, "Walter", 3, null,
+                "ASSOCIATE", 230000, LocalDate.of(2018, 4, 1));
         ResponseEntity<EmployeeTO> created = client.post().uri("/employees")
                 .contentType(MediaType.APPLICATION_JSON).body(draft)
                 .retrieve().toEntity(EmployeeTO.class);
@@ -66,8 +66,8 @@ public class Main_Employee {
         System.out.println("Created => " + created.getStatusCode());
         System.out.println("Location => " + created.getHeaders().getLocation());
         try {
-            EmployeeTO update = new EmployeeTO(id, "CLI sample updated", 20, null,
-                    "Engineer", 460000, LocalDate.of(2021, 4, 1));
+            EmployeeTO update = new EmployeeTO(id, "Walter", 4, null,
+                    "CHIEF", 260000, LocalDate.of(2018, 4, 1));
             EmployeeTO updated = client.put().uri("/employees/{id}", id)
                     .contentType(MediaType.APPLICATION_JSON).body(update)
                     .retrieve().body(EmployeeTO.class);

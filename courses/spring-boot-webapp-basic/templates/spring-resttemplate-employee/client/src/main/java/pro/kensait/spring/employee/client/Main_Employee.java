@@ -33,10 +33,10 @@ public class Main_Employee {
     // 社員の取得
     private static void readEmployees(RestTemplate client, String baseUrl) {
         // getForObject()はDTO、getForEntity()はステータス・ヘッダー付きの応答を返す
-        EmployeeTO employee = client.getForObject(baseUrl + "/employees/1", EmployeeTO.class);
+        EmployeeTO employee = client.getForObject(baseUrl + "/employees/10001", EmployeeTO.class);
         System.out.println("Employee => " + employee);
         ResponseEntity<EmployeeTO> response = client.getForEntity(
-                baseUrl + "/employees/1", EmployeeTO.class);
+                baseUrl + "/employees/10001", EmployeeTO.class);
         System.out.println("Status => " + response.getStatusCode());
         System.out.println("Headers => " + response.getHeaders());
         EmployeeTO[] array = client.getForObject(baseUrl + "/employees", EmployeeTO[].class);
@@ -50,7 +50,7 @@ public class Main_Employee {
     // 社員の検索
     private static void searchEmployees(RestTemplate client, String baseUrl) {
         String departmentUrl = UriComponentsBuilder.fromUriString(baseUrl)
-                .path("/employees/query_by_department").queryParam("departmentId", 10).toUriString();
+                .path("/employees/query_by_department").queryParam("departmentId", 3).toUriString();
         ResponseEntity<List<EmployeeTO>> department = client.exchange(departmentUrl,
                 HttpMethod.GET, null, new ParameterizedTypeReference<List<EmployeeTO>>() { });
         System.out.println("Department => " + department.getBody());
@@ -66,16 +66,16 @@ public class Main_Employee {
     private static void createUpdateDelete(RestTemplate client, String baseUrl) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        EmployeeTO draft = new EmployeeTO(null, "CLI sample", 10, null,
-                "Sales", 300000, LocalDate.of(2021, 4, 1));
+        EmployeeTO draft = new EmployeeTO(null, "Walter", 3, null,
+                "ASSOCIATE", 230000, LocalDate.of(2018, 4, 1));
         ResponseEntity<EmployeeTO> created = client.postForEntity(baseUrl + "/employees",
                 new HttpEntity<>(draft, headers), EmployeeTO.class);
         int id = Objects.requireNonNull(Objects.requireNonNull(created.getBody()).employeeId());
         System.out.println("Created => " + created.getStatusCode());
         System.out.println("Location => " + created.getHeaders().getLocation());
         try {
-            EmployeeTO update = new EmployeeTO(id, "CLI sample updated", 20, null,
-                    "Engineer", 460000, LocalDate.of(2021, 4, 1));
+            EmployeeTO update = new EmployeeTO(id, "Walter", 4, null,
+                    "CHIEF", 260000, LocalDate.of(2018, 4, 1));
             client.put(baseUrl + "/employees/{id}", new HttpEntity<>(update, headers), id);
             System.out.println("Updated => "
                     + client.getForObject(baseUrl + "/employees/{id}", EmployeeTO.class, id));

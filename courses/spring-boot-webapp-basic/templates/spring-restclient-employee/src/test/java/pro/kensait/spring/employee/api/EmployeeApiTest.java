@@ -39,22 +39,22 @@ class EmployeeApiTest {
     // 「サーバー採番IDを使うCRUDとHTTP応答」の検証
     @Test
     void crudUsesServerIdsAndReturnsExpectedStatusAndLocation() {
-        Employee original = client.get().uri("/employees/1").retrieve().body(Employee.class);
+        Employee original = client.get().uri("/employees/10001").retrieve().body(Employee.class);
         ResponseEntity<Employee> response = client.post().uri("/employees")
-                .body(input("New employee", 10, 300000)).retrieve().toEntity(Employee.class);
+                .body(input("Walter", 3, 230000)).retrieve().toEntity(Employee.class);
         assertEquals(201, response.getStatusCode().value());
         int id = response.getBody().employeeId();
-        assertNotEquals(1, id);
+        assertNotEquals(10001, id);
         assertEquals("/employees/" + id, response.getHeaders().getLocation().toString());
         try {
             Employee updated = client.put().uri("/employees/{id}", id)
-                    .body(input("Updated employee", 20, 460000)).retrieve().body(Employee.class);
+                    .body(input("Walter", 4, 260000)).retrieve().body(Employee.class);
             assertEquals(id, updated.employeeId());
-            assertEquals("Engineering", updated.departmentName());
-            assertEquals(460000, updated.salary());
+            assertEquals("PRODUCT", updated.departmentName());
+            assertEquals(260000, updated.salary());
             assertEquals(updated, client.get().uri("/employees/{id}", id)
                     .retrieve().body(Employee.class));
-            assertEquals(original, client.get().uri("/employees/1").retrieve().body(Employee.class));
+            assertEquals(original, client.get().uri("/employees/10001").retrieve().body(Employee.class));
         } finally {
             assertEquals(204, client.delete().uri("/employees/{id}", id)
                     .retrieve().toBodilessEntity().getStatusCode().value());
@@ -67,9 +67,10 @@ class EmployeeApiTest {
     // 「部署と境界値を含む月給範囲による検索」の検証
     @Test
     void searchesByDepartmentAndInclusiveSalaryRange() {
-        assertEquals(List.of(1, 4), list("/employees/query_by_department?departmentId=10")
+        assertEquals(List.of(10001, 10004, 10005, 10010, 10013),
+                list("/employees/query_by_department?departmentId=3")
                 .stream().map(Employee::employeeId).toList());
-        assertEquals(List.of(1, 2, 3), list(
+        assertEquals(List.of(10003, 10004, 10005, 10011, 10015, 10016), list(
                 "/employees/query_by_salary?lowerSalary=300000&upperSalary=400000")
                 .stream().map(Employee::employeeId).toList());
         assertTrue(list("/employees/query_by_department?departmentId=99").isEmpty());
@@ -82,8 +83,8 @@ class EmployeeApiTest {
     @Test
     void rejectsInvalidInputWithoutChangingStoredEmployees() {
         List<Employee> before = list("/employees");
-        for (Employee invalid : List.of(input(" ", 10, 300000), input("Sample", 99, 300000),
-                input("Sample", 10, -1), input("Sample", null, 300000), input("Sample", 10, null))) {
+        for (Employee invalid : List.of(input(" ", 3, 230000), input("Walter", 99, 230000),
+                input("Walter", 3, -1), input("Walter", null, 230000), input("Walter", 3, null))) {
             assertEquals(400, assertThrows(RestClientResponseException.class,
                     () -> client.post().uri("/employees").body(invalid)
                             .retrieve().body(Employee.class)).getStatusCode().value());
@@ -95,7 +96,7 @@ class EmployeeApiTest {
     @Test
     void missingEmployeeCannotBeUpdatedOrDeleted() {
         assertEquals(404, assertThrows(RestClientResponseException.class,
-                () -> client.put().uri("/employees/999999").body(input("Sample", 10, 300000))
+                () -> client.put().uri("/employees/999999").body(input("Walter", 3, 230000))
                         .retrieve().body(Employee.class)).getStatusCode().value());
         assertEquals(404, assertThrows(RestClientResponseException.class,
                 () -> client.delete().uri("/employees/999999").retrieve().toBodilessEntity())
@@ -105,8 +106,8 @@ class EmployeeApiTest {
     // 入力の実行
     private Employee input(String name, Integer departmentId, Integer salary) {
         // 入力のIDや部署名で既存データを上書きできないことも確認する
-        return new Employee(1, name, departmentId, "Untrusted department", "Staff", salary,
-                LocalDate.of(2021, 4, 1));
+        return new Employee(10001, name, departmentId, "Untrusted department", "ASSOCIATE", salary,
+                LocalDate.of(2018, 4, 1));
     }
 
     // データ一覧の取得

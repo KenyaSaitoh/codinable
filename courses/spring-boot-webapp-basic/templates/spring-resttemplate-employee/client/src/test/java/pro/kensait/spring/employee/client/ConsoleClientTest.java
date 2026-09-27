@@ -25,7 +25,7 @@ class ConsoleClientTest {
     private String baseUrl;
     private final List<String> requests = new CopyOnWriteArrayList<>();
     private volatile int activeId;
-    private int nextId = 7;
+    private int nextId = 10017;
     private volatile boolean failRead;
     private volatile boolean failUpdate;
     private volatile boolean failDelete;
@@ -54,16 +54,16 @@ class ConsoleClientTest {
         Main_Employee.main(new String[] {baseUrl + "/"});
         assertEquals(0, activeId);
         assertEquals(2, requests.stream().filter("POST /employees"::equals).count());
-        for (int id : new int[] {7, 8}) {
+        for (int id : new int[] {10017, 10018}) {
             assertTrue(requests.contains("PUT /employees/" + id));
             assertTrue(requests.contains("DELETE /employees/" + id));
             assertTrue(requests.contains("GET /employees/" + id));
         }
-        assertFalse(requests.contains("PUT /employees/1"));
-        assertFalse(requests.contains("DELETE /employees/6"));
-        assertTrue(updateBody.contains("\"salary\":460000"));
-        assertTrue(updateBody.contains("\"departmentId\":20"));
-        assertTrue(requests.contains("GET /employees/query_by_department?departmentId=10"));
+        assertFalse(requests.contains("PUT /employees/10001"));
+        assertFalse(requests.contains("DELETE /employees/10016"));
+        assertTrue(updateBody.contains("\"salary\":260000"));
+        assertTrue(updateBody.contains("\"departmentId\":4"));
+        assertTrue(requests.contains("GET /employees/query_by_department?departmentId=3"));
         assertTrue(requests.contains(
                 "GET /employees/query_by_salary?lowerSalary=300000&upperSalary=400000"));
     }
@@ -81,8 +81,8 @@ class ConsoleClientTest {
     void cleansUpCreatedEmployeeIfUpdateFails() {
         failUpdate = true;
         assertThrows(Exception.class, () -> Main_Employee.main(new String[] {baseUrl}));
-        assertTrue(requests.contains("PUT /employees/7"));
-        assertTrue(requests.contains("DELETE /employees/7"));
+        assertTrue(requests.contains("PUT /employees/10017"));
+        assertTrue(requests.contains("DELETE /employees/10017"));
         assertEquals(0, activeId);
     }
 
@@ -91,8 +91,8 @@ class ConsoleClientTest {
     void reportsCleanupFailure() {
         failDelete = true;
         assertThrows(Exception.class, () -> Main_Employee.main(new String[] {baseUrl}));
-        assertTrue(requests.contains("DELETE /employees/7"));
-        assertEquals(7, activeId);
+        assertTrue(requests.contains("DELETE /employees/10017"));
+        assertEquals(10017, activeId);
     }
 
     // 「404だけを想定した未存在社員として扱う制御」の検証
@@ -138,9 +138,9 @@ class ConsoleClientTest {
         if (failRead) {
             respond(exchange, 503, "{\"error\":\"unavailable\"}");
         } else if ("/employees".equals(path) || path.startsWith("/employees/query_by_")) {
-            respond(exchange, 200, "[" + employee(1) + "]");
-        } else if ("/employees/1".equals(path)) {
-            respond(exchange, 200, employee(1));
+            respond(exchange, 200, "[" + employee(10001) + "]");
+        } else if ("/employees/10001".equals(path)) {
+            respond(exchange, 200, employee(10001));
         } else if (activeId != 0 && path.equals("/employees/" + activeId)) {
             respond(exchange, 200, employee(activeId));
         } else {
@@ -150,9 +150,9 @@ class ConsoleClientTest {
 
     // 引数は@Argumentによりスキーマの引数「id」からバインドされる）
     private String employee(int id) {
-        return "{\"employeeId\":" + id + ",\"employeeName\":\"Sample\","
-                + "\"departmentId\":10,\"departmentName\":\"Sales\",\"jobName\":\"Sales\","
-                + "\"salary\":300000,\"entranceDate\":\"2021-04-01\"}";
+        return "{\"employeeId\":" + id + ",\"employeeName\":\"Alice\","
+                + "\"departmentId\":3,\"departmentName\":\"SALES\",\"jobName\":\"MANAGER\","
+                + "\"salary\":500000,\"entranceDate\":\"2012-04-01\"}";
     }
 
     // respondの実行
