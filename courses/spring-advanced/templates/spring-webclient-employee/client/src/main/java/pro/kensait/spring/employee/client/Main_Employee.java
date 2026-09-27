@@ -32,7 +32,7 @@ public class Main_Employee {
     // 社員の取得
     private static void readEmployees(WebClient client) {
         // block()はコンソールの終了前に結果を確認するための待機WebFlux処理内では使わない
-        EmployeeTO employee = client.get().uri("/employees/1").retrieve()
+        EmployeeTO employee = client.get().uri("/employees/10001").retrieve()
                 .bodyToMono(EmployeeTO.class).block(TIMEOUT);
         System.out.println("Employee => " + employee);
         List<EmployeeTO> employees = client.get().uri("/employees").retrieve()
@@ -44,7 +44,7 @@ public class Main_Employee {
     private static void searchEmployees(WebClient client) {
         List<EmployeeTO> department = client.get()
                 .uri(builder -> builder.path("/employees/query_by_department")
-                        .queryParam("departmentId", 10).build())
+                        .queryParam("departmentId", 3).build())
                 .retrieve().bodyToFlux(EmployeeTO.class).collectList().block(TIMEOUT);
         System.out.println("Department => " + department);
         List<EmployeeTO> salary = client.get()
@@ -56,8 +56,8 @@ public class Main_Employee {
 
     // updatedeleteの生成
     private static void createUpdateDelete(WebClient client) {
-        EmployeeTO draft = new EmployeeTO(null, "CLI sample", 10, null,
-                "Sales", 300000, LocalDate.of(2021, 4, 1));
+        EmployeeTO draft = new EmployeeTO(null, "Walter", 3, null,
+                "ASSOCIATE", 230000, LocalDate.of(2018, 4, 1));
         ResponseEntity<EmployeeTO> created = Objects.requireNonNull(client.post().uri("/employees")
                 .contentType(MediaType.APPLICATION_JSON).bodyValue(draft)
                 .retrieve().toEntity(EmployeeTO.class).block(TIMEOUT));
@@ -65,8 +65,8 @@ public class Main_Employee {
         System.out.println("Created => " + created.getStatusCode());
         System.out.println("Location => " + created.getHeaders().getLocation());
         try {
-            EmployeeTO update = new EmployeeTO(id, "CLI sample updated", 20, null,
-                    "Engineer", 460000, LocalDate.of(2021, 4, 1));
+            EmployeeTO update = new EmployeeTO(id, "Walter", 1, null,
+                    "ASSOCIATE", 250000, LocalDate.of(2018, 4, 1));
             EmployeeTO updated = client.put().uri("/employees/{id}", id)
                     .contentType(MediaType.APPLICATION_JSON).bodyValue(update)
                     .retrieve().bodyToMono(EmployeeTO.class).block(TIMEOUT);
@@ -106,7 +106,7 @@ public class Main_Employee {
 
     // asyncの取得
     private static void readAsync(WebClient client) throws Exception {
-        Mono<EmployeeTO> request = client.get().uri("/employees/1").retrieve()
+        Mono<EmployeeTO> request = client.get().uri("/employees/10001").retrieve()
                 .bodyToMono(EmployeeTO.class).timeout(TIMEOUT);
         CompletableFuture<EmployeeTO> result = new CompletableFuture<>();
         Disposable subscription = request.subscribe(result::complete, result::completeExceptionally);
