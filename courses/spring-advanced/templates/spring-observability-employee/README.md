@@ -7,14 +7,14 @@
 
 ## DB について（Codinable での変更点）
 
-講座では共有の HSQLDB サーバー（localhost:9001）を使います。Codinable では HSQLDB サーバーを使わず、**インメモリ DB**（`jdbc:hsqldb:mem:testdb`）で動かします。起動のたびに `src/main/resources/schema.sql`・`data.sql`（`sql/hsqldb/` と同じ内容）が流れ、社員 6 件・部署 3 件から始まります。
+講座では共有の HSQLDB サーバー（localhost:9001）を使います。Codinable では HSQLDB サーバーを使わず、**インメモリ DB**（`jdbc:hsqldb:mem:testdb`）で動かします。起動のたびに `src/main/resources/schema.sql`・`data.sql`（`sql/hsqldb/` と同じ内容）が流れ、社員 16 件・部署 4 件から始まります。
 
 ## 動かし方
 
 実行対象 `gradle:bootRun` で「実行」を押し、ターミナルで確かめます（ポート 8080）。
 
 ```bash
-curl -i http://localhost:8080/employees/1
+curl -i http://localhost:8080/employees/10001
 curl -i http://localhost:8080/employees
 curl -i http://localhost:8080/actuator/metrics/employee.get
 curl -i http://localhost:8080/actuator/metrics/employee.get-all

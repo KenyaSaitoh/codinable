@@ -4,7 +4,7 @@
 
 ## DB について（Codinable での変更点）
 
-講座では共有の HSQLDB サーバー（localhost:9001）を使います。Codinable では HSQLDB サーバーを使わず、**インメモリ DB**（`jdbc:hsqldb:mem:testdb`）で動かします。起動のたびに `src/main/resources/schema.sql`・`data.sql` が流れ、社員 6 件・部署 3 件から始まります（`application.yml` の `spring.datasource.url` と `spring.sql.init.mode` を変更してあります）。
+講座では共有の HSQLDB サーバー（localhost:9001）を使います。Codinable では HSQLDB サーバーを使わず、**インメモリ DB**（`jdbc:hsqldb:mem:testdb`）で動かします。起動のたびに `src/main/resources/schema.sql`・`data.sql` が流れ、社員 16 件・部署 4 件から始まります（`application.yml` の `spring.datasource.url` と `spring.sql.init.mode` を変更してあります）。
 
 `sql/hsqldb/` の SQL は講座の HSQLDB サーバー用の初期化スクリプトです。
 
@@ -13,7 +13,7 @@
 実行対象 `gradle:bootRun` で「実行」を押し、ターミナルで確かめます（ポート 8080）。
 
 ```bash
-curl -i http://localhost:8080/employees/1
+curl -i http://localhost:8080/employees/10001
 curl -i http://localhost:8080/actuator/health
 curl -i http://localhost:8080/actuator/info
 curl -i http://localhost:8080/actuator/metrics/employee.get.count

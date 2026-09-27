@@ -9,7 +9,7 @@ Spring for GraphQL の Query／Mutation による社員 CRUD です。GET では
 
 ## DB について（Codinable での変更点）
 
-講座では HSQLDB サーバー、または `--spring.profiles.active=demo` によるインメモリ DB を使います。Codinable の実行ボタンでは引数を渡せないため、`application.yml` で **demo を既定のプロファイル**にしてあります。起動のたびにプロセス内の HSQLDB に `src/main/resources/demo/schema.sql`・`data.sql` が流れ、社員 6 件・部署 3 件から始まります。
+講座では HSQLDB サーバー、または `--spring.profiles.active=demo` によるインメモリ DB を使います。Codinable の実行ボタンでは引数を渡せないため、`application.yml` で **demo を既定のプロファイル**にしてあります。起動のたびにプロセス内の HSQLDB に `src/main/resources/demo/schema.sql`・`data.sql` が流れ、社員 16 件・部署 4 件から始まります。
 
 `sql/hsqldb/` の SQL は講座の HSQLDB サーバー用の初期化スクリプトです（既存の EMPLOYEE／DEPARTMENT を作り直します）。
 

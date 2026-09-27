@@ -28,7 +28,7 @@ curl で確かめる場合（bash では JSON を単一引用符で囲みます�
 
 ```bash
 curl -i -X POST http://localhost:8093/events -H 'Content-Type: application/json' \
-  -d '{"eventType":"EMPLOYEE_CREATED","employeeId":1,"employeeName":"Alice","occurredAt":"2026-04-01T09:00:00"}'
+  -d '{"eventType":"EMPLOYEE_CREATED","employeeId":10001,"employeeName":"Alice","occurredAt":"2026-04-01T09:00:00"}'
 curl -i http://localhost:8094/events
 ```
 

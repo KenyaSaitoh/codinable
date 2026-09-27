@@ -18,13 +18,13 @@ Resilience4j で、呼び出し先 API の障害に対するサーキットブ�
 2. React 画面の用意ができると、プレビューに `http://localhost:5173/` が開きます。ターミナルから呼び出す場合は次のようにします。
 
    ```bash
-   curl -i http://localhost:8082/resilience-demo      # 社員 6 件と "fallback":false
+   curl -i http://localhost:8082/resilience-demo      # 社員 16 件と "fallback":false
    curl -i http://localhost:8082/resilience-status    # 回路の状態（最初は CLOSED）
    ```
 
 ## 障害と復旧の確かめ方
 
-1. API 稼働中に `/resilience-demo` を呼び、社員 6 件と `fallback: false` を確かめます。
+1. API 稼働中に `/resilience-demo` を呼び、社員 16 件と `fallback: false` を確かめます。
 2. 出力タブの行の右端にある「api停止」を押し、API を止めます。
 3. `/resilience-demo` を 5 回以上呼ぶと代替応答（`fallback: true`）が返り、`/resilience-status` が `OPEN` になります。OPEN の間は API を呼ばずにすぐ代替応答を返します。
 4. 「api起動」を押し、API をもう一度起動します。OPEN から 10 秒以上たってから 3 回成功すると `CLOSED` に戻ります。

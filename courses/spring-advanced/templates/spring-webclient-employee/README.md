@@ -9,7 +9,7 @@ WebClient の Mono／Flux と購読を学ぶ Java コンソール（`client/`）
 
 ## 動かし方
 
-1. 実行対象 `gradle:bootRun` で「実行」を押し、API を起動します。`http://127.0.0.1:8087/employees` で初期社員 6 件が返ります。
+1. 実行対象 `gradle:bootRun` で「実行」を押し、API を起動します。`http://127.0.0.1:8087/employees` で初期社員 16 件が返ります。
 2. ターミナルでクライアントを実行します。
 
    ```bash

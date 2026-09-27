@@ -13,7 +13,7 @@ Mono／Flux による社員 CRUD と給与範囲検索、`GET /employees/stream`
 2. ターミナルで確かめる場合:
 
    ```bash
-   curl -i http://localhost:8089/employees/1
+   curl -i http://localhost:8089/employees/10001
    curl -i "http://localhost:8089/employees/query_by_salary?lowerSalary=300000&upperSalary=400000"
    curl -N http://localhost:8089/employees/stream
    ```
