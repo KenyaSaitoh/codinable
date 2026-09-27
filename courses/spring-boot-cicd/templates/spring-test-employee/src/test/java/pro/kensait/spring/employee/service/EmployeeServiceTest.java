@@ -38,12 +38,12 @@ class EmployeeServiceTest {
     // 社員の実行
     private Employee employee() {
         Employee employee = new Employee();
-        employee.setEmployeeId(11);
-        employee.setEmployeeName("Alice");
-        employee.setDepartmentId(1);
-        employee.setJobId(2);
-        employee.setSalary(300000);
-        employee.setEntranceDate(LocalDate.of(2026, 4, 1));
+        employee.setEmployeeId(10017);
+        employee.setEmployeeName("Walter");
+        employee.setDepartmentId(3);
+        employee.setJobId(1);
+        employee.setSalary(230000);
+        employee.setEntranceDate(LocalDate.of(2018, 4, 1));
         return employee;
     }
 
@@ -54,7 +54,7 @@ class EmployeeServiceTest {
         var pageable = PageRequest.of(1, 5, Sort.by("employeeId"));
         when(employees.search(criteria, pageable)).thenReturn(new PageImpl<>(List.of(employee()), pageable, 6));
         EmployeePage result = service.search(criteria, 2);
-        assertThat(result.content()).extracting(Employee::getEmployeeId).containsExactly(11);
+        assertThat(result.content()).extracting(Employee::getEmployeeId).containsExactly(10017);
         assertThat(result.totalPages()).isEqualTo(2);
         assertThat(result.totalElements()).isEqualTo(6);
     }
@@ -84,11 +84,11 @@ class EmployeeServiceTest {
         Employee input = employee();
         input.setEmployeeId(null);
         when(employees.save(input)).thenAnswer(invocation -> {
-            input.setEmployeeId(11);
+            input.setEmployeeId(10017);
             return input;
         });
         var created = service.create(input);
-        assertThat(created.getEmployeeCode()).isEqualTo("E0011");
+        assertThat(created.getEmployeeCode()).isEqualTo("E10017");
         assertThat(created.getStatus()).isEqualTo(Employee.ACTIVE);
         assertThat(created.getVersion()).isZero();
     }
@@ -97,14 +97,14 @@ class EmployeeServiceTest {
     @Test
     void updatesFieldsAndIncrementsVersion() {
         Employee stored = employee();
-        when(employees.findById(11)).thenReturn(Optional.of(stored));
+        when(employees.findById(10017)).thenReturn(Optional.of(stored));
         when(employees.save(stored)).thenReturn(stored);
         Employee input = employee();
-        input.setEmployeeName("Bob");
-        input.setSalary(400000);
-        var updated = service.update(11, input, 0);
-        assertThat(updated.getEmployeeName()).isEqualTo("Bob");
-        assertThat(updated.getSalary()).isEqualTo(400000);
+        input.setEmployeeName("Wendy");
+        input.setSalary(250000);
+        var updated = service.update(10017, input, 0);
+        assertThat(updated.getEmployeeName()).isEqualTo("Wendy");
+        assertThat(updated.getSalary()).isEqualTo(250000);
         assertThat(updated.getVersion()).isEqualTo(1);
     }
 
@@ -113,9 +113,9 @@ class EmployeeServiceTest {
     void rejectsStaleOrMissingVersionWithoutSaving() {
         Employee stored = employee();
         stored.setVersion(1);
-        when(employees.findById(11)).thenReturn(Optional.of(stored));
-        assertThatThrownBy(() -> service.update(11, employee(), 0)).isInstanceOf(ConflictException.class);
-        assertThatThrownBy(() -> service.update(11, employee(), null)).isInstanceOf(ConflictException.class);
+        when(employees.findById(10017)).thenReturn(Optional.of(stored));
+        assertThatThrownBy(() -> service.update(10017, employee(), 0)).isInstanceOf(ConflictException.class);
+        assertThatThrownBy(() -> service.update(10017, employee(), null)).isInstanceOf(ConflictException.class);
         verify(employees, never()).save(any());
     }
 
@@ -123,8 +123,8 @@ class EmployeeServiceTest {
     @Test
     void logicallyDeletesEmployee() {
         Employee stored = employee();
-        when(employees.findById(11)).thenReturn(Optional.of(stored));
-        service.delete(11);
+        when(employees.findById(10017)).thenReturn(Optional.of(stored));
+        service.delete(10017);
         assertThat(stored.getStatus()).isEqualTo(Employee.DELETED);
         verify(employees).save(stored);
         verify(employees, never()).deleteById(any());
@@ -136,7 +136,7 @@ class EmployeeServiceTest {
         assertThatThrownBy(() -> service.get(999)).isInstanceOf(NotFoundException.class);
         Employee deleted = employee();
         deleted.setStatus(Employee.DELETED);
-        when(employees.findById(11)).thenReturn(Optional.of(deleted));
-        assertThatThrownBy(() -> service.get(11)).isInstanceOf(NotFoundException.class);
+        when(employees.findById(10017)).thenReturn(Optional.of(deleted));
+        assertThatThrownBy(() -> service.get(10017)).isInstanceOf(NotFoundException.class);
     }
 }

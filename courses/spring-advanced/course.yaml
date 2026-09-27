@@ -359,13 +359,13 @@ exercises:
       ja: >-
         「実行」で社員 API（8080）がインメモリ DB で起動します。プレビューやターミナルの curl で
         /actuator/health（カスタムの database コンポーネント）、/actuator/info、
-        /actuator/metrics/employee.get.count を開き、/employees/1 を呼ぶ前後でカウンターの
+        /actuator/metrics/employee.get.count を開き、/employees/10001 を呼ぶ前後でカウンターの
         変化を確かめます。/actuator/loggers でログレベルを再起動なしで変えられます。
       en: >-
         Run starts the employee API (port 8080) on an in-memory database. Open
         /actuator/health (with the custom database component), /actuator/info and
         /actuator/metrics/employee.get.count in the preview or with curl, and compare the
-        counter before and after calling /employees/1. /actuator/loggers changes the log level
+        counter before and after calling /employees/10001. /actuator/loggers changes the log level
         without a restart.
     openFiles:
       - src/main/resources/application.yml
@@ -375,20 +375,20 @@ exercises:
     lesson: '9.1 Springの観測・監視機能'
     runtime: spring
     run: 'gradle:bootRun'
-    preview: '/employees/1'
+    preview: '/employees/10001'
     suggestName: spring-observability-employee
     names:
       ja: Observationでメトリクス・トレース・ログをつなぐ
       en: Tie metrics, traces and logs together with Observation
     descriptions:
       ja: >-
-        「実行」で社員 API（8080）がインメモリ DB で起動します。/employees/1 を呼ぶと、出力のログに
+        「実行」で社員 API（8080）がインメモリ DB で起動します。/employees/10001 を呼ぶと、出力のログに
         [spring-observability-employee,traceId,spanId] が付き、/actuator/metrics/employee.get に
         タイマーが現れます。トレースを画面で見るには Jaeger（同梱なし、Docker で起動）が必要です。
         Jaeger が無いときは送信エラーがログに出ることがありますが、メトリクスとログはそのまま確かめられます。
       en: >-
         Run starts the employee API (port 8080) on an in-memory database. Calling
-        /employees/1 adds [spring-observability-employee,traceId,spanId] to the log lines in the
+        /employees/10001 adds [spring-observability-employee,traceId,spanId] to the log lines in the
         output and a timer appears at /actuator/metrics/employee.get. Viewing traces needs Jaeger
         (not bundled; start it with Docker). Without Jaeger, export errors may appear in the log, but
         metrics and logs can still be checked.

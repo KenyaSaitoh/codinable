@@ -33,7 +33,7 @@ class EmployeeApplicationSmokeTest {
     @Test
     void rendersFirstPageOfReferenceEmployees() {
         String html = client().get().uri("/employees").retrieve().body(String.class);
-        assertThat(html).contains("1/2ページ（10件）");
+        assertThat(html).contains("1/4ページ（16件）");
         assertThat(employeeNames(html)).containsExactly("Alice", "Bob", "Carol", "Dave", "Ellen");
     }
 

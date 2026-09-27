@@ -27,9 +27,9 @@ class EmployeeRepositoryTest {
         var criteria = EmployeeSearchCriteria.empty();
         var first = repository.search(criteria, PageRequest.of(0, 5, Sort.by("employeeId")));
         var second = repository.search(criteria, PageRequest.of(1, 5, Sort.by("employeeId")));
-        assertThat(first.getTotalElements()).isEqualTo(10);
-        assertThat(first.getContent()).extracting(Employee::getEmployeeId).containsExactly(1, 2, 3, 4, 5);
-        assertThat(second.getContent()).extracting(Employee::getEmployeeId).containsExactly(6, 7, 8, 9, 10);
+        assertThat(first.getTotalElements()).isEqualTo(16);
+        assertThat(first.getContent()).extracting(Employee::getEmployeeId).containsExactly(10001, 10002, 10003, 10004, 10005);
+        assertThat(second.getContent()).extracting(Employee::getEmployeeId).containsExactly(10006, 10007, 10008, 10009, 10010);
     }
 
     // 「キーワード・部署・役職・月給境界値の複合検索」の検証
@@ -37,32 +37,32 @@ class EmployeeRepositoryTest {
     void combinesKeywordDepartmentJobAndInclusiveSalaryBounds() {
         var criteria = EmployeeSearchCriteria.empty();
         criteria.setKeyword("Bob");
-        criteria.setDepartmentId(2);
+        criteria.setDepartmentId(1);
         criteria.setJobId(4);
-        criteria.setSalaryFrom(680000);
-        criteria.setSalaryTo(680000);
+        criteria.setSalaryFrom(450000);
+        criteria.setSalaryTo(450000);
         assertThat(repository.search(criteria, PageRequest.of(0, 5)).getContent())
-                .extracting(Employee::getEmployeeId).containsExactly(2);
-        criteria.setSalaryFrom(680001);
+                .extracting(Employee::getEmployeeId).containsExactly(10002);
+        criteria.setSalaryFrom(450001);
         assertThat(repository.search(criteria, PageRequest.of(0, 5))).isEmpty();
     }
 
     // 「論理削除済み社員の除外」の検証
     @Test
     void excludesLogicallyDeletedEmployees() {
-        Employee employee = repository.findById(1).orElseThrow();
+        Employee employee = repository.findById(10001).orElseThrow();
         employee.setStatus(Employee.DELETED);
         repository.saveAndFlush(employee);
         var found = repository.search(EmployeeSearchCriteria.empty(), PageRequest.of(0, 20));
-        assertThat(found.getTotalElements()).isEqualTo(9);
-        assertThat(found).extracting(Employee::getEmployeeId).doesNotContain(1);
-        assertThat(repository.findById(1)).isPresent();
+        assertThat(found.getTotalElements()).isEqualTo(15);
+        assertThat(found).extracting(Employee::getEmployeeId).doesNotContain(10001);
+        assertThat(repository.findById(10001)).isPresent();
     }
 
     // 「未存在部署に対するデータベース制約」の検証
     @Test
     void databaseRejectsUnknownDepartment() {
-        Employee employee = repository.findById(1).orElseThrow();
+        Employee employee = repository.findById(10001).orElseThrow();
         employee.setDepartmentId(999);
         assertThatThrownBy(() -> repository.saveAndFlush(employee))
                 .isInstanceOf(DataIntegrityViolationException.class);
@@ -71,7 +71,7 @@ class EmployeeRepositoryTest {
     // 「未存在役職に対するデータベース制約」の検証
     @Test
     void databaseRejectsUnknownJob() {
-        Employee employee = repository.findById(1).orElseThrow();
+        Employee employee = repository.findById(10001).orElseThrow();
         employee.setJobId(999);
         assertThatThrownBy(() -> repository.saveAndFlush(employee))
                 .isInstanceOf(DataIntegrityViolationException.class);

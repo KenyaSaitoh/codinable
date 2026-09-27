@@ -32,7 +32,7 @@ import pro.kensait.spring.employee.Application;
 @SpringBootTest(classes = Application.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // BrowserContextを分けてもDBは共有される初期社員を触らず、追加した社員は失敗時も片付ける
-@Sql(statements = "DELETE FROM EMPLOYEE WHERE EMPLOYEE_ID > 10",
+@Sql(statements = "DELETE FROM EMPLOYEE WHERE EMPLOYEE_ID > 10016",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class EmployeePlaywrightTest {
     private static Playwright playwright;
@@ -105,30 +105,30 @@ class EmployeePlaywrightTest {
         employeePage.open();
         assertThat(employeePage.rows()).hasCount(5);
         employeePage.openRegistrationForm();
-        employeePage.fillEmployee("Alice Test", "1", "1", "300000", "2026-04-01");
+        employeePage.fillEmployee("Walter", "3", "1", "230000", "2018-04-01");
         employeePage.save();
-        assertThat(page.locator("#paging")).hasText("1/3ページ（11件）");
-        employeePage.searchName("Alice Test");
-        assertThat(employeePage.employeeRow("Alice Test").locator("td").nth(1)).hasText("営業部");
-        assertThat(employeePage.employeeRow("Alice Test").locator("td").nth(3)).hasText("300,000円");
-        employeePage.edit("Alice Test");
-        assertForm("Alice Test", "1", "1", "300000", "2026-04-01");
+        assertThat(page.locator("#paging")).hasText("1/4ページ（17件）");
+        employeePage.searchName("Walter");
+        assertThat(employeePage.employeeRow("Walter").locator("td").nth(1)).hasText("SALES");
+        assertThat(employeePage.employeeRow("Walter").locator("td").nth(3)).hasText("230,000円");
+        employeePage.edit("Walter");
+        assertForm("Walter", "3", "1", "230000", "2018-04-01");
         String editUrl = page.url();
-        employeePage.fillEmployee("Bob Test", "2", "2", "320000", "2026-05-01");
+        employeePage.fillEmployee("Wendy", "1", "2", "250000", "2018-05-01");
         employeePage.save();
-        employeePage.searchName("Bob Test");
-        assertThat(employeePage.employeeRow("Bob Test").locator("td").nth(1)).hasText("開発部");
-        assertThat(employeePage.employeeRow("Bob Test").locator("td").nth(2)).hasText("主任");
-        assertThat(employeePage.employeeRow("Bob Test").locator("td").nth(3)).hasText("320,000円");
-        employeePage.edit("Bob Test");
+        employeePage.searchName("Wendy");
+        assertThat(employeePage.employeeRow("Wendy").locator("td").nth(1)).hasText("PLANNING");
+        assertThat(employeePage.employeeRow("Wendy").locator("td").nth(2)).hasText("CHIEF");
+        assertThat(employeePage.employeeRow("Wendy").locator("td").nth(3)).hasText("250,000円");
+        employeePage.edit("Wendy");
         assertThat(page).hasURL(editUrl);
-        assertForm("Bob Test", "2", "2", "320000", "2026-05-01");
+        assertForm("Wendy", "1", "2", "250000", "2018-05-01");
         assertThat(page.locator("input[name=version]")).hasValue("1");
         employeePage.click("一覧へ戻る");
-        employeePage.searchName("Bob Test");
-        employeePage.delete("Bob Test");
-        assertThat(page.locator("#paging")).hasText("1/2ページ（10件）");
-        employeePage.searchName("E2E");
+        employeePage.searchName("Wendy");
+        employeePage.delete("Wendy");
+        assertThat(page.locator("#paging")).hasText("1/4ページ（16件）");
+        employeePage.searchName("Wendy");
         assertThat(employeePage.rows()).hasCount(0);
         page.reload();
         assertThat(employeePage.message("該当する社員はいません")).isVisible();
@@ -139,12 +139,12 @@ class EmployeePlaywrightTest {
     void showsServerValidationAndPreservesInput() {
         employeePage.open();
         employeePage.openRegistrationForm();
-        employeePage.fillEmployee("Carol Test", "1", "1", "-1", "2026-04-01");
+        employeePage.fillEmployee("Xavier", "3", "1", "-1", "2018-04-01");
         employeePage.save();
         assertThat(employeePage.message("月給は0以上9999999以下で入力してください")).isVisible();
-        assertForm("Carol Test", "1", "1", "-1", "2026-04-01");
+        assertForm("Xavier", "3", "1", "-1", "2018-04-01");
         employeePage.click("一覧へ戻る");
-        employeePage.searchName("Carol Test");
+        employeePage.searchName("Xavier");
         assertThat(employeePage.rows()).hasCount(0);
     }
 
@@ -159,7 +159,7 @@ class EmployeePlaywrightTest {
             assertThat(employeePage.message(message)).isVisible();
         }
         employeePage.click("一覧へ戻る");
-        assertThat(page.locator("#paging")).hasText("1/2ページ（10件）");
+        assertThat(page.locator("#paging")).hasText("1/4ページ（16件）");
     }
 
     // 「編集失敗時の保存値維持と再修正」の検証
@@ -167,78 +167,78 @@ class EmployeePlaywrightTest {
     void failedEditKeepsStoredValuesAndCanBeCorrected() {
         employeePage.open();
         employeePage.openRegistrationForm();
-        employeePage.fillEmployee("Dave Test", "1", "1", "300000", "2026-04-01");
+        employeePage.fillEmployee("Walter", "3", "1", "230000", "2018-04-01");
         employeePage.save();
-        employeePage.searchName("Dave Test");
-        employeePage.edit("Dave Test");
+        employeePage.searchName("Walter");
+        employeePage.edit("Walter");
         String editUrl = page.url();
-        employeePage.fillEmployee("Ellen Test", "2", "2", "-1", "2026-05-01");
+        employeePage.fillEmployee("Wendy", "1", "2", "-1", "2018-05-01");
         employeePage.save();
         assertThat(employeePage.message("月給は0以上9999999以下で入力してください")).isVisible();
-        assertForm("Ellen Test", "2", "2", "-1", "2026-05-01");
+        assertForm("Wendy", "1", "2", "-1", "2018-05-01");
         Page storedPage = context.newPage();
         try {
             storedPage.navigate(editUrl);
             EmployeePage stored = new EmployeePage(storedPage, "http://localhost:" + port);
-            assertThat(stored.field("氏名")).hasValue("Dave Test");
-            assertThat(stored.field("部署")).hasValue("1");
+            assertThat(stored.field("氏名")).hasValue("Walter");
+            assertThat(stored.field("部署")).hasValue("3");
             assertThat(stored.field("役職")).hasValue("1");
-            assertThat(stored.field("月給")).hasValue("300000");
-            assertThat(stored.field("入社日")).hasValue("2026-04-01");
+            assertThat(stored.field("月給")).hasValue("230000");
+            assertThat(stored.field("入社日")).hasValue("2018-04-01");
         } finally {
             storedPage.close();
         }
-        employeePage.field("月給").fill("320000");
+        employeePage.field("月給").fill("250000");
         employeePage.save();
-        employeePage.searchName("Ellen Test");
+        employeePage.searchName("Wendy");
         assertThat(employeePage.rows()).hasCount(1);
-        employeePage.edit("Ellen Test");
+        employeePage.edit("Wendy");
         assertThat(page).hasURL(editUrl);
-        assertForm("Ellen Test", "2", "2", "320000", "2026-05-01");
+        assertForm("Wendy", "1", "2", "250000", "2018-05-01");
     }
 
     // 「部署による社員の絞り込み」の検証
     @Test
     void filtersEmployeesByDepartment() {
         employeePage.open();
-        employeePage.search("", "2", "", "", "");
+        employeePage.search("", "1", "", "", "");
         assertThat(employeePage.rows()).hasCount(3);
         assertThat(page.locator("#employees tr td:nth-child(1)"))
-                .hasText(new String[] {"Bob", "Frank", "Ivan"});
-        assertThat(employeePage.field("部署")).hasValue("2");
+                .hasText(new String[] {"Bob", "Frank", "Steve"});
+        assertThat(employeePage.field("部署")).hasValue("1");
     }
 
     // 「複合条件・空結果表示・条件クリア」の検証
     @Test
     void combinesFiltersShowsEmptyResultAndClearsConditions() {
         employeePage.open();
-        employeePage.search("Ivan", "2", "1", "320000", "320000");
+        employeePage.search("Oscar", "4", "2", "320000", "320000");
         assertThat(employeePage.rows()).hasCount(1);
-        assertThat(employeePage.employeeRow("Ivan")).isVisible();
+        assertThat(employeePage.employeeRow("Oscar")).isVisible();
         assertThat(employeePage.field("月給（下限）")).hasValue("320000");
-        employeePage.search("Ivan", "2", "1", "320001", "400000");
+        employeePage.search("Oscar", "4", "2", "320001", "400000");
         assertThat(employeePage.rows()).hasCount(0);
         assertThat(employeePage.message("該当する社員はいません")).isVisible();
         employeePage.search("", "", "", "", "");
         assertThat(employeePage.rows()).hasCount(5);
-        assertThat(page.locator("#paging")).hasText("1/2ページ（10件）");
+        assertThat(page.locator("#paging")).hasText("1/4ページ（16件）");
     }
 
     // 「検索条件を維持したページ移動」の検証
     @Test
     void movesBetweenPagesWithoutLosingSearchConditions() {
         employeePage.open();
-        employeePage.search("", "", "", "250000", "700000");
+        employeePage.search("", "", "", "350000", "700000");
         assertThat(page.locator("#prev")).isDisabled();
         employeePage.click("次へ");
-        assertThat(page.locator("#paging")).hasText("2/2ページ（10件）");
+        assertThat(page.locator("#paging")).hasText("2/2ページ（8件）");
         assertThat(page.locator("#employees tr td:nth-child(1)"))
-                .hasText(new String[] {"Frank", "Ivan", "Justin", "Mallory", "Matilda"});
-        assertThat(employeePage.field("月給（下限）")).hasValue("250000");
+                .hasText(new String[] {"Justin", "Mallory", "Steve"});
+        assertThat(employeePage.field("月給（下限）")).hasValue("350000");
         assertThat(page.locator("#next")).isDisabled();
         employeePage.click("前へ");
         assertThat(employeePage.employeeRow("Alice")).isVisible();
-        assertThat(page.locator("#paging")).hasText("1/2ページ（10件）");
+        assertThat(page.locator("#paging")).hasText("1/2ページ（8件）");
     }
 
     // 「未存在社員の一覧画面メッセージ」の検証
@@ -257,7 +257,7 @@ class EmployeePlaywrightTest {
         page.navigate("http://localhost:" + port + "/");
         assertThat(page.locator("h1")).hasText("社員管理");
         assertThat(employeePage.rows()).hasCount(5);
-        assertThat(page.locator("#paging")).hasText("1/2ページ（10件）");
+        assertThat(page.locator("#paging")).hasText("1/4ページ（16件）");
     }
 
     // assertフォームの実行

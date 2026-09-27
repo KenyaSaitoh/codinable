@@ -114,6 +114,9 @@ public class EmployeeService {
 
     // 指定した部署の名称の取得
     public String departmentNameOf(Integer departmentId) {
+        if (departmentId == null) {
+            return "";
+        }
         return departmentRepository.findById(departmentId)
                 .map(Department::getDepartmentName).orElse("");
     }

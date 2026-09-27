@@ -81,22 +81,23 @@ class EmployeeApiTest {
         Department[] departments = client.get().uri("/departments").retrieve().body(Department[].class);
         Job[] jobs = client.get().uri("/jobs").retrieve().body(Job[].class);
         assertEquals(4, departments.length);
-        assertEquals(5, jobs.length);
-        assertEquals("営業部", departments[0].getDepartmentName());
-        assertEquals("東京", departments[0].getLocation());
-        assertEquals(List.of(1, 2, 3, 4, 5), Arrays.stream(jobs).map(Job::getGrade).toList());
+        assertEquals(4, jobs.length);
+        assertEquals("PLANNING", departments[0].getDepartmentName());
+        assertEquals("TOKYO HQ", departments[0].getLocation());
+        assertEquals(List.of(1, 2, 3, 4), Arrays.stream(jobs).map(Job::getGrade).toList());
     }
 
     // 「在籍社員を5件ずつ取得するページング」の検証
     @Test
     void pagesFiveActiveEmployeesAtATime() {
         EmployeePage first = page("/employees");
-        assertEquals(10, first.totalElements());
-        assertEquals(2, first.totalPages());
-        assertEquals(List.of(1, 2, 3, 4, 5), ids(first));
-        assertEquals(List.of(6, 7, 8, 9, 10), ids(page("/employees?page=2")));
+        assertEquals(16, first.totalElements());
+        assertEquals(4, first.totalPages());
+        assertEquals(List.of(10001, 10002, 10003, 10004, 10005), ids(first));
+        assertEquals(List.of(10006, 10007, 10008, 10009, 10010), ids(page("/employees?page=2")));
+        assertEquals(List.of(10016), ids(page("/employees?page=4")));
         assertEquals(ids(first), ids(page("/employees?page=0")));
-        assertTrue(page("/employees?page=3").content().isEmpty());
+        assertTrue(page("/employees?page=5").content().isEmpty());
     }
 
     // 「キーワード・部署・役職・月給範囲の複合検索」の検証
@@ -104,10 +105,10 @@ class EmployeeApiTest {
     void combinesKeywordDepartmentJobAndInclusiveSalaryFilters() {
         EmployeePage keyword = client.get().uri(builder -> builder.path("/employees")
                 .queryParam("keyword", " Alice ").build()).retrieve().body(EmployeePage.class);
-        assertEquals(List.of(1), ids(keyword));
-        assertEquals(List.of(7), ids(page(
-                "/employees?departmentId=2&jobId=1&salaryFrom=320000&salaryTo=320000")));
-        assertEquals(List.of(3, 4, 6, 7, 8), ids(page(
+        assertEquals(List.of(10001), ids(keyword));
+        assertEquals(List.of(10011), ids(page(
+                "/employees?departmentId=4&jobId=2&salaryFrom=320000&salaryTo=320000")));
+        assertEquals(List.of(10001, 10002, 10003, 10004, 10005), ids(page(
                 "/employees?salaryFrom=300000&salaryTo=500000")));
         assertEquals(0, page("/employees?departmentId=999").totalElements());
     }
@@ -124,10 +125,10 @@ class EmployeeApiTest {
     // 「JPAによる社員全項目の取得」の検証
     @Test
     void retrievesAllEmployeeFieldsFromJpa() {
-        Employee employee = get(1);
-        assertEquals("E0001", employee.getEmployeeCode());
-        assertEquals(1, employee.getDepartmentId());
-        assertEquals(3, employee.getJobId());
+        Employee employee = get(10001);
+        assertEquals("E10001", employee.getEmployeeCode());
+        assertEquals(3, employee.getDepartmentId());
+        assertEquals(4, employee.getJobId());
         assertEquals(LocalDate.of(2012, 4, 1), employee.getEntranceDate());
         assertEquals("active", employee.getStatus());
         assertEquals(0, employee.getVersion());
@@ -137,19 +138,19 @@ class EmployeeApiTest {
     @Test
     void createsEmployeeWithServerIdCodeAndVersion() {
         Map<String, Object> input = input();
-        input.put("employeeName", "  Alice  ");
+        input.put("employeeName", "  Walter  ");
         ResponseEntity<Employee> result = client.post().uri("/employees").body(input)
                 .retrieve().toEntity(Employee.class);
         Employee created = result.getBody();
         assertEquals(201, result.getStatusCode().value());
-        assertEquals("/employees/11", result.getHeaders().getLocation().toString());
-        assertEquals(11, created.getEmployeeId());
-        assertEquals("E0011", created.getEmployeeCode());
-        assertEquals("Alice", created.getEmployeeName());
+        assertEquals("/employees/10017", result.getHeaders().getLocation().toString());
+        assertEquals(10017, created.getEmployeeId());
+        assertEquals("E10017", created.getEmployeeCode());
+        assertEquals("Walter", created.getEmployeeName());
         assertEquals("active", created.getStatus());
         assertEquals(0, created.getVersion());
-        assertEquals("E0011", get(11).getEmployeeCode());
-        assertEquals(11, page("/employees").totalElements());
+        assertEquals("E10017", get(10017).getEmployeeCode());
+        assertEquals(17, page("/employees").totalElements());
     }
 
     // 「不正・未入力項目の拒否と未保存」の検証
@@ -164,7 +165,7 @@ class EmployeeApiTest {
             invalid.remove(field.getKey());
             assertEquals(400, status(HttpMethod.POST, "/employees", invalid), field.getKey());
         }
-        assertEquals(10, jdbc.queryForObject("SELECT COUNT(*) FROM EMPLOYEE", Integer.class));
+        assertEquals(16, jdbc.queryForObject("SELECT COUNT(*) FROM EMPLOYEE", Integer.class));
     }
 
     // 「氏名・月給・整数項目の入力制約」の検証
@@ -194,7 +195,7 @@ class EmployeeApiTest {
             invalid.put(field, "untrusted");
             assertEquals(400, status(HttpMethod.POST, "/employees", invalid), field);
         }
-        assertEquals("Alice", get(1).getEmployeeName());
+        assertEquals("Alice", get(10001).getEmployeeName());
     }
 
     // 「社員更新と古いバージョンの拒否」の検証
@@ -202,52 +203,52 @@ class EmployeeApiTest {
     void updatesFieldsAndRejectsAnOutdatedVersion() {
         Map<String, Object> request = input();
         request.put("version", 0);
-        Employee updated = client.put().uri("/employees/1").body(request).retrieve().body(Employee.class);
-        assertEquals(1, updated.getEmployeeId());
-        assertEquals("E0001", updated.getEmployeeCode());
+        Employee updated = client.put().uri("/employees/10001").body(request).retrieve().body(Employee.class);
+        assertEquals(10001, updated.getEmployeeId());
+        assertEquals("E10001", updated.getEmployeeCode());
         assertEquals(1, updated.getVersion());
-        assertEquals(2, updated.getDepartmentId());
-        assertEquals(2, updated.getJobId());
-        assertEquals(350000, updated.getSalary());
-        request.put("salary", 450000);
-        assertEquals(409, status(HttpMethod.PUT, "/employees/1", request));
-        assertEquals(350000, get(1).getSalary());
+        assertEquals(1, updated.getDepartmentId());
+        assertEquals(3, updated.getJobId());
+        assertEquals(520000, updated.getSalary());
+        request.put("salary", 540000);
+        assertEquals(409, status(HttpMethod.PUT, "/employees/10001", request));
+        assertEquals(520000, get(10001).getSalary());
     }
 
     // 「更新時のバージョン必須と未存在社員の登録防止」の検証
     @Test
     void updateRequiresVersionAndNeverCreatesMissingEmployee() {
-        assertEquals(400, status(HttpMethod.PUT, "/employees/1", input()));
+        assertEquals(400, status(HttpMethod.PUT, "/employees/10001", input()));
         Map<String, Object> request = input();
         request.put("version", 0);
         assertEquals(404, status(HttpMethod.PUT, "/employees/999", request));
         assertEquals(404, status(HttpMethod.GET, "/employees/999", null));
         assertEquals(404, status(HttpMethod.DELETE, "/employees/999", null));
-        assertEquals(10, page("/employees").totalElements());
+        assertEquals(16, page("/employees").totalElements());
     }
 
     // 「論理削除した社員の全参照APIからの除外」の検証
     @Test
     void logicallyDeletesAndExcludesFromEveryReadEndpoint() {
-        assertEquals(204, status(HttpMethod.DELETE, "/employees/1", null));
+        assertEquals(204, status(HttpMethod.DELETE, "/employees/10001", null));
         assertEquals("deleted", jdbc.queryForObject(
-                "SELECT STATUS FROM EMPLOYEE WHERE EMPLOYEE_ID=1", String.class));
-        assertEquals(10, jdbc.queryForObject("SELECT COUNT(*) FROM EMPLOYEE", Integer.class));
-        assertEquals(404, status(HttpMethod.GET, "/employees/1", null));
-        assertEquals(404, status(HttpMethod.DELETE, "/employees/1", null));
-        assertEquals(9, page("/employees").totalElements());
+                "SELECT STATUS FROM EMPLOYEE WHERE EMPLOYEE_ID=10001", String.class));
+        assertEquals(16, jdbc.queryForObject("SELECT COUNT(*) FROM EMPLOYEE", Integer.class));
+        assertEquals(404, status(HttpMethod.GET, "/employees/10001", null));
+        assertEquals(404, status(HttpMethod.DELETE, "/employees/10001", null));
+        assertEquals(15, page("/employees").totalElements());
         Employee[] found = client.get().uri("/employees/query_by_salary?lowerSalary=0")
                 .retrieve().body(Employee[].class);
-        assertEquals(9, found.length);
-        assertFalse(Arrays.stream(found).anyMatch(employee -> employee.getEmployeeId() == 1));
+        assertEquals(15, found.length);
+        assertFalse(Arrays.stream(found).anyMatch(employee -> employee.getEmployeeId() == 10001));
     }
 
     // 「既存の月給検索APIの維持」の検証
     @Test
     void keepsTheExistingSalaryEndpoint() {
-        Employee[] found = client.get().uri("/employees/query_by_salary?lowerSalary=500000")
+        Employee[] found = client.get().uri("/employees/query_by_salary?lowerSalary=450000")
                 .retrieve().body(Employee[].class);
-        assertEquals(List.of(1, 2, 8, 9), Arrays.stream(found).map(Employee::getEmployeeId).toList());
+        assertEquals(List.of(10001, 10002, 10007, 10008), Arrays.stream(found).map(Employee::getEmployeeId).toList());
         assertEquals(400, status(HttpMethod.GET, "/employees/query_by_salary?lowerSalary=-1", null));
     }
 
@@ -269,12 +270,12 @@ class EmployeeApiTest {
     @Test
     void acceptsOnlyOneOfTwoConcurrentUpdatesWithTheSameVersion() throws Exception {
         CountDownLatch start = new CountDownLatch(1);
-        CompletableFuture<Integer> first = updateConcurrently(start, 360000);
-        CompletableFuture<Integer> second = updateConcurrently(start, 370000);
+        CompletableFuture<Integer> first = updateConcurrently(start, 530000);
+        CompletableFuture<Integer> second = updateConcurrently(start, 540000);
         start.countDown();
         assertEquals(Set.of(200, 409), Set.of(first.get(10, TimeUnit.SECONDS), second.get(10, TimeUnit.SECONDS)));
-        assertEquals(1, get(1).getVersion());
-        assertTrue(Set.of(360000, 370000).contains(get(1).getSalary()));
+        assertEquals(1, get(10001).getVersion());
+        assertTrue(Set.of(530000, 540000).contains(get(10001).getSalary()));
     }
 
     // concurrentlyの更新
@@ -285,7 +286,7 @@ class EmployeeApiTest {
                 Map<String, Object> request = input();
                 request.put("version", 0);
                 request.put("salary", salary);
-                return status(HttpMethod.PUT, "/employees/1", request);
+                return status(HttpMethod.PUT, "/employees/10001", request);
             } catch (InterruptedException exception) {
                 Thread.currentThread().interrupt();
                 throw new IllegalStateException(exception);
@@ -295,8 +296,8 @@ class EmployeeApiTest {
 
     // 入力の実行
     private Map<String, Object> input() {
-        return new HashMap<>(Map.of("employeeName", "Alice", "departmentId", 2,
-                "jobId", 2, "salary", 350000, "entranceDate", "2024-04-01"));
+        return new HashMap<>(Map.of("employeeName", "Alice", "departmentId", 1,
+                "jobId", 3, "salary", 520000, "entranceDate", "2012-04-01"));
     }
 
     // APIメソッド：主キー検索によるEmployee取得

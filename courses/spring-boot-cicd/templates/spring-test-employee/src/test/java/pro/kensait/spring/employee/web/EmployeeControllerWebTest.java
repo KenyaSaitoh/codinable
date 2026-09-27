@@ -45,12 +45,12 @@ class EmployeeControllerWebTest {
     @Test
     void normalizesSearchKeywordAndBindsConditions() throws Exception {
         mvc.perform(get("/employees").param("keyword", "  Alice  ")
-                .param("departmentId", "1").param("salaryFrom", "300000").param("page", "2"))
+                .param("departmentId", "3").param("salaryFrom", "300000").param("page", "2"))
                 .andExpect(status().isOk()).andExpect(view().name("EmployeeListPage"));
         var criteria = ArgumentCaptor.forClass(EmployeeSearchCriteria.class);
         verify(service).search(criteria.capture(), eq(2));
         org.assertj.core.api.Assertions.assertThat(criteria.getValue().getKeyword()).isEqualTo("Alice");
-        org.assertj.core.api.Assertions.assertThat(criteria.getValue().getDepartmentId()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(criteria.getValue().getDepartmentId()).isEqualTo(3);
         org.assertj.core.api.Assertions.assertThat(criteria.getValue().getSalaryFrom()).isEqualTo(300000);
     }
 
@@ -75,27 +75,27 @@ class EmployeeControllerWebTest {
     // 「有効な入力の変換と保存」の検証
     @Test
     void validInputIsConvertedAndSaved() throws Exception {
-        when(service.departmentExists(1)).thenReturn(true);
-        when(service.jobExists(2)).thenReturn(true);
-        mvc.perform(post("/employees").param("employeeName", "  Alice  ")
-                .param("departmentId", "1").param("jobId", "2")
-                .param("salary", "300000").param("entranceDate", "2026-04-01"))
+        when(service.departmentExists(3)).thenReturn(true);
+        when(service.jobExists(1)).thenReturn(true);
+        mvc.perform(post("/employees").param("employeeName", "  Walter  ")
+                .param("departmentId", "3").param("jobId", "1")
+                .param("salary", "230000").param("entranceDate", "2018-04-01"))
                 .andExpect(status().isOk()).andExpect(view().name("EmployeeListPage"));
         var employee = ArgumentCaptor.forClass(Employee.class);
         verify(service).create(employee.capture());
-        org.assertj.core.api.Assertions.assertThat(employee.getValue().getEmployeeName()).isEqualTo("Alice");
-        org.assertj.core.api.Assertions.assertThat(employee.getValue().getJobId()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(employee.getValue().getEmployeeName()).isEqualTo("Walter");
+        org.assertj.core.api.Assertions.assertThat(employee.getValue().getJobId()).isEqualTo(1);
     }
 
     // 「競合時のメッセージ付きフォーム再表示」の検証
     @Test
     void staleUpdateReturnsFormWithConflictMessage() throws Exception {
         when(service.departmentExists(1)).thenReturn(true);
-        when(service.jobExists(2)).thenReturn(true);
-        when(service.update(eq(11), any(), eq(0))).thenThrow(new ConflictException());
-        mvc.perform(post("/employees/11").param("employeeName", "Bob")
-                .param("departmentId", "1").param("jobId", "2").param("version", "0")
-                .param("salary", "300000").param("entranceDate", "2026-04-01"))
+        when(service.jobExists(4)).thenReturn(true);
+        when(service.update(eq(10002), any(), eq(0))).thenThrow(new ConflictException());
+        mvc.perform(post("/employees/10002").param("employeeName", "Bob")
+                .param("departmentId", "1").param("jobId", "4").param("version", "0")
+                .param("salary", "450000").param("entranceDate", "2012-04-01"))
                 .andExpect(status().isOk()).andExpect(view().name("EmployeeFormPage"))
                 .andExpect(model().attribute("errors", contains(new ConflictException().getMessage())));
     }

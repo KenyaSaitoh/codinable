@@ -15,11 +15,11 @@ class EmployeeParamTest {
     // 有効パラメータの実行
     private EmployeeParam validParam() {
         EmployeeParam param = new EmployeeParam();
-        param.setEmployeeName("  Alice  ");
-        param.setDepartmentId(1);
-        param.setJobId(2);
-        param.setSalary("300000");
-        param.setEntranceDate("2026-04-01");
+        param.setEmployeeName("  Walter  ");
+        param.setDepartmentId(3);
+        param.setJobId(1);
+        param.setSalary("230000");
+        param.setEntranceDate("2018-04-01");
         return param;
     }
 
@@ -29,11 +29,11 @@ class EmployeeParamTest {
         EmployeeParam param = validParam();
         assertThat(param.validate(true, true)).isEmpty();
         var employee = param.toEmployee();
-        assertThat(employee.getEmployeeName()).isEqualTo("Alice");
-        assertThat(employee.getDepartmentId()).isEqualTo(1);
-        assertThat(employee.getJobId()).isEqualTo(2);
-        assertThat(employee.getSalary()).isEqualTo(300000);
-        assertThat(employee.getEntranceDate()).isEqualTo(LocalDate.of(2026, 4, 1));
+        assertThat(employee.getEmployeeName()).isEqualTo("Walter");
+        assertThat(employee.getDepartmentId()).isEqualTo(3);
+        assertThat(employee.getJobId()).isEqualTo(1);
+        assertThat(employee.getSalary()).isEqualTo(230000);
+        assertThat(employee.getEntranceDate()).isEqualTo(LocalDate.of(2018, 4, 1));
     }
 
     // 「全未入力項目の通知」の検証

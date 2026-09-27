@@ -41,7 +41,7 @@ class EmployeeDatabaseRiderTest {
     @Test
     @DataSet(value = "datasets/employees.yml", cleanBefore = true, cleanAfter = true)
     void loadsEmployeesFromYaml() {
-        EmployeePage found = client().get().uri("/employees?departmentId=1&salaryFrom=300000")
+        EmployeePage found = client().get().uri("/employees?departmentId=3&salaryFrom=300000")
                 .retrieve().body(EmployeePage.class);
         assertThat(found.content()).extracting(Employee::getEmployeeName).containsExactly("Alice");
         assertThat(found.totalElements()).isEqualTo(1);
@@ -52,8 +52,9 @@ class EmployeeDatabaseRiderTest {
     @DataSet(value = "datasets/employees.yml", cleanBefore = true, cleanAfter = true)
     @ExpectedDataSet("datasets/employees-updated.yml")
     void verifiesUpdatedDatabaseState() {
-        Employee updated = client().put().uri("/employees/101")
-                .body(input("Alice", 2, 330000, 0)).retrieve().body(Employee.class);
+        Employee updated = client().put().uri("/employees/10001")
+                .body(input("Alice", 1, 4, 530000, LocalDate.of(2012, 4, 1), 0))
+                .retrieve().body(Employee.class);
         assertThat(updated.getVersion()).isEqualTo(1);
     }
 
@@ -62,9 +63,9 @@ class EmployeeDatabaseRiderTest {
     @DataSet(value = "datasets/employees.yml", cleanBefore = true, cleanAfter = true)
     @ExpectedDataSet("datasets/employees-deleted.yml")
     void verifiesLogicallyDeletedDatabaseState() {
-        var response = client().delete().uri("/employees/101").retrieve().toBodilessEntity();
+        var response = client().delete().uri("/employees/10001").retrieve().toBodilessEntity();
         assertThat(response.getStatusCode().value()).isEqualTo(204);
-        assertThatThrownBy(() -> client().get().uri("/employees/101").retrieve().body(Employee.class))
+        assertThatThrownBy(() -> client().get().uri("/employees/10001").retrieve().body(Employee.class))
                 .isInstanceOfSatisfying(RestClientResponseException.class,
                         error -> assertThat(error.getStatusCode().value()).isEqualTo(404));
     }
@@ -74,8 +75,9 @@ class EmployeeDatabaseRiderTest {
     @DataSet(value = "datasets/employees.yml", cleanBefore = true, cleanAfter = true)
     @ExpectedDataSet("datasets/employees.yml")
     void rejectedUpdateLeavesDatabaseUnchanged() {
-        assertThatThrownBy(() -> client().put().uri("/employees/101")
-                .body(input("Bob", 2, 330000, 99)).retrieve().body(Employee.class))
+        assertThatThrownBy(() -> client().put().uri("/employees/10001")
+                .body(input("Alice", 1, 4, 530000, LocalDate.of(2012, 4, 1), 99))
+                .retrieve().body(Employee.class))
                 .isInstanceOfSatisfying(RestClientResponseException.class,
                         error -> assertThat(error.getStatusCode().value()).isEqualTo(409));
     }
@@ -83,13 +85,14 @@ class EmployeeDatabaseRiderTest {
     // 「登録後のデータベース状態」の検証
     @Test
     @DataSet(value = "datasets/employees.yml", cleanBefore = true, cleanAfter = true,
-            executeStatementsBefore = "ALTER TABLE EMPLOYEE ALTER COLUMN EMPLOYEE_ID RESTART WITH 103")
+            executeStatementsBefore = "ALTER TABLE EMPLOYEE ALTER COLUMN EMPLOYEE_ID RESTART WITH 10017")
     @ExpectedDataSet("datasets/employees-created.yml")
     void verifiesCreatedDatabaseState() {
-        var response = client().post().uri("/employees").body(input("Carol", 1, 300000, null))
+        var response = client().post().uri("/employees")
+                .body(input("Walter", 3, 1, 230000, LocalDate.of(2018, 4, 1), null))
                 .retrieve().toEntity(Employee.class);
         assertThat(response.getStatusCode().value()).isEqualTo(201);
-        assertThat(response.getHeaders().getLocation()).hasToString("/employees/103");
+        assertThat(response.getHeaders().getLocation()).hasToString("/employees/10017");
     }
 
     // 「不正な部署による社員の未登録」の検証
@@ -98,13 +101,15 @@ class EmployeeDatabaseRiderTest {
     @ExpectedDataSet("datasets/employees.yml")
     void invalidDepartmentDoesNotInsertEmployee() {
         assertThatThrownBy(() -> client().post().uri("/employees")
-                .body(input("Dave", 999, 300000, null)).retrieve().body(Employee.class))
+                .body(input("Wendy", 999, 1, 230000, LocalDate.of(2018, 4, 1), null))
+                .retrieve().body(Employee.class))
                 .isInstanceOfSatisfying(RestClientResponseException.class,
                         error -> assertThat(error.getStatusCode().value()).isEqualTo(400));
     }
 
     // 入力の実行
-    private EmployeeRequest input(String name, int departmentId, int salary, Integer version) {
-        return new EmployeeRequest(name, departmentId, 1, salary, LocalDate.of(2020, 4, 1), version);
+    private EmployeeRequest input(String name, int departmentId, int jobId, int salary,
+            LocalDate entranceDate, Integer version) {
+        return new EmployeeRequest(name, departmentId, jobId, salary, entranceDate, version);
     }
 }

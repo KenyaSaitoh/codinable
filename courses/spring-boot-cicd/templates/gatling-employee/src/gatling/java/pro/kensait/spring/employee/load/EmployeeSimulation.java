@@ -30,7 +30,7 @@ public class EmployeeSimulation extends Simulation {
             .feed(employeeFeeder)
             .exec(http("社員一覧画面").get("/employees")
                     .check(status().is(200), css("h1").is("社員管理"),
-                            css("#paging").is("1/2ページ（10件）"),
+                            css("#paging").is("1/4ページ（16件）"),
                             css("#employees tr td:nth-child(1)").findAll()
                                     .is(List.of("Alice", "Bob", "Carol", "Dave", "Ellen"))))
             .pause(Duration.ofMillis(300))
