@@ -28,10 +28,10 @@ class EmployeeSessionFlowTest {
         service = mock(EmployeeService.class);
         when(service.departments()).thenReturn(List.of());
         when(service.jobs()).thenReturn(List.of());
-        when(service.departmentExists(1)).thenReturn(true);
+        when(service.departmentExists(3)).thenReturn(true);
         when(service.jobExists(1)).thenReturn(true);
-        when(service.departmentNameOf(1)).thenReturn("営業部");
-        when(service.jobNameOf(1)).thenReturn("一般");
+        when(service.departmentNameOf(3)).thenReturn("SALES");
+        when(service.jobNameOf(1)).thenReturn("ASSOCIATE");
         when(service.search(any(), anyInt())).thenReturn(EmployeePage.empty());
         mvc = MockMvcBuilders.standaloneSetup(new EmployeeController(service)).build();
         session = new MockHttpSession();
@@ -42,9 +42,9 @@ class EmployeeSessionFlowTest {
 
     private void confirm() throws Exception {
         mvc.perform(post("/employees/confirm").session(session)
-                .param("draftToken", draft().getToken()).param("employeeName", "Alice")
-                .param("departmentId", "1").param("jobId", "1")
-                .param("salary", "300000").param("entranceDate", "2026-04-01")
+                .param("draftToken", draft().getToken()).param("employeeName", "Walter")
+                .param("departmentId", "3").param("jobId", "1")
+                .param("salary", "230000").param("entranceDate", "2018-04-01")
                 .param("employeeId", "999").param("version", "999"))
                 .andExpect(view().name("EmployeeConfirmPage"));
     }
@@ -52,7 +52,7 @@ class EmployeeSessionFlowTest {
     @Test
     void confirmationKeepsInputWithoutWritingBusinessData() throws Exception {
         confirm();
-        assertEquals("Alice", draft().getInput().getEmployeeName());
+        assertEquals("Walter", draft().getInput().getEmployeeName());
         assertTrue(draft().isConfirmed());
         assertNull(draft().getInput().getEmployeeId());
         verify(service, never()).create(any());
@@ -66,7 +66,7 @@ class EmployeeSessionFlowTest {
         mvc.perform(post("/employees/save").session(session)
                 .param("draftToken", draft().getToken()).param("employeeName", "tampered"))
                 .andExpect(redirectedUrl("/employees"));
-        verify(service).create(argThat(e -> "Alice".equals(e.getEmployeeName())));
+        verify(service).create(argThat(e -> "Walter".equals(e.getEmployeeName())));
         assertNull(draft());
         assertEquals("keep", session.getAttribute("unrelated"));
         mvc.perform(post("/employees/save").session(session).param("draftToken", "old"))
@@ -78,7 +78,7 @@ class EmployeeSessionFlowTest {
     void backRetainsValuesAndRequiresConfirmationAgain() throws Exception {
         confirm();
         mvc.perform(get("/employees/draft").session(session)).andExpect(view().name("EmployeeFormPage"));
-        assertEquals("Alice", draft().getInput().getEmployeeName());
+        assertEquals("Walter", draft().getInput().getEmployeeName());
         assertFalse(draft().isConfirmed());
         mvc.perform(post("/employees/save").session(session).param("draftToken", draft().getToken()))
                 .andExpect(redirectedUrl("/employees/draft"));
@@ -118,25 +118,25 @@ class EmployeeSessionFlowTest {
     @Test
     void updateUsesIdAndVersionLoadedFromDatabase() throws Exception {
         Employee e = new Employee();
-        e.setEmployeeId(7); e.setEmployeeName("Before"); e.setVersion(2);
-        e.setSalary(200000); e.setEntranceDate(LocalDate.of(2025, 4, 1));
-        when(service.get(7)).thenReturn(e);
-        mvc.perform(get("/employees/7/edit").session(session));
+        e.setEmployeeId(10006); e.setEmployeeName("Frank"); e.setVersion(2);
+        e.setSalary(250000); e.setEntranceDate(LocalDate.of(2013, 10, 1));
+        when(service.get(10006)).thenReturn(e);
+        mvc.perform(get("/employees/10006/edit").session(session));
         confirm();
         mvc.perform(post("/employees/save").session(session).param("draftToken", draft().getToken()))
                 .andExpect(redirectedUrl("/employees"));
-        verify(service).update(eq(7), argThat(input -> "Alice".equals(input.getEmployeeName())), eq(2));
+        verify(service).update(eq(10006), argThat(input -> "Walter".equals(input.getEmployeeName())), eq(2));
     }
 
     @Test
     void conflictPreservesDraftForReview() throws Exception {
         confirm();
-        draft().getInput().setEmployeeId(1);
+        draft().getInput().setEmployeeId(10001);
         draft().getInput().setVersion(0);
-        when(service.update(eq(1), any(), eq(0))).thenThrow(new ConflictException());
+        when(service.update(eq(10001), any(), eq(0))).thenThrow(new ConflictException());
         mvc.perform(post("/employees/save").session(session).param("draftToken", draft().getToken()))
                 .andExpect(view().name("EmployeeFormPage"));
-        assertEquals("Alice", draft().getInput().getEmployeeName());
+        assertEquals("Walter", draft().getInput().getEmployeeName());
         assertFalse(draft().isConfirmed());
     }
 }

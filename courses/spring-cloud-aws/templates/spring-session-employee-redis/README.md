@@ -25,7 +25,7 @@ docker run --name spring-session-redis --rm -d -p 127.0.0.1:6379:6379 redis:7
 ## Codinable 向けの調整
 
 - 社員用 RDB は HSQLDB サーバーを使わず、このフォルダの `hsqldb-data/` に置くファイル DB で動かします。
-  初回起動時に `src/main/resources/db/` の SQL（`sql/hsqldb/2_*.sql` / `3_*.sql` と同じ内容）で社員 10 件が入り、
+  初回起動時に `src/main/resources/db/` の SQL（`sql/hsqldb/2_*.sql` / `3_*.sql` と同じ内容）で社員 16 件が入り、
   2 回目以降は既存のデータを残します。最初の状態に戻すときは、アプリを止めて `hsqldb-data/` を削除します
 - Redis クライアントは Lettuce ではなく **Jedis** にしています。Codinable 同梱の JDK には
   Lettuce が必要とする `jdk.net` モジュールが無いためです（`build.gradle` のコメント参照）。
@@ -43,7 +43,7 @@ docker run --name spring-session-redis --rm -d -p 127.0.0.1:6379:6379 redis:7
 
 ## 再起動で確認すること（Redis を起動している場合）
 
-1. 新規登録で氏名「Session確認社員」、営業部、一般、月給 300000、入社日 2026-04-01 を入力して「確認へ」を押します
+1. 新規登録で氏名「Walter」、SALES、ASSOCIATE、月給 230000、入社日 2018-04-01 を入力して「確認へ」を押します
 2. 確認画面に値が表示され、社員テーブルにはまだ登録されていないことを確認します
 3. 「停止」でアプリだけを止めます。Redis とプレビュー（ブラウザー）は維持します
 4. もう一度「実行」を押してアプリを起動します

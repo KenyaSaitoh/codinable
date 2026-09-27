@@ -9,7 +9,7 @@
 
 | 順番 | ファイル | 内容 |
 |---|---|---|
-| 1 | `01_create.sql` | テーブルを作り、4 件の社員を入れる（`reset.sql` と同じ内容） |
+| 1 | `01_create.sql` | テーブルを作り、16 件の社員を入れる（`reset.sql` と同じ内容） |
 | 2 | `02_select.sql` | 全件・必要なカラムだけ・比較演算子・別名 |
 | 3 | `03_where.sql` | AND / OR / IN / BETWEEN / LIKE / NULL の扱い |
 
@@ -30,10 +30,25 @@
 
 | EMPLOYEE_ID | EMPLOYEE_NAME | DEPARTMENT_NAME | SALARY |
 |---|---|---|---|
-| 10001 | Alice | 営業部 | 500000 |
-| 10002 | Bob | 企画部 | 450000 |
-| 10003 | Carol | 人事部 | 350000 |
-| 10004 | Dave | 営業部 | 400000 |
+| 10001 | Alice | SALES | 500000 |
+| 10002 | Bob | PLANNING | 450000 |
+| 10003 | Carol | HR | 350000 |
+| 10004 | Dave | SALES | 400000 |
+| 10005 | Ellen | SALES | 300000 |
+| 10006 | Frank | PLANNING | 250000 |
+| 10007 | Ivan | PRODUCT | 480000 |
+| 10008 | Justin | HR | 460000 |
+| 10009 | Mallory | PRODUCT | 420000 |
+| 10010 | Matilda | SALES | 280000 |
+| 10011 | Oscar | PRODUCT | 320000 |
+| 10012 | Pat | PRODUCT | 240000 |
+| 10013 | Peggy | SALES | 270000 |
+| 10014 | Victor | *(NULL)* | 220000 |
+| 10015 | Steve | PLANNING | 380000 |
+| 10016 | Trent | PRODUCT | 310000 |
+
+講義の 4 件（Alice〜Dave）を含む 16 件です。Victor は部署が決まっておらず、`DEPARTMENT_NAME` が NULL です
+（`03_where.sql` の NULL の扱いで使います）。
 
 部署名を文字列で持つこの形を、部署テーブルに分けて参照する形にする話は
 「結合・サブクエリ・ビュー」の演習で扱います。

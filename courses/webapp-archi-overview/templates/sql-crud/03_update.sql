@@ -1,4 +1,4 @@
--- 更新（UPDATE）。実行のたびに元の 4 件から始まる
+-- 更新（UPDATE）。実行のたびに元の 16 件から始まる
 --
 -- UPDATE と DELETE は WHERE 句を書き忘れると全件が対象になる
 -- 実務では、同じ WHERE で SELECT して対象を確かめてから実行する
@@ -12,29 +12,29 @@ UPDATE EMPLOYEE SET SALARY = 550000 WHERE EMPLOYEE_ID = 10001;
 
 -- ── 複数のカラムを同時に更新する ────────────────────
 UPDATE EMPLOYEE
-   SET DEPARTMENT_NAME = '企画部',
+   SET DEPARTMENT_NAME = 'PLANNING',
        SALARY          = 480000
  WHERE EMPLOYEE_ID = 10004;
 
 -- ── 条件指定による更新（複数件が対象になる）─────────────
 -- まず対象を確かめる
-SELECT * FROM EMPLOYEE WHERE DEPARTMENT_NAME = '営業部' ORDER BY EMPLOYEE_ID;
+SELECT * FROM EMPLOYEE WHERE DEPARTMENT_NAME = 'SALES' ORDER BY EMPLOYEE_ID;
 
 -- 更新前の値を使って計算できる。5% の昇給
 -- SALARY は INT なので、小数になった結果を CAST で整数に戻している
 UPDATE EMPLOYEE
    SET SALARY = CAST(SALARY * 1.05 AS INT)
- WHERE DEPARTMENT_NAME = '営業部';
+ WHERE DEPARTMENT_NAME = 'SALES';
 
 -- ── NULL を入れる・NULL を埋める ─────────────────────
 UPDATE EMPLOYEE SET DEPARTMENT_NAME = NULL WHERE EMPLOYEE_ID = 10003;
 
--- 部署が未設定の社員をまとめて埋める（IS NULL で絞る）
-UPDATE EMPLOYEE SET DEPARTMENT_NAME = '総務部' WHERE DEPARTMENT_NAME IS NULL;
+-- 部署が未設定の社員（初めから未設定の Victor と、いま NULL にした Carol）をまとめて埋める（IS NULL で絞る）
+UPDATE EMPLOYEE SET DEPARTMENT_NAME = 'HR' WHERE DEPARTMENT_NAME IS NULL;
 
 -- ── WHERE を付け忘れるとどうなるか ───────────────────
 -- 次の 1 行の先頭の -- を外して実行すると、全員の月給が同じ値になる
--- もう一度このファイルを実行すれば、元の 4 件から始め直せる
+-- もう一度このファイルを実行すれば、元の 16 件から始め直せる
 -- UPDATE EMPLOYEE SET SALARY = 1
 
 -- 更新後の状態を確かめる

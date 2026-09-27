@@ -10,7 +10,7 @@ SELECT COUNT(*) AS 全件数 FROM EMPLOYEE;
 SELECT COUNT(*) AS 月給40万以上 FROM EMPLOYEE WHERE 400000 <= SALARY;
 
 -- カラム名を指定すると、そのカラムが NULL の行は数えない
--- 全件数（9）との差が、部署未設定の 1 件である
+-- 全件数（16）との差が、部署未設定の 1 件（Victor）である
 SELECT COUNT(*) AS 全件数, COUNT(DEPARTMENT_NAME) AS 部署あり FROM EMPLOYEE;
 
 -- 値の種類を数える（DISTINCT との組み合わせ）
@@ -19,7 +19,7 @@ SELECT COUNT(DISTINCT DEPARTMENT_NAME) AS 部署の数 FROM EMPLOYEE;
 -- ── SUM: 合計 ───────────────────────────────────────
 SELECT SUM(SALARY) AS 月給合計 FROM EMPLOYEE;
 
-SELECT SUM(SALARY) AS 営業部の合計 FROM EMPLOYEE WHERE DEPARTMENT_NAME = '営業部';
+SELECT SUM(SALARY) AS SALESの合計 FROM EMPLOYEE WHERE DEPARTMENT_NAME = 'SALES';
 
 -- ── AVG: 平均 ───────────────────────────────────────
 -- SALARY は INT なので、平均も整数に丸められる

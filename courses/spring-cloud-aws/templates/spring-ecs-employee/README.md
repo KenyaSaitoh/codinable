@@ -25,7 +25,7 @@ HSQLDB サーバーの起動や `setupHsqldb` は不要です。
 
 ```bash
 curl http://localhost:8080/employees
-curl http://localhost:8080/employees/1
+curl http://localhost:8080/employees/10001
 curl http://localhost:8080/departments
 ```
 

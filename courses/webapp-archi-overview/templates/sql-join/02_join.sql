@@ -10,18 +10,23 @@ SELECT E.EMPLOYEE_NAME, D.DEPARTMENT_NAME, D.LOCATION, E.SALARY
   FROM EMPLOYEE E
  INNER JOIN DEPARTMENT D ON E.DEPARTMENT_ID = D.DEPARTMENT_ID
  ORDER BY E.EMPLOYEE_ID;
--- 部署が未設定の Eve は出てこない（対応する部署が無いため）
+-- 部署が未設定の Victor は出てこない（対応する部署が無いため）
 
 -- ── 左外部結合: 左側は漏らさない ────────────────────
 -- 左（EMPLOYEE）の全件を返し、対応する部署が無ければ NULL で埋める
--- Eve の部署名が NULL で出てくる
+-- Victor の部署名が NULL で出てくる
 SELECT E.EMPLOYEE_NAME, D.DEPARTMENT_NAME
   FROM EMPLOYEE E
   LEFT JOIN DEPARTMENT D ON E.DEPARTMENT_ID = D.DEPARTMENT_ID
  ORDER BY E.EMPLOYEE_ID;
 
 -- ── 左右を入れ替えると見えるものが変わる ────────────────
--- 部署を左に置くと、社員が 1 人もいない監査室も出てくる
+-- 初期データの 4 部署にはどれも社員がいるので、社員が 1 人もいない部署を 1 つ足す
+-- （reset.sql が実行のたびに作り直すので、足した部署は次の実行で消える）
+INSERT INTO DEPARTMENT VALUES (5, 'AUDIT', 'TOKYO HQ');
+
+-- 部署を左に置くと、社員が 1 人もいない AUDIT も出てくる
+-- 逆に、部署の無い Victor は出てこない
 SELECT D.DEPARTMENT_NAME, E.EMPLOYEE_NAME
   FROM DEPARTMENT D
   LEFT JOIN EMPLOYEE E ON D.DEPARTMENT_ID = E.DEPARTMENT_ID
@@ -31,13 +36,13 @@ SELECT D.DEPARTMENT_NAME, E.EMPLOYEE_NAME
 SELECT E.EMPLOYEE_NAME, D.DEPARTMENT_NAME, E.SALARY
   FROM EMPLOYEE E
  INNER JOIN DEPARTMENT D ON E.DEPARTMENT_ID = D.DEPARTMENT_ID
- WHERE D.LOCATION = '本社'
+ WHERE D.LOCATION = 'YOKOHAMA BRANCH'
    AND 400000 <= E.SALARY
  ORDER BY E.SALARY DESC;
 
 -- ── 結合してから集計する ────────────────────────────
 -- 部署ごとの人数と平均月給。社員のいない部署も残したいので LEFT JOIN にする
--- COUNT(E.EMPLOYEE_ID) はカラム指定なので、NULL の行を数えない（監査室が 0 人になる）
+-- COUNT(E.EMPLOYEE_ID) はカラム指定なので、NULL の行を数えない（AUDIT が 0 人になる）
 SELECT D.DEPARTMENT_NAME,
        COUNT(E.EMPLOYEE_ID) AS 人数,
        AVG(E.SALARY)        AS 平均月給
@@ -47,11 +52,12 @@ SELECT D.DEPARTMENT_NAME,
  ORDER BY 人数 DESC, D.DEPARTMENT_NAME;
 
 -- ── 3 つ以上のテーブルをつなぐ ──────────────────────
--- JOIN は並べて書ける。ここでは部署を 2 回使って「同じ所在地の同僚」を出している
+-- JOIN は並べて書ける。ここでは部署を 2 回使って「Carol と同じ所在地の同僚」を出している
 SELECT E.EMPLOYEE_NAME AS 社員, D.LOCATION AS 所在地, E2.EMPLOYEE_NAME AS 同じ所在地の社員
   FROM EMPLOYEE E
  INNER JOIN DEPARTMENT D  ON E.DEPARTMENT_ID = D.DEPARTMENT_ID
  INNER JOIN DEPARTMENT D2 ON D.LOCATION = D2.LOCATION
  INNER JOIN EMPLOYEE E2   ON D2.DEPARTMENT_ID = E2.DEPARTMENT_ID
- WHERE E.EMPLOYEE_ID <> E2.EMPLOYEE_ID
- ORDER BY E.EMPLOYEE_ID, E2.EMPLOYEE_ID;
+ WHERE E.EMPLOYEE_NAME = 'Carol'
+   AND E.EMPLOYEE_ID <> E2.EMPLOYEE_ID
+ ORDER BY E2.EMPLOYEE_ID;
