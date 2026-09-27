@@ -3760,14 +3760,41 @@ body:not(.sidebar-open) .sidebar.explorer { display: flex; }
 
 /* チャプターの区切り。リスト自体はフラットなまま、
    どのチャプターのものかを示すだけの見出し (折りたためない) */
+/* チャプターの見出し。押すとそのチャプターの演習を開閉する (三角形が向きで状態を表す) */
 .exercise-chapter {
-  padding: 7px 10px 2px;
-  font-size: calc(var(--editor-font-size) - 5px);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 10px 4px;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: calc(var(--editor-font-size) - 4px);
   font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 0.04em;
+  color: var(--text-sub);
+  text-align: left;
+  cursor: pointer;
   user-select: none;
 }
+.exercise-chapter:hover { background: var(--bg-hover); color: var(--text-main); }
+.exercise-chapter-caret {
+  flex-shrink: 0;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid currentColor;
+  transition: transform 0.12s;
+}
+.exercise-chapter[aria-expanded="true"] .exercise-chapter-caret { transform: rotate(90deg); }
+.exercise-chapter-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.exercise-chapter-items.collapsed { display: none; }
 
 .exercise-item {
   display: flex;
@@ -3957,8 +3984,19 @@ body.theme-dark .exercise-item.active {
 /* ── 出力タブ: 読みやすいよう Chatinable より少し大きくする ── */
 .run-tab { font-size: calc(var(--editor-font-size) - 2px); padding: 5px 12px 4px; }
 
-/* ── 実行対象: 選択肢の名前が途中で切れないよう幅を広げる ── */
-.gradle-task-select { max-width: 240px; }
+/* ── 実行対象のセレクト ──
+   講座・演習によって幅が変わると「実行」ボタンの位置が動くので、幅は固定にする
+   文字は開いたときの一覧も含めて読みやすい大きさにする (一覧はセレクトの文字の大きさに従う) */
+.gradle-task-select {
+  width: 320px;
+  max-width: 320px;
+  height: 30px;
+  padding: 3px 10px;
+  font-size: calc(var(--editor-font-size) - 2px);
+  text-overflow: ellipsis;
+}
+.gradle-task-select option { font-size: calc(var(--editor-font-size) - 2px); }
+.gradle-task-group .btn-run, .toolbar .btn-stop { height: 30px; }
 
 /* ── 設定: 横幅を使って 2 段にし、スクロールせずに全体を見せる ── */
 .settings-panel { width: 940px; max-width: 94vw; max-height: 92vh; }
@@ -4440,3 +4478,103 @@ body.theme-dark .exercise-item.active {
   animation: busy-spin 0.8s linear infinite;
 }
 @keyframes busy-spin { to { transform: rotate(360deg); } }
+
+/* ── チャットの送信 / 中断 ──
+   大きさは「実行」ボタン (.btn-run) とそろえる。送信中は同じボタンが「中断」になる */
+.chat-actions .chat-send-btn { flex: 0 0 auto; margin-left: 12px; gap: 6px; }
+.chat-send-btn.is-streaming { border-color: var(--accent-red); color: var(--accent-red); }
+.chat-send-btn.is-streaming:hover { background: color-mix(in srgb, var(--accent-red) 12%, transparent); }
+.btn-spinner {
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: busy-spin 0.8s linear infinite;
+}
+
+/* ── AI の応答 (Markdown) ──
+   文中の改行をそのまま出す pre-wrap のままだと、タグのあいだの改行が空行になる */
+.chat-bubble.md-body { white-space: normal; padding: 8px 12px; line-height: 1.55; }
+.chat-bubble.md-body p { margin: 0 0 6px; }
+/* 番号付きリストの番号が吹き出しの外へはみ出さないよう、内側に余白を取る */
+.chat-bubble.md-body ul,
+.chat-bubble.md-body ol { padding-left: 1.9em; margin: 4px 0 6px; }
+.chat-bubble.md-body li { margin: 2px 0; }
+.chat-bubble.md-body pre { position: relative; }
+
+/* ── コピー ── */
+.chat-copy {
+  margin-top: 3px;
+  padding: 1px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: calc(var(--editor-font-size) - 5px);
+  cursor: pointer;
+}
+.chat-copy:hover { color: var(--text-main); border-color: var(--accent-blue); }
+.chat-code-copy {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 1px 7px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: calc(var(--editor-font-size) - 5px);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.chat-bubble pre:hover .chat-code-copy,
+.chat-code-copy:focus-visible,
+.chat-code-copy.copied { opacity: 1; }
+.chat-copy.copied,
+.chat-code-copy.copied { color: var(--accent-green); border-color: var(--accent-green); }
+
+/* ── Markdown ビューア (README・SCHEMA.md) ──
+   エディタの入れ物は中身を隠しても場所を取るので、ビューアを出しているあいだは畳む */
+.editor-section:has(#md-preview:not(.hidden)) #editor-hosts { display: none; }
+.md-preview { background: var(--bg-base); color: var(--text-main); }
+.md-preview h1 { font-size: calc(var(--editor-font-size) + 6px); margin: 4px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); }
+.md-preview h2 { font-size: calc(var(--editor-font-size) + 3px); margin: 22px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border-color); }
+.md-preview h3 { font-size: calc(var(--editor-font-size) + 1px); margin: 16px 0 6px; }
+.md-preview p { margin: 0 0 10px; }
+.md-preview ul, .md-preview ol { padding-left: 1.8em; margin: 0 0 10px; }
+.md-preview table { border-collapse: collapse; margin: 6px 0 14px; }
+.md-preview th, .md-preview td { border: 1px solid var(--border-color); padding: 4px 10px; text-align: left; vertical-align: top; }
+.md-preview th { background: var(--bg-overlay); font-weight: 700; }
+.md-preview pre code { padding: 0; background: transparent; }
+
+/* ── チャット入力の下の行 (AI モード・Ask / Agent・送信) ──
+   押し間違えないよう、行の高さ・文字・ラジオボタン・送信ボタンをひと回り (1.2 倍) 大きくする */
+.chat-actions { min-height: 38px; padding: 2px 0; }
+.chat-mode-label { font-size: calc(var(--editor-font-size) - 2px); }
+.chat-mode { gap: 18px; }
+.chat-mode-option { font-size: calc(var(--editor-font-size) - 1px); gap: 7px; padding: 5px 0; }
+.chat-mode-option input { width: 17px; height: 17px; }
+.chat-actions .chat-send-btn {
+  width: 104px;
+  height: 36px;
+  font-size: 14px;
+}
+.chat-actions .chat-send-btn .btn-spinner { width: 13px; height: 13px; }
+
+/* ── 何が AI に渡るかの案内 (1 行だけ。選ばせない・外させない) ── */
+.chat-context-note {
+  margin: 0;
+  padding: 6px 10px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font-size: calc(var(--editor-font-size) - 4px);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  flex-shrink: 0;
+}

@@ -53,6 +53,42 @@ descriptions:
 udemy:
   url: https://github.com/KenyaSaitoh/learn_java_db_aidd
 
+# チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
+chapters:
+  3:
+    ja: 'JDBCの接続・CRUD・トランザクション'
+    en: 'JDBC Connections, CRUD and Transactions'
+  4:
+    ja: 'Table Data GatewayとMyBatisの基本'
+    en: 'Table Data Gateway and MyBatis Basics'
+  5:
+    ja: 'Data MapperとJPAの基本'
+    en: 'Data Mapper and JPA Basics'
+  6:
+    ja: '同時更新と楽観ロック・悲観ロック'
+    en: 'Concurrent Updates with Optimistic and Pessimistic Locking'
+  7:
+    ja: '関連の読み込み方式とMyBatis'
+    en: 'Loading Associations with MyBatis'
+  8:
+    ja: 'JPAの関連・フェッチ・カスケード'
+    en: 'JPA Associations, Fetching and Cascading'
+  9:
+    ja: 'JPQLの検索・結合・集約'
+    en: 'JPQL Queries, Joins and Aggregation'
+  10:
+    ja: 'JPAの一括更新とネイティブSQL'
+    en: 'JPA Bulk Updates and Native SQL'
+  11:
+    ja: 'MyBatisとCriteria APIの動的検索'
+    en: 'Dynamic Queries with MyBatis and the Criteria API'
+  12:
+    ja: 'JPAの値オブジェクト・複合主キー'
+    en: 'JPA Value Objects and Composite Keys'
+  13:
+    ja: 'JPAの継承とライフサイクル設計'
+    en: 'JPA Inheritance and Lifecycle Design'
+
 exercises:
   # ── チャプター3: JDBC ─────────────────────────────
   - id: jdbc-connection
@@ -74,10 +110,7 @@ exercises:
         DriverManager and DataSource. Run Gradle: test and check in the test results tab the tests for the
         database product name, the initial autoCommit value and rejecting incomplete URLs.
     openFiles:
-      - src/main/java/pro/kensait/db/connection/JdbcUrl.java
       - src/main/java/pro/kensait/db/connection/ConnectionFactory.java
-      - src/test/java/pro/kensait/db/connection/ConnectionFactoryTest.java
-      - README.md
 
   - id: jdbc-crud
     chapter: 3
@@ -99,8 +132,7 @@ exercises:
         duplicate keys, and names containing SQL syntax being stored as plain values.
     openFiles:
       - src/main/java/pro/kensait/db/jdbc/EmployeeDao.java
-      - src/test/java/pro/kensait/db/jdbc/EmployeeDaoTest.java
-      - README.md
+      - SCHEMA.md
 
   - id: jdbc-transaction
     chapter: 3
@@ -123,8 +155,7 @@ exercises:
         returns the head count of a department.
     openFiles:
       - src/main/java/pro/kensait/db/transaction/PayrollService.java
-      - src/test/java/pro/kensait/db/transaction/PayrollServiceTest.java
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター4: MyBatis の基本 ─────────────────────
   - id: mybatis-basic-1
@@ -148,10 +179,8 @@ exercises:
         Compare the SQL and parameters on the "==> Preparing" lines and the counts on "<== Total / Updates"
         with mybatis-mapper.xml. To run just one, comment out the other lines of mains.txt with #.
     openFiles:
-      - src/main/resources/mybatis-config.xml
-      - src/main/resources/mybatis-mapper.xml
       - src/main/java/pro/kensait/mybatis/company/main1/SelectMain1.java
-      - README.md
+      - SCHEMA.md
 
   - id: mybatis-basic-2
     chapter: 4
@@ -173,9 +202,7 @@ exercises:
         generated key written back into Employee after the INSERT.
     openFiles:
       - src/main/resources/mybatis-mapper.xml
-      - src/main/java/pro/kensait/mybatis/company/main/InsertMain1.java
-      - src/main/java/pro/kensait/mybatis/company/dto/Employee.java
-      - README.md
+      - SCHEMA.md
 
   - id: mybatis-crud
     chapter: 4
@@ -194,10 +221,8 @@ exercises:
         A small sample that pairs the EmployeeMapper interface with the SQL IDs in EmployeeMapper.xml.
         Run Gradle: test and look at the tests covering insert, find, update, delete and commit.
     openFiles:
-      - src/main/java/pro/kensait/db/mybatis/EmployeeMapper.java
       - src/main/resources/pro/kensait/db/mybatis/EmployeeMapper.xml
-      - src/test/java/pro/kensait/db/mybatis/EmployeeMapperTest.java
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター5: JPA の基本 ─────────────────────────
   - id: jpa-basic-1
@@ -219,10 +244,8 @@ exercises:
         Read the SQL Hibernate prints and see how find, persist and remove map to SQL, and how a plain
         setter call in UpdateMain becomes an UPDATE at commit.
     openFiles:
-      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - src/main/java/pro/kensait/jpa/company/main/SelectMain.java
       - src/main/java/pro/kensait/jpa/company/main/UpdateMain.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-basic-2
     chapter: 5
@@ -243,9 +266,7 @@ exercises:
         the date is read back.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - src/main/java/pro/kensait/jpa/company/type/JobType.java
-      - src/main/java/pro/kensait/jpa/company/main/InsertMain.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-crud
     chapter: 5
@@ -265,9 +286,7 @@ exercises:
         transaction. Run Gradle: test and follow this split in the test results and the test code.
     openFiles:
       - src/main/java/pro/kensait/db/jpa/EmployeeRepository.java
-      - src/test/java/pro/kensait/db/jpa/EmployeeRepositoryTest.java
-      - src/main/resources/META-INF/persistence.xml
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター6: 楽観ロック・悲観ロック ─────────────
   - id: mybatis-lock
@@ -293,9 +312,7 @@ exercises:
         stale version affects 0 rows.
     openFiles:
       - src/main/java/pro/kensait/mybatis/company/main/OptimisticLockMain1.java
-      - src/main/java/pro/kensait/mybatis/company/main/PessimisticLockMain1.java
-      - mains.txt
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-lock
     chapter: 6
@@ -319,9 +336,7 @@ exercises:
         first one commits. Gradle: test runs OptimisticLockTest, which checks that a stale version is rejected.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - src/main/java/pro/kensait/jpa/company/optimistic/main/LockMain.java
-      - src/main/java/pro/kensait/jpa/company/pessimistic/main/WriteLockMain.java
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター7: 関連の読み込み（MyBatis）──────────
   - id: mybatis-relation
@@ -343,10 +358,8 @@ exercises:
         Compare how many SQL statements appear in the output when the same employees and departments are loaded
         with one JOIN versus nested selects.
     openFiles:
-      - src/main/resources/mybatis-mapper-flat.xml
       - src/main/resources/mybatis-mapper-join.xml
-      - src/main/resources/mybatis-mapper-nest.xml
-      - README.md
+      - SCHEMA.md
 
   - id: mybatis-dynamic-summary
     dir: mybatis-dynamic
@@ -369,9 +382,7 @@ exercises:
         (The same project is used again for dynamic SQL in chapter 11.)
     openFiles:
       - src/main/resources/pro/kensait/db/mybatisdynamic/CompanyMapper.xml
-      - src/main/java/pro/kensait/db/mybatisdynamic/DepartmentSummary.java
-      - src/test/java/pro/kensait/db/mybatisdynamic/CompanyMapperTest.java
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター8: JPA の関連 ─────────────────────────
   - id: jpa-relation-1
@@ -395,10 +406,8 @@ exercises:
         see when SELECTs are issued for EAGER vs LAZY and how CascadeType.ALL spreads a delete.
         In the last pair, the employee update cascaded from merging the department ends with OptimisticLockException.
     openFiles:
-      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
       - src/main/java/pro/kensait/jpa/company/entity/Department.java
-      - src/main/java/pro/kensait/jpa/company/main/crud/FetchStrategyMain.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-relations
     chapter: 8
@@ -418,9 +427,7 @@ exercises:
         employees via fetch join. Run Gradle: test and check CompanyQueryTest and the SQL it prints.
     openFiles:
       - src/main/java/pro/kensait/db/jparelation/Department.java
-      - src/main/java/pro/kensait/db/jparelation/CompanyQuery.java
-      - src/test/java/pro/kensait/db/jparelation/CompanyQueryTest.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-relation-2
     chapter: 8
@@ -441,9 +448,7 @@ exercises:
         annotations.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - src/main/java/pro/kensait/jpa/company/entity/Project.java
-      - src/main/java/pro/kensait/jpa/company/main/InsertMain.java
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター9: JPQL ───────────────────────────────
   - id: jpa-jpql-query
@@ -466,9 +471,7 @@ exercises:
         For each section, compare the JPQL with the SQL Hibernate generated and the results.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/main/JpaQueryMain.java
-      - src/main/java/pro/kensait/jpa/company/main/JpaTypedQueryMain.java
-      - src/main/java/pro/kensait/jpa/company/main/JpaConstructorMain.java
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター10: 一括更新とネイティブSQL ──────────
   - id: jpa-jpql-query-bulk
@@ -494,9 +497,7 @@ exercises:
         COMMIT change when a flush happens.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/main/JpaBulkUpdateMain1.java
-      - src/main/java/pro/kensait/jpa/company/main/JpaBulkUpdateMain2.java
-      - src/main/java/pro/kensait/jpa/company/main/JpaFlashModeMain.java
-      - mains.txt
+      - SCHEMA.md
 
   - id: jpa-jpql-native
     chapter: 10
@@ -518,9 +519,7 @@ exercises:
         set mapping and a bulk update written in SQL.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/main/JpaNativeQueryMain1.java
-      - src/main/java/pro/kensait/jpa/company/entity/EmployeeQueryResult1.java
-      - src/main/java/pro/kensait/jpa/company/main/JpaNativeQueryMain3.java
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター11: 動的検索 ─────────────────────────
   - id: mybatis-dynamic-sample
@@ -542,9 +541,7 @@ exercises:
         passing conditions, and how many rows come back.
     openFiles:
       - src/main/resources/mybatis-mapper.xml
-      - src/main/java/pro/kensait/mybatis/company/dto/EmployeeDynamicParam.java
-      - src/main/java/pro/kensait/mybatis/company/main/DynamicSelectMain1.java
-      - README.md
+      - SCHEMA.md
 
   - id: mybatis-dynamic
     chapter: 11
@@ -565,10 +562,8 @@ exercises:
         SQL with where, if and foreach. Run Gradle: test and check in CompanyMapperTest the result when department, salary
         and the ID list are all given at once.
     openFiles:
-      - src/main/java/pro/kensait/db/mybatisdynamic/EmployeeFilter.java
       - src/main/resources/pro/kensait/db/mybatisdynamic/CompanyMapper.xml
-      - src/test/java/pro/kensait/db/mybatisdynamic/CompanyMapperTest.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-criteria
     chapter: 11
@@ -588,8 +583,7 @@ exercises:
         conditions only when given. Check in the output which SQL is generated from conditions built in Java code.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/main/CriteriaMain1.java
-      - src/main/java/pro/kensait/jpa/company/main/CriteriaMain2.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-relations-criteria
     dir: jpa-relations
@@ -610,8 +604,7 @@ exercises:
         Run Gradle: test and check the corresponding test in CompanyQueryTest and the SQL it prints.
     openFiles:
       - src/main/java/pro/kensait/db/jparelation/CompanyQuery.java
-      - src/test/java/pro/kensait/db/jparelation/CompanyQueryTest.java
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター12: 値オブジェクト・複合主キー ──────
   - id: jpa-embeddable
@@ -633,9 +626,7 @@ exercises:
         use the SQL and results to see the address, which has no ID of its own, read as columns of the owning table.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/entity/Address.java
-      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - src/main/java/pro/kensait/jpa/company/main/EmbeddableSelectMain.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-collection
     chapter: 12
@@ -655,8 +646,7 @@ exercises:
         results how the value collection is read from a separate table.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - src/main/java/pro/kensait/jpa/company/main/SelectMain.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-secondary-table
     chapter: 12
@@ -676,8 +666,7 @@ exercises:
         SQL joining the two tables is generated.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - src/main/java/pro/kensait/jpa/company/main/SelectMain1.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-embedded-id-1
     chapter: 12
@@ -697,9 +686,7 @@ exercises:
         EmbeddedId Select, Insert, Update and Delete mains; check that the SQL identifies rows by the pair of columns.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/entity/EmployeePK.java
-      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - src/main/java/pro/kensait/jpa/company/main/EmbeddedIdSelectMain.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-id-class-1
     chapter: 12
@@ -718,10 +705,8 @@ exercises:
         The same composite key expressed with @IdClass. Gradle: run executes the IdClass Select, Insert, Update and
         Delete mains; compare the SQL with jpa-embedded-id-1.
     openFiles:
-      - src/main/java/pro/kensait/jpa/company/entity/EmployeePK.java
       - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - src/main/java/pro/kensait/jpa/company/main/IdClassSelectMain.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-embedded-id-2
     chapter: 12
@@ -741,10 +726,8 @@ exercises:
         Gradle: run executes the four mains; check in the SQL how the column that is both key and foreign key is
         read and written.
     openFiles:
-      - src/main/java/pro/kensait/jpa/company/entity/Subsidiary.java
-      - src/main/java/pro/kensait/jpa/company/entity/EmployeePK.java
       - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-id-class-2
     chapter: 12
@@ -763,10 +746,8 @@ exercises:
         The model of jpa-embedded-id-2 expressed with @IdClass. Gradle: run executes the four mains; compare the SQL
         and results with jpa-embedded-id-2. Gradle: test also checks key comparison by value.
     openFiles:
-      - src/main/java/pro/kensait/jpa/company/entity/Subsidiary.java
-      - src/main/java/pro/kensait/jpa/company/entity/EmployeePK.java
       - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター13: 継承とライフサイクル ─────────────
   - id: jpa-inheritance-1
@@ -787,9 +768,7 @@ exercises:
         that the discriminator column decides the actual class of each loaded object.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - src/main/java/pro/kensait/jpa/company/entity/Fulltimer.java
-      - src/main/java/pro/kensait/jpa/company/entity/Parttimer.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-inheritance-2
     chapter: 13
@@ -809,9 +788,7 @@ exercises:
         SelectMain1-2; compared with jpa-inheritance-1, confirm that joins appear in the SQL.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/entity/Employee.java
-      - src/main/java/pro/kensait/jpa/company/entity/Fulltimer.java
-      - src/main/java/pro/kensait/jpa/company/entity/Parttimer.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-mapped-superclass
     chapter: 13
@@ -831,9 +808,7 @@ exercises:
         confirm in the SQL that SuperEmployee itself is neither a table nor a query target.
     openFiles:
       - src/main/java/pro/kensait/jpa/company/entity/SuperEmployee.java
-      - src/main/java/pro/kensait/jpa/company/entity/SubEmployee.java
-      - src/main/java/pro/kensait/jpa/company/main/SelectMain.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-entity-listener-1
     chapter: 13
@@ -854,10 +829,8 @@ exercises:
         Gradle: run executes the Select, Insert, Update and Delete mains; check when each notification appears
         relative to the SQL.
     openFiles:
-      - src/main/java/pro/kensait/jpa/company/entity/Employee.java
       - src/main/java/pro/kensait/jpa/company/entity/EmployeeEntityListener.java
-      - src/main/java/pro/kensait/jpa/company/main/ListernerInsertMain.java
-      - README.md
+      - SCHEMA.md
 
   - id: jpa-entity-listener-2
     chapter: 13
@@ -879,6 +852,4 @@ exercises:
         output that loading alone does not change the balance, and the balance after the details are applied.
     openFiles:
       - src/main/java/pro/kensait/jpa/entity/AccountListener.java
-      - src/main/java/pro/kensait/jpa/service/AccountBalanceService.java
-      - src/main/java/pro/kensait/jpa/main/AccountBalanceMain.java
-      - README.md
+      - SCHEMA.md

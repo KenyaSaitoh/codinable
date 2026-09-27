@@ -49,6 +49,21 @@ descriptions:
 udemy:
   url: https://github.com/KenyaSaitoh/learn_spring_aidd_practical
 
+# チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
+chapters:
+  2:
+    ja: 'レイヤ設計・DTO・業務処理と画面方式の比較'
+    en: 'Layered Design, DTOs, Business Logic and UI Approaches Compared'
+  3:
+    ja: 'JPA・トランザクション・外部APIと入力検証'
+    en: 'JPA, Transactions, External APIs and Validation'
+  4:
+    ja: 'Spring MVCの画面生成・セッション・認証・PRG'
+    en: 'Pages, Sessions, Authentication and PRG in Spring MVC'
+  5:
+    ja: 'React・REST API・JWT認証と非同期処理の状態管理'
+    en: 'React, REST APIs, JWT Authentication and Async State Management'
+
 exercises:
   # ── チャプター2: レイヤ設計・DTO・業務処理 ─────────────────
   - id: leaf-books-api-layers
@@ -73,10 +88,8 @@ exercises:
         external API. Run starts the API on port 8080. README.md shows how to log in and check
         the JSON, including starting Customer Hub and React.
     openFiles:
-      - src/main/java/pro/kensait/leafbooks/api/OrderController.java
-      - src/main/java/pro/kensait/leafbooks/service/order/OrderService.java
-      - src/main/java/pro/kensait/leafbooks/external/CustomerApiClient.java
       - README.md
+      - src/main/java/pro/kensait/leafbooks/api/OrderController.java
 
   - id: leaf-books-mvc-layers
     dir: leaf-books-mvc
@@ -102,9 +115,6 @@ exercises:
         cart to see the delivery fee and the order history.
     openFiles:
       - src/main/java/pro/kensait/leafbooks/service/order/OrderService.java
-      - src/main/java/pro/kensait/leafbooks/service/order/OrderTO.java
-      - src/main/java/pro/kensait/leafbooks/service/delivery/DeliveryFeeService.java
-      - README.md
 
   # ── チャプター3: JPA・トランザクション・外部API・入力検証 ─────
   - id: leaf-books-mvc-jpa
@@ -129,10 +139,8 @@ exercises:
         boundary of OrderService that calls it. Run executes test; results such as the
         StockRepositoryTest case where the update fails on a version mismatch appear in the test tab.
     openFiles:
-      - src/main/java/pro/kensait/leafbooks/entity/OrderDetail.java
       - src/main/java/pro/kensait/leafbooks/repository/StockRepository.java
-      - src/main/java/pro/kensait/leafbooks/service/order/OrderService.java
-      - README.md
+      - SCHEMA.md
 
   - id: customer-hub
     chapter: 3
@@ -157,9 +165,6 @@ exercises:
         Read how CustomerApi calls CustomerService and turns business exceptions into HTTP statuses.
     openFiles:
       - src/main/java/pro/kensait/customer/api/CustomerApi.java
-      - src/main/java/pro/kensait/customer/service/CustomerService.java
-      - src/main/java/pro/kensait/customer/api/CustomerExceptionHandler.java
-      - README.md
 
   - id: leaf-books-mvc-external
     dir: leaf-books-mvc
@@ -186,9 +191,6 @@ exercises:
         existing email, and logging in while Customer Hub is stopped.
     openFiles:
       - src/main/java/pro/kensait/leafbooks/external/CustomerApiClient.java
-      - src/main/java/pro/kensait/leafbooks/config/AppConfig.java
-      - src/main/java/pro/kensait/leafbooks/web/customer/CustomerParam.java
-      - README.md
 
   # ── チャプター4: Spring MVC の画面生成・セッション・認証・PRG ──
   - id: leaf-books-mvc-web
@@ -217,10 +219,7 @@ exercises:
         alice@gmail.com / password and go through book selection, cart, order and order history.
         Reloading the order-complete page does not place the order twice.
     openFiles:
-      - src/main/java/pro/kensait/leafbooks/web/book/BookController.java
-      - src/main/java/pro/kensait/leafbooks/web/login/TokenProcessor.java
       - src/main/java/pro/kensait/leafbooks/web/order/OrderController.java
-      - README.md
 
   # ── チャプター5: React・REST API・JWT 認証 ─────────────────
   - id: leaf-books-spa
@@ -250,9 +249,6 @@ exercises:
         Log in as alice@gmail.com / password and go through to an order.
     openFiles:
       - frontend/src/App.tsx
-      - frontend/src/contexts/CartContext.tsx
-      - frontend/src/pages/OrderConfirmPage.tsx
-      - README.md
 
   - id: leaf-books-api-jwt
     dir: leaf-books
@@ -278,7 +274,5 @@ exercises:
         a terminal, then follow the curl steps in README.md to see the 403 before login and
         /api/books and /api/orders/history after it. To check through the UI, start frontend with npm run dev.
     openFiles:
-      - src/main/java/pro/kensait/leafbooks/api/AuthController.java
-      - src/main/java/pro/kensait/leafbooks/security/JwtAuthenticationFilter.java
-      - src/main/java/pro/kensait/leafbooks/api/OrderController.java
       - README.md
+      - src/main/java/pro/kensait/leafbooks/api/AuthController.java

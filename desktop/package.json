@@ -6,6 +6,8 @@
   "scripts": {
     "build:editor": "node builder/build-editor.js",
     "build:courses": "node scripts/build-courses.js",
+    "release:app": "node scripts/release.js app",
+    "release:courses": "node scripts/release.js courses",
     "start": "npm run build:editor && node scripts/start.js",
     "pack": "npm run build:editor && electron-builder --win --dir --config builder/electron-builder.js",
     "build": "npm run build:editor && electron-builder --win --publish never --config builder/electron-builder.js"

@@ -11,6 +11,9 @@
 #  個人（設定画面の「講座フォルダを開く」で開く場所）の順に読む
 #  同じ id があれば version の新しいほうが使われる
 #
+#  chapters       チャプター番号 → 名前（言語ごと）。演習一覧の見出し
+#                 「チャプター7 JavaScriptとTypeScript」になる。講座原稿の目次と同じ名前にする
+#
 #  exercises[] の項目:
 #    id           演習の識別子（dir 省略時はディレクトリ名として使う）
 #    dir          templates/ 配下のディレクトリ名（省略時は id）
@@ -26,6 +29,19 @@
 #    names        演習名（言語ごと）
 #    descriptions 「何をどう動かすか」の説明（言語ごと）
 #    openFiles    演習を開いた直後に開くファイル（プロジェクト相対パス）
+#                 その演習の主役のファイルを 1 つ選ぶ（静的ページは index.html、
+#                 SQL は SCHEMA.md、Spring Boot は Controller など）。2 つにするのは
+#                 README.md にしか無い手順を読ませるときだけ（README.md, 主役 の順）
+#                 node desktop/test/check-courses.js で確かめられる
+#    tabs         出力欄に出すタブ（省略可）。output / tests / sql / terminal /
+#                 messaging / preview から選ぶ。output は常に出る
+#                 省略すると runtime から決まる（static: preview、sql: sql、
+#                 java: terminal、spring / node / react / python: terminal と preview、
+#                 shell: terminal）。雛形に build.gradle があれば tests、
+#                 codinable.services.json があれば messaging が加わる
+#
+#  講座を直して配信するときは version を上げてから npm run release:courses を実行する
+#  （取り組み中の受講者には届かず、次に「新規」で始める人から新しい版になる）
 # ═══════════════════════════════════════════════════════════
 id: webapp-archi-overview
 order: 1
@@ -50,6 +66,30 @@ descriptions:
 
 udemy:
   url: https://github.com/KenyaSaitoh/learn_webapp_archi_overview
+
+# チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
+chapters:
+  3:
+    ja: 'フロントエンドの基本技術'
+    en: 'Front-End Fundamentals'
+  4:
+    ja: 'HTTP'
+    en: 'HTTP'
+  6:
+    ja: 'データベース'
+    en: 'Databases'
+  7:
+    ja: 'JavaScriptとTypeScript'
+    en: 'JavaScript and TypeScript'
+  8:
+    ja: 'サーバーサイドMVC'
+    en: 'Server-Side MVC'
+  9:
+    ja: 'Web API'
+    en: 'Web APIs'
+  10:
+    ja: 'SPA'
+    en: 'SPA'
 
 exercises:
   # ── チャプター3: HTML（構造）──────────────────────────
@@ -160,7 +200,6 @@ exercises:
         textContent and classList. The HTML holds the "before" text, so comparing the
         source with the preview shows exactly what the script did.
     openFiles:
-      - app.js
       - index.html
 
   - id: js-events
@@ -182,7 +221,6 @@ exercises:
         addEventListener and logs them as they fire.
         Interact with the page to see which action produces which event.
     openFiles:
-      - app.js
       - index.html
 
   - id: js-form
@@ -204,7 +242,6 @@ exercises:
         collects the values with FormData. Checks that HTML validation attributes
         cannot express - matching passwords, minimum length - are done in JavaScript.
     openFiles:
-      - app.js
       - index.html
 
   - id: js-fetch
@@ -226,8 +263,7 @@ exercises:
         The point is that the page itself is never reloaded - the basis of the SPA in
         chapter 10. A button that deliberately triggers a 404 exercises the error path.
     openFiles:
-      - app.js
-      - users.json
+      - index.html
 
   # ── チャプター3: CSS（修飾）─────────────────────────
   - id: css-selectors
@@ -249,7 +285,6 @@ exercises:
         ways to write colours (name / hex / RGB / RGBA) and the font and background
         properties. Also shows which rule wins (specificity) and what is inherited.
     openFiles:
-      - style.css
       - index.html
 
   - id: css-box
@@ -271,7 +306,6 @@ exercises:
         Also compares how box-sizing changes the rendered width for the same width
         value, and how display and overflow behave. Change the numbers and watch.
     openFiles:
-      - style.css
       - index.html
 
   - id: css-position
@@ -293,7 +327,6 @@ exercises:
         stacking order with z-index. Scroll the preview to see how the fixed button
         and the sticky heading behave differently.
     openFiles:
-      - style.css
       - index.html
 
   - id: css-layout
@@ -315,7 +348,6 @@ exercises:
         Compares the values of justify-content, how flex distributes width, and how
         grid-column spans cells. Resize the preview to see the wrapping.
     openFiles:
-      - style.css
       - index.html
 
   - id: css-responsive
@@ -339,7 +371,6 @@ exercises:
         and CSS variables that keep colours and spacing in one place.
         Drag the divider between editor and preview to change the width.
     openFiles:
-      - style.css
       - index.html
 
   - id: static-web
@@ -362,7 +393,6 @@ exercises:
         work. The React version in chapter 10 (react-spa) covers the same subject.
     openFiles:
       - index.html
-      - app.js
 
   - id: http-curl
     chapter: 4
@@ -411,8 +441,9 @@ exercises:
         Covers primary-key lookups, projection, comparison operators and the
         AND / OR / IN / BETWEEN / LIKE / IS NULL conditions.
         Run 01_create.sql first, then 02 and 03.
+    # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
     openFiles:
-      - 01_create.sql
+      - SCHEMA.md
 
   - id: sql-crud
     chapter: 6
@@ -433,9 +464,9 @@ exercises:
         Covers the difference between targeting by primary key and by condition, and
         what happens when you forget the WHERE clause.
         Run 01_setup.sql again to get the original 4 rows back.
+    # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
     openFiles:
-      - 01_setup.sql
-      - 02_insert.sql
+      - SCHEMA.md
 
   - id: sql-aggregate
     chapter: 6
@@ -455,9 +486,9 @@ exercises:
         COUNT / SUM / AVG / MAX / MIN together with GROUP BY, HAVING, ORDER BY,
         DISTINCT and LIMIT - head counts and average salary per department.
         Also shows how NULL is treated and why AVG comes back as an integer.
+    # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
     openFiles:
-      - 01_setup.sql
-      - 03_group_by.sql
+      - SCHEMA.md
 
   - id: sql-ddl
     chapter: 6
@@ -478,9 +509,9 @@ exercises:
         DEFAULT) with CREATE TABLE, then changes and drops it with ALTER and DROP TABLE.
         Every statement in 02_constraints.sql fails on purpose - that is how you see
         the constraints working.
+    # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
     openFiles:
-      - 01_create_table.sql
-      - 02_constraints.sql
+      - SCHEMA.md
 
   - id: sql-join
     chapter: 6
@@ -501,9 +532,9 @@ exercises:
         Shows the difference between INNER JOIN and LEFT JOIN (an employee with no
         department, a department with no employees), plus subqueries, views and
         ON DELETE CASCADE.
+    # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
     openFiles:
-      - 01_setup.sql
-      - 02_join.sql
+      - SCHEMA.md
 
   - id: javascript-basics
     chapter: 7
@@ -556,22 +587,25 @@ exercises:
       en: Run a Django application
     descriptions:
       ja: >-
-        同じ計算アプリケーションを Django で書いたものです。「実行」を押すと、初回だけ
-        依存パッケージを自動で準備して開発サーバーを起動します。URLconf、View、Form、
-        Template、Service の責務を Spring MVC 版と見比べてください。
+        Spring MVC 版と同じ計算アプリケーション（四則演算・入力値検証・0 除算のエラー）を
+        Django で書いたものです。「実行」を押すと、初回だけ依存パッケージを自動で準備して
+        開発サーバーを起動し、プレビュータブが開きます。URLconf・View・Form・Template・
+        services の役割を、Spring MVC 版の Controller・CalcParam・Thymeleaf・CalcService と
+        見比べてください。
       en: >-
-        The same calculator written with Django. Run it to install dependencies on the
-        first launch and start the development server. Compare the URLconf, View, Form,
-        Template and Service roles with the Spring MVC version.
+        The same calculator as the Spring MVC version (four operations, input validation and
+        the division-by-zero error), written with Django. Run it to install dependencies on the
+        first launch and start the development server; the preview tab opens. Compare the
+        URLconf, View, Form, Template and services with the Spring MVC Controller, CalcParam,
+        Thymeleaf template and CalcService.
     openFiles:
       - calc/views.py
-      - calc/forms.py
 
   - id: express-calc
     chapter: 8
     lesson: '8.4 Expressによるアプリケーション構築'
     runtime: node
-    # 初回は npm: install を選んでから npm: start に切り替える
+    # 依存 (express / ejs) は実行前に自動で入る (runner.js の needsNpmInstall)
     run: 'npm:start'
     suggestName: express-calc
     names:
@@ -579,11 +613,13 @@ exercises:
       en: Run an Express application
     descriptions:
       ja: >-
-        同じ計算アプリケーションを Express + EJS で書いたものです。
-        初回だけ実行対象を「npm: install」にして実行し、そのあと「npm: start」に戻してください。
+        Spring MVC 版と同じ計算アプリケーション（四則演算・入力値検証・0 除算のエラー）を
+        Express + EJS で書いたものです。「実行」を押すと、初回だけ依存パッケージを自動で
+        入れてからサーバーを起動し、プレビュータブが開きます。
       en: >-
-        The same calculator written with Express + EJS.
-        On the first run choose "npm: install", then switch back to "npm: start".
+        The same calculator as the Spring MVC version (four operations, input validation and
+        the division-by-zero error), written with Express + EJS. Run it to install the
+        dependencies on the first launch and start the server; the preview tab opens.
     openFiles:
       - app.js
 
@@ -608,7 +644,6 @@ exercises:
         (example commands are in the comments of UserController).
     openFiles:
       - src/main/java/pro/kensait/spring/users/UserController.java
-      - src/test/java/pro/kensait/spring/users/UserServiceTest.java
 
   # ── チャプター10: React ─────────────────────────────
   # 原稿の説明順に小さな演習を並べ、最後に名簿管理の総合演習へ進む
@@ -629,7 +664,6 @@ exercises:
         Reuse UserCard with different props and inspect the parent-child component tree.
         The small page demonstrates JSX expressions, className and rendering from an array.
     openFiles:
-      - src/App.tsx
       - src/UserCard.tsx
 
   - id: react-state-props
@@ -649,7 +683,6 @@ exercises:
         A parent owns a list with useState and passes data and a delete callback as props.
         Interact with it to see state changes trigger a new render.
     openFiles:
-      - src/App.tsx
       - src/UserList.tsx
 
   - id: react-form-events
@@ -669,7 +702,6 @@ exercises:
         Handle onChange and onSubmit in controlled inputs whose values stay in state.
         Submission keeps the page in place and renders a confirmation from state.
     openFiles:
-      - src/App.tsx
       - src/ProfileForm.tsx
 
   - id: react-fetch-hooks
@@ -690,7 +722,6 @@ exercises:
         The useUsers hook separates reusable data logic from the display component.
     openFiles:
       - src/hooks/useUsers.ts
-      - src/App.tsx
 
   - id: react-spa
     chapter: 10

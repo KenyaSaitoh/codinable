@@ -1,36 +1,54 @@
-"""リクエストを受け、Form・Service・Templateを結び付けるView。"""
+"""リクエストを受け取り、services に計算させ、表示するテンプレートを返す。
 
-from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
+Spring MVC 版の CalcController にあたる。返すテンプレートの名前
+("calc/input.html") が calc/templates/calc/input.html に対応する。
+HTML はサーバーで組み立てられ、完成した状態でブラウザーに届く。
+"""
+
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.views.decorators.http import require_POST
 
+from . import services
 from .forms import CalcForm
-from .services import add
 
 
 def index(request: HttpRequest) -> HttpResponse:
     return render(request, "calc/input.html", {"form": CalcForm()})
 
 
-def add_by_post(request: HttpRequest) -> HttpResponse:
-    if request.method != "POST":
-        return HttpResponseNotAllowed(["POST"])
-    return _calculate(request, request.POST)
+@require_POST
+def add(request: HttpRequest) -> HttpResponse:
+    return _calculate(request, services.add)
 
 
-def add_by_get(request: HttpRequest) -> HttpResponse:
-    return _calculate(request, request.GET)
+@require_POST
+def subtract(request: HttpRequest) -> HttpResponse:
+    return _calculate(request, services.subtract)
 
 
-def _calculate(request: HttpRequest, data) -> HttpResponse:
-    form = CalcForm(data)
+@require_POST
+def multiply(request: HttpRequest) -> HttpResponse:
+    return _calculate(request, services.multiply)
+
+
+@require_POST
+def divide(request: HttpRequest) -> HttpResponse:
+    return _calculate(request, services.divide)
+
+
+def _calculate(request: HttpRequest, operation) -> HttpResponse:
+    form = CalcForm(request.POST)
+    # 入力値の決まり (forms.py) に反していれば入力画面に戻す
     if not form.is_valid():
-        return render(request, "calc/input.html", {"form": form}, status=400)
+        return render(request, "calc/input.html", {"form": form})
 
     param1 = form.cleaned_data["param1"]
     param2 = form.cleaned_data["param2"]
-    result = add(param1, param2)
-    return render(
-        request,
-        "calc/output.html",
-        {"param1": param1, "param2": param2, "result": result},
-    )
+    try:
+        result = operation(param1, param2)
+    except ValueError as e:
+        # 入力形式は正しいが処理として成立しない場合 (業務エラー) は入力画面に戻す
+        return render(request, "calc/input.html", {"form": form, "error": str(e)})
+    return render(request, "calc/output.html",
+                  {"param1": param1, "param2": param2, "result": result})

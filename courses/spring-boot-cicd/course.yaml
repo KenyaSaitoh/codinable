@@ -48,6 +48,30 @@ descriptions:
 udemy:
   url: https://github.com/KenyaSaitoh/learn_spring_aidd_cicd
 
+# チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
+chapters:
+  2:
+    ja: 'テスト設計とJUnit・Mockito'
+    en: 'Test Design with JUnit and Mockito'
+  3:
+    ja: '業務ルールとSpringの結合テスト'
+    en: 'Business Rules and Spring Integration Tests'
+  4:
+    ja: 'RepositoryとControllerのテスト'
+    en: 'Testing Repositories and Controllers'
+  5:
+    ja: 'HTTPとデータセットによる結合テスト'
+    en: 'Integration Tests with HTTP and Datasets'
+  6:
+    ja: 'Playwrightによる画面操作と状態の検証'
+    en: 'Verifying UI Interaction and State with Playwright'
+  7:
+    ja: 'Gatlingによる負荷と応答時間の検証'
+    en: 'Verifying Load and Response Time with Gatling'
+  8:
+    ja: 'CIと成果物・デリバリーの設計'
+    en: 'Designing CI, Artifacts and Delivery'
+
 exercises:
   # ── チャプター2: テスト設計とJUnit・Mockito（Spring を使わない Java）──
   - id: junit-shipping
@@ -72,8 +96,6 @@ exercises:
         Switch to "run" to print the GOLD member / 4,000 yen example to the console.
     openFiles:
       - src/test/java/pro/kensait/shipping/ShippingFeePolicyTest.java
-      - src/main/java/pro/kensait/shipping/ShippingFeePolicy.java
-      - README.md
 
   - id: mockito-shipping
     chapter: 2
@@ -95,8 +117,6 @@ exercises:
         saves nothing when the rate lookup fails, and the case that never calls the dependencies on invalid input.
     openFiles:
       - src/test/java/pro/kensait/shipping/ShippingServiceTest.java
-      - src/main/java/pro/kensait/shipping/ShippingService.java
-      - README.md
 
   # ── チャプター3: 業務ルールとSpringの結合テスト（社員管理 Web アプリ）──
   - id: spring-test-service
@@ -121,10 +141,7 @@ exercises:
         Run "test" to run them together with the other tests of this app and see the results and coverage.
         Switch to "bootRun" to use the screen at http://localhost:8080/employees in the preview.
     openFiles:
-      - src/test/java/pro/kensait/spring/employee/web/EmployeeParamTest.java
       - src/test/java/pro/kensait/spring/employee/service/EmployeeServiceTest.java
-      - src/test/java/pro/kensait/spring/employee/EmployeeApplicationIntegrationTest.java
-      - README.md
 
   # ── チャプター4: RepositoryとControllerのテスト（同じ雛形を使う）──
   - id: spring-test-slice
@@ -149,10 +166,7 @@ exercises:
         Run "test" and look at the cases of both classes in the test results.
         The database is embedded H2 and the tests initialize it automatically.
     openFiles:
-      - src/test/java/pro/kensait/spring/employee/repository/EmployeeRepositoryTest.java
       - src/test/java/pro/kensait/spring/employee/web/EmployeeControllerWebTest.java
-      - src/main/java/pro/kensait/spring/employee/web/EmployeeController.java
-      - README.md
 
   # ── チャプター5: HTTPとデータセットによる結合テスト ──────
   - id: database-rider-employee
@@ -175,9 +189,7 @@ exercises:
         Change a value in datasets/employees-updated.yml and see which comparison fails.
     openFiles:
       - src/test/java/pro/kensait/spring/employee/database/EmployeeDatabaseRiderTest.java
-      - src/test/resources/datasets/employees.yml
-      - src/test/resources/datasets/employees-updated.yml
-      - README.md
+      - SCHEMA.md
 
   - id: api-test-employee
     chapter: 5
@@ -199,8 +211,6 @@ exercises:
         and update conflicts. Switch to "bootRun" and the API answers at http://localhost:8080/employees (in-memory HSQLDB).
     openFiles:
       - src/test/java/pro/kensait/spring/employee/rest/api/EmployeeApiTest.java
-      - src/main/java/pro/kensait/spring/employee/rest/api/EmployeeApi.java
-      - README.md
 
   # ── チャプター6: Playwrightによる画面操作と状態の検証 ──────
   - id: playwright-employee
@@ -225,8 +235,6 @@ exercises:
         A screenshot (PNG) and a trace (ZIP) per case are saved in build/reports/playwright/.
     openFiles:
       - src/test/java/pro/kensait/spring/employee/e2e/EmployeePlaywrightTest.java
-      - src/test/java/pro/kensait/spring/employee/e2e/EmployeePage.java
-      - README.md
 
   # ── チャプター7: Gatlingによる負荷と応答時間の検証 ──────
   # gatlingRun は実行対象に出ないので、負荷を受けるアプリを bootRun で起動し、
@@ -253,8 +261,6 @@ exercises:
         Switch to "test" to run the integration test that checks the list page, health and the CSV against the initial data.
     openFiles:
       - src/gatling/java/pro/kensait/spring/employee/load/EmployeeSimulation.java
-      - src/gatling/resources/employees.csv
-      - README.md
 
   # ── チャプター8: CIと成果物・デリバリーの設計 ──────────
   # GitHub Actions のワークフローは Codinable の外で動くもの。第3・4章と同じ雛形に
@@ -282,6 +288,3 @@ exercises:
         build/libs/employee-app.jar is produced.
     openFiles:
       - github/workflows/ci.yml
-      - github/workflows/container.yml
-      - build.gradle
-      - README.md

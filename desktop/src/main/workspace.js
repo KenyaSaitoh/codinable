@@ -265,6 +265,34 @@ function createProject({ name, templateDir = null, courseId = null, template = n
  * 上書きだけで、受講者が自分で足したファイルは消さない。消す方が「初期状態」に
  * 忠実だが、試したコードを黙って捨てることになるため、雛形にあるものだけを戻す
  */
+/**
+ * 雛形にあって作業用プロジェクトに無いファイルを足す (上書きはしない)
+ *
+ * プロジェクトは作った時点の雛形の写しなので、あとから雛形に足したファイル
+ * (SQL の演習の SCHEMA.md など) は、以前に作ったプロジェクトには無い
+ * 演習を開くときに「最初に見せるファイル」だけをこれで補う
+ */
+function addMissingFromTemplate({ name, templateDir, files }) {
+  const dir = resolveProjectDir(name);
+  if (!dir || !fs.existsSync(dir)) return { ok: false, error: 'not-found' };
+  if (!templateDir || !fs.existsSync(templateDir)) return { ok: false, error: 'no-template' };
+
+  const added = [];
+  for (const rel of files || []) {
+    const to   = safeJoin(dir, rel);
+    const from = safeJoin(templateDir, rel);
+    if (!to || !from || fs.existsSync(to) || !fs.existsSync(from)) continue;
+    try {
+      fs.mkdirSync(path.dirname(to), { recursive: true });
+      fs.copyFileSync(from, to);
+      added.push(rel);
+    } catch (err) {
+      console.warn(`[workspace] could not add ${rel}:`, err.message);
+    }
+  }
+  return { ok: true, added };
+}
+
 // 初期化でも消さないもの
 //   .codinable    どの講座のどの演習かの記録。消すと演習との対応が切れる
 //   node_modules / .gradle   依存のキャッシュ。雛形からは作れず、消すと次の実行で
@@ -435,6 +463,7 @@ module.exports = {
   writeProjectMeta,
   createProject,
   resetToTemplate,
+  addMissingFromTemplate,
   collectContextFiles,
   listTree,
   readFile,

@@ -14,13 +14,13 @@
 //  ダイアログは OS 標準ではなく画面側の #update-modal で描く。main は
 //  表示の依頼と、押されたボタンの受け取りだけを行う (deps.prompt など)
 //
-//  配信先は app-config.js の UPDATES.baseUrl + '/app' (electron-builder の
-//  generic プロバイダが作る latest.yml と setup.exe を置く)
+//  配信先は app-config.js の getUpdateUrls().app。GitHub Releases の最新リリースに置いた
+//  latest.yml と setup.exe を、generic フィードとして読む (releases/latest/download/…)
 //  配信先が未設定のとき・開発実行のときは確認しない
 // ═══════════════════════════════════════════════════════════
 
 const { app } = require('electron');
-const { getUpdateBaseUrl } = require('../app-config');
+const { getUpdateUrls } = require('../app-config');
 
 let configured = false;
 let checking = false;
@@ -30,8 +30,7 @@ let checking = false;
 const DOWNLOAD_STALL_MS = 120_000;
 
 function feedUrl() {
-  const base = getUpdateBaseUrl();
-  return base ? `${base}/app` : '';
+  return getUpdateUrls().app;
 }
 
 /** 更新を確認できる状態か。できないときは理由も返す (設定画面に出す) */
@@ -39,6 +38,22 @@ function availability() {
   if (!feedUrl()) return { enabled: false, reason: 'not-configured' };
   if (!app.isPackaged) return { enabled: false, reason: 'dev' };
   return { enabled: true };
+}
+
+/** electron-updater の設定ファイル (app-update.yml) を userData に書き、そのパスを返す */
+function writeUpdateConfig() {
+  const fs = require('fs');
+  const path = require('path');
+  const file = path.join(app.getPath('userData'), 'app-update.yml');
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, [
+    'provider: generic',
+    `url: ${JSON.stringify(feedUrl())}`,
+    'channel: latest',
+    'updaterCacheDirName: codinable-updater',
+    '',
+  ].join('\n'), 'utf8');
+  return file;
 }
 
 /**
@@ -93,6 +108,10 @@ async function checkForUpdates(deps, opts = {}) {
         useMultipleRangeRequest: false,
         channel: 'latest',
       });
+      // ダウンロードの置き場の名前などは app-update.yml から読まれる。electron-builder は
+      // NSIS のときしかこれを作らず、配信先を実行時に差し替えたときとも食い違うため、
+      // 自分で書いたものを読ませる
+      autoUpdater.updateConfigPath = writeUpdateConfig();
       configured = true;
     }
 
@@ -157,6 +176,18 @@ async function checkForUpdates(deps, opts = {}) {
     setImmediate(() => autoUpdater.quitAndInstall(false, true));
     return { ok: true, status: 'updated', version: info.version, current };
   } catch (err) {
+    // まだ 1 度も公開していない (latest.yml が無い) ときは「最新」として扱う
+    if (!downloadStarted && /\b404\b/.test(String(err.message))) {
+      if (!silent) {
+        await ask(deps, {
+          kind: 'info',
+          title: t('updTitleCheck'),
+          message: t('updLatest', { version: current }),
+          buttons: [t('updOk')],
+        });
+      }
+      return { ok: true, status: 'latest', current };
+    }
     console.error('[updater] failed:', err.message);
     deps.dismiss?.();
     if (!silent || downloadStarted) {

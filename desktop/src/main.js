@@ -8,7 +8,8 @@
 //    main/runtimes.js      同梱ランタイム (java / node / python / bash …) の解決
 //    main/util.js          出力デコード・プロセス停止・ディレクトリ走査
 //    main/workspace.js     ワークスペースとプロジェクト (実ファイル操作)
-//    main/courses.js       コースパック (講座ごとのサンプル雛形)
+//    main/courses.js       コースパック (講座ごとのサンプル雛形・講座の単独更新)
+//    main/updater.js       アプリ本体の更新 (electron-updater)
 //    main/runner.js        実行エンジン (Gradle / npm / java / python / node / bash)
 //    main/terminal.js      ターミナル (node-pty)
 //    main/static-server.js 静的 Web ページ配信
@@ -221,6 +222,16 @@ ipcMain.handle('ws-reset-template', (_event, { name, lang } = {}) => {
   return workspace.resetToTemplate({ name, templateDir });
 });
 
+// 以前に作ったプロジェクトに、あとから雛形へ足された「最初に見せるファイル」を補う
+ipcMain.handle('ws-add-missing-files', (_event, { name, files, lang } = {}) => {
+  const dir = workspace.resolveProjectDir(name);
+  if (!dir) return { ok: false, error: 'not-found' };
+  const meta = workspace.readProjectMeta(dir);
+  if (!meta.courseId || !meta.template) return { ok: false, error: 'no-template' };
+  const templateDir = courses.findTemplateDir(meta.courseId, meta.template, lang || config.getUiLang());
+  return workspace.addMissingFromTemplate({ name, templateDir, files: Array.isArray(files) ? files : [] });
+});
+
 ipcMain.handle('ws-project-info', (_event, { name } = {}) => {
   const dir = workspace.resolveProjectDir(name);
   if (!dir || !fs.existsSync(dir)) return { ok: false, error: 'not-found' };
@@ -253,7 +264,6 @@ ipcMain.handle('run-start', (event, payload = {}) =>
   runner.start(event, { uiLang: config.getUiLang(), ...payload }));
 ipcMain.handle('run-stop',  () => runner.stop());
 ipcMain.handle('run-status', () => ({ running: runner.isRunning() }));
-ipcMain.on('run-stdin', (_event, text) => runner.writeStdin(text));
 
 // ═══════════════════════════════════════════════════════════
 //  ターミナル

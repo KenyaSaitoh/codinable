@@ -42,7 +42,7 @@ const yaml   = require('js-yaml');
 const { app } = require('electron');
 
 const { getRepoRoot } = require('./runtimes');
-const { PRODUCT, getUpdateBaseUrl } = require('../app-config');
+const { PRODUCT, getUpdateUrls } = require('../app-config');
 const config = require('./config');
 
 // ── 演習ごとに出す出力タブ ─────────────────────────────────
@@ -91,8 +91,8 @@ function getCoursesDir() {
 
 /**
  * 全ユーザー共有のコース置き場 (Windows のみ)
- * コース単位のインストーラはここへ course.yaml と templates/ を置く
- * アプリ本体を入れ直さずにコースだけ増やせるようにするための領域
+ * 管理者が PC 全体へ講座を配るときの置き場。受講者向けのインストーラは
+ * 全講座入りの 1 本なので、ふだんは空のまま
  */
 function getSharedCoursesDir() {
   const base = process.env.ProgramData || process.env.ALLUSERSPROFILE;
@@ -216,7 +216,7 @@ function loadCourses(lang = 'ja') {
 //  確認するのは「講座を新しく始めるとき」だけで、取り組み中の講座は
 //  開始したときの版のまま動かす (loadCourses の coursePins)
 //
-//  配信物は <baseUrl>/courses/index.json と <id>-<version>.codpack
+//  配信物は GitHub Releases の courses タグに置いた index.json と <id>-<version>.codpack
 //  (scripts/build-courses.js が作る)。codpack は講座フォルダの中身を
 //  gzip した JSON 1 つで、展開に外部ツールを要らないようにしてある
 //  取り込み先は個人の置き場の <id>@<version>/ で、版ごとに別フォルダにする
@@ -231,8 +231,8 @@ async function fetchWithTimeout(url, timeoutMs) {
   return res;
 }
 
-async function fetchCourseIndex(baseUrl) {
-  const res = await fetchWithTimeout(`${baseUrl}/courses/index.json`, FETCH_TIMEOUT_MS);
+async function fetchCourseIndex(coursesUrl) {
+  const res = await fetchWithTimeout(`${coursesUrl}/index.json`, FETCH_TIMEOUT_MS);
   const index = await res.json();
   return Array.isArray(index?.courses) ? index.courses : [];
 }
@@ -341,14 +341,14 @@ async function prepareCourseStart(courseId, lang = 'ja') {
   const before = installed();
   const result = { ok: true, courseId, updated: false, checked: false };
 
-  const baseUrl = getUpdateBaseUrl();
-  if (baseUrl) {
+  const coursesUrl = getUpdateUrls().courses;
+  if (coursesUrl) {
     try {
-      const entry = (await fetchCourseIndex(baseUrl)).find(c => c.id === courseId);
+      const entry = (await fetchCourseIndex(coursesUrl)).find(c => c.id === courseId);
       result.checked = true;
       if (entry && (!before || compareVersions(entry.version, before.version) > 0)) {
         if (!/^[A-Za-z0-9._@-]+$/.test(String(entry.file || ''))) throw new Error('bad file name in index');
-        const res = await fetchWithTimeout(`${baseUrl}/courses/${entry.file}`, 120_000);
+        const res = await fetchWithTimeout(`${coursesUrl}/${entry.file}`, 120_000);
         const buffer = Buffer.from(await res.arrayBuffer());
         const digest = crypto.createHash('sha256').update(buffer).digest('hex');
         if (entry.sha256 && digest !== String(entry.sha256).toLowerCase()) {
@@ -461,6 +461,9 @@ function readCourseRoot(root, lang) {
       name:        pickLang(meta.names, lang, entry.name),
       description: pickLang(meta.descriptions, lang, ''),
       udemyUrl:    meta.udemy && meta.udemy.url ? String(meta.udemy.url) : null,
+      // チャプター番号 → 名前 (演習一覧の見出し「チャプター3 フロントエンドの基本技術」)
+      chapters:    Object.fromEntries(Object.entries(meta.chapters || {})
+        .map(([n, names]) => [String(n), pickLang(names, lang, '')])),
       exercises,
     });
   }

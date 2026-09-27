@@ -33,23 +33,35 @@ const PRODUCT = {
 
 // ── 更新の配信先 ───────────────────────────────────────────
 //
-// アプリ本体と講座は別々に更新する。どちらも HTTP でファイルを置ける場所なら
-// どこでもよく (静的サイト・S3・GitHub Pages など)、次の形で置く
+// アプリ本体と講座は別々に更新する。配信先はこのリポジトリ (公開) の
+// GitHub Releases で、次のように置く (npm run release:app / release:courses)
 //
-//   <baseUrl>/app/latest.yml               … アプリ本体 (npm run build が作る)
-//   <baseUrl>/app/Codinable-setup-<v>.exe      (+ .blockmap)
-//   <baseUrl>/courses/index.json           … 講座 (npm run build:courses が作る)
-//   <baseUrl>/courses/<id>-<v>.codpack
+//   アプリ本体: タグ v<version> のリリース (「最新」にする)
+//     latest.yml / Codinable-setup-<version>.exe (+ .blockmap)
+//     → https://github.com/<owner>/<repo>/releases/latest/download/latest.yml
+//   講座: タグ courses のリリース 1 つに上書きで置く (「最新」にはしない)
+//     index.json / <id>-<version>.codpack
+//     → https://github.com/<owner>/<repo>/releases/download/courses/index.json
 //
-// 空のあいだは更新を確認しない (すべて同梱の版のまま動く)
-// 環境変数 CODINABLE_UPDATE_URL で差し替えられる (検証用)
+// github を空にすると更新を確認しない (すべて同梱の版のまま動く)
+// 環境変数 CODINABLE_UPDATE_URL を与えると、<url>/app と <url>/courses を
+// 見るように差し替わる (手元に配信先を立てて確かめるとき)
 const UPDATES = {
-  baseUrl: '',
+  github:     { owner: 'KenyaSaitoh', repo: 'codinable' },
+  coursesTag: 'courses',
 };
 
-function getUpdateBaseUrl() {
-  const url = String(process.env.CODINABLE_UPDATE_URL || UPDATES.baseUrl || '').trim();
-  return url.replace(/\/+$/, '');
+/** アプリ本体 (electron-updater の generic フィード) と講座の配信先。未設定なら '' */
+function getUpdateUrls() {
+  const override = String(process.env.CODINABLE_UPDATE_URL || '').trim().replace(/\/+$/, '');
+  if (override) return { app: `${override}/app`, courses: `${override}/courses` };
+  const { owner, repo } = UPDATES.github || {};
+  if (!owner || !repo) return { app: '', courses: '' };
+  const releases = `https://github.com/${owner}/${repo}/releases`;
+  return {
+    app:     `${releases}/latest/download`,
+    courses: `${releases}/download/${UPDATES.coursesTag}`,
+  };
 }
 
 // ── LLM (BYOK) ─────────────────────────────────────────────
@@ -104,4 +116,4 @@ function getLlmModel(id) {
 /** API キーを保存する設定フィールド名の一覧 (暗号化対象) */
 const API_KEY_FIELDS = LLM_MODELS.map(m => m.keyField);
 
-module.exports = { PRODUCT, UPDATES, getUpdateBaseUrl, LLM_MODELS, DEFAULT_LLM_ID, getLlmModel, API_KEY_FIELDS };
+module.exports = { PRODUCT, UPDATES, getUpdateUrls, LLM_MODELS, DEFAULT_LLM_ID, getLlmModel, API_KEY_FIELDS };

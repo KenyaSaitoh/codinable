@@ -54,6 +54,18 @@ descriptions:
 udemy:
   url: https://github.com/KenyaSaitoh/learn_spring_aidd_aws
 
+# チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
+chapters:
+  2:
+    ja: 'AWSの権限・ネットワークとコンテナの実行基盤'
+    en: 'AWS Permissions, Networking and the Container Platform'
+  3:
+    ja: 'セッションとアプリケーション設定の外部化'
+    en: 'Externalizing Sessions and Application Configuration'
+  4:
+    ja: 'CognitoとSpring SecurityによるOIDC認証・認可'
+    en: 'OIDC Authentication and Authorization with Cognito and Spring Security'
+
 exercises:
   # ── チャプター2: AWS の権限・ネットワークとコンテナの実行基盤 ──────────
   # 講座リポジトリの 02_aws-setup（common.py など）は aws-setup/ に同梱している
@@ -82,11 +94,8 @@ exercises:
         SQL initialization; add spring.jpa.hibernate.ddl-auto: none to application.yml and run again to
         get the employees. Pushing to ECR and deploying to ECS need an AWS account and Docker; see README.md.
     openFiles:
-      - aws-setup/scripts/common.py
-      - Dockerfile
-      - taskdef/task-definition.json
-      - scripts/deploy_ecs.py
       - README.md
+      - Dockerfile
 
   # ── チャプター3: セッションとアプリケーション設定の外部化 ──────────────
   - id: spring-session-employee-jdbc
@@ -113,9 +122,6 @@ exercises:
         the input restored. Switch the run target to gradle:test to run the nine MVC tests of the page flow.
     openFiles:
       - src/main/java/pro/kensait/spring/employee/web/EmployeeController.java
-      - src/main/java/pro/kensait/spring/employee/web/EmployeeDraft.java
-      - src/main/resources/application.yml
-      - README.md
 
   - id: spring-session-employee-redis
     chapter: 3
@@ -141,9 +147,6 @@ exercises:
         sessions take separate paths. README.md describes how to run it when Redis is available.
     openFiles:
       - src/main/resources/application.yml
-      - build.gradle
-      - src/test/java/pro/kensait/spring/employee/web/EmployeeSessionFlowTest.java
-      - README.md
 
   # サーバー（8888）が主役で「実行」で起動し、クライアント（8080）は client/ をターミナルで起動する
   - id: spring-cloud-config
@@ -170,10 +173,6 @@ exercises:
         changes before and after POST /actuator/refresh.
     openFiles:
       - src/main/resources/config-repo/config-client.yml
-      - src/main/resources/application.yml
-      - client/src/main/resources/application.yml
-      - client/src/main/java/pro/kensait/spring/config/web/GreetingController.java
-      - README.md
 
   # ── チャプター4: Cognito と Spring Security による OIDC 認証・認可 ─────────
   # ログインフローには実 AWS の Cognito が要るので、既定は Codinable 版で追加したテストにしている
@@ -200,10 +199,7 @@ exercises:
         POST without a CSRF token is 403) and the CustomOidcUserService that grants ADMIN to everyone.
         README.md explains how to prepare a Cognito user pool, set COGNITO_* and bootRun from the terminal.
     openFiles:
-      - src/main/resources/application.yml
       - src/main/java/pro/kensait/spring/calc/web/SecurityConfig.java
-      - src/main/java/pro/kensait/spring/calc/web/CustomOidcUserService.java
-      - README.md
 
   - id: spring-sec-calc-cognito-2
     chapter: 4
@@ -228,6 +224,3 @@ exercises:
         page needs Cognito; see README.md.
     openFiles:
       - src/main/java/pro/kensait/spring/calc/web/CustomOidcUserService.java
-      - src/main/java/pro/kensait/spring/calc/web/SecurityConfig.java
-      - src/test/java/pro/kensait/spring/calc/web/CustomOidcUserServiceTest.java
-      - README.md

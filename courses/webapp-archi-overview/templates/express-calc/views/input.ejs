@@ -10,25 +10,29 @@
   <h2>計算アプリケーション (Express)</h2>
   <hr>
 
+  <!-- 業務エラー (0 除算) はここに出る -->
   <% if (error) { %>
   <div style="color: red"><%= error %></div>
   <% } %>
 
-  <form method="POST" action="/calc">
+  <form method="POST">
     <div>
       <span>パラメータ1</span>
-      <input type="text" name="param1">
+      <!-- value を入れ直しておくと、エラーで戻ったときに入力が残る -->
+      <input type="text" name="param1" value="<%= form.param1 ?? '' %>">
+      <% if (errors.param1) { %><span style="color: red"><%= errors.param1 %></span><% } %>
     </div>
     <div>
       <span>パラメータ2</span>
-      <input type="text" name="param2">
+      <input type="text" name="param2" value="<%= form.param2 ?? '' %>">
+      <% if (errors.param2) { %><span style="color: red"><%= errors.param2 %></span><% } %>
     </div>
     <div>
-      <!-- 押したボタンの value が operator として送られる -->
-      <button type="submit" name="operator" value="add">足し算</button>
-      <button type="submit" name="operator" value="subtract">引き算</button>
-      <button type="submit" name="operator" value="multiply">掛け算</button>
-      <button type="submit" name="operator" value="divide">割り算</button>
+      <!-- 同じフォームを、押したボタンによって別の URL へ送る -->
+      <button type="submit" formaction="/add">足し算</button>
+      <button type="submit" formaction="/subtract">引き算</button>
+      <button type="submit" formaction="/multiply">掛け算</button>
+      <button type="submit" formaction="/divide">割り算</button>
     </div>
   </form>
 </body>

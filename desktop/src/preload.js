@@ -53,6 +53,8 @@ contextBridge.exposeInMainWorld('api', {
   wsCreateProject:  payload       => ipcRenderer.invoke('ws-create-project', payload),
   wsResetTemplate:  (name, lang)  => ipcRenderer.invoke('ws-reset-template', { name, lang }),
   wsProjectInfo:    name          => ipcRenderer.invoke('ws-project-info', { name }),
+  wsAddMissingFiles: (name, files, lang) =>
+                                     ipcRenderer.invoke('ws-add-missing-files', { name, files, lang }),
   wsProjectContext: name          => ipcRenderer.invoke('ws-project-context', { name }),
   wsTree:           name          => ipcRenderer.invoke('ws-tree', { name }),
   wsReadFile:       (name, relPath) => ipcRenderer.invoke('ws-read-file', { name, relPath }),
@@ -69,7 +71,6 @@ contextBridge.exposeInMainWorld('api', {
   runStart:         payload       => ipcRenderer.invoke('run-start', payload),
   runStop:          ()            => ipcRenderer.invoke('run-stop'),
   runStatus:        ()            => ipcRenderer.invoke('run-status'),
-  runStdin:         text          => ipcRenderer.send('run-stdin', text),
   onRunOutput:      handler       => subscribe('run-output', handler),
   onRunExit:        handler       => subscribe('run-exit', handler),
   onRunUrl:         handler       => subscribe('run-url', handler),

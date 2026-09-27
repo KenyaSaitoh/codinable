@@ -36,13 +36,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "calc_project.wsgi.application"
 
-# この演習ではデータベースを使わない。Django の既定構成との比較用に SQLite を残す
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+# この演習ではデータベースを使わない (Spring MVC 版・Express 版と同じ)
+DATABASES = {}
 
 LANGUAGE_CODE = "ja"
 TIME_ZONE = "Asia/Tokyo"

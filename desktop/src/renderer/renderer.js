@@ -308,7 +308,9 @@ async function openFile(relPath, { focus = true } = {}) {
     },
   });
 
-  const entry = { host, cm, dirty: false, mode };
+  // Markdown (README や SCHEMA.md) は読むためのものなので、最初はビューアで見せる
+  // 「編集」に切り替えれば書き換えられる。どちらで見ているかはタブごとに覚える
+  const entry = { host, cm, dirty: false, mode, preview: mode === 'text/markdown' };
   openFiles.set(relPath, entry);
 
   cm.on('change', () => {
@@ -325,25 +327,26 @@ async function openFile(relPath, { focus = true } = {}) {
 
 function activateFile(relPath, { focus = true } = {}) {
   activeFile = relPath;
-  mdPreviewOn = false;
+  const entry = openFiles.get(relPath);
+  mdPreviewOn = !!(entry && entry.mode === 'text/markdown' && entry.preview);
 
-  for (const [key, entry] of openFiles) {
-    entry.host.classList.toggle('hidden', key !== relPath);
+  for (const [key, e] of openFiles) {
+    e.host.classList.toggle('hidden', key !== relPath || mdPreviewOn);
   }
   $('editor-empty').classList.toggle('hidden', openFiles.size > 0);
-  $('md-preview').classList.add('hidden');
+  $('md-preview').classList.toggle('hidden', !mdPreviewOn);
+  if (mdPreviewOn) $('md-preview').innerHTML = renderMarkdown(entry.cm.getValue());
 
-  const entry = openFiles.get(relPath);
   $('editor-filepath').textContent = relPath || '';
   $('btn-md-preview').classList.toggle('hidden', !entry || entry.mode !== 'text/markdown');
-  $('btn-md-preview').textContent = t('btnMdPreview');
+  $('btn-md-preview').textContent = mdPreviewOn ? t('btnMdEdit') : t('btnMdPreview');
 
   renderTabs();
   renderTree();
   updateHistoryButtons();
   updateRunTargets();
   applyCoverageToEditor();
-  if (focus && entry) setTimeout(() => entry.cm.focus(), 0);
+  if (focus && entry && !mdPreviewOn) setTimeout(() => entry.cm.focus(), 0);
 }
 
 async function closeFile(relPath) {
@@ -418,6 +421,7 @@ function toggleMdPreview() {
   const entry = activeFile ? openFiles.get(activeFile) : null;
   if (!entry || entry.mode !== 'text/markdown') return;
   mdPreviewOn = !mdPreviewOn;
+  entry.preview = mdPreviewOn;
   const preview = $('md-preview');
   preview.classList.toggle('hidden', !mdPreviewOn);
   entry.host.classList.toggle('hidden', mdPreviewOn);
@@ -908,16 +912,50 @@ function renderExercises() {
     return;
   }
 
+  // チャプターごとに折りたためるようにする (見出しの三角形で開閉)
+  // 開いているチャプターは講座ごとに覚えておく。初めて見る講座では、
+  // いま開いている演習のチャプター (無ければ最初のチャプター) だけを開く
+  const activeExercise = entries.find(e => projectForExercise(course, e)?.name === project);
+  const open = openChaptersFor(course, activeExercise?.chapter ?? entries[0]?.chapter);
+  // 開いている演習のチャプターは必ず開く。初めて見る講座でも、この状態を覚えておく
+  // (覚えずにおくと、次に描き直したとき直前のチャプターが閉じてしまう)
+  if (activeExercise?.chapter) open.add(activeExercise.chapter);
+  saveOpenChapters(course, open);
+
+  let group = list;
   let lastChapter = null;
   for (const exercise of entries) {
-    // 一覧そのものはフラットに並べる。どのチャプターのものかが分かるよう、
-    // チャプターが変わるところにだけ細い見出しを挟む
     if (exercise.chapter && exercise.chapter !== lastChapter) {
-      const heading = document.createElement('div');
+      const chapter  = exercise.chapter;
+      const expanded = open.has(chapter);
+      const heading = document.createElement('button');
+      heading.type = 'button';
       heading.className = 'exercise-chapter';
-      heading.textContent = tf('exerciseChapter', { n: exercise.chapter });
+      heading.dataset.chapter = chapter;
+      heading.setAttribute('aria-expanded', String(expanded));
+      const title = course.chapters?.[chapter];
+      heading.innerHTML =
+        '<span class="exercise-chapter-caret" aria-hidden="true"></span>' +
+        `<span class="exercise-chapter-title">${escapeHtml(tf('exerciseChapter', { n: chapter }))}` +
+        (title ? ` ${escapeHtml(title)}` : '') + '</span>';
+      heading.title = heading.textContent;
       list.appendChild(heading);
-      lastChapter = exercise.chapter;
+
+      group = document.createElement('div');
+      group.className = 'exercise-chapter-items';
+      group.classList.toggle('collapsed', !expanded);
+      list.appendChild(group);
+
+      const items = group;
+      heading.addEventListener('click', () => {
+        const nowOpen = heading.getAttribute('aria-expanded') !== 'true';
+        heading.setAttribute('aria-expanded', String(nowOpen));
+        items.classList.toggle('collapsed', !nowOpen);
+        const state = openChaptersFor(course);
+        if (nowOpen) state.add(chapter); else state.delete(chapter);
+        saveOpenChapters(course, state);
+      });
+      lastChapter = chapter;
     }
 
     const created = projectForExercise(course, exercise);
@@ -938,8 +976,24 @@ function renderExercises() {
       '</span>' +
       `<span class="exercise-tag">${escapeHtml(t(`runtime_${exercise.runtime}`))}</span>`;
     item.addEventListener('click', () => openExercise(course, exercise));
-    list.appendChild(item);
+    group.appendChild(item);
   }
+}
+
+/** 講座ごとに開いているチャプター。まだ何も覚えていなければ fallback だけを開く */
+function openChaptersFor(course, fallback = null) {
+  try {
+    const saved = JSON.parse(localStorage.getItem('openChapters') || '{}')[course.id];
+    if (Array.isArray(saved)) return new Set(saved.map(String));
+  } catch { /* 壊れていたら初期状態から */ }
+  return new Set(fallback ? [String(fallback)] : []);
+}
+
+function saveOpenChapters(course, open) {
+  let all = {};
+  try { all = JSON.parse(localStorage.getItem('openChapters') || '{}') || {}; } catch { /* 作り直す */ }
+  all[course.id] = [...open];
+  localStorage.setItem('openChapters', JSON.stringify(all));
 }
 
 /**
@@ -969,6 +1023,10 @@ async function openExercise(course, exercise, { preferProject = null, prepared =
     await reloadProjects();
     target = projects.find(p => p.name === name);
     if (!target) return;
+  } else if (exercise.openFiles?.length) {
+    // 以前に作ったプロジェクトには、あとから雛形に足したファイル (SCHEMA.md など) が無い
+    // 最初に見せるファイルだけは補っておく (自分で書き換えたファイルは上書きしない)
+    await window.api.wsAddMissingFiles(target.name, exercise.openFiles, getLang());
   }
 
   await selectProject(target.name, { openInitial: exercise.openFiles });
@@ -990,15 +1048,13 @@ function uniqueProjectName(base) {
 /**
  * 演習が宣言している実行対象を選ぶ。これが「実行環境の自動切り替え」にあたる
  *
- * course.yaml の run は実行対象セレクトと同じ書式。ただし file: のときは、
- * 実行対象 'file' が「いま開いているファイル」を指すため、先にそのファイルを開く
+ * course.yaml の run は実行対象セレクトと同じ書式
  */
 async function applyExerciseRunTarget(exercise) {
   if (!exercise.run) return;
-  const [kind, arg = ''] = exercise.run.split(/:(.*)/s);
-
-  // file: / sql: は対象がファイルなので、何を動かすのか見えるように開いておく
-  if ((kind === 'file' || kind === 'sql') && arg) await openFile(arg);
+  // 実行対象のファイルはここでは開かない。最初に見せるファイルは演習ごとに
+  // openFiles で決めてあり (1 つが原則)、ここで開くとそれを押しのけてしまう
+  // 実行対象は 'kind:パス' でファイルを指すので、開いていなくても動かせる
   selectRunTarget(exercise.run);
 }
 
@@ -1066,13 +1122,10 @@ function updateRunTargets() {
   $('btn-run').disabled = !project || !select.value;
 }
 
-function setRunning(state, interactive = false) {
+function setRunning(state) {
   running = state;
   $('btn-run').disabled      = state || !project || !$('run-target-select').value;
   $('btn-run-stop').disabled = !state;
-  // 標準入力欄は「実際に届く実行」のときだけ出す。gradlew は shell 経由で
-  // 起動するため届かず、出しておくと押しても何も起きない UI になる
-  $('run-stdin-row').classList.toggle('hidden', !state || !interactive);
 }
 
 function clearRunOutput() {
@@ -1123,7 +1176,7 @@ async function runSelected() {
     appendRunOutput(`\n${tf('runFailed', { error: res.error || '' })}\n`);
     return;
   }
-  setRunning(true, res.interactive);
+  setRunning(true);
 }
 
 /** ツリーの右クリックから直接ファイルを実行する */
@@ -1182,7 +1235,6 @@ function showRunPane(paneId, { reloadPreview = true } = {}) {
   document.querySelectorAll('.run-pane').forEach(pane =>
     pane.classList.toggle('active', pane.id === paneId));
   // 実行ログをチャットに渡すボタンは、実行結果タブでだけ意味がある
-  $('btn-add-log-context').classList.toggle('hidden', paneId !== 'tab-result');
 
   if (paneId === 'tab-terminal') startTerminal();
   if (paneId === 'tab-browser' && reloadPreview) fitPreview();
@@ -1784,8 +1836,6 @@ let chatBubble    = null;   // ストリーミング中の吹き出し
 let chatBuffer    = '';
 let chatMode      = 'ask';  // 'ask' (読むだけ) / 'agent' (書き換えと実行までする)
 let agentCard     = null;   // Agent の経過を出しているカード
-// チャットに渡すものの控え。ファイルは 1 件のチップにまとめる (送信時に集め直す)
-const attachments = [];     // [{ kind: 'project', project, count } | { kind: 'log', content }]
 
 function currentModel() {
   const id = appInfo?.llmSelection?.modelId;
@@ -1813,23 +1863,85 @@ function addChatMessage(role, content, { streaming = false } = {}) {
                                 : tf('roleAssistant', { model: model?.label || 'AI' });
   msg.innerHTML =
     `<div class="chat-role-label">${escapeHtml(label)}</div>` +
-    `<div class="chat-bubble${streaming ? ' streaming' : ''}"></div>`;
+    `<div class="chat-bubble${role === 'user' ? '' : ' md-body'}${streaming ? ' streaming' : ''}"></div>`;
   const bubble = msg.querySelector('.chat-bubble');
   // ユーザーの発言は入力どおり、AI の応答は Markdown として描く
   if (role === 'user') bubble.textContent = content;
-  else bubble.innerHTML = renderMarkdown(content);
+  else {
+    bubble.innerHTML = renderMarkdown(content);
+    if (!streaming) addCopyButtons(bubble, content);
+  }
 
   history.appendChild(msg);
   history.scrollTop = history.scrollHeight;
   return bubble;
 }
 
+/**
+ * 送信中は、送信ボタンそのものを「中断」に変える (回転する印つき)
+ * 別の場所に中断ボタンを出すと、押す場所を探させることになるため
+ */
 function setChatStreaming(state) {
   document.querySelectorAll('input[name="chat-mode"]').forEach(input => { input.disabled = state; });
   chatStreaming = state;
-  $('btn-chat-send').disabled = state;
-  $('btn-chat-abort').classList.toggle('hidden', !state);
-  $('chat-actions').classList.toggle('hidden', state);
+  const btn = $('btn-chat-send');
+  btn.classList.toggle('is-streaming', state);
+  btn.innerHTML = state
+    ? `<span class="btn-spinner" aria-hidden="true"></span>${escapeHtml(t('btnAbort'))}`
+    : escapeHtml(t('btnSend'));
+  btn.title = t(state ? 'btnAbortTitle' : 'btnSendTitle');
+}
+
+function abortChat() {
+  if (chatMode === 'agent') window.api.agentAbort();
+  else window.api.chatAbort();
+}
+
+// ── コピー ─────────────────────────────────────────────────
+//
+// AI の応答は丸ごと (Markdown のまま)、コードブロックは中身だけをコピーできるようにする
+
+async function copyText(text, button) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    // クリップボード API が使えないときの保険
+    const area = document.createElement('textarea');
+    area.value = text;
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand('copy');
+    area.remove();
+  }
+  if (!button) return;
+  const label = button.textContent;
+  button.textContent = t('copied');
+  button.classList.add('copied');
+  setTimeout(() => { button.textContent = label; button.classList.remove('copied'); }, 1400);
+}
+
+function makeCopyButton(getText, className) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = className;
+  btn.textContent = t('btnCopy');
+  btn.title = t('btnCopyTitle');
+  btn.addEventListener('click', ev => { ev.stopPropagation(); copyText(getText(), btn); });
+  return btn;
+}
+
+/** 応答が出そろったあとに、応答全体とコードブロックのコピーボタンを付ける */
+function addCopyButtons(bubble, rawText) {
+  if (!bubble || !String(rawText || '').trim()) return;
+  for (const pre of bubble.querySelectorAll('pre')) {
+    if (pre.querySelector('.chat-code-copy')) continue;
+    pre.appendChild(makeCopyButton(() => pre.querySelector('code')?.innerText ?? pre.innerText,
+                                   'chat-code-copy'));
+  }
+  const msg = bubble.closest('.chat-msg');
+  if (msg && !msg.querySelector('.chat-copy')) {
+    msg.appendChild(makeCopyButton(() => rawText, 'chat-copy'));
+  }
 }
 
 // ── Ask / Agent の切り替え ─────────────────────────────────
@@ -1846,26 +1958,6 @@ function setChatMode(mode, { persist = true } = {}) {
   if (persist) window.api.setLlmSelection({ chatMode });
 }
 
-function renderAttachments() {
-  const wrap = $('ai-context-chips');
-  wrap.innerHTML = '';
-  wrap.classList.toggle('hidden', !attachments.length);
-  attachments.forEach((item, index) => {
-    const chip = document.createElement('span');
-    chip.className = 'ai-context-chip';
-    chip.innerHTML =
-      escapeHtml(item.kind === 'project'
-        ? tf('chipProject', { name: item.project, n: item.count })
-        : t('chipLog')) +
-      `<button class="ai-context-chip-remove" title="${escapeHtml(t('chipRemove'))}">✕</button>`;
-    chip.querySelector('button').addEventListener('click', () => {
-      attachments.splice(index, 1);
-      renderAttachments();
-    });
-    wrap.appendChild(chip);
-  });
-}
-
 /**
  * 開いているプロジェクトのファイルを、送信のたびに集め直す
  *
@@ -1879,23 +1971,7 @@ async function collectProjectContext() {
 
   const res = await window.api.wsProjectContext(project);
   const files = res.ok ? res.files : [];
-
-  // チップは「何を渡したか」の控え。ファイル分は 1 つにまとめる
-  const index = attachments.findIndex(a => a.kind === 'project');
-  const chip  = { kind: 'project', project, count: files.length };
-  if (index >= 0) attachments[index] = chip;
-  else attachments.unshift(chip);
-  renderAttachments();
-
   return { files, skipped: res.skipped || 0 };
-}
-
-function attachRunLog() {
-  if (!runLog) return;
-  const existing = attachments.find(a => a.kind === 'log');
-  if (existing) existing.content = runLog;
-  else attachments.push({ kind: 'log', content: runLog });
-  renderAttachments();
 }
 
 async function sendChat() {
@@ -1925,7 +2001,8 @@ async function sendChat() {
     project,
     kinds: projectInfo?.kinds || [],
     files,
-    log:   attachments.find(a => a.kind === 'log')?.content || null,
+    // 直近の実行結果も自動で渡す (長ければ末尾だけ。llm/prompt.js)
+    log:   runLog || null,
     courseName: currentCourse()?.name || null,
   };
 
@@ -2136,13 +2213,12 @@ async function reopenFileFromDisk(relPath, { closeIfMissing = false } = {}) {
   const entry = openFiles.get(relPath);
   entry.cm.setValue(String(res.content ?? ''));
   entry.dirty = false;
+  if (relPath === activeFile && mdPreviewOn) $('md-preview').innerHTML = renderMarkdown(entry.cm.getValue());
   renderTabs();
 }
 
 function clearChat() {
   chatMessages = [];
-  attachments.length = 0;
-  renderAttachments();
   $('chat-history').innerHTML =
     '<div class="chat-welcome">' +
     `<p>${escapeHtml(t('chatWelcome1'))}</p>` +
@@ -2571,13 +2647,8 @@ function wireEvents() {
   $('run-target-select').addEventListener('change', () => {
     $('btn-run').disabled = running || !project || !$('run-target-select').value;
   });
-  $('run-stdin-send').addEventListener('click', sendStdin);
-  $('run-stdin-input').addEventListener('keydown', ev => {
-    if (ev.key === 'Enter') sendStdin();
-  });
   document.querySelectorAll('.run-tab').forEach(tab =>
     tab.addEventListener('click', () => showRunPane(tab.dataset.pane)));
-  $('btn-add-log-context').addEventListener('click', attachRunLog);
 
   // ── SQL ──
   $('btn-sql-start').addEventListener('click', startSql);
@@ -2600,14 +2671,10 @@ function wireEvents() {
     window.api.openBrowser($('browser-url').value));
 
   // ── チャット ──
-  $('btn-chat-send').addEventListener('click', () => sendChat());
+  $('btn-chat-send').addEventListener('click', () => (chatStreaming ? abortChat() : sendChat()));
   for (const input of document.querySelectorAll('input[name="chat-mode"]')) {
     input.addEventListener('change', () => { if (input.checked && !chatStreaming) setChatMode(input.value); });
   }
-  $('btn-chat-abort').addEventListener('click', () => {
-    if (chatMode === 'agent') window.api.agentAbort();
-    else window.api.chatAbort();
-  });
   $('btn-chat-clear').addEventListener('click', clearChat);
   $('chat-input').addEventListener('keydown', ev => {
     if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) {
@@ -2665,15 +2732,6 @@ function normalizeUrl(value) {
   return /^[a-z]+:\/\//i.test(url) ? url : `http://${url}`;
 }
 
-function sendStdin() {
-  const input = $('run-stdin-input');
-  const text  = input.value;
-  if (!running) return;
-  window.api.runStdin(`${text}\n`);
-  appendRunOutput(`${text}\n`);
-  input.value = '';
-}
-
 // ═══════════════════════════════════════════
 //  main プロセスからの通知
 // ═══════════════════════════════════════════
@@ -2724,6 +2782,7 @@ function wireIpc() {
     bubble.classList.remove('streaming');
     chatMessages.push({ role: 'assistant', content: text });
     bubble.innerHTML = renderMarkdown(text);
+    addCopyButtons(bubble, text);
     scrollChatToBottom();
   });
   window.api.onChatError(async (message, info) => {
@@ -2762,6 +2821,7 @@ function wireIpc() {
   });
   window.api.onAgentEnd(() => {
     chatBubble?.classList.remove('streaming');
+    addCopyButtons(chatBubble, chatBuffer);
     if (chatBuffer.trim()) chatMessages.push({ role: 'assistant', content: chatBuffer });
     chatBubble = null;
     agentCard  = null;

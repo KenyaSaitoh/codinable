@@ -1,8 +1,9 @@
 # Codinable — 開発時の前提
 
 Udemy 講座の受講環境（Electron 製のデスクトップ開発環境）。
-受講者に配るのは NSIS インストーラ 1 本で、Java / Node.js / Python / Bash / HSQLDB と
-Java の言語サーバーを同梱している。
+受講者に配るのは**全講座入りの NSIS インストーラ 1 本だけ**で、Java / Node.js / Python /
+Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごとのインストーラは作らない
+（数が増えると受講者が迷う）。更新はアプリ本体と講座で別々に行う（下の「更新」）。
 
 利用者向けの説明・セットアップ手順・構成は @README.md にある。ここには
 **コードを触るときに知っておく必要があること**だけを書く。
@@ -21,9 +22,11 @@ Java の言語サーバーを同梱している。
   だけを持ち、どの講座が入っているかを知らない。講座追加でアプリ側を直す必要はない
 - **コースは 3 か所から読む**（`main/courses.js` の `getCourseRoots`）。同梱（asar）→
   共有（`%PROGRAMDATA%\Codinable\courses`）→ 個人（`<userData>\courses`）の順で、
-  同じ id は `version` の新しいほうを採る（同じなら後の置き場が勝つ）。
-  **アプリを入れ直さずに講座だけ増える**ことがこの構造の目的なので、
-  同梱だけを前提にした読み込みへ戻さない。読み込み結果は `describeCourses` で
+  同じ id は `version` の新しいほうを採る（同じなら後の置き場が勝つ）。ただし
+  **開始した講座は開始したときの版に固定**する（config の `coursePins`。`loadCourses`）。
+  **アプリを入れ直さずに講座だけ新しくできる**ことがこの構造の目的なので、
+  同梱だけを前提にした読み込みへ戻さない。配信された版は個人の置き場に
+  `<id>@<version>/` として入る。読み込み結果は `describeCourses` で
   設定画面に出しているため、置き場を増やすときはそちらも一緒に見る
 - **実行は 1 本だけ**（`main/runner.js`）。新しく走らせるときは既存を止める。
   「今どれが走っているか」が常に 1 つに決まるようにしている
@@ -36,8 +39,9 @@ Java の言語サーバーを同梱している。
 - **LLM は任意機能**。API キーが無い状態でも他のすべてが動くことを壊さない
 - **チャットは Ask と Agent の 2 つ**（`src/renderer/renderer.js` の `chatMode`）。
   Ask は読むだけ（`src/llm/index.js` の `streamChat`）。Agent は道具を使う
-  （`src/main/agent.js` の `runAgent`）。どちらもプロジェクトのファイルは
-  送信時に自動で渡す
+  （`src/main/agent.js` の `runAgent`）。どちらもプロジェクトのファイルと直近の実行結果は
+  送信時に自動で渡す。**何を渡すかを受講者に選ばせない・外させない**（チップや ✕ は置かず、
+  入力欄の上に 1 行の案内だけ。Mentral Code と同じ）
 - **Agent の境界はプロンプトではなくコードで縛る**。`main/agent.js` の
   `resolveInExercise` が、いま開いている演習のディレクトリの外
   （`..` / ドライブ文字 / UNC / シンボリックリンク）と生成物のディレクトリを弾く。
@@ -76,6 +80,11 @@ Java の言語サーバーを同梱している。
 - **`electron-builder` の `extraMetadata` は使わない**。ソースの `package.json` を
   上書きし、`scripts` / `devDependencies` が消える
 - **Gradle スクリプトは BOM なし UTF-8** で保存する（BOM 付きだと Gradle が起動しない）
+- **Gemini の道具呼び出しは、受け取った parts を送り返す**（`thoughtSignature` が無いと 400）。
+  アダプタは `replay` として返し、`agent.js` は中身を見ずに履歴へ積む。
+  `test/check-gemini-replay.js` で押さえている
+- **チャットの送信ボタンは、送信中そのまま「中断」になる**（`setChatStreaming`）。
+  中断ボタンを別の場所に出さない。AI の応答とコードブロックにはコピーボタンを付ける
 
 ## 演習（`courses/*/course.yaml` の `exercises[]`）を追加・修正するとき
 
@@ -93,7 +102,31 @@ Java の言語サーバーを同梱している。
   ここで指定した選択肢が実際に出るかは `workspace.js` の `detectProject` が
   決めるので、雛形の構成（`build.gradle` の有無、`package.json` の `scripts`、
   `index.html`）と食い違わせない。選択肢が無いときは黙って無視される。
-  `file:` と `sql:` はパスも指定するので、そのファイルを先に開いてから選ぶ
+  `file:` はそのファイルを先に開いてから選ぶ。`sql:` は選ぶときには開かず、
+  実行したときに開く（SQL の演習は最初に `SCHEMA.md` を読んでもらうため）
+- **`chapter` の名前は講座の `chapters:` に書く**（番号 → 日本語 / 英語）。演習一覧は
+  チャプターごとのアコーディオンで、見出しは「チャプター7 JavaScriptとTypeScript」。
+  名前は講座原稿の目次と同じにする。開いているチャプターは講座ごとに localStorage へ覚える
+- **`openFiles`（演習を選んだときに開くファイル）はコース設計として 1 つに決める**。
+  「その演習が何を学ぶものか」がいちばん表れているファイルを選び、安易に並べない
+  - 静的ページ: `index.html` / SQL: `SCHEMA.md`（テーブル構成・初期データ・流す順番）
+  - Spring Boot の Web アプリ: そのレッスンの Controller（REST なら `@RestController`）
+  - 主題が Controller ではないもの: その主題のファイル（テストの講座はテストクラス、
+    セキュリティは `SecurityConfig`、メッセージングは送信側、JPA / MyBatis はエンティティや
+    Mapper、HTTP クライアントはクライアント、Thymeleaf の書き方はテンプレート）
+  - 2 つにしてよいのは次の 2 つだけ
+    - 動かす前に読む手順が `README.md` にしか無いとき: `README.md` + 主役（主役が表のタブ）
+    - **DB を題材にする演習**（JDBC / MyBatis / JPA / トランザクション …）: 主役 + `SCHEMA.md`
+      （テーブル構成が表のタブ。コードより先に、何を読み書きするのかを見せる）。
+      対象の演習は `desktop/scripts/build-schema-docs.js` の `TARGETS`
+  - 実行対象のファイル（`file:` / `sql:`）は選んだ時点では開かない（実行したときに開く）
+  - Markdown は最初からビューアで開く（「編集」で切り替え）
+  - このルールは `node test/check-courses.js` で確かめる
+- **DB の演習の `SCHEMA.md` は手で書かない**。`node scripts/build-schema-docs.js` が雛形の
+  実際の DDL / DML を HSQLDB に流し、できたテーブル（型・主キー・外部キー・初期データ）と
+  DDL の行末コメント（カラムの意味）から作る（`scripts/SchemaDoc.java`）。DDL を直したら
+  流し直す。DDL が無くエンティティからテーブルを作る演習だけは手書き（`MANUAL`）。
+  SQL の演習（webapp-archi-overview の `sql-*`）の `SCHEMA.md` は流す順番の説明を含むので手書き
 - **「↺ 初期化」は完全に戻す**（`workspace.js` の `resetToTemplate`）。自分で足した
   ファイルも消してから雛形を書き戻す。残すのは `.codinable`（演習との対応）と
   依存のキャッシュ（`node_modules` / `.gradle`）だけ
@@ -101,6 +134,11 @@ Java の言語サーバーを同梱している。
   揃っていなければ実行前に `npm install` が、`requirements.txt` があれば
   `pip install -r` が自動で走る（`runner.js` の `needsNpmInstall` /
   `pipInstallStep`）。雛形に「最初に install してください」と書く必要はない
+- **`tabs` で出力欄のタブを演習ごとに出し分ける**（`output` / `tests` / `sql` /
+  `terminal` / `messaging` / `preview`。`output` は常に出る）。書かなければ
+  `courses.js` の `exerciseTabs` が runtime と雛形の中身（`build.gradle` → tests、
+  `codinable.services.json` → messaging）から決めるので、ふつうは書かなくてよい。
+  隠したタブでも、結果を出す必要があれば `showRunPane` が出す
 - **問いを立てない**。`descriptions` は「何をどう動かすか」に徹し、
   正解・採点・完了といった語を持ち込まない
 
@@ -161,17 +199,11 @@ Java の言語サーバーを同梱している。
 - Mockito を使う雛形は `mockito-core` を `-javaagent` で渡す（jlink 版 JDK に
   `jdk.attach` が入る前に作った runtime でもモックを作れるようにするため）
 - 雛形を増やしたら `course.yaml` の `exercises[]` に追記し、`openFiles` に
-  実在するパスを書く。次のコマンドで両方を確かめられる
+  主役のファイルを 1 つ書く（上の「`openFiles`」のルール）。チャプターが増えたら
+  `chapters:` に名前も足す。次のコマンドで確かめられる
 
 ```bash
-cd desktop && node -e "
-const yaml=require('js-yaml'),fs=require('fs'),path=require('path');
-const dir='../courses/<講座ID>';
-for (const e of yaml.load(fs.readFileSync(dir+'/course.yaml','utf8')).exercises) {
-  const d=path.join(dir,'templates',e.dir||e.id);
-  const miss=(e.openFiles||[]).filter(f=>!fs.existsSync(path.join(d,f)));
-  console.log((fs.existsSync(d)?'OK ':'NG ')+(e.dir||e.id), miss.join(', '));
-}"
+cd desktop && node test/check-courses.js
 ```
 
 ## よく使うコマンド
@@ -186,8 +218,37 @@ npm start            # エディタバンドルをビルドして起動（読み
 npm start -- all     # 全コース（統合版）で起動 / `-- <id>,<id>` で絞る（scripts/start.js）
 npm run build:editor # エディタバンドルだけ作り直す
 npm run pack         # 署名なしの win-unpacked（動作確認用）
-npm run build        # インストーラ (.exe)
+npm run build        # インストーラ (.exe) と latest.yml
+npm run build:courses # 講座の配信物（dist-updates/courses/）
+npm run release:app      # インストーラを GitHub Releases へ（タグ v<version>、「最新」にする）
+npm run release:courses  # 講座を GitHub Releases の courses タグへ上書き
 ```
+
+## 更新（アプリ本体と講座は別々）
+
+- **アプリ本体**は electron-updater（generic フィード）で更新する（`main/updater.js`。
+  SP-AI Desktop Agent の `src/updater.js` と同じ設計）。起動の 5 秒後に黙って確認し、
+  新しい版があるときだけ「今すぐ更新 / あとで」を聞く。設定画面の「更新を確認」は
+  最新なら「最新です」まで出す。ダイアログは OS 標準ではなく画面の `#update-modal` で、
+  main は表示の依頼とボタンの受け取りだけを行う。差分ダウンロードは使わず、
+  120 秒進まなければ止める。**勝手にダウンロード・インストールしない**
+- **講座**は「新しく始めるとき」だけ配信先を確認する（`courses.js` の
+  `prepareCourseStart`）。新しい版があれば取り込んでから始め、無い・届かないときは
+  手元の版で始める。どちらでもその版に固定する。**取り組み中の講座
+  （作業用プロジェクトがある講座）は確認しない・変えない**。アプリの更新で同梱の版が
+  上がっても変わらないよう、パッケージ後は固定するときに個人の置き場へ写しを取る
+- 配信先は**このリポジトリ（公開）の GitHub Releases**（`src/app-config.js` の
+  `UPDATES` / `getUpdateUrls`）。アプリ本体はタグ `v<version>` のリリースを「最新」にし、
+  `releases/latest/download/latest.yml` を generic フィードとして読む。講座はタグ
+  `courses` のリリース 1 つに上書きで置き、`releases/download/courses/index.json` を読む。
+  **courses のリリースは「最新」にしない**（最新になるとアプリ本体の更新が見つからなくなる。
+  `scripts/release.js` が `--latest=false` で作る）。GitHub のダウンロードは 302 で
+  別ホストへ飛ぶので、取得は必ずリダイレクトを追う（テストの配信先も 302 を返す）
+- 検証では環境変数 `CODINABLE_UPDATE_URL` で `<url>/app` と `<url>/courses` を見るように
+  差し替えられる。`UPDATES.github` を空にすると更新を確認しない
+- **version は semver にする**（`202609.1.0`）。`202609.01.00` のような 0 埋めは
+  electron-updater が読めず更新確認が落ちる。画面では `formatVersion` で 0 埋めして見せる
+- 講座を直して配るときは `course.yaml` の `version` を上げる。上げないと配信されない
 
 ## 変更したら確かめること
 
@@ -197,3 +258,8 @@ npm run build        # インストーラ (.exe)
 2. 新規プロジェクトを雛形から作れること（`courses/` の読み込み）
 3. Gradle の雛形で `bootRun` と `test` が通り、プレビューとテスト結果が出ること
 4. ターミナルで `java -version` / `node -v` / `python --version` が答えること
+5. 講座の設計ルール（openFiles・チャプター名）: `node test/check-courses.js`
+   講座の単独更新とタブの出し分け: `node test/check-course-update.js`
+   （手元に配信先を立てて確かめる）
+6. アプリ本体の更新（更新まわりを触ったとき）: `npm run pack` のあと
+   `node test/check-app-update.js`（パッケージ後のアプリでだけ動く）

@@ -26,6 +26,16 @@ const wsRoot   = path.join(tmp, 'ws');
 
 fs.mkdirSync(userData, { recursive: true });
 fs.mkdirSync(wsRoot,   { recursive: true });
+
+// SCHEMA.md を雛形に足す前に作った SQL の演習を再現する (SCHEMA.md が無く、SQL は自分で書き換え済み)
+const OLD_SQL = path.join(wsRoot, 'sql-join');
+const EDITED_SQL = '-- 自分で書き換えた内容\nSELECT 1 FROM (VALUES (0));\n';
+fs.cpSync(path.resolve(__dirname, '../../courses/webapp-archi-overview/templates/sql-join'), OLD_SQL, { recursive: true });
+fs.rmSync(path.join(OLD_SQL, 'SCHEMA.md'));
+fs.writeFileSync(path.join(OLD_SQL, '01_setup.sql'), EDITED_SQL, 'utf8');
+fs.mkdirSync(path.join(OLD_SQL, '.codinable'), { recursive: true });
+fs.writeFileSync(path.join(OLD_SQL, '.codinable', 'project.json'),
+                 JSON.stringify({ courseId: 'webapp-archi-overview', template: 'sql-join' }), 'utf8');
 // 起動前に設定を置く。--user-data-dir を渡すので、ここが設定の置き場になる
 fs.writeFileSync(path.join(userData, 'codinable-config.json'),
                  JSON.stringify({ workspaceRoot: wsRoot, uiLang: 'ja' }, null, 2), 'utf8');
@@ -130,6 +140,10 @@ async function run(cdp) {
   check(await cdp.eval(`['btn-new-file','btn-new-dir','btn-refresh-tree'].some(id => document.getElementById(id))`) === false,
         'プロジェクト欄に +F / +D / 再読み込みが残っている');
 
+  // 標準入力の欄は持たない (演習は入力を打ち込む前提のものではない)
+  check(await cdp.eval(`!document.getElementById('run-stdin-row') && !document.getElementById('run-stdin-input')`),
+        '標準入力の欄が残っている');
+
   // 3. 実行 → プレビューが活性になり、中身が実際に読み込まれる
   check(await cdp.eval(`document.getElementById('run-tab-browser').disabled`) === true,
         '実行する前からプレビューが活性になっている');
@@ -178,6 +192,24 @@ async function run(cdp) {
   check(/EMPLOYEE_NAME/i.test(cols), `SQL の結果の列が想定と違う: ${cols}`);
   const activePane = await cdp.eval(`document.querySelector('.run-pane.active')?.id`);
   check(activePane === 'tab-sql', `SQL 実行後に SQL タブが出ていない: ${activePane}`);
+
+  // 5b. 以前に作った SQL の演習でも、テーブル構成の SCHEMA.md が補われてビューアで開く
+  await clickExercise(cdp, 'sql-join');
+  await waitFor(cdp, `projectInfo?.template === 'sql-join' && activeFile === 'SCHEMA.md'`, 20000,
+                '以前に作った SQL の演習で SCHEMA.md が開かない');
+  check(await cdp.eval(`!document.getElementById('md-preview').classList.contains('hidden')`),
+        'SCHEMA.md がビューアで表示されていない');
+  check(fs.existsSync(path.join(OLD_SQL, 'SCHEMA.md')), '以前に作ったプロジェクトに SCHEMA.md が補われていない');
+  check(fs.readFileSync(path.join(OLD_SQL, '01_setup.sql'), 'utf8') === EDITED_SQL,
+        'SCHEMA.md を補うときに、自分で書き換えたファイルが上書きされた');
+
+  // 5c. シェルの演習を実行しても、標準入力の欄は出ない
+  await clickExercise(cdp, 'http-curl');
+  await waitFor(cdp, `projectInfo?.template === 'http-curl'`, 20000, 'HTTP の演習が開かない');
+  await cdp.eval(`document.getElementById('btn-run').click()`);
+  await sleep(1500);
+  check(await cdp.eval(`!document.querySelector('[id^="run-stdin"]')`), 'シェルの実行中に標準入力の欄が出た');
+  await cdp.eval(`document.getElementById('btn-run-stop').disabled || document.getElementById('btn-run-stop').click()`);
 
   // 6. チャットの Ask / Agent ラジオボタン
   check(await cdp.eval(`document.querySelectorAll('input[type="radio"][name="chat-mode"]').length`) === 2, 'Ask/Agent のラジオボタンが無い');
@@ -262,8 +294,6 @@ async function checkWebServerExercise(cdp, exerciseId, target, urlPattern, label
                 `${label} を実行してもプレビューが有効にならない`);
   const url = await cdp.eval(`document.getElementById('browser-url').value`);
   check(urlPattern.test(url), `${label} のプレビュー URL が想定と違う: ${url}`);
-  check(await cdp.eval(`document.getElementById('run-stdin-row').classList.contains('hidden')`) === true,
-        `${label} の実行中に標準入力欄が出ている`);
   await cdp.eval(`document.getElementById('btn-run-stop').click()`);
   await waitFor(cdp, `document.getElementById('btn-run-stop').disabled === true`, 30000,
                 `${label} を停止できない`);

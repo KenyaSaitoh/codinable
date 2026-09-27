@@ -51,6 +51,30 @@ descriptions:
 udemy:
   url: https://github.com/KenyaSaitoh/learn_spring_aidd_advanced
 
+# チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
+chapters:
+  3:
+    ja: 'HTTPクライアントとWebSocketによる通信'
+    en: 'Communication with HTTP Clients and WebSocket'
+  4:
+    ja: 'OAuth 2・OIDC・JWTによる認証連携'
+    en: 'Federated Authentication with OAuth 2, OIDC and JWT'
+  5:
+    ja: 'Spring Securityの認証・認可とリクエスト保護'
+    en: 'Authentication, Authorization and Request Protection with Spring Security'
+  6:
+    ja: 'GraphQLのスキーマとデータ取得'
+    en: 'GraphQL Schemas and Data Fetching'
+  7:
+    ja: 'リアクティブ処理と非同期メッセージング'
+    en: 'Reactive Processing and Asynchronous Messaging'
+  8:
+    ja: '障害への対処とリトライ・サーキットブレーカー'
+    en: 'Handling Failures with Retries and Circuit Breakers'
+  9:
+    ja: 'Springの観測・監視機能'
+    en: 'Observability and Monitoring in Spring'
+
 exercises:
   # ── チャプター3: HTTPクライアントとWebSocket ──────────────
   - id: spring-webclient-employee
@@ -75,8 +99,6 @@ exercises:
         Switch the run target to gradle:test to run the API tests, which also drive the client.
     openFiles:
       - client/src/main/java/pro/kensait/spring/employee/client/Main_Employee.java
-      - src/main/java/pro/kensait/spring/employee/api/EmployeeController.java
-      - README.md
 
   - id: spring-websocket-employee
     chapter: 3
@@ -98,10 +120,7 @@ exercises:
         Open the same URL in an external browser as well, connect both, and watch a notice
         from one reach both.
     openFiles:
-      - src/main/java/pro/kensait/spring/employee/notification/WebSocketConfig.java
       - src/main/java/pro/kensait/spring/employee/notification/EmployeeNoticeController.java
-      - frontend/src/components/NotificationPanel.tsx
-      - README.md
 
   # ── チャプター4: OAuth 2・OIDC・JWT ───────────────────────
   - id: spring-sec-employee-keycloak
@@ -126,10 +145,8 @@ exercises:
         http://localhost:5173/ in the preview and compare signing in as alice (read-only)
         and bob (CRUD).
     openFiles:
-      - src/main/resources/application.yml
-      - src/main/java/pro/kensait/spring/employee/web/SecurityConfig.java
-      - src/main/java/pro/kensait/spring/employee/web/EmployeeOidcUserService.java
       - README.md
+      - src/main/java/pro/kensait/spring/employee/web/SecurityConfig.java
 
   - id: spring-sec-employee-google
     chapter: 4
@@ -154,10 +171,8 @@ exercises:
         npm install → npm run dev, open http://localhost:5173/ in the preview, sign in and see
         that only reading is allowed.
     openFiles:
-      - src/main/resources/application.yml
-      - src/main/java/pro/kensait/spring/employee/web/SecurityConfig.java
-      - src/main/java/pro/kensait/spring/employee/web/EmployeeOidcUserService.java
       - README.md
+      - src/main/java/pro/kensait/spring/employee/web/SecurityConfig.java
 
   # ── チャプター5: Spring Security ─────────────────────────
   - id: spring-sec-employee
@@ -182,9 +197,6 @@ exercises:
         the CSRF token exchange.
     openFiles:
       - src/main/java/pro/kensait/spring/employee/web/SecurityConfig.java
-      - src/main/java/pro/kensait/spring/employee/web/EmployeeApi.java
-      - frontend/src/services/api.ts
-      - README.md
 
   # ── チャプター6: GraphQL ─────────────────────────────────
   - id: spring-graphql-employee
@@ -208,10 +220,7 @@ exercises:
         nested department-to-employee fetching and the errors array. The dedicated React
         screen starts with cd frontend → npm install → npm run dev at http://localhost:5173/.
     openFiles:
-      - src/main/resources/graphql/schema.graphqls
       - src/main/java/pro/kensait/spring/employee/graphql/api/EmployeeGraphqlController.java
-      - frontend/src/components/GraphqlPanel.tsx
-      - README.md
 
   # ── チャプター7: リアクティブ処理と非同期メッセージング ───────
   - id: spring-webflux-employee
@@ -236,9 +245,6 @@ exercises:
         npm run dev and open http://localhost:5173/ in the preview to start and stop the stream.
     openFiles:
       - src/main/java/pro/kensait/spring/employee/flux/api/EmployeeFluxApi.java
-      - src/main/java/pro/kensait/spring/employee/flux/service/EmployeeFluxService.java
-      - src/main/java/pro/kensait/spring/employee/flux/repository/EmployeeReactiveRepository.java
-      - README.md
 
   - id: spring-kafka-employee
     chapter: 7
@@ -261,10 +267,8 @@ exercises:
         terminal send POST /events with the curl command in the README, check the 202, and look
         at the events actually received at http://localhost:8092/events.
     openFiles:
-      - src/main/java/pro/kensait/spring/kafka/service/EventSendService.java
-      - consumer/src/main/java/pro/kensait/spring/kafka/service/EventReceiveService.java
-      - src/main/resources/application.yml
       - README.md
+      - src/main/java/pro/kensait/spring/kafka/service/EventSendService.java
 
   - id: spring-amqp-employee
     chapter: 7
@@ -288,10 +292,7 @@ exercises:
         preview, send an event and fetch the received history. The exchange and queue are also
         visible in the management UI from the Messaging tab.
     openFiles:
-      - src/main/java/pro/kensait/spring/amqp/config/AmqpConfig.java
       - src/main/java/pro/kensait/spring/amqp/service/EventSendService.java
-      - consumer/src/main/java/pro/kensait/spring/amqp/service/EventReceiveService.java
-      - README.md
 
   # ── チャプター8: リトライとサーキットブレーカー ──────────────
   - id: spring-resilience-employee
@@ -318,8 +319,6 @@ exercises:
         Calling /ratelimit-demo in a row gives 429 from the fourth call.
     openFiles:
       - src/main/java/pro/kensait/spring/employee/resilience/service/EmployeeClientService.java
-      - src/main/resources/application.yml
-      - README.md
 
   - id: spring-retry-employee
     chapter: 8
@@ -344,8 +343,6 @@ exercises:
         (fallback: true) comes back.
     openFiles:
       - src/main/java/pro/kensait/spring/employee/retry/service/EmployeeClientService.java
-      - src/main/java/pro/kensait/spring/employee/retry/Application.java
-      - README.md
 
   # ── チャプター9: 観測・監視 ──────────────────────────────
   - id: spring-actuator-employee
@@ -371,9 +368,6 @@ exercises:
         without a restart.
     openFiles:
       - src/main/resources/application.yml
-      - src/main/java/pro/kensait/spring/employee/rest/health/DatabaseHealthIndicator.java
-      - src/main/java/pro/kensait/spring/employee/rest/service/EmployeeService.java
-      - README.md
 
   - id: spring-observability-employee
     chapter: 9
@@ -398,6 +392,3 @@ exercises:
         metrics and logs can still be checked.
     openFiles:
       - src/main/java/pro/kensait/spring/employee/rest/service/EmployeeService.java
-      - src/main/java/pro/kensait/spring/employee/rest/observation/ObservationConfig.java
-      - src/main/resources/application.yml
-      - README.md

@@ -285,11 +285,13 @@ async function runAgent({ event, messages, context, selection, apiKeys, uiLang, 
     if (reply.text) send('agent-text', reply.text);
 
     if (!reply.toolCalls.length) {
-      history.push({ role: 'assistant', content: reply.text });
+      history.push({ role: 'assistant', content: reply.text, replay: reply.replay });
       return { history };
     }
 
-    history.push({ role: 'assistant', content: reply.text, toolCalls: reply.toolCalls });
+    // replay はプロバイダが送り返しを求めるもの (Gemini の thoughtSignature)。中身は見ない
+    history.push({ role: 'assistant', content: reply.text, toolCalls: reply.toolCalls,
+                   replay: reply.replay });
 
     const results = [];
     for (const call of reply.toolCalls) {

@@ -102,6 +102,12 @@ function toToolContents(messages) {
       });
       continue;
     }
+    // Gemini は functionCall の部分に thoughtSignature を付けて返し、次の呼び出しで
+    // それをそのまま送り返すことを求める (無いと 400)。受け取った parts を丸ごと戻す
+    if (m.role === 'assistant' && m.replay?.provider === 'google' && Array.isArray(m.replay.parts)) {
+      out.push({ role: 'model', parts: m.replay.parts });
+      continue;
+    }
     if (m.role === 'assistant' && m.toolCalls?.length) {
       const parts = [];
       if (String(m.content ?? '').trim()) parts.push({ text: m.content });
@@ -157,7 +163,9 @@ async function callWithTools({ apiKey, model, messages, system, tools, signal, m
       input: p.functionCall.args || {},
     }));
 
-  return { text, toolCalls };
+  // replay: 次の呼び出しで送り返すための、受け取ったままの parts (thoughtSignature を含む)
+  // ループ側は中身を見ずに履歴へ入れておくだけ (他のプロバイダは使わない)
+  return { text, toolCalls, replay: { provider: 'google', parts } };
 }
 
 module.exports = { streamChat, callWithTools, LABEL };

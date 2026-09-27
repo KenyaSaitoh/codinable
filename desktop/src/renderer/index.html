@@ -162,7 +162,6 @@
           <button class="btn btn-answer" id="btn-app-update-check" data-i18n="btnAppUpdateCheck">更新を確認</button>
         </div>
       </div>
-      </div>
     </div>
     <div class="settings-column">
       <!-- ── LLM (BYOK) ──
@@ -298,21 +297,10 @@
             <button class="run-tab" id="run-tab-browser" data-pane="tab-browser" data-i18n="tabBrowser" data-i18n-title="tabBrowserTitle" title="Web アプリ・静的ページの動作確認">🌐 プレビュー</button>
           </div>
           <div class="run-output-body">
-            <button class="btn-add-context" id="btn-add-log-context" data-i18n="btnAddContext"
-                    data-i18n-title="btnAddContextTitle" title="この実行結果をチャットの参考情報に追加します">＋ チャットに渡す</button>
 
             <!-- 実行結果 -->
             <div class="run-pane active" id="tab-result">
               <pre class="output-pre" id="output-result" data-i18n="outputPlaceholder">ここに実行結果が表示されます。</pre>
-              <!-- 標準入力 (実行中のみ表示): Scanner / input() 対応 -->
-              <div class="run-stdin-row hidden" id="run-stdin-row">
-                <span class="run-stdin-mark">›</span>
-                <input type="text" id="run-stdin-input" class="run-stdin-input"
-                       data-i18n-placeholder="runStdinPlaceholder"
-                       placeholder="標準入力へ送信（Enter）" spellcheck="false"
-                       autocorrect="off" autocapitalize="off">
-                <button class="btn btn-apply" id="run-stdin-send" data-i18n="runStdinSend">送信</button>
-              </div>
             </div>
 
             <!-- テスト結果 (JUnit XML + JaCoCo) -->
@@ -386,8 +374,9 @@
         </div>
       </div>
 
-      <!-- 添付 (ファイル・実行ログ) のチップ -->
-      <div class="ai-context-chips hidden" id="ai-context-chips"></div>
+      <!-- 何が AI に渡るかは 1 行で伝えるだけにする (選ばせない・外させない)
+           演習のファイルと直近の実行結果は、送信のたびに自動で渡す -->
+      <p class="chat-context-note" data-i18n="chatContextNote">演習のプロジェクトのファイルと直近の実行結果は、自動的にコンテキストに入ります</p>
 
       <div class="chat-input-wrap">
         <!-- 入れ方の案内は Ask / Agent で変わるので、文言は setChatMode が入れる -->
@@ -401,9 +390,9 @@
             <label class="chat-mode-option"><input type="radio" name="chat-mode" id="btn-mode-ask" value="ask" checked><span data-i18n="modeAsk">Ask</span></label>
             <label class="chat-mode-option"><input type="radio" name="chat-mode" id="btn-mode-agent" value="agent"><span data-i18n="modeAgent">Agent</span></label>
           </div>
-          <button class="chat-mini-btn chat-mini-send" id="btn-chat-send" data-i18n="btnSend" data-i18n-title="btnSendTitle" title="送信">➤ 送信</button>
+          <!-- 送信中は同じボタンが「中断」に変わる (setChatStreaming)。大きさは「実行」ボタンとそろえる -->
+          <button class="btn btn-run chat-send-btn" id="btn-chat-send" data-i18n="btnSend" data-i18n-title="btnSendTitle" title="送信">送信</button>
         </div>
-        <button class="chat-abort-btn hidden" id="btn-chat-abort" data-i18n="btnAbort" data-i18n-title="btnAbortTitle" title="応答を中断します">⏹ 中断</button>
       </div>
     </aside>
 

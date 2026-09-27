@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html lang="ja">
+{% comment %}
+  Django Template Language のテンプレート。二重の波かっこが値の埋め込み、
+  波かっこ + % がタグ。Thymeleaf / EJS と書き方は違うが、役割は同じ
+{% endcomment %}
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>計算アプリケーション (Django)</title>
-  <style>
-    body { max-width: 600px; margin: 40px auto; padding: 0 20px; font-family: sans-serif; }
-    form, .field { display: grid; gap: 12px; }
-    label { display: grid; gap: 4px; }
-    input, button { padding: 8px 10px; font: inherit; }
-    .buttons { display: flex; gap: 8px; }
-    .errorlist { color: #b42318; }
-  </style>
 </head>
 <body>
-  <h1>計算アプリケーション (Django)</h1>
-  <p>同じ入力をPOSTとGETのどちらでも送れます。</p>
+  <h2>計算アプリケーション (Django)</h2>
+  <hr>
 
-  <form id="calc-form">
+  <!-- 業務エラー (0 除算) はここに出る -->
+  {% if error %}
+  <div style="color: red">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST">
+    <!-- Django は POST にこのトークンを求める (他サイトからの送信を防ぐ) -->
     {% csrf_token %}
-    <label>
-      {{ form.param1.label }}
-      {{ form.param1 }}
-      {{ form.param1.errors }}
-    </label>
-    <label>
-      {{ form.param2.label }}
-      {{ form.param2 }}
-      {{ form.param2.errors }}
-    </label>
-    <div class="buttons">
-      <button type="submit" formmethod="post" formaction="{% url 'calc:add_by_post' %}">
-        足し算(POST)
-      </button>
-      <button type="submit" formmethod="get" formaction="{% url 'calc:add_by_get' %}">
-        足し算(GET)
-      </button>
+    <div>
+      <span>パラメータ1</span>
+      <!-- value を入れ直しておくと、エラーで戻ったときに入力が残る -->
+      <input type="text" name="param1" value="{{ form.param1.value|default_if_none:'' }}">
+      {% for message in form.param1.errors %}<span style="color: red">{{ message }}</span>{% endfor %}
+    </div>
+    <div>
+      <span>パラメータ2</span>
+      <input type="text" name="param2" value="{{ form.param2.value|default_if_none:'' }}">
+      {% for message in form.param2.errors %}<span style="color: red">{{ message }}</span>{% endfor %}
+    </div>
+    <div>
+      <!-- 同じフォームを、押したボタンによって別の URL へ送る -->
+      <button type="submit" formaction="{% url 'calc:add' %}">足し算</button>
+      <button type="submit" formaction="{% url 'calc:subtract' %}">引き算</button>
+      <button type="submit" formaction="{% url 'calc:multiply' %}">掛け算</button>
+      <button type="submit" formaction="{% url 'calc:divide' %}">割り算</button>
     </div>
   </form>
 </body>

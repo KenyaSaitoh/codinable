@@ -53,6 +53,42 @@ descriptions:
 udemy:
   url: https://github.com/KenyaSaitoh/learn_spring_aidd_basic
 
+# チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
+chapters:
+  2:
+    ja: 'Spring BootとDI・レイヤー設計'
+    en: 'Spring Boot, DI and Layered Design'
+  3:
+    ja: 'Spring MVCとThymeleafによる画面生成'
+    en: 'Rendering Pages with Spring MVC and Thymeleaf'
+  4:
+    ja: 'Spring MVCのリクエスト処理・入力検証・例外処理'
+    en: 'Request Handling, Validation and Exception Handling in Spring MVC'
+  5:
+    ja: 'リダイレクトとセッションによる状態管理'
+    en: 'State Management with Redirects and Sessions'
+  6:
+    ja: 'Spring MVCによるファイルアップロードとダウンロード'
+    en: 'File Upload and Download with Spring MVC'
+  7:
+    ja: 'Spring JDBCによるデータベースアクセス'
+    en: 'Database Access with Spring JDBC'
+  8:
+    ja: 'Spring Data JPAと永続化コンテキスト'
+    en: 'Spring Data JPA and the Persistence Context'
+  9:
+    ja: 'MyBatisによるSQLマッピングと動的SQL'
+    en: 'SQL Mapping and Dynamic SQL with MyBatis'
+  10:
+    ja: 'Springのトランザクション管理と伝播'
+    en: 'Transaction Management and Propagation in Spring'
+  11:
+    ja: 'Spring WebとSpring Data RESTによるREST API'
+    en: 'REST APIs with Spring Web and Spring Data REST'
+  12:
+    ja: 'RestClientとRestTemplateによる同期HTTP通信'
+    en: 'Synchronous HTTP with RestClient and RestTemplate'
+
 exercises:
   # ── チャプター2: DI とレイヤー設計 ─────────────────────
   - id: spring-mvc-employee
@@ -76,10 +112,7 @@ exercises:
         Start it with bootRun, open http://localhost:8080/ and list, create, edit and delete employees.
         Switch the run target to gradle:test to run the tests that replace dependencies with Mockito.
     openFiles:
-      - src/main/java/pro/kensait/spring/employee/service/EmployeeService.java
       - src/main/java/pro/kensait/spring/employee/web/EmployeeController.java
-      - src/main/java/pro/kensait/spring/employee/service/EmployeeDAO.java
-      - README.md
 
   # ── チャプター3: Spring MVC と Thymeleaf ──────────────
   - id: spring-mvc-hello
@@ -102,8 +135,6 @@ exercises:
         Change the Model value or the attribute name in the template and see how the page changes.
     openFiles:
       - src/main/java/pro/kensait/spring/hello/HelloController.java
-      - src/main/resources/templates/HelloPage.html
-      - README.md
 
   - id: spring-mvc-thymeleaf-1
     chapter: 3
@@ -125,10 +156,7 @@ exercises:
         Start it with bootRun and open /expression, /collection, /condition, /link and /utility
         from http://localhost:8080/.
     openFiles:
-      - src/main/java/pro/kensait/spring/thymeleaf/ThymeleafController.java
       - src/main/resources/templates/ExpressionPage.html
-      - src/main/resources/templates/CollectionPage.html
-      - README.md
 
   - id: spring-mvc-thymeleaf-2
     chapter: 3
@@ -151,10 +179,7 @@ exercises:
         Start it with bootRun and open /form, /fragment, /layout, /inline and /message?lang=en.
         Submit /form empty to see how errors are shown.
     openFiles:
-      - src/main/java/pro/kensait/spring/thymeleaf/FormController.java
       - src/main/resources/templates/FormPage.html
-      - src/main/java/pro/kensait/spring/thymeleaf/config/MessageConfig.java
-      - README.md
 
   # ── チャプター4: リクエスト処理・入力検証・例外処理 ─────
   - id: spring-mvc-calc-1-request
@@ -177,8 +202,6 @@ exercises:
         then open http://localhost:8080/addByGet?param1=30&param2=10 directly.
     openFiles:
       - src/main/java/pro/kensait/spring/calc/CalcController.java
-      - src/main/resources/templates/CalcInputPage.html
-      - README.md
 
   - id: spring-mvc-calc-2-validation
     chapter: 4
@@ -199,9 +222,6 @@ exercises:
         and submit blanks, letters or 2000 to see the errors shown again.
     openFiles:
       - src/main/java/pro/kensait/spring/calc/web/CalcParam.java
-      - src/main/java/pro/kensait/spring/calc/web/CalcController.java
-      - src/main/java/pro/kensait/spring/calc/service/CalcService.java
-      - README.md
 
   - id: spring-mvc-calc-4-prg-rebind
     dir: spring-mvc-calc-4-prg
@@ -223,9 +243,7 @@ exercises:
         on the same input page. Start it with bootRun, open http://localhost:8080/ and submit
         non-numbers or out-of-range values; the values stay and each field shows its error.
     openFiles:
-      - src/main/resources/templates/CalcInputPage.html
       - src/main/java/pro/kensait/spring/calc/web/CalcController.java
-      - README.md
 
   - id: spring-mvc-calc-3-config-exception
     chapter: 4
@@ -247,10 +265,7 @@ exercises:
         open http://localhost:8080/ and try 1000 x 1000, dividing by 0 and 1 / 3 to see the error page
         and the rounding.
     openFiles:
-      - src/main/java/pro/kensait/spring/calc/config/ConfigHolder.java
-      - src/main/java/pro/kensait/spring/calc/service/CalcService.java
       - src/main/java/pro/kensait/spring/calc/web/CalcController.java
-      - README.md
 
   # ── チャプター5: リダイレクトとセッション ─────────────
   - id: spring-mvc-calc-4-prg
@@ -273,8 +288,6 @@ exercises:
         changed and that reloading does not resend the POST.
     openFiles:
       - src/main/java/pro/kensait/spring/calc/web/CalcController.java
-      - src/main/resources/templates/CalcOutputPage.html
-      - README.md
 
   - id: spring-mvc-calc-6-history
     chapter: 5
@@ -296,9 +309,6 @@ exercises:
         /viewHistory1 to 3 list the history; /viewResultByQuery?id=1 and /viewResultByPath/1 show one entry by ID.
     openFiles:
       - src/main/java/pro/kensait/spring/calc/web/CalcController.java
-      - src/main/java/pro/kensait/spring/calc/service/CalcService.java
-      - src/main/java/pro/kensait/spring/calc/service/CalcDAO.java
-      - README.md
 
   - id: spring-mvc-calc-5-session
     chapter: 5
@@ -319,9 +329,6 @@ exercises:
         then go on to the tax calculation and check that the previous result is used.
     openFiles:
       - src/main/java/pro/kensait/spring/calc/web/CalcController.java
-      - src/main/java/pro/kensait/spring/calc/web/CalcSession.java
-      - src/main/java/pro/kensait/spring/calc/service/TaxService.java
-      - README.md
 
   - id: spring-mvc-employee-session
     dir: spring-mvc-employee
@@ -345,8 +352,6 @@ exercises:
         how long the values stay.
     openFiles:
       - src/main/java/pro/kensait/spring/employee/web/EmployeeController.java
-      - src/main/java/pro/kensait/spring/employee/web/EmployeeSession.java
-      - README.md
 
   # ── チャプター6: ファイルのアップロードとダウンロード ──
   - id: spring-mvc-file-upload
@@ -369,9 +374,6 @@ exercises:
         then check what was stored on the result page (/files/{id}).
     openFiles:
       - src/main/java/pro/kensait/spring/upload/FileUploadController.java
-      - src/main/java/pro/kensait/spring/upload/FileStorageService.java
-      - src/main/resources/templates/FileUploadPage.html
-      - README.md
 
   - id: spring-mvc-file-download
     chapter: 6
@@ -393,7 +395,6 @@ exercises:
         start the app with bootRun, then open http://localhost:8080/download/sample.txt in a web browser.
     openFiles:
       - src/main/java/pro/kensait/spring/download/FileDownloadController.java
-      - README.md
 
   # ── チャプター7〜9: DB アクセス ───────────────────────
   - id: spring-mvc-employee-jdbc
@@ -416,9 +417,7 @@ exercises:
         Start it with bootRun and search, page, create, edit and delete at http://localhost:8080/.
     openFiles:
       - src/main/java/pro/kensait/spring/employee/repository/EmployeeRepository.java
-      - src/main/java/pro/kensait/spring/employee/service/EmployeeService.java
-      - sql/hsqldb/2_EMPLOYEE_DDL.sql
-      - README.md
+      - SCHEMA.md
 
   - id: spring-mvc-employee-jpa
     chapter: 8
@@ -439,10 +438,8 @@ exercises:
         JPQL and Pageable. Start it with bootRun, search, create, edit and delete at
         http://localhost:8080/, and compare with the SQL shown in the log.
     openFiles:
-      - src/main/java/pro/kensait/spring/employee/entity/Employee.java
       - src/main/java/pro/kensait/spring/employee/repository/EmployeeRepository.java
-      - src/main/java/pro/kensait/spring/employee/service/EmployeeService.java
-      - README.md
+      - SCHEMA.md
 
   - id: spring-mvc-employee-mybatis
     chapter: 9
@@ -462,10 +459,8 @@ exercises:
         consistent with dynamic SQL (<if>). Start it with bootRun, search with different conditions at
         http://localhost:8080/ and check the list against the total count and pages.
     openFiles:
-      - src/main/java/pro/kensait/spring/employee/mapper/EmployeeMapper.java
       - src/main/resources/pro/kensait/spring/employee/mapper/EmployeeMapper.xml
-      - src/main/java/pro/kensait/spring/employee/service/EmployeeService.java
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター10: トランザクション ──────────────────
   - id: spring-mvc-tx
@@ -488,9 +483,7 @@ exercises:
         ?param=-5, and follow the responses and the log.
     openFiles:
       - src/main/java/pro/kensait/spring/tx/FooBean.java
-      - src/main/java/pro/kensait/spring/tx/BarBean.java
-      - src/main/java/pro/kensait/spring/tx/QuxBean.java
-      - README.md
+      - SCHEMA.md
 
   - id: spring-mvc-tx-jta
     chapter: 10
@@ -512,9 +505,7 @@ exercises:
         http://localhost:8080/JtaPage.html, and check the responses and the log.
     openFiles:
       - src/main/java/pro/kensait/spring/tx/XaDataSourceConfig.java
-      - src/main/java/pro/kensait/spring/tx/FooBean.java
-      - src/main/java/pro/kensait/spring/tx/QuxBean.java
-      - README.md
+      - SCHEMA.md
 
   # ── チャプター11: REST API と Spring Data REST ─────────
   - id: spring-rest-greet
@@ -537,7 +528,6 @@ exercises:
         from the terminal (README.md lists the rest).
     openFiles:
       - src/main/java/pro/kensait/spring/greet/rest/api/GreetApi.java
-      - README.md
 
   - id: spring-rest-employee
     chapter: 11
@@ -560,9 +550,6 @@ exercises:
         gradle:test runs the API tests.
     openFiles:
       - src/main/java/pro/kensait/spring/employee/rest/api/EmployeeApi.java
-      - src/main/java/pro/kensait/spring/employee/rest/api/ApiExceptionHandler.java
-      - curlメモ.txt
-      - README.md
 
   - id: spring-data-rest-employee
     chapter: 11
@@ -587,9 +574,6 @@ exercises:
         http://127.0.0.1:5500 in the preview URL.
     openFiles:
       - src/main/java/pro/kensait/spring/employee/repository/EmployeeRepository.java
-      - src/main/java/pro/kensait/spring/employee/config/RestConfig.java
-      - src/main/java/pro/kensait/spring/employee/entity/Employee.java
-      - README.md
 
   # ── チャプター12: RestClient / RestTemplate ──────────────
   # ルートが確認用 API（実行ボタン）、client/ がコンソールクライアント（ターミナル）
@@ -613,9 +597,6 @@ exercises:
         the terminal and read the output for get, search, create, update, delete and the 404 afterwards.
     openFiles:
       - client/src/main/java/pro/kensait/spring/employee/client/Main_Employee.java
-      - client/src/main/java/pro/kensait/spring/employee/client/ClientOptions.java
-      - src/main/java/pro/kensait/spring/employee/api/EmployeeController.java
-      - README.md
 
   - id: spring-resttemplate-employee
     chapter: 12
@@ -637,5 +618,3 @@ exercises:
         run cd client -> ../gradlew.bat run in the terminal, and compare the output with the RestClient version.
     openFiles:
       - client/src/main/java/pro/kensait/spring/employee/client/Main_Employee.java
-      - src/main/java/pro/kensait/spring/employee/api/EmployeeController.java
-      - README.md

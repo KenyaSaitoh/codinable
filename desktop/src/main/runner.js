@@ -20,6 +20,11 @@ const path = require('path');
 const net  = require('net');
 const { spawn } = require('child_process');
 
+// 実行したプログラムには標準入力を渡さない
+// 演習は「実行」ボタンで動かして出力を見るもので、入力を打ち込む前提のものは無い
+// 閉じておけば、入力を読むプログラムもすぐ EOF を受け取り、黙って待ち続けることがない
+const STDIO = ['ignore', 'pipe', 'pipe'];
+
 const {
   IS_WIN, resolveJavaTool, resolveNode, resolveNpm, resolveNpmCli,
   resolvePython, resolveBash,
@@ -345,7 +350,6 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
         // ポート占有はプレビューを伴うタスクのときだけ掃除する
         freePort: isBootRun ? 8080 : null,
         previewUrl: isBootRun ? 'http://localhost:8080' : null,
-        interactive: false,
         run: {
           command: `"${gradlew}" ${safeTask}${extra} --console=plain`,
           shell: true,
@@ -386,7 +390,6 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
         previewUrl: vitePort ? `http://localhost:${vitePort}` : null,
         // npm スクリプトはサーバーやビルドが中心。stdin 欄を出すと、Vite に
         // 入力を送るための UI に見えてしまうので対話実行とは扱わない
-        interactive: false,
       };
     }
 
@@ -402,7 +405,6 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
                          resolveHsqldb()].filter(Boolean).join(CP_SEP);
       return {
         label: `java ${path.relative(projectDir, mainFile).replace(/\\/g, '/')}`,
-        interactive: true,
         steps: [{
           exe:  resolveJavaTool('javac'),
           args: [...getJavacRuntimeOptions(uiLang), '-encoding', 'UTF-8',
@@ -430,9 +432,8 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
         const pip = pipInstallStep(projectDir, env);
         return {
           label: `python ${relPath}`,
-          interactive: true,
           steps: pip ? [pip] : [],
-          // -u: 対話入力でプロンプトが先に届くようバッファリングを切る
+          // -u: 出力がすぐ画面に届くようバッファリングを切る (Django の起動ログなど)
           run: { exe: resolvePython(), args: ['-X', 'utf8', '-u', full], cwd: projectDir, env },
         };
       }
@@ -445,7 +446,6 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
         // Node.js 24 以降は type stripping で .ts をそのまま実行できる
         return {
           label: `node ${relPath}`,
-          interactive: true,
           steps,
           run: { exe: resolveNode(), args: ['--no-warnings', full], cwd: projectDir, env },
         };
@@ -455,7 +455,6 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
         if (!bash) throw new Error('bash が見つかりません (runtime/bash が未セットアップです)');
         return {
           label: `bash ${relPath}`,
-          interactive: true,
           run: { exe: bash, args: ['--noprofile', '--norc', full], cwd: projectDir, env },
         };
       }
@@ -479,8 +478,8 @@ function execStep(step, send) {
     let proc;
     try {
       proc = step.shell
-        ? spawn(step.command, [], { cwd: step.cwd, env: step.env, shell: true, windowsHide: true })
-        : spawn(step.exe, step.args, { cwd: step.cwd, env: step.env, windowsHide: true });
+        ? spawn(step.command, [], { cwd: step.cwd, env: step.env, shell: true, windowsHide: true, stdio: STDIO })
+        : spawn(step.exe, step.args, { cwd: step.cwd, env: step.env, windowsHide: true, stdio: STDIO });
     } catch (err) {
       send('run-output', `\n❌ ${err.message}\n`);
       resolve(-1);
@@ -574,8 +573,8 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
   let proc;
   try {
     proc = spec.run.shell
-      ? spawn(spec.run.command, [], { cwd: spec.run.cwd, env: spec.run.env, shell: true, windowsHide: true })
-      : spawn(spec.run.exe, spec.run.args, { cwd: spec.run.cwd, env: spec.run.env, windowsHide: true });
+      ? spawn(spec.run.command, [], { cwd: spec.run.cwd, env: spec.run.env, shell: true, windowsHide: true, stdio: STDIO })
+      : spawn(spec.run.exe, spec.run.args, { cwd: spec.run.cwd, env: spec.run.env, windowsHide: true, stdio: STDIO });
   } catch (err) {
     send('run-output', `\n❌ ${err.message}\n`);
     send('run-exit', { code: -1 });
@@ -623,13 +622,7 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
     if (port) waitForPort(port, { token, proc, onReady: () => announceUrl(spec.previewUrl) });
   }
 
-  return { ok: true, interactive: !!spec.interactive, label: spec.label };
-}
-
-/** 実行中プロセスの標準入力へ書き込む (Scanner / input() の対話実行用) */
-function writeStdin(text) {
-  if (!current) return;
-  try { current.proc.stdin.write(String(text)); } catch { /* すでに閉じている */ }
+  return { ok: true, label: spec.label };
 }
 
 function isRunning() {
@@ -642,7 +635,7 @@ function disposeAll() {
 }
 
 module.exports = {
-  start, stop, writeStdin, isRunning, disposeAll,
+  start, stop, isRunning, disposeAll,
   ensureGradleWrapper, detectUrl, detectProject,
   // テスト用に公開
   buildSpec, createUrlDetector,

@@ -8,7 +8,7 @@
 //    dist-updates/courses/index.json            … 講座ごとの最新版 (id / version / file / sha256)
 //    dist-updates/courses/<id>-<version>.codpack … 講座フォルダの中身を gzip した JSON
 //
-//  これを配信先の <baseUrl>/courses/ にそのまま置く (app-config.js の UPDATES)
+//  これを GitHub Releases の courses タグへ上げる (npm run release:courses)
 //  受講者のアプリは「講座を新しく始めるとき」に index.json を見て、
 //  手元より新しい version があれば codpack を取り込む (src/main/courses.js)
 //
@@ -88,7 +88,7 @@ function main() {
     format: 1, generatedAt: new Date().toISOString(), courses: entries,
   }, null, 2) + '\n', 'utf8');
   console.log(`\n${path.relative(process.cwd(), OUT_DIR)} に ${entries.length} 講座ぶんを書き出しました。`);
-  console.log('配信先の <baseUrl>/courses/ に index.json と .codpack を置いてください。');
+  console.log('配るときは npm run release:courses で GitHub Releases へ上げます。');
 }
 
 main();
