@@ -162,7 +162,7 @@ function toolWriteFile({ projectDir, input }) {
   const full = resolveInExercise(projectDir, rel);
   if (!isTextFile(rel)) return { output: `テキストファイル以外は書き換えられません: ${rel}` };
 
-  const after = String(input.content ?? '');
+  let after = String(input.content ?? '');
   if (after.length > MAX_WRITE_CHARS) {
     return { output: `大きすぎて書き込めません (${after.length} 文字): ${rel}` };
   }
@@ -171,6 +171,9 @@ function toolWriteFile({ projectDir, input }) {
   if (existed && !fs.statSync(full).isFile()) return { output: `ファイルではありません: ${rel}` };
 
   const before = existed ? fs.readFileSync(full, 'utf8') : null;
+  // モデルは LF で返してくる。CRLF のファイル (Windows で取り出した雛形) を LF に
+  // 変えてしまうと、差分が全行の入れ替えに見えるため、元の改行に合わせて書く
+  if (before !== null && before.includes('\r\n')) after = after.replace(/\r?\n/g, '\r\n');
   if (existed && before === after) return { output: `変更はありません: ${rel}` };
 
   fs.mkdirSync(path.dirname(full), { recursive: true });

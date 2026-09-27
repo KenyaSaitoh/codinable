@@ -2308,8 +2308,9 @@ function scrollChatToBottom() {
 
 /** 行単位の差分 (LCS)。戻りは [{ kind: 'keep'|'add'|'del', text }] */
 function diffLines(before, after) {
-  const a = before.split('\n');
-  const b = after.split('\n');
+  // 改行コードの違い (CRLF / LF) は差分として見せない
+  const a = before.split(/\r?\n/);
+  const b = after.split(/\r?\n/);
 
   // 教材のファイルは短いので素直な DP で足りる。念のため上限を置き、
   // 超えたときは「全置換」として見せる (計算で固まらせないため)
