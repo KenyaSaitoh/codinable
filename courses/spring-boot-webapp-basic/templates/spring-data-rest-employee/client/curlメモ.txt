@@ -21,8 +21,8 @@ curl.exe "http://localhost:8080/api/employees/search/by-department?departmentId=
 curl.exe "http://localhost:8080/api/employees/search/by-job?jobId=1&sort=employeeId,asc"
 
 # 5. Projection。通常の社員JSONと比較する
-curl.exe "http://localhost:8080/api/employees/1"
-curl.exe "http://localhost:8080/api/employees/1?projection=summary"
+curl.exe "http://localhost:8080/api/employees/10001"
+curl.exe "http://localhost:8080/api/employees/10001?projection=summary"
 
 # 6. Controllerを追加せずPOSTできる。employeeId/code/status/versionは送らない。
 # リポジトリルートで実行。JSONファイルを使い、シェルによる引用符の違いを避ける。
@@ -33,7 +33,7 @@ curl.exe -i -X POST "http://localhost:8080/api/employees" -H "Content-Type: appl
 # projects/master/11_data-rest/spring-data-rest-employee/client/requests.http
 # 単一GETで得たETagを、If-Matchヘッダーに引用符付きのまま指定する。
 # 新規作成直後のETagも0とは限らない。必ずレスポンスから取得する。
-curl.exe -i "http://localhost:8080/api/employees/1"
+curl.exe -i "http://localhost:8080/api/employees/10001"
 
 # 8. 非公開の検索メソッドは404、マスターへの書き込みは405
 curl.exe -i "http://localhost:8080/api/employees/search/findByStatus?status=active"

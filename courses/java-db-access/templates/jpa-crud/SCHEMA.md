@@ -20,5 +20,5 @@
 | `SALARY` | `BigDecimal salary` | `precision = 12, scale = 2` → `DECIMAL(12, 2)` | NOT NULL |
 | `VERSION` | `long version` | `@Version` | 楽観ロックの版番号（更新のたびに Hibernate が 1 増やす） |
 
-初期データはありません。テスト（`EmployeeRepositoryTest.java`）が社員 101「佐藤 花子」を登録し、
-更新・削除します。
+初期データはありません。テスト（`EmployeeRepositoryTest.java`）が社員 10017「Walter」（部署 3、月給 230000）を登録し、
+月給を 250000 に更新してから削除します。

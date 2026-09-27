@@ -27,7 +27,7 @@ GET {{base}}/employees/search/by-department?departmentId=2&sort=employeeId,asc
 GET {{base}}/employees/search/by-job?jobId=1&sort=employeeId,asc
 
 ###
-GET {{base}}/employees/search/by-name?keyword=山田
+GET {{base}}/employees/search/by-name?keyword=Alice
 
 ### Projection（月給・入社日を省略）
 GET {{base}}/employees?projection=summary&sort=employeeId,asc
@@ -44,11 +44,11 @@ POST {{base}}/employees
 Content-Type: application/json
 
 {
-  "employeeName": "新入 社員",
-  "departmentId": 2,
+  "employeeName": "Walter",
+  "departmentId": 3,
   "jobId": 1,
-  "salary": 300000,
-  "entranceDate": "2026-04-01"
+  "salary": 230000,
+  "entranceDate": "2018-04-01"
 }
 
 ### 直前に作った社員を取得（GETを実行してから次のPUTへ）
@@ -62,11 +62,11 @@ Content-Type: application/json
 If-Match: {{current.response.headers.ETag}}
 
 {
-  "employeeName": "更新 社員",
+  "employeeName": "Walter",
   "departmentId": 1,
   "jobId": 2,
   "salary": 380000,
-  "entranceDate": "2026-04-01"
+  "entranceDate": "2018-04-01"
 }
 
 ### 古いETagで更新すると412（currentのGETを実行し直さずに送る）

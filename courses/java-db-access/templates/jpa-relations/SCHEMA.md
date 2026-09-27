@@ -39,11 +39,11 @@ DEPARTMENT（部署・親）             EMPLOYEE（社員・子）
 
 | DEPARTMENT.ID | DEPARTMENT.NAME |
 |---|---|
-| 10 | 営業部 |
+| 3 | SALES |
 
 | EMPLOYEE.ID | NAME | SALARY | DEPARTMENT_ID |
 |---|---|---|---|
-| 101 | 佐藤 花子 | 420000 | 10 |
-| 102 | 鈴木 一郎 | 380000 | 10 |
+| 10001 | Alice | 500000 | 3 |
+| 10005 | Ellen | 300000 | 3 |
 
 部署を `persist` すると、`cascade = CascadeType.ALL` により社員 2 人も一緒に登録されます。

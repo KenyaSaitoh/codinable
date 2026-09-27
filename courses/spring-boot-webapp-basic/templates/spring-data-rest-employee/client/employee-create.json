@@ -1,7 +1,7 @@
 {
-  "employeeName": "新入 社員",
-  "departmentId": 2,
+  "employeeName": "Walter",
+  "departmentId": 3,
   "jobId": 1,
-  "salary": 300000,
-  "entranceDate": "2026-04-01"
+  "salary": 230000,
+  "entranceDate": "2018-04-01"
 }
