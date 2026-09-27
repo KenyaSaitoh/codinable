@@ -26,7 +26,7 @@ bootRun 中は、ターミナルから API を確かめられます。
 
 ```bash
 curl http://localhost:8080/employees
-curl http://localhost:8080/employees/1
+curl http://localhost:8080/employees/10001
 curl http://localhost:8080/departments
 ```
 

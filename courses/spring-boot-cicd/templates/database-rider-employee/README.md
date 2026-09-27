@@ -25,7 +25,7 @@
 | 実行対象 | 内容 |
 |---|---|
 | `test`（既定） | アプリをランダムポートで起動し、6件を実行してテスト結果を表示 |
-| `bootRun` | API を <http://localhost:8080> で起動する（通常起動では社員10人。テスト時は YAML の社員2人から始まる） |
+| `bootRun` | API を <http://localhost:8080> で起動する（通常起動では社員16人。テスト時は YAML の社員2人から始まる） |
 
 元のサンプルではこのテストが `@Tag("it")` のため通常の `test` から除外され、`integrationTest` で
 流していました。Codinable の「test」で走るよう、除外タグを外しています（`build.gradle` のコメント参照）。
@@ -34,7 +34,7 @@ bootRun 中は、ターミナルから API を確かめられます。
 
 ```bash
 curl http://localhost:8080/employees
-curl http://localhost:8080/employees/1
+curl http://localhost:8080/employees/10001
 curl http://localhost:8080/departments
 curl http://localhost:8080/jobs
 ```
