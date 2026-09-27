@@ -1,52 +1,52 @@
 ### getEmployee（主キー検索。存在する場合は200）
-curl -i localhost:8089/employees/1
+curl -i localhost:8089/employees/10001
 # HTTP/1.1 200
-# {"employeeId":1,"employeeName":"Alice","departmentId":10,"departmentName":"営業部","jobName":"Sales","salary":300000,"entranceDate":"2018-04-01"}
+# {"employeeId":10001,"employeeName":"Alice","departmentId":3,"departmentName":"SALES","jobName":"MANAGER","salary":500000,"entranceDate":"2012-04-01"}
 
 ### getEmployee（存在しない場合は404。switchIfEmptyによる切り替え）
-curl -i localhost:8089/employees/999
+curl -i localhost:8089/employees/99999
 # HTTP/1.1 404
 
 ### getEmployees（全件取得）
 curl -i localhost:8089/employees
 # HTTP/1.1 200
-# [{"employeeId":1,"employeeName":"Alice",...},{"employeeId":2,"employeeName":"Bob",...},...]
+# [{"employeeId":10001,"employeeName":"Alice",...},{"employeeId":10002,"employeeName":"Bob",...},...]
 
 ### queryBySalary（給与範囲をキーに条件検索。Fluxのfilterオペレーター）
 curl -i "localhost:8089/employees/query_by_salary?lowerSalary=300000&upperSalary=400000"
 # HTTP/1.1 200
-# [{"employeeId":1,"employeeName":"Alice",...},{"employeeId":2,"employeeName":"Bob",...},{"employeeId":3,"employeeName":"Carol",...}]
+# [{"employeeId":10003,"employeeName":"Carol",...},{"employeeId":10004,"employeeName":"Dave",...},{"employeeId":10005,"employeeName":"Ellen",...},{"employeeId":10011,"employeeName":"Oscar",...},{"employeeId":10015,"employeeName":"Steve",...},{"employeeId":10016,"employeeName":"Trent",...}]
 
 ### createEmployee（新規作成。201とLocationヘッダーが返る）
-curl -i -X POST localhost:8089/employees -H "Content-Type: application/json" -d {\"employeeName\":\"George\",\"departmentId\":20,\"departmentName\":\"開発部\",\"jobName\":\"Engineer\",\"salary\":280000,\"entranceDate\":\"2023-04-01\"}
+curl -i -X POST localhost:8089/employees -H "Content-Type: application/json" -d {\"employeeName\":\"Walter\",\"departmentId\":3,\"departmentName\":\"SALES\",\"jobName\":\"ASSOCIATE\",\"salary\":230000,\"entranceDate\":\"2018-04-01\"}
 # HTTP/1.1 201
-# Location: /employees/7
-# {"employeeId":7,"employeeName":"George","departmentId":20,"departmentName":"開発部","jobName":"Engineer","salary":280000,"entranceDate":"2023-04-01"}
-curl -i localhost:8089/employees/7
+# Location: /employees/10017
+# {"employeeId":10017,"employeeName":"Walter","departmentId":3,"departmentName":"SALES","jobName":"ASSOCIATE","salary":230000,"entranceDate":"2018-04-01"}
+curl -i localhost:8089/employees/10017
 
 ### updateEmployee（更新。200）
-curl -i -X PUT localhost:8089/employees/2 -H "Content-Type: application/json" -d {\"employeeName\":\"Bob\",\"departmentId\":10,\"departmentName\":\"営業部\",\"jobName\":\"Sales\",\"salary\":360000,\"entranceDate\":\"2015-04-01\"}
+curl -i -X PUT localhost:8089/employees/10002 -H "Content-Type: application/json" -d {\"employeeName\":\"Bob\",\"departmentId\":1,\"departmentName\":\"PLANNING\",\"jobName\":\"MANAGER\",\"salary\":460000,\"entranceDate\":\"2012-04-01\"}
 # HTTP/1.1 200
-# {"employeeId":2,"employeeName":"Bob","departmentId":10,"departmentName":"営業部","jobName":"Sales","salary":360000,"entranceDate":"2015-04-01"}
-curl -i localhost:8089/employees/2
+# {"employeeId":10002,"employeeName":"Bob","departmentId":1,"departmentName":"PLANNING","jobName":"MANAGER","salary":460000,"entranceDate":"2012-04-01"}
+curl -i localhost:8089/employees/10002
 
 ### updateEmployee（更新対象が存在しない場合は404）
-curl -i -X PUT localhost:8089/employees/999 -H "Content-Type: application/json" -d {\"employeeName\":\"Nobody\",\"departmentId\":10,\"departmentName\":\"営業部\",\"jobName\":\"Sales\",\"salary\":300000,\"entranceDate\":\"2020-04-01\"}
+curl -i -X PUT localhost:8089/employees/99999 -H "Content-Type: application/json" -d {\"employeeName\":\"Nobody\",\"departmentId\":3,\"departmentName\":\"SALES\",\"jobName\":\"ASSOCIATE\",\"salary\":230000,\"entranceDate\":\"2018-04-01\"}
 # HTTP/1.1 404
 
 ### removeEmployee（削除。204）
-curl -i -X DELETE localhost:8089/employees/2
+curl -i -X DELETE localhost:8089/employees/10002
 # HTTP/1.1 204
-curl -i localhost:8089/employees/2
+curl -i localhost:8089/employees/10002
 # HTTP/1.1 404
 
 ### stream（SSEストリーミング。1秒間隔で1件ずつ配信される）
 # -N（--no-buffer）を付けると、受信した要素が即座に表示され、
 # 「全件揃うのを待たずに順次届く」というリアクティブストリームの動きを体感できる
 curl -N localhost:8089/employees/stream
-# data:{"employeeId":1,"employeeName":"Alice",...}
+# data:{"employeeId":10001,"employeeName":"Alice",...}
 # （1秒後）
-# data:{"employeeId":2,"employeeName":"Bob",...}
+# data:{"employeeId":10002,"employeeName":"Bob",...}
 # （1秒後）
-# data:{"employeeId":3,"employeeName":"Carol",...}
+# data:{"employeeId":10003,"employeeName":"Carol",...}
 # ...
