@@ -129,8 +129,8 @@ async function serve(rootDir) {
 
 function status() {
   return server && server.listening
-    ? { running: true, url: `http://localhost:${servePort}/`, port: servePort, root: serveRoot }
-    : { running: false };
+    ? { ok: true, running: true, url: `http://localhost:${servePort}/`, port: servePort, root: serveRoot }
+    : { ok: true, running: false };
 }
 
 function stop() {

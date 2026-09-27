@@ -30,14 +30,11 @@
   <header class="app-header">
     <div class="header-left">
       <span class="app-title" id="app-title">Codinable</span>
-      <!-- コース切り替え。インストールされている講座のあいだを移る
-           コースが 1 つだけのときは、今どの講座かを示す表示として出したままにする -->
-      <label class="course-picker" data-i18n-title="coursePickerTitle" title="受講している講座を選びます">
-        <span class="course-picker-icon" aria-hidden="true">🎓</span>
-        <select class="course-select" id="active-course-select"></select>
-      </label>
-      <!-- プロジェクトは演習から作って開くので、ここに選択や新規作成の口は置かない
-           (左の演習一覧が唯一の入口。2 か所から選べると、どちらが正か分からなくなる) -->
+      <!-- コースの切り替えはこのボタンから開くダイアログだけで行う
+           (新規: インストールされている全講座 / 再開: 取り組んだことのある講座)
+           2 か所で選べると、どちらが正か分からなくなる -->
+      <button class="btn-course-dialog" id="btn-course-dialog" data-i18n="btnCourseDialog"
+              data-i18n-title="btnCourseDialogTitle" title="講座を新しく始める・続きから再開します">🎓 新規コース開始・再開</button>
     </div>
     <div class="header-right">
       <!-- LLM は任意機能。キーが未設定なら未設定と出るだけで他の機能には影響しない -->
@@ -50,19 +47,23 @@
     </div>
   </header>
 
-  <!-- ════ プロジェクト情報バー ════ -->
+  <!-- ════ 受講中の講座 ════
+       今どの講座を見ているかを出す帯。右には開いている演習の作業フォルダを添える -->
   <div class="current-course-bar" id="project-bar">
-    <span class="current-course-icon" id="project-icon">📁</span>
-    <span class="current-course-name" id="project-name" data-i18n="noProject">プロジェクト未選択</span>
-    <span class="project-kinds" id="project-kinds"></span>
-    <span class="project-bar-actions">
-      <!-- 1 プロジェクト = 1 演習なので、ここが「この演習をやり直す」口になる
-           雛形にあるファイルを上書きして戻す (自分で足したファイルは残す)
-           何が初期化されるのかが読めるよう、対象のプロジェクト名の隣に置く
-           (右端に置くと、アプリ全体を初期化するように見える) -->
-      <button class="btn-lesson-list" id="btn-reset-exercise" data-i18n="btnResetExercise" data-i18n-title="btnResetExerciseTitle" title="この演習のファイルを配布時の状態に戻します">↺ 初期化</button>
-    </span>
+    <span class="current-course-icon" aria-hidden="true">🎓</span>
+    <span class="current-course-name" id="current-course-name" data-i18n="coursesEmpty">講座が入っていません</span>
     <span class="project-path" id="project-path"></span>
+  </div>
+
+  <!-- ════ 新規コース開始・再開 ════ -->
+  <div class="modal-overlay hidden" id="course-dialog-overlay">
+    <div class="course-dialog" role="dialog" aria-modal="true" aria-labelledby="course-dialog-title">
+      <div class="course-dialog-header">
+        <span class="course-dialog-title" id="course-dialog-title" data-i18n="courseDialogTitle">🎓 新規コース開始・再開</span>
+        <button class="course-dialog-close" id="course-dialog-close" data-i18n-title="close" title="閉じる">✕</button>
+      </div>
+      <div class="course-dialog-body" id="course-dialog-body"></div>
+    </div>
   </div>
 
   <!-- ════ 設定 ════ -->
@@ -73,127 +74,135 @@
       <button class="settings-close" id="settings-close" data-i18n-title="close" title="閉じる">✕</button>
     </div>
     <div class="settings-body">
+    <!-- 横幅を使って 2 段に分け、スクロールせずに全体が見えるようにする
+         左: 見た目・作業場所・同梱物 / 右: LLM と講座 -->
+    <div class="settings-columns">
+    <div class="settings-column">
+      <div class="settings-group">
+        <div class="settings-label" data-i18n="uiLangLabel">表示言語</div>
+        <select class="font-select" id="ui-lang-select">
+          <option value="ja">日本語</option>
+          <option value="en">English</option>
+        </select>
+      </div>
 
-    <div class="settings-group">
-      <div class="settings-label" data-i18n="uiLangLabel">表示言語</div>
-      <select class="font-select" id="ui-lang-select">
-        <option value="ja">日本語</option>
-        <option value="en">English</option>
-      </select>
-    </div>
+      <div class="settings-group">
+        <div class="settings-label" data-i18n="theme">テーマ</div>
+        <!-- テーマ名は固有名詞のため i18n 対象外。一覧の正: renderer.js の THEMES -->
+        <div class="theme-btns theme-grid" id="theme-grid">
+          <button class="theme-btn" data-theme="github-dark"><span class="theme-swatch" style="background:#0d1117;border-color:#2f81f7"><span style="background:#2f81f7"></span></span>GitHub Dark Default</button>
+          <button class="theme-btn" data-theme="one-dark-pro"><span class="theme-swatch" style="background:#282c34;border-color:#61afef"><span style="background:#61afef"></span></span>One Dark Pro</button>
+          <button class="theme-btn" data-theme="tokyo-night"><span class="theme-swatch" style="background:#1a1b26;border-color:#7aa2f7"><span style="background:#7aa2f7"></span></span>Tokyo Night</button>
+          <button class="theme-btn" data-theme="dracula"><span class="theme-swatch" style="background:#282a36;border-color:#bd93f9"><span style="background:#bd93f9"></span></span>Dracula Official</button>
+          <button class="theme-btn" data-theme="github-light"><span class="theme-swatch" style="background:#ffffff;border-color:#0969da"><span style="background:#0969da"></span></span>GitHub Light Default</button>
+          <button class="theme-btn" data-theme="solarized-light"><span class="theme-swatch" style="background:#fdf6e3;border-color:#268bd2"><span style="background:#268bd2"></span></span>Solarized Light</button>
+        </div>
+      </div>
 
-    <div class="settings-sep"></div>
+      <div class="settings-group">
+        <div class="settings-label">
+          <span data-i18n="fontSize">フォントサイズ</span>
+          <span id="font-size-display">15px</span>
+        </div>
+        <input type="range" class="font-range" id="font-size-range" min="11" max="22" value="15" step="1">
+      </div>
 
-    <div class="settings-group">
-      <div class="settings-label" data-i18n="theme">テーマ</div>
-      <!-- テーマ名は固有名詞のため i18n 対象外。一覧の正: renderer.js の THEMES -->
-      <div class="theme-btns theme-grid" id="theme-grid">
-        <button class="theme-btn" data-theme="github-dark"><span class="theme-swatch" style="background:#0d1117;border-color:#2f81f7"><span style="background:#2f81f7"></span></span>GitHub Dark Default</button>
-        <button class="theme-btn" data-theme="one-dark-pro"><span class="theme-swatch" style="background:#282c34;border-color:#61afef"><span style="background:#61afef"></span></span>One Dark Pro</button>
-        <button class="theme-btn" data-theme="tokyo-night"><span class="theme-swatch" style="background:#1a1b26;border-color:#7aa2f7"><span style="background:#7aa2f7"></span></span>Tokyo Night</button>
-        <button class="theme-btn" data-theme="dracula"><span class="theme-swatch" style="background:#282a36;border-color:#bd93f9"><span style="background:#bd93f9"></span></span>Dracula Official</button>
-        <button class="theme-btn" data-theme="github-light"><span class="theme-swatch" style="background:#ffffff;border-color:#0969da"><span style="background:#0969da"></span></span>GitHub Light Default</button>
-        <button class="theme-btn" data-theme="solarized-light"><span class="theme-swatch" style="background:#fdf6e3;border-color:#268bd2"><span style="background:#268bd2"></span></span>Solarized Light</button>
+      <div class="settings-row">
+        <div class="settings-group">
+          <div class="settings-label" data-i18n="keybinding">キーバインド</div>
+          <select class="font-select" id="keymap-select">
+            <option value="default" data-i18n="keybindingDefault">標準</option>
+            <option value="vim">Vim</option>
+            <option value="emacs">Emacs</option>
+            <option value="sublime">Sublime Text</option>
+          </select>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-label" data-i18n="fontFamily">フォント</div>
+          <select class="font-select" id="font-family-select">
+            <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+            <option value="'Cascadia Code', Consolas, monospace">Cascadia Code</option>
+            <option value="Consolas, monospace">Consolas</option>
+            <option value="'Fira Code', monospace">Fira Code</option>
+            <option value="'Source Code Pro', monospace">Source Code Pro</option>
+            <option value="'Courier New', monospace">Courier New</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="settings-sep"></div>
+
+      <div class="settings-group">
+        <div class="settings-label" data-i18n="wsLabel">ワークスペース (作業ファイルの保存先)</div>
+        <div class="ws-root-wrap">
+          <input type="text" id="ws-root-input" class="ws-root-input" placeholder="~/codinable" readonly>
+          <button class="btn btn-apply" id="btn-ws-browse" data-i18n="btnChange">変更</button>
+        </div>
+        <div class="api-key-hint" data-i18n="wsHint">このフォルダ直下のディレクトリが 1 つのプロジェクトになります</div>
+      </div>
+
+      <div class="settings-sep"></div>
+
+      <div class="settings-group">
+        <div class="settings-label" data-i18n="runtimeLabel">同梱ランタイム</div>
+        <div class="runtime-info" id="runtime-info">
+          <div class="runtime-info-row" data-i18n="loading">読み込み中...</div>
+        </div>
+      </div>
+
+      <div class="settings-sep"></div>
+
+      <!-- アプリ本体の更新。講座は「新規コース開始」のときに別に確かめる -->
+      <div class="settings-group">
+        <div class="settings-label app-update-row">
+          <span data-i18n="versionLabel">バージョン</span>
+          <span class="api-key-badge" id="version-badge">v0.0.0</span>
+          <span class="app-update-status" id="app-update-status" aria-live="polite"></span>
+          <button class="btn btn-answer" id="btn-app-update-check" data-i18n="btnAppUpdateCheck">更新を確認</button>
+        </div>
+      </div>
       </div>
     </div>
-
-    <div class="settings-group">
-      <div class="settings-label">
-        <span data-i18n="fontSize">フォントサイズ</span>
-        <span id="font-size-display">15px</span>
+    <div class="settings-column">
+      <!-- ── LLM (BYOK) ──
+           3 社のうち使いたいものだけキーを登録すればよい
+           欄は renderer.js が LLM_MODELS から組み立てる -->
+      <div class="settings-group">
+        <div class="settings-label" data-i18n="llmSectionLabel">LLM チャット (任意)</div>
+        <div class="api-key-hint" data-i18n="llmSectionHint">
+          チャットは補助機能です。キーを登録しなくても、開発環境としてはすべて動きます。
+        </div>
+        <div id="llm-key-groups"></div>
+        <div class="settings-label" data-i18n="llmOverrideLabel">モデル ID の上書き (空欄なら既定値)</div>
+        <div class="api-key-wrap">
+          <input type="text" id="llm-model-override" class="api-key-input" placeholder="" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="api-key-hint" id="llm-model-default-hint"></div>
       </div>
-      <input type="range" class="font-range" id="font-size-range" min="11" max="22" value="15" step="1">
-    </div>
 
-    <div class="settings-group">
-      <div class="settings-label" data-i18n="keybinding">キーバインド</div>
-      <select class="font-select" id="keymap-select">
-        <option value="default" data-i18n="keybindingDefault">標準</option>
-        <option value="vim">Vim</option>
-        <option value="emacs">Emacs</option>
-        <option value="sublime">Sublime Text</option>
-      </select>
-    </div>
+      <div class="settings-sep"></div>
 
-    <div class="settings-group">
-      <div class="settings-label" data-i18n="fontFamily">フォント</div>
-      <select class="font-select" id="font-family-select">
-        <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
-        <option value="'Cascadia Code', Consolas, monospace">Cascadia Code</option>
-        <option value="Consolas, monospace">Consolas</option>
-        <option value="'Fira Code', monospace">Fira Code</option>
-        <option value="'Source Code Pro', monospace">Source Code Pro</option>
-        <option value="'Courier New', monospace">Courier New</option>
-      </select>
-    </div>
-
-    <div class="settings-sep"></div>
-
-    <!-- ── LLM (BYOK) ──
-         3 社のうち使いたいものだけキーを登録すればよい
-         欄は renderer.js が LLM_MODELS から組み立てる -->
-    <div class="settings-group">
-      <div class="settings-label" data-i18n="llmSectionLabel">LLM チャット (任意)</div>
-      <div class="api-key-hint" data-i18n="llmSectionHint">
-        チャットは補助機能です。キーを登録しなくても、開発環境としてはすべて動きます。
-      </div>
-      <div id="llm-key-groups"></div>
-      <div class="settings-label" data-i18n="llmOverrideLabel">モデル ID の上書き (空欄なら既定値)</div>
-      <div class="api-key-wrap">
-        <input type="text" id="llm-model-override" class="api-key-input" placeholder="" autocomplete="off" spellcheck="false">
-      </div>
-      <div class="api-key-hint" id="llm-model-default-hint"></div>
-    </div>
-
-    <div class="settings-sep"></div>
-
-    <div class="settings-group">
-      <div class="settings-label" data-i18n="wsLabel">ワークスペース (作業ファイルの保存先)</div>
-      <div class="ws-root-wrap">
-        <input type="text" id="ws-root-input" class="ws-root-input" placeholder="~/codinable" readonly>
-        <button class="btn btn-apply" id="btn-ws-browse" data-i18n="btnChange">変更</button>
-      </div>
-      <div class="api-key-hint" data-i18n="wsHint">このフォルダ直下のディレクトリが 1 つのプロジェクトになります</div>
-    </div>
-
-    <div class="settings-sep"></div>
-
-    <!-- コースは講座単位で足せる。どこから読まれているかが分かると、
-         「増やしたのに出ない」ときの切り分けができる -->
-    <div class="settings-group">
-      <div class="settings-label" data-i18n="coursesLabel">インストールされている講座</div>
-      <div class="runtime-info" id="courses-info">
-        <div class="runtime-info-row" data-i18n="loading">読み込み中...</div>
-      </div>
-      <div class="ws-root-wrap">
-        <button class="btn btn-answer" id="btn-open-courses-dir" data-i18n="btnOpenCoursesDir"
-                data-i18n-title="btnOpenCoursesDirTitle"
-                title="講座を手で足すためのフォルダを開きます">📂 講座フォルダを開く</button>
-        <button class="btn btn-answer" id="btn-reload-courses" data-i18n="btnReloadCourses"
-                data-i18n-title="btnReloadCoursesTitle"
-                title="足した講座を読み直します">↻ 読み直す</button>
-      </div>
-      <div class="api-key-hint" data-i18n="coursesHint">
-        講座を足すと、このアプリを入れ直さなくても演習が増えます。
+      <!-- コースは講座単位で足せる。どこから読まれているかが分かると、
+           「増やしたのに出ない」ときの切り分けができる -->
+      <div class="settings-group">
+        <div class="settings-label" data-i18n="coursesLabel">インストールされている講座</div>
+        <div class="runtime-info" id="courses-info">
+          <div class="runtime-info-row" data-i18n="loading">読み込み中...</div>
+        </div>
+        <div class="ws-root-wrap">
+          <button class="btn btn-answer" id="btn-open-courses-dir" data-i18n="btnOpenCoursesDir"
+                  data-i18n-title="btnOpenCoursesDirTitle"
+                  title="講座を手で足すためのフォルダを開きます">📂 講座フォルダを開く</button>
+          <button class="btn btn-answer" id="btn-reload-courses" data-i18n="btnReloadCourses"
+                  data-i18n-title="btnReloadCoursesTitle"
+                  title="足した講座を読み直します">↻ 読み直す</button>
+        </div>
+        <div class="api-key-hint" data-i18n="coursesHint">
+          講座を足すと、このアプリを入れ直さなくても演習が増えます。
+        </div>
       </div>
     </div>
-
-    <div class="settings-sep"></div>
-
-    <div class="settings-group">
-      <div class="settings-label" data-i18n="runtimeLabel">同梱ランタイム</div>
-      <div class="runtime-info" id="runtime-info">
-        <div class="runtime-info-row" data-i18n="loading">読み込み中...</div>
-      </div>
-    </div>
-
-    <div class="settings-sep"></div>
-
-    <div class="settings-group">
-      <div class="settings-label">
-        <span data-i18n="versionLabel">バージョン</span>
-        <span class="api-key-badge" id="version-badge">v0.0.0</span>
-      </div>
     </div>
 
     </div><!-- /settings-body -->
@@ -214,9 +223,9 @@
            選ぶだけでプロジェクトが用意され、実行環境（実行対象）も決まる -->
       <div class="side-header exercise-header">
         <span data-i18n="exerciseTitle">📚 演習</span>
-        <span class="badge" id="exercise-count">0</span>
-        <!-- どの講座の演習を出しているか。切り替えはヘッダー左のコース選択で行う -->
-        <span class="exercise-course-name" id="exercise-course-name"></span>
+        <!-- 1 プロジェクト = 1 演習なので、ここが「選んでいる演習をやり直す」口になる
+             自分で足したファイルも消して、雛形の状態へ完全に戻す -->
+        <button class="btn-reset-exercise hidden" id="btn-reset-exercise" data-i18n="btnResetExercise" data-i18n-title="btnResetExerciseTitle" title="選択している演習を配布時の状態に戻します">↺ 初期化</button>
       </div>
       <div class="exercise-list" id="exercise-list">
         <div class="tree-placeholder" data-i18n="exerciseEmpty">演習がありません</div>
@@ -271,7 +280,7 @@
             <button class="btn btn-run" id="btn-run" data-i18n="btnRun">実行</button>
           </div>
           <button class="btn btn-stop" id="btn-run-stop" data-i18n="btnStop" disabled>停止</button>
-          <button class="btn btn-browser" id="btn-preview" data-i18n="btnPreview" data-i18n-title="btnPreviewTitle" title="Web プレビュータブで開きます">🌐 プレビュー</button>
+          <!-- プレビューの口は下のタブだけにする。実行すると待ち受けを検知して自動で開く -->
           <div class="toolbar-spacer"></div>
           <span class="hsqldb-badge hidden" id="hsqldb-badge" data-i18n-title="hsqldbAvailable" title="HSQLDB が利用可能です">🗄️ HSQLDB</span>
         </div>
@@ -400,6 +409,30 @@
 
   </div><!-- /app-main -->
 </div><!-- /app-layout -->
+
+<!-- ════ アプリ本体の更新 ════
+     OS 標準ダイアログの代わり。「最新です」「新しいバージョンがあります」
+     ダウンロードの進捗・失敗を 1 枚で扱う。中身は main/updater.js が決める -->
+<div class="modal-overlay hidden" id="update-modal">
+  <div class="simple-dialog update-dialog" role="alertdialog" aria-modal="true" aria-labelledby="upd-title" aria-describedby="upd-message">
+    <div class="update-dialog-title" id="upd-title"></div>
+    <div class="simple-dialog-message" id="upd-message"></div>
+    <div class="update-dialog-detail" id="upd-detail"></div>
+    <div class="update-progress hidden" id="upd-progress" aria-hidden="true">
+      <div class="update-bar"><span class="update-bar-fill" id="upd-bar-fill"></span></div>
+      <span class="update-pct" id="upd-pct">0%</span>
+    </div>
+    <div class="simple-dialog-actions" id="upd-actions"></div>
+  </div>
+</div>
+
+<!-- ════ 処理中の表示 (講座の更新確認) ════ -->
+<div class="modal-overlay hidden" id="busy-overlay">
+  <div class="simple-dialog busy-dialog" role="status" aria-live="polite">
+    <div class="busy-spinner" aria-hidden="true"></div>
+    <div class="simple-dialog-message" id="busy-message"></div>
+  </div>
+</div>
 
 <!-- ════ 汎用ダイアログ (alert / confirm / prompt) ════ -->
 <div class="modal-overlay hidden" id="simple-dialog-overlay">

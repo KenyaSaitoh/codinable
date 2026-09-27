@@ -169,7 +169,30 @@ function setLlmSelection({ modelId, override, chatMode }) {
   return getLlmSelection();
 }
 
+// ── 開始した講座の版 ───────────────────────────────────────
+//
+// 講座は開始した時点の版に固定する。あとから新しい版が配信されたり、
+// アプリの更新で同梱の版が上がったりしても、取り組み中の講座の中身は変えない
+// (courses.js の loadCourses がこれを見て版を選ぶ)
+
+function getCoursePins() {
+  const pins = loadConfig().coursePins;
+  return pins && typeof pins === 'object' ? pins : {};
+}
+
+/** 講座の版を固定する。onlyIfAbsent なら、すでに固定されているものは変えない */
+function setCoursePin(courseId, version, { onlyIfAbsent = false } = {}) {
+  if (!courseId || !version) return getCoursePins();
+  const pins = getCoursePins();
+  if (onlyIfAbsent && pins[courseId]) return pins;
+  pins[courseId] = String(version);
+  patchConfig({ coursePins: pins });
+  return pins;
+}
+
 module.exports = {
+  getCoursePins,
+  setCoursePin,
   getConfigPath,
   loadConfig,
   saveConfig,

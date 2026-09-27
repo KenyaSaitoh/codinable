@@ -31,6 +31,27 @@ const PRODUCT = {
                      'kafka', 'rabbitmq', 'erlang'],
 };
 
+// ── 更新の配信先 ───────────────────────────────────────────
+//
+// アプリ本体と講座は別々に更新する。どちらも HTTP でファイルを置ける場所なら
+// どこでもよく (静的サイト・S3・GitHub Pages など)、次の形で置く
+//
+//   <baseUrl>/app/latest.yml               … アプリ本体 (npm run build が作る)
+//   <baseUrl>/app/Codinable-setup-<v>.exe      (+ .blockmap)
+//   <baseUrl>/courses/index.json           … 講座 (npm run build:courses が作る)
+//   <baseUrl>/courses/<id>-<v>.codpack
+//
+// 空のあいだは更新を確認しない (すべて同梱の版のまま動く)
+// 環境変数 CODINABLE_UPDATE_URL で差し替えられる (検証用)
+const UPDATES = {
+  baseUrl: '',
+};
+
+function getUpdateBaseUrl() {
+  const url = String(process.env.CODINABLE_UPDATE_URL || UPDATES.baseUrl || '').trim();
+  return url.replace(/\/+$/, '');
+}
+
 // ── LLM (BYOK) ─────────────────────────────────────────────
 //
 // チャットは「あってもよい補助」であり、Codinable の必須機能ではない
@@ -83,4 +104,4 @@ function getLlmModel(id) {
 /** API キーを保存する設定フィールド名の一覧 (暗号化対象) */
 const API_KEY_FIELDS = LLM_MODELS.map(m => m.keyField);
 
-module.exports = { PRODUCT, LLM_MODELS, DEFAULT_LLM_ID, getLlmModel, API_KEY_FIELDS };
+module.exports = { PRODUCT, UPDATES, getUpdateBaseUrl, LLM_MODELS, DEFAULT_LLM_ID, getLlmModel, API_KEY_FIELDS };

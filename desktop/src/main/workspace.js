@@ -265,12 +265,33 @@ function createProject({ name, templateDir = null, courseId = null, template = n
  * 上書きだけで、受講者が自分で足したファイルは消さない。消す方が「初期状態」に
  * 忠実だが、試したコードを黙って捨てることになるため、雛形にあるものだけを戻す
  */
+// 初期化でも消さないもの
+//   .codinable    どの講座のどの演習かの記録。消すと演習との対応が切れる
+//   node_modules / .gradle   依存のキャッシュ。雛形からは作れず、消すと次の実行で
+//                            取り直しになるだけで結果は変わらない
+const RESET_KEEP = new Set(['.codinable', 'node_modules', '.gradle']);
+
+/**
+ * 演習を配布時の状態に戻す
+ * 自分で足したファイルも含めて消してから雛形を書き戻す (完全な初期化)
+ * 消せなかったもの (別のプロセスが掴んでいる等) は failed に名前を返す
+ */
 function resetToTemplate({ name, templateDir }) {
   const dir = resolveProjectDir(name);
   if (!dir || !fs.existsSync(dir)) return { ok: false, error: 'not-found' };
   if (!templateDir || !fs.existsSync(templateDir)) return { ok: false, error: 'no-template' };
+
+  const failed = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (RESET_KEEP.has(entry.name)) continue;
+    try {
+      fs.rmSync(path.join(dir, entry.name), { recursive: true, force: true, maxRetries: 3 });
+    } catch {
+      failed.push(entry.name);
+    }
+  }
   const written = copyDirSafe(templateDir, dir, { overwrite: true });
-  return { ok: true, written };
+  return { ok: true, written, failed };
 }
 
 /**

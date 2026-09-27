@@ -28,8 +28,19 @@ contextBridge.exposeInMainWorld('api', {
   openBrowser:      url           => ipcRenderer.invoke('open-browser', url),
   rendererReady:    ()            => ipcRenderer.send('renderer-ready'),
 
+  // ── アプリ本体の更新 ──
+  // 確認からインストールまでは main (main/updater.js) が進め、画面はダイアログを描く
+  checkForUpdates:        ()          => ipcRenderer.invoke('updater-check'),
+  onUpdaterDialog:        handler     => subscribe('updater-dialog', handler),
+  onUpdaterDialogProgress: handler    => subscribe('updater-dialog-progress', handler),
+  onUpdaterDialogClose:   handler     => subscribe('updater-dialog-close', handler),
+  onUpdaterBeforeInstall: handler     => subscribe('updater-before-install', handler),
+  replyUpdaterDialog:     (id, buttonIndex) =>
+                                         ipcRenderer.send('updater-dialog-reply', { id, buttonIndex }),
+
   // ── コースパック ──
   loadCourses:      lang          => ipcRenderer.invoke('load-courses', { lang }),
+  coursesPrepareStart: (id, lang) => ipcRenderer.invoke('courses-prepare-start', { id, lang }),
   coursesInfo:      lang          => ipcRenderer.invoke('courses-info', { lang }),
   coursesReload:    lang          => ipcRenderer.invoke('courses-reload', { lang }),
   coursesOpenDir:   ()            => ipcRenderer.invoke('courses-open-dir'),

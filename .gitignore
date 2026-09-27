@@ -1,6 +1,7 @@
 node_modules/
 dist/
 dist-installer/
+dist-updates/
 *.log
 *.stackdump
 

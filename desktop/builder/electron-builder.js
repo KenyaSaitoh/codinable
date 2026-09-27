@@ -12,7 +12,7 @@
 //  上書きし、scripts / devDependencies が消えてしまう副作用がある
 // ═══════════════════════════════════════════════════════════
 
-const { PRODUCT } = require('../src/app-config');
+const { PRODUCT, getUpdateBaseUrl } = require('../src/app-config');
 const { VERSIONS } = require('../src/messaging-config');
 const fs = require('fs');
 const path = require('path');
@@ -61,7 +61,12 @@ module.exports = {
     { from: '../resources/jdtls',          to: 'jdtls',          filter: ['**/*'] },
   ],
 
-  publish: null,
+  // アプリ本体の更新 (src/main/updater.js)。配信先があるときだけ latest.yml を作る
+  // 作られた latest.yml と setup.exe を <baseUrl>/app/ に置く。講座は別に配る
+  // (npm run build:courses)
+  publish: getUpdateBaseUrl()
+    ? [{ provider: 'generic', url: `${getUpdateBaseUrl()}/app`, channel: 'latest' }]
+    : null,
 
   directories: {
     output:         'dist-installer',

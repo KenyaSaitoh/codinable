@@ -3738,18 +3738,25 @@ body:not(.sidebar-open) .sidebar.explorer { display: flex; }
   padding: 3px 0 6px;
 }
 .exercise-header { justify-content: space-between; gap: 8px; }
-/* どの講座の演習を出しているかの表示。切り替えはヘッダー左のコース選択で行う */
-.exercise-course-name {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* 選択している演習の「初期化」。見出しの右端に小さく置く */
+.btn-reset-exercise {
+  flex-shrink: 0;
+  padding: 1px 10px;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: 11px;
+  font: inherit;
+  font-size: calc(var(--editor-font-size) - 4px);
+  font-weight: 700;
+  line-height: 1.6;
   white-space: nowrap;
-  text-align: right;
-  font-weight: 400;
-  font-size: calc(var(--editor-font-size) - 5px);
-  color: var(--text-muted);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  transition: background 0.12s, border-color 0.12s;
 }
+.btn-reset-exercise:hover { background: var(--bg-hover); border-color: var(--accent-red); color: var(--accent-red); }
+.btn-reset-exercise.hidden { display: none; }
 
 /* チャプターの区切り。リスト自体はフラットなまま、
    どのチャプターのものかを示すだけの見出し (折りたためない) */
@@ -3858,31 +3865,117 @@ body.theme-dark .exercise-item.active {
 }
 .llm-picker-icon { font-size: calc(var(--editor-font-size) - 2px); line-height: 1; }
 
-/* ── コース切り替え (ヘッダー左) ──
-   受講している講座のあいだを移る。LLM の選択と同じ見た目に揃えて、
-   「上の行は今いる場所を選ぶところ」と分かるようにする */
-.course-picker {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 2px 7px;
+/* ── 新規コース開始・再開 (ヘッダー左) ──
+   LLM の選択と同じ丸い枠に揃えて、「上の行は今いる場所を選ぶところ」と分かるようにする */
+.btn-course-dialog {
+  padding: 3px 12px;
   border: 1px solid var(--border-color);
   border-radius: 14px;
   background: var(--bg-overlay);
-}
-.course-picker-icon { font-size: calc(var(--editor-font-size) - 2px); line-height: 1; }
-.course-select {
-  max-width: 220px;
-  background: transparent;
   color: var(--text-main);
-  border: none;
   font: inherit;
   font-size: calc(var(--editor-font-size) - 3px);
+  font-weight: 700;
+  white-space: nowrap;
   cursor: pointer;
-  outline: none;
+  transition: background 0.12s, border-color 0.12s;
 }
-/* 講座が 1 つだけのときは選べないが、今どの講座かは読めるようにしておく */
-.course-select:disabled { color: var(--text-main); cursor: default; opacity: 1; }
+.btn-course-dialog:hover { background: var(--bg-hover); border-color: var(--accent-blue); }
+
+/* ダイアログの中身。上が「再開」、下が「新規」 */
+.course-dialog-section {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-color);
+}
+.course-dialog-section:first-child { margin-top: 0; }
+.course-dialog-section-title {
+  font-size: calc(var(--editor-font-size) - 1px);
+  font-weight: 800;
+  color: var(--text-main);
+}
+.course-dialog-section-hint {
+  font-size: calc(var(--editor-font-size) - 4px);
+  color: var(--text-muted);
+}
+.course-dialog .course-dialog-empty { padding: 10px 12px; }
+/* 上の Chatinable 版 .course-card (アイコン付きの横並び) を、縦積みのカードに置き換える */
+.course-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-overlay);
+  color: var(--text-main);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+.course-card:hover { background: var(--bg-hover); border-color: var(--accent-blue); }
+.course-card.active { border-color: var(--accent-blue); box-shadow: 0 0 0 1px var(--accent-blue); }
+.course-card-head { display: flex; align-items: center; gap: 8px; }
+.course-card-title {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  font-size: calc(var(--editor-font-size) - 1px);
+  font-weight: 700;
+}
+.course-card-badge {
+  flex-shrink: 0;
+  padding: 0 8px;
+  border: 1px solid var(--accent-blue);
+  border-radius: 9px;
+  color: var(--accent-blue);
+  font-size: calc(var(--editor-font-size) - 5px);
+  white-space: nowrap;
+}
+.course-card-meta {
+  font-size: calc(var(--editor-font-size) - 4px);
+  color: var(--text-sub);
+}
+.course-card-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+  margin-top: 0;
+  font-size: calc(var(--editor-font-size) - 4px);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── 出力タブ: 読みやすいよう Chatinable より少し大きくする ── */
+.run-tab { font-size: calc(var(--editor-font-size) - 2px); padding: 5px 12px 4px; }
+
+/* ── 実行対象: 選択肢の名前が途中で切れないよう幅を広げる ── */
+.gradle-task-select { max-width: 240px; }
+
+/* ── 設定: 横幅を使って 2 段にし、スクロールせずに全体を見せる ── */
+.settings-panel { width: 940px; max-width: 94vw; max-height: 92vh; }
+.settings-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 28px;
+}
+.settings-column { min-width: 0; }
+.settings-column > .settings-group:last-child { margin-bottom: 0; }
+/* 縦を詰める: テーマは 3 列、キーバインドとフォントは横に並べる */
+.settings-column .theme-grid { grid-template-columns: repeat(3, 1fr); }
+.settings-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+/* 狭いウィンドウでは 1 段に戻す */
+@media (max-width: 760px) {
+  .settings-columns { grid-template-columns: 1fr; }
+}
 .llm-select {
   background: transparent;
   color: var(--text-main);
@@ -3923,7 +4016,9 @@ body.theme-dark .exercise-item.active {
   color: var(--accent-green);
 }
 
-/* ── プロジェクト情報バー ── */
+/* ── 受講中の講座の帯 ── */
+#project-bar .current-course-name { color: var(--accent-blue); flex-shrink: 1; min-width: 0; }
+#project-bar .project-path { text-align: right; }
 .project-kinds { display: inline-flex; gap: 4px; flex-shrink: 0; }
 .project-kind {
   font-size: calc(var(--editor-font-size) - 5px);
@@ -4277,3 +4372,71 @@ body.theme-dark .exercise-item.active {
   font-size: calc(var(--editor-font-size) - 3px);
   color: var(--text-muted);
 }
+
+/* ── アプリ本体の更新ダイアログ (#update-modal) ──
+   「最新です」「新しいバージョンがあります」・進捗・失敗を 1 枚で出す */
+#update-modal { z-index: 1100; }
+.update-dialog { width: 460px; }
+.update-dialog-title {
+  margin-bottom: 8px;
+  font-size: calc(var(--editor-font-size) + 1px);
+  font-weight: 800;
+  color: var(--text-main);
+}
+.update-dialog-detail {
+  margin-top: 6px;
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--text-sub);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.update-dialog-detail:empty { display: none; }
+.update-progress { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+.update-progress.hidden { display: none; }
+.update-bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+.update-bar-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--accent-blue);
+  transition: width 0.2s;
+}
+.update-pct {
+  min-width: 3em;
+  text-align: right;
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 3px);
+  color: var(--text-sub);
+}
+#upd-actions:empty { display: none; }
+
+/* 設定画面: バージョンと「更新を確認」を 1 行にまとめる */
+.settings-label.app-update-row { justify-content: flex-start; gap: 8px; flex-wrap: wrap; }
+.settings-label.app-update-row .btn { width: auto; margin-left: auto; padding: 3px 12px; }
+.settings-label .app-update-status {
+  font-weight: 400;
+  font-size: calc(var(--editor-font-size) - 4px);
+  color: var(--text-muted);
+}
+.settings-label .app-update-status.is-error { color: var(--accent-red); }
+
+/* ── 処理中の表示 (講座の最新版の確認) ── */
+#busy-overlay { z-index: 1050; }
+.busy-dialog { flex-direction: row; align-items: center; gap: 14px; width: auto; max-width: 480px; }
+.busy-spinner {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent-blue);
+  border-radius: 50%;
+  animation: busy-spin 0.8s linear infinite;
+}
+@keyframes busy-spin { to { transform: rotate(360deg); } }

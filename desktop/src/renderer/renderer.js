@@ -43,7 +43,9 @@ let appInfo     = null;   // get-app-info の結果 (バージョン・モデル
 let projects    = [];     // ワークスペース直下のプロジェクト一覧
 let project     = null;   // 選択中のプロジェクト名
 let projectInfo = null;   // detectProject の結果 (kinds / gradleTasks / npmScripts / staticRoot)
-let courses     = [];     // コースパック (演習一覧と新規プロジェクトダイアログで使う)
+let courses     = [];     // コースパック (演習一覧と新規コース開始・再開ダイアログで使う)
+// 受講中の講座。選べるのは「新規コース開始・再開」ダイアログだけ (openCourseDialog)
+let activeCourseId = localStorage.getItem('lastCourse') || '';
 
 // ═══════════════════════════════════════════
 //  テーマ / フォント / キーバインド
@@ -158,6 +160,18 @@ function showDialog({ message, kind = 'alert', defaultValue = '' }) {
       closeSimpleDialog(kind === 'prompt' ? input.value.trim() : true);
     cancel.onclick = () => closeSimpleDialog(kind === 'prompt' ? null : false);
   });
+}
+
+/** 処理中の表示 (講座の更新確認・アプリのダウンロード)。null で閉じる */
+function showBusy(message) {
+  $('busy-message').textContent = message || '';
+  $('busy-overlay').classList.toggle('hidden', message === null);
+}
+
+/** '202609.1.0' を講座で使っている '202609.01.00' の形で見せる (semver では 0 埋めできない) */
+function formatVersion(version) {
+  const parts = String(version || '').split('.');
+  return parts.map((part, i) => (i > 0 && /^\d$/.test(part) ? `0${part}` : part)).join('.');
 }
 
 const alertDialog   = message => showDialog({ message });
@@ -576,6 +590,7 @@ async function selectProject(name, { openInitial = [] } = {}) {
 
   project = name || null;
   localStorage.setItem('lastProject', project || '');
+  rememberCourseProgress(projects.find(p => p.name === project));
   // どの演習を開いているかの選択背景を付け替える
   if (courses.length) renderExercises();
 
@@ -593,10 +608,7 @@ async function selectProject(name, { openInitial = [] } = {}) {
 async function refreshProjectInfo() {
   if (!project) {
     projectInfo = null;
-    $('project-icon').textContent = '📁';
-    $('project-name').textContent = t('noProject');
-    $('project-name').title = '';
-    $('project-kinds').innerHTML  = '';
+    applyExerciseTabs(null);
     $('project-path').textContent = '';
     $('btn-reset-exercise').classList.add('hidden');
     $('hsqldb-badge').classList.add('hidden');
@@ -606,15 +618,11 @@ async function refreshProjectInfo() {
 
   const info = await window.api.wsProjectInfo(project);
   projectInfo = info.ok ? info : null;
-  const exercise = exerciseForProject(projectInfo);
 
-  $('project-icon').textContent = exercise ? '📘' : '📁';
-  $('project-name').textContent = exercise?.name || project;
-  $('project-name').title = exercise ? `${exercise.name} (${project})` : project;
   $('project-path').textContent = info.ok ? info.path : '';
-  $('project-kinds').innerHTML = (info.kinds || [])
-    .map(k => `<span class="project-kind">${escapeHtml(k)}</span>`).join('');
+  $('project-path').title = info.ok ? info.path : '';
   $('btn-reset-exercise').classList.toggle('hidden', !(info.ok && info.template));
+  applyExerciseTabs(exerciseForProject(projectInfo));
   $('hsqldb-badge').classList.toggle('hidden', !(info.kinds || []).includes('sql'));
 
   updateRunTargets();
@@ -633,15 +641,28 @@ async function resetExercise() {
   const displayName = exerciseForProject()?.name || project;
   if (!await confirmDialog(tf('confirmResetExercise', { name: displayName }))) return;
 
+  // 自分で足したファイルも消すので、掴んでいるものを先に手放す
+  // (Windows では実行中のプロセスや言語サーバーが開いているファイルを消せない)
+  if (running) await stopRun();
+  await window.api.previewStop();
+  setPreviewAvailable(false);
+  disposeLsp();
+
   const res = await window.api.wsResetTemplate(project, getLang());
   if (!res.ok) {
+    startLspIfNeeded();
     await alertDialog(res.error === 'no-template' ? t('resetNoTemplate') : (res.error || ''));
     return;
   }
-  for (const relPath of [...openFiles.keys()]) await reopenFileFromDisk(relPath);
+  // 残っていないファイル (自分で足したもの) のタブは閉じ、残ったものは読み直す
+  for (const relPath of [...openFiles.keys()]) await reopenFileFromDisk(relPath, { closeIfMissing: true });
   await reloadTree();
   await refreshProjectInfo();
-  await alertDialog(tf('resetDone', { n: res.written }));
+  startLspIfNeeded();
+  const done = tf('resetDone', { n: res.written });
+  await alertDialog(res.failed?.length
+    ? `${done}\n${tf('resetPartlyFailed', { names: res.failed.join(', ') })}`
+    : done);
 }
 
 // ═══════════════════════════════════════════
@@ -664,33 +685,203 @@ const RUNTIME_ICONS = {
 async function reloadExercises({ reload = false } = {}) {
   courses = reload ? await window.api.coursesReload(getLang())
                    : await window.api.loadCourses(getLang());
-
-  // コースの切り替えはヘッダー左で行う。講座が 1 つだけのときも、
-  // 今どの講座を見ているのかが分かるように出したままにして、選べなくする
-  const select = $('active-course-select');
-  const previous = select.value || localStorage.getItem('lastCourse') || '';
-  select.innerHTML = '';
-  for (const course of courses) {
-    const opt = document.createElement('option');
-    opt.value = course.id;
-    opt.textContent = course.name;
-    opt.title = course.description || course.name;
-    select.appendChild(opt);
-  }
-  if (!courses.length) {
-    const opt = document.createElement('option');
-    opt.value = '';
-    opt.textContent = t('coursesEmpty');
-    select.appendChild(opt);
-  }
-  select.value = courses.some(c => c.id === previous) ? previous : (courses[0]?.id || '');
-  select.disabled = courses.length <= 1;
-
+  // 前回の講座が無くなっていたら (アンインストール・絞り込み) 先頭の講座にする
+  if (!courses.some(c => c.id === activeCourseId)) activeCourseId = courses[0]?.id || '';
+  renderCurrentCourse();
   renderExercises();
 }
 
 function currentCourse() {
-  return courses.find(c => c.id === $('active-course-select').value) || null;
+  return courses.find(c => c.id === activeCourseId) || null;
+}
+
+/**
+ * 受講中の講座を切り替える
+ * 開いているプロジェクトはそのままにして、演習一覧だけ入れ替える
+ * (別の講座を見ながら今の作業を続けられるようにするため)
+ */
+function setActiveCourse(id) {
+  activeCourseId = id || '';
+  localStorage.setItem('lastCourse', activeCourseId);
+  renderCurrentCourse();
+  renderExercises();
+}
+
+/** タイトル下の帯に、受講中の講座名を出す */
+function renderCurrentCourse() {
+  const course = currentCourse();
+  $('current-course-name').textContent = course?.name || t('coursesEmpty');
+  $('current-course-name').title = course?.description || course?.name || '';
+}
+
+// ═══════════════════════════════════════════
+//  新規コース開始・再開ダイアログ
+//
+//  新規: インストールされている全講座。選ぶと最初の演習を開く
+//  再開: 作業用プロジェクトが 1 つ以上ある講座。選ぶと最後に開いていた演習を開く
+//  取り組んだ状態は作業用プロジェクトそのもの (ワークスペースのフォルダ) なので、
+//  別に保存はしない。最後に開いた演習と日時だけ localStorage に控える
+// ═══════════════════════════════════════════
+
+function readCourseProgress() {
+  try { return JSON.parse(localStorage.getItem('courseProgress') || '{}') || {}; }
+  catch { return {}; }
+}
+
+function rememberCourseProgress(target) {
+  if (!target?.courseId) return;
+  const progress = readCourseProgress();
+  progress[target.courseId] = { project: target.name, at: new Date().toISOString() };
+  localStorage.setItem('courseProgress', JSON.stringify(progress));
+}
+
+/** 取り組んだことのある講座 (最後に触った順) */
+function resumableCourses() {
+  const progress = readCourseProgress();
+  const result = [];
+  for (const course of courses) {
+    const exerciseIds = new Set(course.exercises.map(e => e.id));
+    const own = projects.filter(p => p.courseId === course.id && exerciseIds.has(p.template));
+    if (!own.length) continue;
+    // 最後に開いた演習。控えが無い・消えているときはフォルダの更新日時が新しいもの
+    const saved  = progress[course.id];
+    const last   = own.find(p => p.name === saved?.project) || own[0];
+    const at     = saved?.project === last.name ? saved.at : last.mtime;
+    const worked = new Set(own.map(p => p.template)).size;
+    result.push({ course, last, at, worked,
+                  exercise: course.exercises.find(e => e.id === last.template) });
+  }
+  return result.sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0));
+}
+
+function formatDateTime(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleString(getLang() === 'ja' ? 'ja-JP' : 'en-US',
+    { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+async function openCourseDialog() {
+  projects = await window.api.wsListProjects();
+  const body = $('course-dialog-body');
+  body.innerHTML = '';
+
+  const section = (titleKey, hintKey) => {
+    const head = document.createElement('div');
+    head.className = 'course-dialog-section';
+    head.innerHTML = `<span class="course-dialog-section-title">${escapeHtml(t(titleKey))}</span>` +
+                     `<span class="course-dialog-section-hint">${escapeHtml(t(hintKey))}</span>`;
+    body.appendChild(head);
+  };
+  const empty = text => {
+    const div = document.createElement('div');
+    div.className = 'course-dialog-empty';
+    div.textContent = text;
+    body.appendChild(div);
+  };
+  const card = ({ kind, id, title, meta, desc, badge, active, onClick }) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `course-card course-card-${kind}`;
+    btn.dataset.courseId = id;
+    btn.classList.toggle('active', !!active);
+    btn.innerHTML =
+      '<span class="course-card-head">' +
+        `<span class="course-card-title">${escapeHtml(title)}</span>` +
+        (badge ? `<span class="course-card-badge">${escapeHtml(badge)}</span>` : '') +
+      '</span>' +
+      (meta ? `<span class="course-card-meta">${escapeHtml(meta)}</span>` : '') +
+      (desc ? `<span class="course-card-desc">${escapeHtml(desc)}</span>` : '');
+    btn.addEventListener('click', onClick);
+    body.appendChild(btn);
+  };
+
+  // ── 再開 ──
+  const resumable = resumableCourses();
+  section('courseResumeSection', 'courseResumeHint');
+  if (!resumable.length) empty(t('courseResumeEmpty'));
+  for (const r of resumable) {
+    card({
+      kind: 'resume',
+      id: r.course.id,
+      title: r.course.name,
+      active: r.course.id === activeCourseId,
+      badge: tf('courseProgressCount', { n: r.worked, total: r.course.exercises.length }),
+      meta: tf('courseResumeLast', { name: r.exercise?.name || r.last.name, at: formatDateTime(r.at) }),
+      onClick: () => resumeCourse(r),
+    });
+  }
+
+  // ── 新規 ──
+  section('courseNewSection', 'courseNewHint');
+  if (!courses.length) empty(t('coursesEmpty'));
+  const inProgress = new Set(resumable.map(r => r.course.id));
+  for (const course of courses) {
+    card({
+      kind: 'new',
+      id: course.id,
+      title: course.name,
+      badge: inProgress.has(course.id) ? t('courseInProgress') : '',
+      meta: tf('coursesExercises', { n: course.exercises.length }),
+      desc: course.description || '',
+      onClick: () => startCourse(course),
+    });
+  }
+
+  $('course-dialog-overlay').classList.remove('hidden');
+}
+
+function closeCourseDialog() {
+  $('course-dialog-overlay').classList.add('hidden');
+}
+
+/** その講座の作業用プロジェクトがあるか (= 取り組み中か) */
+function isCourseStarted(courseId) {
+  return projects.some(p => p.courseId === courseId);
+}
+
+/**
+ * 講座を新しく始める準備。配信先に新しい版があれば取り込み、その版に固定する
+ * 取り組み中の講座は開始したときの版のまま動かすので、ここは通らない
+ * 配信先に届かないときも、手元の版で始められる
+ *
+ * @returns 準備したあとの講座 (見つからなければ null)
+ */
+async function prepareCourseStart(course) {
+  showBusy(tf('courseChecking', { name: course.name }));
+  let res;
+  try {
+    res = await window.api.coursesPrepareStart(course.id, getLang());
+  } finally {
+    showBusy(null);
+  }
+  courses = await window.api.loadCourses(getLang());
+  const prepared = courses.find(c => c.id === course.id) || null;
+  renderCurrentCourse();
+  renderExercises();
+  if (res?.updated && prepared) {
+    await alertDialog(tf('courseUpdated', { name: prepared.name, version: res.version }));
+  }
+  return prepared;
+}
+
+/** 新規: 講座を切り替えて、最初の演習を開く */
+async function startCourse(course) {
+  closeCourseDialog();
+  setActiveCourse(course.id);
+  const started = isCourseStarted(course.id);
+  const target  = started ? course : await prepareCourseStart(course);
+  const first   = target?.exercises[0];
+  if (first) await openExercise(target, first, { prepared: !started });
+}
+
+/** 再開: 講座を切り替えて、最後に開いていた演習を開く */
+async function resumeCourse({ course, last, exercise }) {
+  closeCourseDialog();
+  setActiveCourse(course.id);
+  if (exercise) await openExercise(course, exercise, { preferProject: last.name });
+  else await selectProject(last.name);
 }
 
 /** 演習に対応する作業用プロジェクト (まだ作っていなければ null) */
@@ -711,8 +902,6 @@ function renderExercises() {
   const course  = currentCourse();
   const entries = course?.exercises || [];
 
-  $('exercise-count').textContent = String(entries.length);
-  $('exercise-course-name').textContent = course?.name || '';
   list.innerHTML = '';
   if (!entries.length) {
     list.innerHTML = `<div class="tree-placeholder">${escapeHtml(t('exerciseEmpty'))}</div>`;
@@ -757,8 +946,16 @@ function renderExercises() {
  * 演習を開く
  * 作業用プロジェクトが無ければ雛形から作り、選んで、実行対象まで合わせる
  */
-async function openExercise(course, exercise) {
-  let target = projectForExercise(course, exercise);
+async function openExercise(course, exercise, { preferProject = null, prepared = false } = {}) {
+  // 一覧から直接選んだ演習で講座を始めるときも、新しい版を確かめてから作る
+  if (!prepared && !isCourseStarted(course.id)) {
+    const prepared = await prepareCourseStart(course);
+    if (!prepared) return;
+    course = prepared;
+    exercise = course.exercises.find(e => e.id === exercise.id) || course.exercises[0];
+    if (!exercise) return;
+  }
+  let target = projects.find(p => p.name === preferProject) || projectForExercise(course, exercise);
 
   if (!target) {
     const name = uniqueProjectName(exercise.suggestName || exercise.id);
@@ -952,7 +1149,34 @@ async function stopRun() {
 //  出力タブの切り替え
 // ═══════════════════════════════════════════
 
-function showRunPane(paneId) {
+// ═══════════════════════════════════════════
+//  演習ごとの出力タブ
+//
+//  静的ページの演習に SQL やメッセージングのタブが並んでいても迷うだけなので、
+//  演習が持つ tabs (courses.js の exerciseTabs) に載っているタブだけを出す
+//  演習から作っていないプロジェクトでは全部出す
+// ═══════════════════════════════════════════
+
+const RUN_TAB_IDS = {
+  output: 'run-tab-output', tests: 'run-tab-tests', sql: 'run-tab-sql',
+  terminal: 'run-tab-terminal', messaging: 'run-tab-messaging', preview: 'run-tab-browser',
+};
+
+function applyExerciseTabs(exercise) {
+  const tabs = new Set(exercise?.tabs?.length ? exercise.tabs : Object.keys(RUN_TAB_IDS));
+  tabs.add('output');
+  for (const [tab, id] of Object.entries(RUN_TAB_IDS)) {
+    $(id).classList.toggle('hidden', !tabs.has(tab));
+  }
+  // 見えなくなったタブを開いたままにしない
+  const active = document.querySelector('.run-tab.active');
+  if (active?.classList.contains('hidden')) showRunPane('tab-result');
+}
+
+function showRunPane(paneId, { reloadPreview = true } = {}) {
+  // 演習では隠しているタブでも、結果を出す必要があれば出す
+  // (ツリーの右クリックで .sql を流したとき など)
+  document.querySelector(`.run-tab[data-pane="${paneId}"]`)?.classList.remove('hidden');
   document.querySelectorAll('.run-tab').forEach(tab =>
     tab.classList.toggle('active', tab.dataset.pane === paneId));
   document.querySelectorAll('.run-pane').forEach(pane =>
@@ -961,7 +1185,7 @@ function showRunPane(paneId) {
   $('btn-add-log-context').classList.toggle('hidden', paneId !== 'tab-result');
 
   if (paneId === 'tab-terminal') startTerminal();
-  if (paneId === 'tab-browser')  fitPreview();
+  if (paneId === 'tab-browser' && reloadPreview) fitPreview();
   if (paneId === 'tab-messaging') refreshMessaging();
 }
 
@@ -1445,7 +1669,6 @@ let previewAvailable = false;
 
 function setPreviewAvailable(state) {
   previewAvailable = !!state;
-  $('btn-preview').disabled     = !previewAvailable;
   $('run-tab-browser').disabled = !previewAvailable;
   if (!previewAvailable) {
     // <webview> の src は触らない (about:blank を入れ直すと ERR_ABORTED になる)
@@ -1468,19 +1691,28 @@ async function refreshPreviewAvailability() {
   setPreviewAvailable(!!(status.ok && status.url));
 }
 
+// <webview> の中身 (guest) が用意できたか。用意できる前は loadURL を呼べない
+let previewReady = false;
+
 function previewUrl(url) {
   $('browser-url').value = url;
   setPreviewAvailable(true);
-  $('mini-browser').src  = url;
-  showRunPane('tab-browser');
+  // 先にタブを出してから読み込ませる
+  // 非表示のあいだに src を差し替えて直後に reload すると、読み込みが
+  // about:blank の ERR_ABORTED で打ち切られてプレビューが真っ白のままになる
+  showRunPane('tab-browser', { reloadPreview: false });
+  const view = $('mini-browser');
+  if (previewReady) view.loadURL(url).catch(() => { /* 別の読み込みで上書きされた */ });
+  else view.setAttribute('src', url);
 }
 
 function fitPreview() {
   // <webview> は非表示のあいだ 0x0 で描画されるため、表示時に読み直す
+  if (!previewReady) return;
   const view = $('mini-browser');
-  if (view.src && view.src !== 'about:blank') {
-    try { view.reload(); } catch { /* まだ読み込まれていない */ }
-  }
+  try {
+    if (view.getURL() && view.getURL() !== 'about:blank') view.reload();
+  } catch { /* まだ読み込まれていない */ }
 }
 
 /** 静的ページを内蔵サーバーで配信してプレビューする */
@@ -1494,14 +1726,6 @@ async function servePreview(relDir) {
   previewUrl(res.url);
 }
 
-/** 🌐 プレビューボタン: 直前に見つかった URL → 内蔵サーバー の順に当たってみる */
-async function openPreview() {
-  const current = $('browser-url').value.trim();
-  if (current && current !== 'about:blank') { previewUrl(current); return; }
-  const status = await window.api.previewStatus();
-  if (status.ok && status.url) { previewUrl(status.url); return; }
-  await alertDialog(t('previewNoTarget'));
-}
 
 // ═══════════════════════════════════════════
 //  言語サーバー (Java / jdtls)
@@ -1899,10 +2123,16 @@ function collapseDiff(rows, context = 2) {
 const DIFF_MARK = { add: '+', del: '-', keep: ' ' };
 
 /** 書き換えのあと、開いているタブを disk の内容に入れ替える */
-async function reopenFileFromDisk(relPath) {
+async function reopenFileFromDisk(relPath, { closeIfMissing = false } = {}) {
   if (!openFiles.has(relPath)) { await openFile(relPath); return; }
   const res = await window.api.wsReadFile(project, relPath);
-  if (!res.ok) return;
+  if (!res.ok) {
+    if (closeIfMissing) {
+      openFiles.get(relPath).dirty = false;
+      await closeFile(relPath);
+    }
+    return;
+  }
   const entry = openFiles.get(relPath);
   entry.cm.setValue(String(res.content ?? ''));
   entry.dirty = false;
@@ -1924,6 +2154,94 @@ function clearChat() {
 // ═══════════════════════════════════════════
 //  設定ダイアログ
 // ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════════
+//  アプリ本体の更新
+//
+//  確認からインストールまでは main (main/updater.js) が進め、画面は
+//  ダイアログを描いて押されたボタンを返すだけ。起動時は黙って確認し、
+//  新しい版があるときだけ「今すぐ更新 / あとで」を聞く
+//  講座の版はこれでは変わらない (講座は新しく始めるときに別に確かめる)
+// ═══════════════════════════════════════════
+
+let updDialogId = null;
+
+/** main から来る文言 ({ i18n, vars } か素の文字列) を表示言語で引く */
+function updText(value) {
+  if (value && typeof value === 'object' && value.i18n) {
+    const vars = { ...(value.vars || {}) };
+    for (const key of ['version', 'current']) if (vars[key]) vars[key] = formatVersion(vars[key]);
+    return tf(value.i18n, vars);
+  }
+  return String(value ?? '');
+}
+
+function renderUpdateDialog(spec) {
+  updDialogId = spec.id || null;
+  $('upd-title').textContent   = updText(spec.title);
+  $('upd-message').textContent = updText(spec.message);
+  $('upd-detail').textContent  = updText(spec.detail);
+  const isProgress = spec.kind === 'progress';
+  $('upd-progress').classList.toggle('hidden', !isProgress);
+  if (isProgress) setUpdateDialogProgress(0);
+
+  // ボタンは spec.buttons の順に並べ、defaultIndex を主ボタンにする
+  const actions = $('upd-actions');
+  actions.innerHTML = '';
+  (spec.buttons || []).forEach((label, index) => {
+    const btn = document.createElement('button');
+    btn.className = `btn ${index === (spec.defaultIndex || 0) ? 'btn-apply' : 'btn-answer'}`;
+    btn.textContent = updText(label);
+    btn.addEventListener('click', () => closeUpdateDialog(index));
+    actions.appendChild(btn);
+  });
+  $('update-modal').classList.remove('hidden');
+  actions.querySelector('.btn-apply, button')?.focus();
+  if (spec.kind === 'info' || spec.kind === 'error') renderAppUpdateStatus(spec);
+}
+
+function setUpdateDialogProgress(percent) {
+  const pct = Math.max(0, Math.min(100, Math.round(Number(percent) || 0)));
+  $('upd-bar-fill').style.width = `${pct}%`;
+  $('upd-pct').textContent = `${pct}%`;
+}
+
+/** buttonIndex を渡すと main へ返す。渡さなければ閉じるだけ */
+function closeUpdateDialog(buttonIndex) {
+  $('update-modal').classList.add('hidden');
+  const id = updDialogId;
+  updDialogId = null;
+  if (id != null && buttonIndex != null) window.api.replyUpdaterDialog(id, buttonIndex);
+}
+
+/** 設定画面のバージョン欄の横に、確認の結果を短く出す */
+function renderAppUpdateStatus(spec) {
+  const status = $('app-update-status');
+  status.classList.remove('is-error');
+  if (!spec) {
+    const state = appInfo?.appUpdate;
+    status.textContent = state && !state.enabled
+      ? t(state.reason === 'dev' ? 'appUpdateDev' : 'appUpdateNotConfigured')
+      : '';
+    return;
+  }
+  status.textContent = spec.kind === 'error' ? updText(spec.title) : updText(spec.message);
+  status.classList.toggle('is-error', spec.kind === 'error');
+}
+
+async function checkAppUpdate() {
+  const btn = $('btn-app-update-check');
+  btn.disabled = true;
+  $('app-update-status').textContent = t('appUpdateChecking');
+  try {
+    const res = await window.api.checkForUpdates();
+    if (res?.status === 'skipped' && res.reason !== 'checking') renderAppUpdateStatus(null);
+    else if (res?.status === 'postponed') $('app-update-status').textContent =
+      tf('appUpdateFound', { version: formatVersion(res.version) });
+  } finally {
+    btn.disabled = !!(appInfo?.appUpdate && !appInfo.appUpdate.enabled);
+  }
+}
 
 let settingsSnapshot = null;   // キャンセル時に戻すための見た目の控え
 
@@ -1999,7 +2317,9 @@ async function openSettings() {
   $('llm-model-select').value    = appInfo.llmSelection.modelId;
   $('llm-model-override').value  = appInfo.llmSelection.override || '';
   $('ws-root-input').value       = appInfo.workspaceRoot;
-  $('version-badge').textContent = `v${appInfo.version}`;
+  $('version-badge').textContent = `v${formatVersion(appInfo.version)}`;
+  $('btn-app-update-check').disabled = !!(appInfo.appUpdate && !appInfo.appUpdate.enabled);
+  renderAppUpdateStatus(null);
   // 入力欄には既存のキーを出さない (伏せ字でも読み出せてしまうため)
   // 空のまま保存したときは変更しない扱いにする
   document.querySelectorAll('[data-key-field]').forEach(input => { input.value = ''; });
@@ -2198,9 +2518,10 @@ function wireEvents() {
   // ── ヘッダー ──
   // コース切り替え。開いているプロジェクトはそのままにして、演習一覧だけ入れ替える
   // (別の講座を見ながら今の作業を続けられるようにするため)
-  $('active-course-select').addEventListener('change', ev => {
-    localStorage.setItem('lastCourse', ev.target.value);
-    renderExercises();
+  $('btn-course-dialog').addEventListener('click', openCourseDialog);
+  $('course-dialog-close').addEventListener('click', closeCourseDialog);
+  $('course-dialog-overlay').addEventListener('click', ev => {
+    if (ev.target === $('course-dialog-overlay')) closeCourseDialog();
   });
   $('btn-reset-exercise').addEventListener('click', resetExercise);
   $('llm-model-select').addEventListener('change', async ev => {
@@ -2220,6 +2541,7 @@ function wireEvents() {
     if (ev.target === $('settings-overlay')) closeSettings({ revert: true });
   });
   $('btn-ws-browse').addEventListener('click', changeWorkspaceRoot);
+  $('btn-app-update-check').addEventListener('click', checkAppUpdate);
   $('btn-open-courses-dir').addEventListener('click', () => window.api.coursesOpenDir());
   // 講座を足した直後に、アプリを再起動させずに反映する
   $('btn-reload-courses').addEventListener('click', async () => {
@@ -2246,7 +2568,6 @@ function wireEvents() {
   // ── 実行 ──
   $('btn-run').addEventListener('click', runSelected);
   $('btn-run-stop').addEventListener('click', stopRun);
-  $('btn-preview').addEventListener('click', openPreview);
   $('run-target-select').addEventListener('change', () => {
     $('btn-run').disabled = running || !project || !$('run-target-select').value;
   });
@@ -2267,6 +2588,7 @@ function wireEvents() {
 
   // ── プレビュー ──
   const view = $('mini-browser');
+  view.addEventListener('dom-ready', () => { previewReady = true; });
   $('browser-back').addEventListener('click', () => { try { view.goBack(); } catch {} });
   $('browser-forward').addEventListener('click', () => { try { view.goForward(); } catch {} });
   $('browser-reload').addEventListener('click', () => { try { view.reload(); } catch {} });
@@ -2312,6 +2634,7 @@ function wireEvents() {
   document.addEventListener('keydown', ev => {
     if (ev.key === 'Escape') {
       if (!$('simple-dialog-overlay').classList.contains('hidden')) closeSimpleDialog(false);
+      else if (!$('course-dialog-overlay').classList.contains('hidden')) closeCourseDialog();
       else if (!$('settings-overlay').classList.contains('hidden')) {
         closeSettings({ revert: true });
       }
@@ -2356,6 +2679,14 @@ function sendStdin() {
 // ═══════════════════════════════════════════
 
 function wireIpc() {
+  window.api.onUpdaterDialog(spec => renderUpdateDialog(spec));
+  window.api.onUpdaterDialogProgress(({ percent } = {}) => setUpdateDialogProgress(percent));
+  window.api.onUpdaterDialogClose(() => closeUpdateDialog());
+  // 再起動してインストールする前に、未保存の変更を書き出す
+  window.api.onUpdaterBeforeInstall(async ({ id }) => {
+    try { for (const relPath of openFiles.keys()) await saveFile(relPath); }
+    finally { window.api.replyUpdaterDialog(id, 0); }
+  });
   window.api.onMessagingStatus(states => { messagingStates = states; renderMessaging(); });
   window.api.onMessagingLog(({ id, text }) => {
     const state = messagingStates.find(s => s.id === id);

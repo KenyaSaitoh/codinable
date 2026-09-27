@@ -48,8 +48,8 @@ app.whenReady().then(() => {
   check(fs.readFileSync(indexHtml, 'utf8') === original,
         '書き換えたファイルが元に戻っていない');
   check(fs.existsSync(formCss), '消したファイルが戻っていない');
-  check(fs.existsSync(path.join(projectDir, 'memo.txt')),
-        '自分で作ったファイルが消えてしまった');
+  check(!fs.existsSync(path.join(projectDir, 'memo.txt')),
+        '自分で作ったファイルが残っている（初期化は完全に戻す）');
 
   // ── プロジェクトの情報（.codinable/meta.json）が残ること ──
   const meta = workspace.readProjectMeta(projectDir);

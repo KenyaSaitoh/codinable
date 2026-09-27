@@ -113,8 +113,9 @@ async function run(cdp) {
   const headers  = await cdp.eval(`document.querySelectorAll('#exercise-list .q-chapter, #exercise-list .exercise-chapter').length`);
   check(headers === chapters, `チャプター見出しの数が合わない: 画面 ${headers} / 想定 ${chapters}`);
 
-  const badge = await cdp.eval(`document.getElementById('exercise-count').textContent`);
-  check(String(badge) === String(expected), `件数のバッジが合わない: ${badge}`);
+  check(await cdp.eval(`!document.getElementById('exercise-count')`), '演習の件数バッジが残っている');
+  const courseName = await cdp.eval(`document.getElementById('current-course-name').textContent`);
+  check(courseName === course.names.ja, `タイトル下が講座名になっていない: ${courseName}`);
 
   // 2. 静的ページの演習を選ぶ
   await clickExercise(cdp, 'html-form');
@@ -122,31 +123,36 @@ async function run(cdp) {
                 20000, '静的ページの実行対象が static: にならない');
   const opened = await cdp.eval(`[...document.querySelectorAll('.editor-tab')].map(t => t.title || t.textContent).join(',')`);
   check(/index\.html/.test(opened), `openFiles が開かれていない: ${opened}`);
-  const selectedExerciseName = await cdp.eval(`document.querySelector('.exercise-item.active .exercise-title')?.textContent`);
-  const headerExerciseName = await cdp.eval(`document.getElementById('project-name').textContent`);
-  check(headerExerciseName === selectedExerciseName,
-        `上部の演習名が一覧と一致しない: 上部=${headerExerciseName} / 一覧=${selectedExerciseName}`);
+  check(await cdp.eval(`!document.getElementById('btn-reset-exercise').classList.contains('hidden')`),
+        '演習を選んでも「初期化」が出ない');
   check(await cdp.eval(`document.querySelectorAll('.exercise-item .q-status').length`) === 0,
         '演習一覧に意味の分からない状態記号が残っている');
   check(await cdp.eval(`['btn-new-file','btn-new-dir','btn-refresh-tree'].some(id => document.getElementById(id))`) === false,
         'プロジェクト欄に +F / +D / 再読み込みが残っている');
 
-  // 3. 実行 → プレビューが活性になる
-  check(await cdp.eval(`document.getElementById('btn-preview').disabled`) === true,
+  // 3. 実行 → プレビューが活性になり、中身が実際に読み込まれる
+  check(await cdp.eval(`document.getElementById('run-tab-browser').disabled`) === true,
         '実行する前からプレビューが活性になっている');
   await cdp.eval(`document.getElementById('btn-run').click()`);
-  await waitFor(cdp, `document.getElementById('btn-preview').disabled === false`, 30000,
+  await waitFor(cdp, `document.getElementById('run-tab-browser').disabled === false`, 30000,
                 '実行してもプレビューが活性にならない');
   const url = await cdp.eval(`document.getElementById('browser-url').value`);
   check(/^http:\/\/localhost:\d+/.test(url), `プレビューの URL が入らない: ${url}`);
+  // <webview> が about:blank のまま (読み込みが打ち切られる) になっていないこと
+  await waitFor(cdp, `(() => { try { return document.getElementById('mini-browser').getURL() === ${JSON.stringify(url)}; } catch { return false; } })()`,
+                10000, 'プレビューにページが読み込まれない');
 
-  // 4. 汚してから初期化
+  // 4. 汚して、自分のファイルも足してから初期化
   const indexHtml = path.join(wsRoot, 'html-form', 'index.html');
   const before = fs.readFileSync(indexHtml, 'utf8');
   fs.writeFileSync(indexHtml, '<h1>こわした</h1>\n', 'utf8');
+  const ownFile = path.join(wsRoot, 'html-form', 'memo.txt');
+  fs.writeFileSync(ownFile, '自分で足したファイル\n', 'utf8');
   await cdp.eval(`document.getElementById('btn-reset-exercise').click()`);
   await waitFor(cdp, `!document.getElementById('simple-dialog-overlay').classList.contains('hidden')`,
                 5000, '初期化の確認ダイアログが出ない');
+  const confirmText = await cdp.eval(`document.getElementById('simple-dialog-message').textContent`);
+  check(/^選択された演習（.+）を配布時の状態に戻します/.test(confirmText), `初期化の確認文が想定と違う: ${confirmText}`);
   await cdp.eval(`document.getElementById('simple-dialog-ok').click()`);
   await waitFor(cdp, `!document.getElementById('simple-dialog-overlay').classList.contains('hidden')`,
                 10000, '初期化の結果ダイアログが出ない');
@@ -154,6 +160,7 @@ async function run(cdp) {
   check(/初期化/.test(done), `初期化の知らせが出ない: ${done}`);
   await cdp.eval(`document.getElementById('simple-dialog-ok').click()`);
   check(fs.readFileSync(indexHtml, 'utf8') === before, '初期化してもファイルが戻っていない');
+  check(!fs.existsSync(ownFile), '初期化しても自分で足したファイルが残っている');
   // エディタの中身も読み直されていること
   const inEditor = await cdp.eval(`(window.cmGetValue ? window.cmGetValue() : '')`);
   if (typeof inEditor === 'string' && inEditor.length) {

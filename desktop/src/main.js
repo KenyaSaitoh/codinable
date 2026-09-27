@@ -47,6 +47,7 @@ const staticSrv  = require('./main/static-server');
 const sqlEngine  = require('./main/sql');
 const messaging  = require('./main/messaging');
 const agent      = require('./main/agent');
+const updater    = require('./main/updater');
 const lspServer  = require('./lsp-server');
 const llm        = require('./llm');
 const { buildSystemPrompt, buildContextMessage } = require('./llm/prompt');
@@ -72,8 +73,68 @@ ipcMain.handle('get-app-info', () => {
     llmSelection: selection,
     apiKeyStatus: config.getApiKeyStatus(),
     lspAvailable: lspServer.isAvailable(app, 'java'),
+    appUpdate:   updater.availability(),
   };
 });
+
+// ═══════════════════════════════════════════════════════════
+//  アプリ本体の更新 (講座の更新は courses-prepare-start)
+// ═══════════════════════════════════════════════════════════
+
+// 確認・進捗は OS 標準ダイアログではなく画面の #update-modal に出す
+// main は表示の依頼と、押されたボタン (index) の受け取りだけを行う
+let updDialogSeq = 0;
+const updDialogPending = new Map();
+
+function updaterWindow() {
+  if (mainWindow && !mainWindow.isDestroyed()) return mainWindow;
+  return BrowserWindow.getAllWindows().find(w => !w.isDestroyed()) || null;
+}
+
+ipcMain.on('updater-dialog-reply', (_event, payload) => {
+  const resolve = payload && updDialogPending.get(payload.id);
+  if (!resolve) return;
+  updDialogPending.delete(payload.id);
+  resolve(Number(payload.buttonIndex) || 0);
+});
+
+/** 画面へ送って応答を待つ。ウィンドウが閉じたら fallback で解放する (待ちっぱなしにしない) */
+function askRenderer(channel, spec, fallback, timeoutMs = 0) {
+  const win = updaterWindow();
+  if (!win) return Promise.resolve(fallback);
+  const id = `upd-${++updDialogSeq}`;
+  return new Promise(resolve => {
+    const done = value => { if (updDialogPending.delete(id)) resolve(value); };
+    updDialogPending.set(id, resolve);
+    win.webContents.once('destroyed', () => done(fallback));
+    if (timeoutMs) setTimeout(() => done(fallback), timeoutMs);
+    win.webContents.send(channel, { id, ...spec });
+  });
+}
+
+const updaterDeps = {
+  // 文言は画面側で表示言語に合わせて引く。ここではキーと差し込む値だけを渡す
+  t: (key, vars) => ({ i18n: key, vars: vars || {} }),
+  prompt: spec => askRenderer('updater-dialog', spec, spec.cancelIndex || 0),
+  showProgress: spec => {
+    const win = updaterWindow();
+    if (win) win.webContents.send('updater-dialog', { id: `upd-${++updDialogSeq}`, ...spec });
+  },
+  progress: percent => updaterWindow()?.webContents.send('updater-dialog-progress', { percent }),
+  dismiss: () => updaterWindow()?.webContents.send('updater-dialog-close'),
+  // 再起動する前に、開いているファイルの未保存の変更を書き出してもらう
+  beforeInstall: () => askRenderer('updater-before-install', {}, 0, 5000),
+};
+
+ipcMain.handle('updater-check', () => updater.checkForUpdates(updaterDeps, { silent: false }));
+
+/** 起動して落ち着いたころに一度だけ黙って確認する (新しい版があるときだけ聞く) */
+function checkAppUpdateOnStartup() {
+  if (!updater.availability().enabled) return;
+  setTimeout(() => {
+    updater.checkForUpdates(updaterDeps, { silent: true }).catch(() => {});
+  }, 5000);
+}
 
 ipcMain.handle('get-default-lang', () => config.getUiLang());
 ipcMain.handle('set-ui-lang', (_event, lang) => config.setUiLang(lang));
@@ -103,8 +164,16 @@ ipcMain.handle('open-browser', (_event, url) => {
 //  コースパック
 // ═══════════════════════════════════════════════════════════
 
-ipcMain.handle('load-courses', (_event, { lang } = {}) =>
-  courses.loadCourses(lang || config.getUiLang()));
+ipcMain.handle('load-courses', (_event, { lang } = {}) => {
+  const uiLang = lang || config.getUiLang();
+  // 取り組み中の講座は、今の版に固定しておく (版の固定を入れる前からの環境向け)
+  courses.pinStartedCourses(workspace.listProjects().map(p => p.courseId), uiLang);
+  return courses.loadCourses(uiLang);
+});
+
+// 講座を新しく始める前に、配信先の新しい版を取り込んでその版に固定する
+ipcMain.handle('courses-prepare-start', (_event, { id, lang } = {}) =>
+  courses.prepareCourseStart(String(id || ''), lang || config.getUiLang()));
 
 // インストールされているコースと置き場の一覧 (設定画面に出す)
 ipcMain.handle('courses-info', (_event, { lang } = {}) =>
@@ -426,7 +495,11 @@ function reveal(reason = 'ready') {
   closeSplash();
 }
 
-ipcMain.on('renderer-ready', () => reveal('ready'));
+let startupUpdateChecked = false;
+ipcMain.on('renderer-ready', () => {
+  reveal('ready');
+  if (!startupUpdateChecked) { startupUpdateChecked = true; checkAppUpdateOnStartup(); }
+});
 
 // プレビュー (<webview>) 内のリンクは新規ウィンドウを開かず同じ webview 内で開く
 app.on('web-contents-created', (_event, contents) => {
