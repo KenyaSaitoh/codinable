@@ -39,7 +39,7 @@
 | `CITY` | `VARCHAR(10)` |  | 市町村 |
 | `STREET` | `VARCHAR(20)` |  | 番地 |
 
-初期データ（14 件。先頭 12 件）
+初期データ（16 件。先頭 12 件）
 
 | EMPLOYEE_ID | EMPLOYEE_NAME | DEPARTMENT_ID | JOB_ID | SALARY | ZIP_CODE | CITY | STREET |
 |---|---|---|---|---|---|---|---|

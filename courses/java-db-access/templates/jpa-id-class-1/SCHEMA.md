@@ -15,19 +15,19 @@
 | `EMPLOYEE_NAME` | `VARCHAR(30)` | NOT NULL | 社員名 |
 | `SALARY` | `INT` | NOT NULL | 月給 |
 
-初期データ（13 件。先頭 12 件）
+初期データ（16 件。先頭 12 件）
 
 | SUBSIDIARY_NAME | EMPLOYEE_ID | EMPLOYEE_NAME | SALARY |
 |---|---|---|---|
 | FUTURE | 10001 | Carol | 350000 |
 | FUTURE | 10002 | Justin | 460000 |
+| FUTURE | 10003 | Victor | 220000 |
 | GLOBAL | 10001 | Bob | 450000 |
 | GLOBAL | 10002 | Frank | 250000 |
+| GLOBAL | 10003 | Steve | 380000 |
 | PRODUCT | 10001 | Ivan | 480000 |
 | PRODUCT | 10002 | Mallory | 420000 |
 | PRODUCT | 10003 | Oscar | 320000 |
 | PRODUCT | 10004 | Pat | 240000 |
+| PRODUCT | 10005 | Trent | 310000 |
 | TECH | 10001 | Alice | 500000 |
-| TECH | 10002 | Dave | 400000 |
-| TECH | 10003 | Ellen | 300000 |
-| TECH | 10004 | Matilda | 280000 |

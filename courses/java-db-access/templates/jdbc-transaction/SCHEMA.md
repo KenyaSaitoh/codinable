@@ -11,13 +11,23 @@
 | カラム | 型 | 制約 |
 |---|---|---|
 | `EMPLOYEE_ID` | `INT` | 主キー |
-| `DEPARTMENT_ID` | `INT` | NOT NULL |
+| `DEPARTMENT_ID` | `INT` |  |
 | `EMPLOYEE_NAME` | `VARCHAR(100)` | NOT NULL |
 | `SALARY` | `DECIMAL(12, 2)` | NOT NULL |
 
-初期データ（2 件）
+初期データ（16 件。先頭 12 件）
 
 | EMPLOYEE_ID | DEPARTMENT_ID | EMPLOYEE_NAME | SALARY |
 |---|---|---|---|
-| 101 | 10 | 佐藤 花子 | 400000.00 |
-| 102 | 10 | 鈴木 一郎 | 380000.00 |
+| 10001 | 3 | Alice | 500000.00 |
+| 10002 | 1 | Bob | 450000.00 |
+| 10003 | 2 | Carol | 350000.00 |
+| 10004 | 3 | Dave | 400000.00 |
+| 10005 | 3 | Ellen | 300000.00 |
+| 10006 | 1 | Frank | 250000.00 |
+| 10007 | 4 | Ivan | 480000.00 |
+| 10008 | 2 | Justin | 460000.00 |
+| 10009 | 4 | Mallory | 420000.00 |
+| 10010 | 3 | Matilda | 280000.00 |
+| 10011 | 4 | Oscar | 320000.00 |
+| 10012 | 4 | Pat | 240000.00 |

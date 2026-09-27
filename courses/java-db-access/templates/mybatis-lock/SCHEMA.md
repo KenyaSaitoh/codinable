@@ -18,7 +18,7 @@
 | `SALARY` | `INT` | NOT NULL | 月給 |
 | `VERSION` | `INT` |  | バージョン |
 
-初期データ（14 件。先頭 12 件）
+初期データ（16 件。先頭 12 件）
 
 | EMPLOYEE_ID | EMPLOYEE_NAME | DEPARTMENT_NAME | ENTRANCE_DATE | JOB_NAME | SALARY | VERSION |
 |---|---|---|---|---|---|---|

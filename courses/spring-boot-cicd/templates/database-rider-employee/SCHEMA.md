@@ -18,10 +18,10 @@
 
 | DEPARTMENT_ID | DEPARTMENT_NAME | LOCATION |
 |---|---|---|
-| 1 | 営業部 | 東京 |
-| 2 | 開発部 | 大阪 |
-| 3 | 人事部 | 東京 |
-| 4 | 総務部 | 福岡 |
+| 1 | PLANNING | TOKYO HQ |
+| 2 | HR | TOKYO HQ |
+| 3 | SALES | YOKOHAMA BRANCH |
+| 4 | PRODUCT | YOKOHAMA BRANCH |
 
 ## JOB
 
@@ -31,15 +31,14 @@
 | `JOB_NAME` | `VARCHAR(30)` | NOT NULL |
 | `GRADE` | `INT` | NOT NULL |
 
-初期データ（5 件）
+初期データ（4 件）
 
 | JOB_ID | JOB_NAME | GRADE |
 |---|---|---|
-| 1 | 一般 | 1 |
-| 2 | 主任 | 2 |
-| 3 | 課長 | 3 |
-| 4 | 部長 | 4 |
-| 5 | 本部長 | 5 |
+| 1 | ASSOCIATE | 1 |
+| 2 | CHIEF | 2 |
+| 3 | LEADER | 3 |
+| 4 | MANAGER | 4 |
 
 ## EMPLOYEE
 
@@ -48,24 +47,26 @@
 | `EMPLOYEE_ID` | `INT` | 主キー、自動採番 |
 | `EMPLOYEE_CODE` | `VARCHAR(8)` | NOT NULL |
 | `EMPLOYEE_NAME` | `VARCHAR(30)` | NOT NULL |
-| `DEPARTMENT_ID` | `INT` | 外部キー → `DEPARTMENT.DEPARTMENT_ID`、NOT NULL |
+| `DEPARTMENT_ID` | `INT` | 外部キー → `DEPARTMENT.DEPARTMENT_ID` |
 | `JOB_ID` | `INT` | 外部キー → `JOB.JOB_ID`、NOT NULL |
 | `SALARY` | `INT` | NOT NULL |
 | `ENTRANCE_DATE` | `DATE` | NOT NULL |
 | `STATUS` | `VARCHAR(10)` | NOT NULL、既定値 'active' |
 | `VERSION` | `INT` | NOT NULL、既定値 0 |
 
-初期データ（10 件）
+初期データ（16 件。先頭 12 件）
 
 | EMPLOYEE_ID | EMPLOYEE_CODE | EMPLOYEE_NAME | DEPARTMENT_ID | JOB_ID | SALARY | ENTRANCE_DATE | STATUS | VERSION |
 |---|---|---|---|---|---|---|---|---|
-| 1 | E0001 | Alice | 1 | 3 | 520000 | 2012-04-01 | active | 0 |
-| 2 | E0002 | Bob | 2 | 4 | 680000 | 2010-04-01 | active | 0 |
-| 3 | E0003 | Carol | 3 | 1 | 300000 | 2019-04-01 | active | 0 |
-| 4 | E0004 | Dave | 4 | 2 | 380000 | 2017-10-01 | active | 0 |
-| 5 | E0005 | Ellen | 1 | 1 | 280000 | 2021-04-01 | active | 0 |
-| 6 | E0006 | Frank | 2 | 2 | 450000 | 2016-04-01 | active | 0 |
-| 7 | E0007 | Ivan | 2 | 1 | 320000 | 2020-10-01 | active | 0 |
-| 8 | E0008 | Justin | 3 | 3 | 500000 | 2014-04-01 | active | 0 |
-| 9 | E0009 | Mallory | 1 | 5 | 700000 | 2008-04-01 | active | 0 |
-| 10 | E0010 | Matilda | 4 | 1 | 250000 | 2023-04-01 | active | 0 |
+| 10001 | E10001 | Alice | 3 | 4 | 500000 | 2012-04-01 | active | 0 |
+| 10002 | E10002 | Bob | 1 | 4 | 450000 | 2012-04-01 | active | 0 |
+| 10003 | E10003 | Carol | 2 | 2 | 350000 | 2012-04-01 | active | 0 |
+| 10004 | E10004 | Dave | 3 | 3 | 400000 | 2012-04-01 | active | 0 |
+| 10005 | E10005 | Ellen | 3 | 2 | 300000 | 2013-04-01 | active | 0 |
+| 10006 | E10006 | Frank | 1 | 1 | 250000 | 2013-10-01 | active | 0 |
+| 10007 | E10007 | Ivan | 4 | 4 | 480000 | 2014-01-01 | active | 0 |
+| 10008 | E10008 | Justin | 2 | 4 | 460000 | 2014-04-01 | active | 0 |
+| 10009 | E10009 | Mallory | 4 | 3 | 420000 | 2014-07-01 | active | 0 |
+| 10010 | E10010 | Matilda | 3 | 1 | 280000 | 2015-08-01 | active | 0 |
+| 10011 | E10011 | Oscar | 4 | 2 | 320000 | 2015-11-01 | active | 0 |
+| 10012 | E10012 | Pat | 4 | 1 | 240000 | 2016-04-01 | active | 0 |

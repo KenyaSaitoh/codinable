@@ -19,7 +19,7 @@
 | `PHOTO` | `BLOB` |  | 写真 |
 | `VERSION` | `INT` |  | バージョン |
 
-初期データ（14 件。先頭 12 件）
+初期データ（16 件。先頭 12 件）
 
 | EMPLOYEE_ID | EMPLOYEE_NAME | DEPARTMENT_NAME | ENTRANCE_DATE | JOB_NAME | SALARY | PHOTO | VERSION |
 |---|---|---|---|---|---|---|---|

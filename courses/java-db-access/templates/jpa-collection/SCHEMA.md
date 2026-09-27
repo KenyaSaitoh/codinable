@@ -15,7 +15,7 @@
 | `DEPARTMENT_NAME` | `VARCHAR(30)` |  | 部署名 |
 | `SALARY` | `INT` | NOT NULL | 月給 |
 
-初期データ（14 件。先頭 12 件）
+初期データ（16 件。先頭 12 件）
 
 | EMPLOYEE_ID | EMPLOYEE_NAME | DEPARTMENT_NAME | SALARY |
 |---|---|---|---|
@@ -39,7 +39,7 @@
 | `EMPLOYEE_ID` | `INT` | 主キー（複合） | 社員ID |
 | `ADDRESS` | `VARCHAR(255)` | 主キー（複合） | メールアドレス |
 
-初期データ（28 件。先頭 12 件）
+初期データ（31 件。先頭 12 件）
 
 | EMPLOYEE_ID | ADDRESS |
 |---|---|
