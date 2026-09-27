@@ -81,7 +81,7 @@ paths:
               description: 登録した社員の相対URI
               schema:
                 type: string
-                example: /employees/11
+                example: /employees/10017
         '400':
           $ref: '#/components/responses/400'
         '409':
@@ -209,7 +209,7 @@ components:
         employeeCode:
           type: string
           readOnly: true
-          example: E0001
+          example: E10001
         employeeName:
           type: string
           minLength: 1
