@@ -1,3 +1,6 @@
 {
-  "services": ["kafka"]
+  "services": ["kafka"],
+  "processes": [
+    {"id": "consumer", "dir": "consumer", "run": "gradle:bootRun", "port": 8092, "when": ["gradle:bootRun"], "preview": "/events"}
+  ]
 }

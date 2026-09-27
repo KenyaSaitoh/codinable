@@ -1,7 +1,6 @@
 -- カスケード。親のレコードが消えたとき、子のレコードをどう扱うかの指定である
 --
--- このファイルは 01_setup.sql とは別のテーブル（PROJECT / ASSIGNMENT）を作るので、
--- 単独で実行できる
+-- このファイルは DEPARTMENT / EMPLOYEE とは別のテーブル（PROJECT / ASSIGNMENT）を作って使う
 
 DROP TABLE ASSIGNMENT IF EXISTS CASCADE;
 DROP TABLE PROJECT    IF EXISTS CASCADE;
@@ -47,8 +46,8 @@ SELECT * FROM ASSIGNMENT ORDER BY ASSIGNMENT_ID;
 --   ON DELETE SET NULL  … 子の外部キーを NULL にする
 --   ON DELETE RESTRICT  … 子が残っていれば親を消せない（既定）
 --
--- 01_setup.sql の EMPLOYEE は何も指定していないので RESTRICT である
--- 01_setup.sql を流したあと、次の 1 行の先頭の -- を外して実行すると、
+-- reset.sql（01_setup.sql と同じ）の EMPLOYEE は何も指定していないので RESTRICT である
+-- 次の 1 行の先頭の -- を外し、その 1 文だけを選択して実行すると、
 -- 社員が所属している部署は消せないことが確かめられる
 -- DELETE FROM DEPARTMENT WHERE DEPARTMENT_ID = 1
 

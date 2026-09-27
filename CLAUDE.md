@@ -36,6 +36,21 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
   データは userData/messaging に保存し、他のプロセスのポートを奪わない。
   バージョンは `src/messaging-config.js`、配布物の用意は `scripts/setup-messaging.ps1`。
   Erlang はユーザー領域に launcher と erl.ini を作り、同梱物に書き込まず起動する
+- **サーバー（HSQLDB / Kafka / RabbitMQ / 付き添いのプロセス）は「実行」で自動起動し、
+  起動・停止の口は出力タブの行の右端だけ**（`renderer.js` の `renderServiceControls`）。
+  そこに出るのは演習が使うもの（SQL の実行対象がある / `codinable.services.json`）と
+  動いているものだけ。「実行」と意味がかぶるボタン（「SQL実行」など）や、
+  タブの中の起動・停止ボタンは置かない
+- **付き添いのプロセス**（書店から呼ばれる customer-hub など）は `main/companions.js`。
+  `codinable.services.json` の `processes` に `{ id, dir, run, port, when }` で書く。
+  「実行」のたびに起こし直し（DB が初期データに戻る）、実行の停止では止めない。
+  別のプロジェクトを実行すると止める（同じポートを取り合わない）。出力は `[id]` を付けて
+  実行結果に流す。道具の境界と同じく、起こすきっかけは「実行」とボタンだけにする。
+  `test/check-companions.js` で押さえている
+- **SQL の演習はファイルを流すたびに `reset.sql` で初期状態に戻す**（`runSqlFromEditor`）。
+  雛形ルートの `reset.sql` を PUBLIC スキーマを消してから流し、そのあとで選んだファイルを流す。
+  範囲選択だけを流すときは戻さない（別の演習の状態が残っているときだけ戻す）。
+  `reset.sql` は実行対象に並べない。失敗したら何文目のどの文かを SQL タブに出す
 - **LLM は任意機能**。API キーが無い状態でも他のすべてが動くことを壊さない
 - **チャットは Ask と Agent の 2 つ**（`src/renderer/renderer.js` の `chatMode`）。
   Ask は読むだけ（`src/llm/index.js` の `streamChat`）。Agent は道具を使う
@@ -104,6 +119,9 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
   `index.html`）と食い違わせない。選択肢が無いときは黙って無視される。
   `file:` はそのファイルを先に開いてから選ぶ。`sql:` は選ぶときには開かず、
   実行したときに開く（SQL の演習は最初に `SCHEMA.md` を読んでもらうため）
+- **`preview` はプレビューで最初に開くパス**（`/hello` など）。実行でサーバーの URL を検知したとき、
+  `/` に画面が無いアプリで 404 や 500 から始まらないように付ける（`renderer.js` の
+  `withExercisePreviewPath`）。説明文で「〜を開いてください」と書いた場所をそのまま書く
 - **`chapter` の名前は講座の `chapters:` に書く**（番号 → 日本語 / 英語）。演習一覧は
   チャプターごとのアコーディオンで、見出しは「チャプター7 JavaScriptとTypeScript」。
   名前は講座原稿の目次と同じにする。開いているチャプターは講座ごとに localStorage へ覚える
@@ -127,6 +145,9 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
   DDL の行末コメント（カラムの意味）から作る（`scripts/SchemaDoc.java`）。DDL を直したら
   流し直す。DDL が無くエンティティからテーブルを作る演習だけは手書き（`MANUAL`）。
   SQL の演習（webapp-archi-overview の `sql-*`）の `SCHEMA.md` は流す順番の説明を含むので手書き
+- **更新系の SQL で状態が変わる演習は、実行のたびに初期データへ戻す**。SQL の演習は
+  `reset.sql`、Java / Spring の雛形はインメモリの HSQLDB に起動時に DDL / DML を流す
+  （プロセスごとに別の DB）。「前に流した結果が残っていてエラー」を受講者に踏ませない
 - **「↺ 初期化」は完全に戻す**（`workspace.js` の `resetToTemplate`）。自分で足した
   ファイルも消してから雛形を書き戻す。残すのは `.codinable`（演習との対応）と
   依存のキャッシュ（`node_modules` / `.gradle`）だけ
@@ -193,8 +214,11 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
 - **雛形は単独で動く Gradle プロジェクトにする**。講座リポジトリの親 build.gradle や
   HSQLDB サーバー（9001）に頼らず、DB はインメモリ（`jdbc:hsqldb:mem:`）で起動時に SQL を流す
 - **2 プロセス要る演習**（API とクライアント、Spring と React の画面など）は、主役を雛形直下に置き、
-  もう片方はサブフォルダ（`api/` `client/` `frontend/` など）の独立プロジェクトにして
-  ターミナルから起動する。サブフォルダの `package.json` 配下は実行対象に出さない
+  もう片方はサブフォルダ（`api/` `consumer/` `frontend/` など）の独立プロジェクトにする。
+  待ち受けるサーバー（呼び出し先の API・受信側・React の画面）は `codinable.services.json` の
+  `processes` に書き、「実行」で一緒に起動する（受講者にターミナルで起動させない）。
+  受講者が見る画面を持つものには `preview` を付け、動き出したらプレビューがそこへ移るようにする。
+  起動して処理を流したら終わるクライアント（`client/` の Java コンソール）だけはターミナルから動かす。サブフォルダの `package.json` 配下は実行対象に出さない
   （`workspace.js` の `inNestedPackage`）
 - Mockito を使う雛形は `mockito-core` を `-javaagent` で渡す（jlink 版 JDK に
   `jdk.attach` が入る前に作った runtime でもモックを作れるようにするため）
@@ -263,3 +287,9 @@ npm run release:courses  # 講座を GitHub Releases の courses タグへ上書
    （手元に配信先を立てて確かめる）
 6. アプリ本体の更新（更新まわりを触ったとき）: `npm run pack` のあと
    `node test/check-app-update.js`（パッケージ後のアプリでだけ動く）
+7. 講座の E2E（雛形・`course.yaml`・実行まわりを触ったとき）:
+   `node test/e2e-courses.js <講座ID>[,…] [--only=<演習ID>,…]`。画面を操作して演習を 1 つずつ
+   選び、実行対象どおりに動くか（Web は HTTP の応答、test は成功、SQL は全ファイル、
+   スクリプトは全ファイル）を見る。bootRun は 8080 を取り合うので、講座は 1 つずつ順に流す
+   （`java-db-access` は 8080 を使わないので並べてよい）。Keycloak の演習だけは Docker で
+   Keycloak を起動し、`KEYCLOAK_CLIENT_SECRET` を渡してから流す

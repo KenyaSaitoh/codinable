@@ -60,14 +60,36 @@ public class SqlServer {
         try { conn.close(); } catch (Exception ignored) {}
     }
 
+    // 失敗したら、何文目のどの文だったかを付けて返す (その前の文は流れている)
     static String execAll(String sql) throws SQLException {
         String[] parts = sql.split(";");
         String last = null;
+        int index = 0;
         for (String p : parts) {
-            p = p.trim();
-            if (!p.isEmpty()) last = execOne(p);
+            String body = withoutComments(p);
+            if (body.isEmpty()) continue;
+            index++;
+            try {
+                last = execOne(p.trim());
+            } catch (SQLException e) {
+                String msg = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+                return "{\\"error\\":\\"" + esc(msg) + "\\",\\"statementIndex\\":" + index +
+                       ",\\"statement\\":\\"" + esc(body) + "\\"}";
+            }
         }
         return last != null ? last : "{\\"columns\\":[],\\"rows\\":[],\\"rowCount\\":0}";
+    }
+
+    // 行頭の -- コメントと空行を除いた本文
+    static String withoutComments(String part) {
+        StringBuilder b = new StringBuilder();
+        for (String line : part.split("\\n")) {
+            String t = line.trim();
+            if (t.isEmpty() || t.startsWith("--")) continue;
+            if (b.length() > 0) b.append("\\n");
+            b.append(line.replaceAll("\\\\s+$", ""));
+        }
+        return b.toString().trim();
     }
 
     static String execOne(String sql) throws SQLException {
@@ -209,27 +231,32 @@ function stop() {
  * schemaSQL を渡すと初期化 SQL として流す
  */
 async function start({ schemaSQL, uiLang } = {}) {
+  // running: 失敗したときに DB が動いたままかどうか (画面の起動・停止ボタンに使う)
   if (serverProcess) {
-    try {
-      const dropped = await request('DROP SCHEMA PUBLIC CASCADE');
-      if (dropped && dropped.error) throw new Error(dropped.error);
+    let dropped;
+    try { dropped = await request('DROP SCHEMA PUBLIC CASCADE'); }
+    catch (err) { dropped = { error: err.message }; }
+    if (dropped && !dropped.error) {
       if (schemaSQL && schemaSQL.trim()) {
-        const loaded = await request(schemaSQL);
-        if (loaded && loaded.error) throw new Error(loaded.error);
+        const loaded = await request(schemaSQL).catch(err => ({ error: err.message }));
+        // 初期化 SQL そのものの誤りは、起こし直しても同じなのでそのまま返す
+        if (loaded && loaded.error) return { ok: false, error: formatError(loaded), running: !!serverProcess };
       }
-      return { ok: true, reused: true };
-    } catch (err) {
-      console.warn('[sql] in-place reset failed, restarting HSQLDB:', err.message);
+      return { ok: true, reused: true, running: true };
     }
+    console.warn('[sql] in-place reset failed, restarting HSQLDB:', dropped.error);
   }
 
   try {
     stop();
     const dir = runnerDir();
-    if (!fs.existsSync(path.join(dir, 'SqlServer.class'))) await compileServer(uiLang);
+    // 前の版の SqlServer が残っていれば作り直す (ソースを比べる)
+    const source = path.join(dir, 'SqlServer.java');
+    const stale = !fs.existsSync(source) || fs.readFileSync(source, 'utf8') !== SQL_SERVER_SOURCE.trimStart();
+    if (stale || !fs.existsSync(path.join(dir, 'SqlServer.class'))) await compileServer(uiLang);
 
     const hsqlJar = resolveHsqldb();
-    if (!hsqlJar) return { ok: false, error: 'HSQLDB jar が見つかりません (hsqldb/ が未セットアップです)' };
+    if (!hsqlJar) return { ok: false, error: 'HSQLDB jar が見つかりません (hsqldb/ が未セットアップです)', running: false };
 
     const classpath = dir + (IS_WIN ? ';' : ':') + hsqlJar;
     outputBuf = '';
@@ -254,17 +281,22 @@ async function start({ schemaSQL, uiLang } = {}) {
 
     if (schemaSQL && schemaSQL.trim()) {
       const loaded = await request(schemaSQL);
-      if (loaded && loaded.error) return { ok: false, error: loaded.error };
+      if (loaded && loaded.error) return { ok: false, error: formatError(loaded), running: true };
     }
-    return { ok: true };
+    return { ok: true, running: true };
   } catch (err) {
     stop();
-    return { ok: false, error: err.message };
+    return { ok: false, error: err.message, running: false };
   }
 }
 
+/** 初期化 SQL の失敗を 1 つの文にする (何文目のどの文か) */
+function formatError(res) {
+  return res.statementIndex ? `[${res.statementIndex}] ${res.error}\n${res.statement || ''}` : res.error;
+}
+
 async function run(sql) {
-  if (!serverProcess) return { error: 'HSQLDB が起動していません。「DB起動」を押してください。' };
+  if (!serverProcess) return { error: 'HSQLDB が起動していません。「実行」を押すと起動します。' };
   try { return await request(sql); }
   catch (err) { return { error: err.message }; }
 }

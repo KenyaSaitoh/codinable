@@ -16,13 +16,14 @@ DEPARTMENT（部署・親）          EMPLOYEE（社員・子）
 
 | 順番 | ファイル | 内容 |
 |---|---|---|
-| 1 | `01_setup.sql` | DEPARTMENT と EMPLOYEE を作り、データを入れる（**最初に 1 回流す**） |
+| 1 | `01_setup.sql` | DEPARTMENT と EMPLOYEE を作り、データを入れる（`reset.sql` と同じ内容） |
 | 2 | `02_join.sql` | 内部結合と外部結合（対応する行が無い側の扱いの違い） |
 | 3 | `03_subquery.sql` | サブクエリとビュー（`HIGH_SALARY_EMPLOYEES`） |
 | 4 | `04_cascade.sql` | PROJECT / ASSIGNMENT を作り、親を消すと子も消える（ON DELETE CASCADE）ことを見る |
 
 - 結果が出るのは最後の 1 文だけです。途中の文を見たいときは、その 1 文を選択してから「実行」を押します
-- おかしくなったら `01_setup.sql` を流し直せば元に戻ります
+- どのファイルも、「実行」するたびに `reset.sql` が先に流れて、テーブルが作り直され初期データに戻ります。何度実行しても同じ状態から始まります
+- 範囲を選択して「実行」したときは作り直しません（1 文ずつ順に試せるように）
 
 ## DEPARTMENT（部署）
 

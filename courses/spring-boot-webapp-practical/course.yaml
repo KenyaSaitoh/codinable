@@ -23,12 +23,13 @@
 #    suggestName  作業用プロジェクト名の既定値
 #    names        演習名（言語ごと）
 #    descriptions 「何をどう動かすか」の説明（言語ごと）
+#    preview      サーバーの URL を検知したとき、プレビューで最初に開くパス（/ に画面が無いとき）
 #    openFiles    演習を開いた直後に開くファイル（プロジェクト相対パス）
 # ═══════════════════════════════════════════════════════════
 id: spring-boot-webapp-practical
 order: 7
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.0.0
+version: 1.1.0
 
 names:
   ja: Spring Boot Webアプリ応用（ECサイト）
@@ -80,13 +81,13 @@ exercises:
       ja: >-
         REST API 版の書店です。api / service / repository / entity / external の
         パッケージが、HTTP 入出力・業務処理・DB・外部 API のどれを受け持つかを対応付けて読みます。
-        「実行」で API が 8080 で起動します。ログインして JSON を確かめる手順
-        （Customer Hub と React の起動を含む）は README.md にあります。
+        「実行」で API が 8080 で、呼び出し先の Customer Hub が 8081 で起動します。
+        ログインして JSON を確かめる手順（React の起動を含む）は README.md にあります。
       en: >-
         The REST API version of the bookstore. Map the api / service / repository / entity /
         external packages to what each handles: HTTP I/O, business logic, the DB and the
-        external API. Run starts the API on port 8080. README.md shows how to log in and check
-        the JSON, including starting Customer Hub and React.
+        external API. Run starts the API on port 8080 and Customer Hub, the API it calls, on 8081.
+        README.md shows how to log in and check the JSON, including starting React.
     openFiles:
       - README.md
       - src/main/java/pro/kensait/leafbooks/api/OrderController.java
@@ -104,14 +105,14 @@ exercises:
     descriptions:
       ja: >-
         MVC 版の書店です。OrderService.orderBooks（Transaction Script）、注文の入力を運ぶ OrderTO、
-        送料を決める DeliveryFeeService を読みます。先にターミナルで customer-hub を起動し
-        （cd customer-hub → ../gradlew.bat bootRun）、「実行」で書店を 8080 で起動して、
+        送料を決める DeliveryFeeService を読みます。「実行」で書店が 8080 で、
+        ログインに使う Customer Hub が 8081 で起動します。
         alice@gmail.com / password でログインし、カートから注文すると送料と注文履歴が確かめられます。
       en: >-
         The MVC version of the bookstore. Read OrderService.orderBooks (a Transaction Script),
         OrderTO which carries the order input, and DeliveryFeeService which decides the delivery fee.
-        Start customer-hub in a terminal first (cd customer-hub, then ../gradlew.bat bootRun),
-        run the bookstore on port 8080, log in as alice@gmail.com / password and order from the
+        Run starts the bookstore on port 8080 and Customer Hub, used for login, on 8081.
+        Log in as alice@gmail.com / password and order from the
         cart to see the delivery fee and the order history.
     openFiles:
       - src/main/java/pro/kensait/leafbooks/service/order/OrderService.java
@@ -147,6 +148,7 @@ exercises:
     lesson: '3.1 JPA・トランザクション・外部APIと入力検証'
     runtime: spring
     run: 'gradle:bootRun'
+    preview: '/customers/1'
     suggestName: customer-hub
     names:
       ja: 外部APIのCustomer Hubを動かす
@@ -180,15 +182,15 @@ exercises:
       ja: >-
         書店から Customer Hub を呼ぶ CustomerApiClient（RestTemplate・404 の例外変換）と、
         顧客登録フォームの Bean Validation（CustomerParam）を読みます。
-        ターミナルで customer-hub を起動（cd customer-hub → ../gradlew.bat bootRun）してから「実行」し、
+        「実行」すると書店と Customer Hub が一緒に起動します。
         存在しないメールアドレスでのログイン、既存メールアドレスでの顧客登録、
-        Customer Hub を止めた状態でのログインで、画面の応答がどう変わるかを確かめます。
+        Customer Hub を止めた状態（出力タブの行の右端の「customer-hub停止」）でのログインで、画面の応答がどう変わるかを確かめます。
       en: >-
         Read CustomerApiClient, which calls Customer Hub from the bookstore (RestTemplate, mapping
         a 404 to an exception), and Bean Validation on the registration form (CustomerParam).
-        Start customer-hub in a terminal (cd customer-hub, then ../gradlew.bat bootRun) and run the
-        bookstore. Compare the responses when logging in with an unknown email, registering an
-        existing email, and logging in while Customer Hub is stopped.
+        Run starts the bookstore together with Customer Hub. Compare the responses when logging in
+        with an unknown email, registering an existing email, and logging in while Customer Hub is
+        stopped (Stop customer-hub at the right end of the output tab row).
     openFiles:
       - src/main/java/pro/kensait/leafbooks/external/CustomerApiClient.java
 
@@ -207,15 +209,14 @@ exercises:
       ja: >-
         Controller が Model とビュー名を返して Thymeleaf が HTML を作る流れ、
         @SessionAttributes のカート、TokenProcessor による SecurityContext の保存、
-        注文後の Post/Redirect/Get を読みます。ターミナルで customer-hub を起動
-        （cd customer-hub → ../gradlew.bat bootRun）してから「実行」し、
+        注文後の Post/Redirect/Get を読みます。「実行」で書店と Customer Hub が起動したら、
         alice@gmail.com / password でログイン → 書籍選択 → カート → 注文 → 注文履歴と進めます。
         注文完了画面で再読み込みしても注文が二重にならないことも確かめられます。
       en: >-
         Read how a Controller returns a Model and a view name for Thymeleaf to render,
         the cart kept with @SessionAttributes, how TokenProcessor stores the SecurityContext,
-        and Post/Redirect/Get after an order. Start customer-hub in a terminal
-        (cd customer-hub, then ../gradlew.bat bootRun), run the bookstore, log in as
+        and Post/Redirect/Get after an order. Once Run has started the bookstore and Customer Hub,
+        log in as
         alice@gmail.com / password and go through book selection, cart, order and order history.
         Reloading the order-complete page does not place the order twice.
     openFiles:
@@ -236,15 +237,13 @@ exercises:
       ja: >-
         React の画面構成（App.tsx の Router と Provider）、CartContext のカート state、
         OrderConfirmPage の送信中・成功・失敗の状態遷移を読みます。
-        「実行」で REST API を 8080 で起動し、ターミナルで customer-hub を起動
-        （cd customer-hub → ../gradlew.bat bootRun）、別のターミナルで
+        「実行」で REST API（8080）と Customer Hub（8081）が起動します。ターミナルで
         cd frontend → npm install → npm run dev を実行して、表示された http://localhost:5173 を
         プレビューの URL 欄に入れます。alice@gmail.com / password でログインして注文まで進めます。
       en: >-
         Read the React screen structure (Router and Providers in App.tsx), the cart state in
         CartContext, and the submitting / success / failure transitions in OrderConfirmPage.
-        Run starts the REST API on port 8080; start customer-hub in a terminal
-        (cd customer-hub, then ../gradlew.bat bootRun), and in another terminal run
+        Run starts the REST API (8080) and Customer Hub (8081). In a terminal run
         cd frontend, npm install, npm run dev, then put http://localhost:5173 into the preview URL bar.
         Log in as alice@gmail.com / password and go through to an order.
     openFiles:
@@ -264,14 +263,14 @@ exercises:
       ja: >-
         AuthController のログインと JWT の Cookie 発行、JwtAuthenticationFilter による検証、
         OrderController の入出力 DTO と GlobalExceptionHandler のエラー応答を読みます。
-        「実行」で API を 8080 で起動し、ターミナルで customer-hub を起動してから、
+        「実行」で API（8080）と Customer Hub（8081）が起動したら、
         README.md の curl 手順でログイン前の 403、ログイン後の /api/books と /api/orders/history を確かめます。
         画面から確かめるときは frontend を npm run dev で起動します。
       en: >-
         Read login and JWT cookie issuance in AuthController, verification in
         JwtAuthenticationFilter, the request / response DTOs of OrderController and the error
-        responses from GlobalExceptionHandler. Run starts the API on port 8080; start customer-hub in
-        a terminal, then follow the curl steps in README.md to see the 403 before login and
+        responses from GlobalExceptionHandler. Once Run has started the API (8080) and Customer Hub
+        (8081), follow the curl steps in README.md to see the 403 before login and
         /api/books and /api/orders/history after it. To check through the UI, start frontend with npm run dev.
     openFiles:
       - README.md

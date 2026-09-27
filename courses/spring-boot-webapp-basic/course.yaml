@@ -25,12 +25,13 @@
 #    suggestName  作業用プロジェクト名の既定値
 #    names        演習名（言語ごと）
 #    descriptions 「何をどう動かすか」の説明（言語ごと）
+#    preview      サーバーの URL を検知したとき、プレビューで最初に開くパス（/ に画面が無いとき）
 #    openFiles    演習を開いた直後に開くファイル（プロジェクト相対パス）
 # ═══════════════════════════════════════════════════════════
 id: spring-boot-webapp-basic
 order: 2
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.0.0
+version: 1.1.0
 
 names:
   ja: Spring Boot Webアプリ基礎
@@ -120,6 +121,7 @@ exercises:
     lesson: '3.1 Spring MVCとThymeleafによる画面生成'
     runtime: spring
     run: 'gradle:bootRun'
+    preview: '/hello'
     suggestName: spring-mvc-hello
     names:
       ja: Controller・Model・View の最小構成
@@ -468,6 +470,7 @@ exercises:
     lesson: '10.1 Springのトランザクション管理と伝播'
     runtime: spring
     run: 'gradle:bootRun'
+    preview: '/fuga?param=100'
     suggestName: spring-mvc-tx
     names:
       ja: REQUIRED と REQUIRES_NEW の伝播
@@ -490,6 +493,7 @@ exercises:
     lesson: '10.1 Springのトランザクション管理と伝播'
     runtime: spring
     run: 'gradle:bootRun'
+    preview: '/JtaPage.html'
     suggestName: spring-mvc-tx-jta
     names:
       ja: JTA で 2 つのデータソースを 1 つのトランザクションにする
@@ -556,6 +560,7 @@ exercises:
     lesson: '11.1 Spring WebとSpring Data RESTによるREST API'
     runtime: spring
     run: 'gradle:bootRun'
+    preview: '/api'
     suggestName: spring-data-rest-employee
     names:
       ja: Spring Data REST で Repository を公開する
@@ -582,6 +587,7 @@ exercises:
     lesson: '12.1 RestClientとRestTemplateによる同期HTTP通信'
     runtime: spring
     run: 'gradle:bootRun'
+    preview: '/employees'
     suggestName: spring-restclient-employee
     names:
       ja: RestClient で社員 API を呼ぶ
@@ -603,6 +609,7 @@ exercises:
     lesson: '12.1 RestClientとRestTemplateによる同期HTTP通信'
     runtime: spring
     run: 'gradle:bootRun'
+    preview: '/employees'
     suggestName: spring-resttemplate-employee
     names:
       ja: RestTemplate で同じ社員 API を呼ぶ

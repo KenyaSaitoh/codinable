@@ -10,13 +10,14 @@
 
 | 順番 | ファイル | 内容 |
 |---|---|---|
-| 1 | `01_setup.sql` | テーブルを作り直し、9 件の社員を入れる（**最初に 1 回流す**） |
+| 1 | `01_setup.sql` | テーブルを作り直し、9 件の社員を入れる（`reset.sql` と同じ内容） |
 | 2 | `02_functions.sql` | 集約関数（COUNT / SUM / AVG / MAX / MIN） |
 | 3 | `03_group_by.sql` | グルーピング（GROUP BY）と集約後の絞り込み（HAVING） |
 | 4 | `04_sort_limit.sql` | 並べ替え（ORDER BY）・重複排除（DISTINCT）・件数制限（LIMIT） |
 
 - 結果が出るのは最後の 1 文だけです。途中の文を見たいときは、その 1 文を選択してから「実行」を押します
-- おかしくなったら `01_setup.sql` を流し直せば元に戻ります
+- どのファイルも、「実行」するたびに `reset.sql` が先に流れて、テーブルが作り直され初期データに戻ります。何度実行しても同じ状態から始まります
+- 範囲を選択して「実行」したときは作り直しません（1 文ずつ順に試せるように）
 
 ## EMPLOYEE（社員）
 
@@ -27,7 +28,7 @@
 | `DEPARTMENT_NAME` | `VARCHAR(30)` | | 部署名（グルーピングの単位） |
 | `SALARY` | `INT` | NOT NULL | 月給（円。集計の対象） |
 
-### 初期データ（`01_setup.sql`）
+### 初期データ（`reset.sql`）
 
 | EMPLOYEE_ID | EMPLOYEE_NAME | DEPARTMENT_NAME | SALARY |
 |---|---|---|---|

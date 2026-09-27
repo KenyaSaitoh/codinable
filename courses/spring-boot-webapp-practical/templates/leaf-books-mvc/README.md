@@ -6,23 +6,16 @@ Spring MVC + Thymeleaf でサーバーが HTML を生成する書店アプリで
 
 ## Codinable での動かし方
 
-1. **Customer Hub をターミナルで起動する**（ログイン・顧客登録に必要）
+1. **実行対象 `gradle:bootRun` を選んで「実行」**
+   → 書店が `http://localhost:8080` で起動し、プレビュータブが開く。
+   ログイン・顧客登録で呼ぶ Customer Hub（`customer-hub/`、ポート 8081）も一緒に起動する
+   （`codinable.services.json` に書いてある。出力には `[customer-hub]` を付けて出る）
 
-   ```bash
-   cd customer-hub
-   ../gradlew.bat bootRun
-   ```
-
-   `../gradlew.bat` は、このフォルダで一度「実行」を押すと Codinable が用意します。
-   まだ無いときは、先に手順 2 の「実行」を押してから起動してください。
-
-2. **実行対象 `gradle:bootRun` を選んで「実行」**
-   → 書店が `http://localhost:8080` で起動し、プレビュータブが開く
-
-3. ログイン画面でメールアドレス `alice@gmail.com`、パスワード `password` を入れる
+2. ログイン画面でメールアドレス `alice@gmail.com`、パスワード `password` を入れる
    （bob / carol / dave / ellen も同じパスワード）
 
-Customer Hub を起動していないと、ログインで接続エラーになります。
+Customer Hub は出力タブの行の右端のボタンで止めたり起動し直したりできます。
+止めた状態でログインすると、接続エラーになるのが確かめられます。
 書籍の一覧や検索はログイン後の画面から使えます。
 
 実行対象 `gradle:test` では、Controller（MockMvc）・Service（Mockito）・
@@ -32,7 +25,8 @@ Repository（`@DataJpaTest`）のテストが走ります。
 
 HSQLDB のインメモリで動かしています。起動のたびに `sql/hsqldb/` の
 `2_BOOKSTORE_DDL.sql` と `3_BOOKSTORE_DML.sql` から作り直されるので、
-注文や在庫の変更は停止すると元に戻ります。
+「実行」するたびに初期データから始まります（注文や在庫の変更は残りません）。
+Customer Hub も「実行」のたびに起動し直すので、登録した顧客も初期データに戻ります。
 元の講座のように HSQLDB サーバーを起動する必要はありません。
 
 書店と Customer Hub は別のプロセスなので、DB も別々です

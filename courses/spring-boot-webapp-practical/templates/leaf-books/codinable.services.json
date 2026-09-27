@@ -1,0 +1,5 @@
+{
+  "processes": [
+    { "id": "customer-hub", "dir": "customer-hub", "run": "gradle:bootRun", "port": 8081, "when": ["gradle:bootRun"] }
+  ]
+}

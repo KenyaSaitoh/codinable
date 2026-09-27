@@ -1,3 +1,7 @@
 {
-  "services": ["rabbitmq"]
+  "services": ["rabbitmq"],
+  "processes": [
+    {"id": "consumer", "dir": "consumer", "run": "gradle:bootRun", "port": 8094, "when": ["gradle:bootRun"]},
+    {"id": "frontend", "dir": "frontend", "run": "npm:dev", "port": 5173, "when": ["gradle:bootRun"], "preview": "/"}
+  ]
 }

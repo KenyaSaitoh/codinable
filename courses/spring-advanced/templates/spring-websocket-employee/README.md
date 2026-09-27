@@ -5,24 +5,17 @@ Spring の簡易ブローカーを使った STOMP の社員通知です。接続
 | 場所 | 中身 | 起動方法 |
 |---|---|---|
 | このフォルダ直下 | Spring Boot（8096） | 実行対象 `gradle:bootRun` で「実行」 |
-| `frontend/` | 専用の React 画面（Vite、5173） | ターミナルで `npm run dev` |
+| `frontend/` | 専用の React 画面（Vite、5173） | 「実行」で一緒に起動 |
 
 ## 動かし方
 
-1. 実行対象 `gradle:bootRun` で「実行」を押し、バックエンドを起動します。
-2. ターミナルで React 画面を起動します。
-
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
-
-3. プレビューの URL 欄に `http://localhost:5173/` を入れて開きます。同じ URL を外部ブラウザでも開き、2 つの画面を接続します。一方から送った通知が両方に届くことを確かめます。
+1. 実行対象 `gradle:bootRun` で「実行」を押します。バックエンドと React 画面（`frontend/`）が一緒に起動します。`npm install` も必要なときに自動で走ります。
+2. React 画面の用意ができると、プレビューに `http://localhost:5173/` が開きます。同じ URL を外部ブラウザでも開き、2 つの画面を接続します。一方から送った通知が両方に届くことを確かめます。
 
 - Vite の表示は `http://127.0.0.1:5173/` ですが、許可 Origin（`FRONTEND_URL`、既定 `http://localhost:5173`）に合わせて **localhost** で開いてください。
 - 画面から `/api/websocket/...` への要求は、Vite（`frontend/vite.config.ts`）が 8096 へ転送します。
-- 止めるときは、ターミナルで Ctrl+C、バックエンドは「停止」。5173 が使用中だと Vite は起動せずに終了します。
+- React 画面の出力は実行結果タブに `[frontend] ` を付けて出ます。「実行」のたびに起動し直します。
+- 「停止」で止まるのはバックエンドだけです。React 画面は、出力タブの行の右端にある「frontend停止」「frontend起動」で個別に止めたり起動したりできます。5173 が使用中だと Vite は起動せずに終了します。
 
 ## 主なファイル
 

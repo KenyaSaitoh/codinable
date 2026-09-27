@@ -52,6 +52,9 @@
   <div class="current-course-bar" id="project-bar">
     <span class="current-course-icon" aria-hidden="true">🎓</span>
     <span class="current-course-name" id="current-course-name" data-i18n="coursesEmpty">講座が入っていません</span>
+    <!-- いま開いている演習。演習一覧をスクロールしても何を選んでいるかが分かるように、コース名に続けて文字だけで出す
+         (枠で囲むと押せるように見えるので、囲まない) -->
+    <span class="current-exercise-badge hidden" id="current-exercise-badge"></span>
     <span class="project-path" id="project-path"></span>
   </div>
 
@@ -280,8 +283,6 @@
           </div>
           <button class="btn btn-stop" id="btn-run-stop" data-i18n="btnStop" disabled>停止</button>
           <!-- プレビューの口は下のタブだけにする。実行すると待ち受けを検知して自動で開く -->
-          <div class="toolbar-spacer"></div>
-          <span class="hsqldb-badge hidden" id="hsqldb-badge" data-i18n-title="hsqldbAvailable" title="HSQLDB が利用可能です">🗄️ HSQLDB</span>
         </div>
 
         <div class="resize-handle" id="run-log-handle" data-i18n-title="dragToResizeHeight" title="ドラッグで高さを調整"></div>
@@ -295,6 +296,9 @@
             <button class="run-tab" id="run-tab-terminal" data-pane="tab-terminal" data-i18n="tabTerminal" data-i18n-title="tabTerminalTitle" title="プロジェクトのフォルダで動くターミナル (bash)">🖥 ターミナル</button>
             <button class="run-tab" id="run-tab-messaging" data-pane="tab-messaging" data-i18n="tabMessaging">メッセージング</button>
             <button class="run-tab" id="run-tab-browser" data-pane="tab-browser" data-i18n="tabBrowser" data-i18n-title="tabBrowserTitle" title="Web アプリ・静的ページの動作確認">🌐 プレビュー</button>
+            <!-- 演習が使うサーバー (HSQLDB / Kafka / RabbitMQ) の起動・停止。「実行」で自動起動するので、
+                 ここは手で止めたい・先に起こしておきたいときの口。中身は renderServiceControls が作る -->
+            <div class="service-controls" id="service-controls"></div>
           </div>
           <div class="run-output-body">
 
@@ -312,20 +316,14 @@
 
             <!-- SQL (HSQLDB インメモリ) -->
             <div class="run-pane" id="tab-sql">
-              <div class="sql-toolbar">
-                <button class="btn btn-run"  id="btn-sql-start" data-i18n="btnSqlStart">DB起動</button>
-                <button class="btn btn-stop" id="btn-sql-stop"  data-i18n="btnSqlStop" disabled>DB停止</button>
-                <button class="btn btn-run"  id="btn-sql-run"   data-i18n="btnSqlRun" disabled>SQL実行</button>
-                <span class="sql-hint" data-i18n="sqlHint">エディタで開いている .sql の内容（選択中ならその部分）を実行します</span>
-              </div>
               <div class="sql-result-wrap" id="sql-result-wrap">
-                <div class="sql-placeholder" data-i18n="sqlPlaceholder">「DB起動」してから「SQL実行」を押してください。</div>
+                <div class="sql-placeholder" data-i18n="sqlPlaceholder">「実行」を押すと、選んだ .sql を HSQLDB に流して結果をここに出します（DB は自動で起動します）。</div>
               </div>
             </div>
 
             <!-- ターミナル (node-pty + xterm.js) -->
             <div class="run-pane" id="tab-messaging">
-              <p class="messaging-hint" data-i18n="messagingHint">必要なサーバーを起動して、演習から接続できます。データは停止後も保存されます。</p>
+              <p class="messaging-hint" data-i18n="messagingHint">使うサーバーは「実行」で自動的に起動します。起動・停止はタブの行の右端で行えます。データは停止後も保存されます。</p>
               <div id="messaging-services"></div>
               <div class="messaging-log-toolbar">
                 <label for="messaging-log-select" data-i18n="messagingLog">サーバーログ</label>

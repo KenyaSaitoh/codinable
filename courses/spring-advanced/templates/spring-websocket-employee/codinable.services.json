@@ -1,0 +1,5 @@
+{
+  "processes": [
+    {"id": "frontend", "dir": "frontend", "run": "npm:dev", "port": 5173, "when": ["gradle:bootRun"], "preview": "/"}
+  ]
+}

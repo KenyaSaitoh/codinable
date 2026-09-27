@@ -6,22 +6,14 @@ React の画面（`frontend/`）と、JSON を返す Spring Boot の REST API
 
 ## Codinable での動かし方
 
-動かすプロセスは 3 つです。「実行」ボタンで動くのは REST API だけなので、
-残りの 2 つはターミナルから起動します（ターミナルは複数開けます）。
+動かすプロセスは 3 つです。「実行」で REST API と Customer Hub が起動し、
+React の開発サーバーだけをターミナルから起動します。
 
-1. **実行対象 `gradle:bootRun` を選んで「実行」** → REST API が `http://localhost:8080` で起動する
+1. **実行対象 `gradle:bootRun` を選んで「実行」** → REST API が `http://localhost:8080` で起動する。
+   ログイン・顧客登録で呼ぶ Customer Hub（`customer-hub/`、ポート 8081）も一緒に起動する
+   （`codinable.services.json` に書いてある。出力には `[customer-hub]` を付けて出る）
 
-2. **Customer Hub をターミナルで起動する**（ログイン・顧客登録に必要）
-
-   ```bash
-   cd customer-hub
-   ../gradlew.bat bootRun
-   ```
-
-   `../gradlew.bat` は手順 1 の「実行」で Codinable が用意します。
-   まだ無いときは、先に手順 1 を済ませてください。
-
-3. **React の開発サーバーを別のターミナルで起動する**
+2. **React の開発サーバーをターミナルで起動する**
 
    ```bash
    cd frontend
@@ -32,7 +24,7 @@ React の画面（`frontend/`）と、JSON を返す Spring Boot の REST API
    表示された `http://localhost:5173` をプレビューの URL 欄に入れて開きます。
    `/api` への要求は Vite が `http://localhost:8080` へ中継します（`vite.config.ts`）。
 
-4. ログイン画面でメールアドレス `alice@gmail.com`、パスワード `password` を入れる
+3. ログイン画面でメールアドレス `alice@gmail.com`、パスワード `password` を入れる
    （bob / carol / dave / ellen も同じパスワード）
 
 REST API は `/api/auth/login` 以外は認証が必要です。

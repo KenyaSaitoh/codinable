@@ -100,6 +100,11 @@ contextBridge.exposeInMainWorld('api', {
   messagingStop:    id            => ipcRenderer.invoke('messaging-stop', id),
   messagingReset:   id            => ipcRenderer.invoke('messaging-reset', id),
   onMessagingStatus: handler     => subscribe('messaging-status', handler),
+  companionStatus:  ()            => ipcRenderer.invoke('companion-status'),
+  companionStart:   (name, id)    => ipcRenderer.invoke('companion-start', { name, id }),
+  companionStop:    id            => ipcRenderer.invoke('companion-stop', { id }),
+  onCompanionStatus: handler     => subscribe('companion-status', handler),
+  onCompanionLog:    handler     => subscribe('companion-log', handler),
   onMessagingLog:    handler     => subscribe('messaging-log', handler),
 
   // ── 言語サーバー ──

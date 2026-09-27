@@ -615,21 +615,23 @@ async function refreshProjectInfo() {
     applyExerciseTabs(null);
     $('project-path').textContent = '';
     $('btn-reset-exercise').classList.add('hidden');
-    $('hsqldb-badge').classList.add('hidden');
+    renderExerciseBadge();
     updateRunTargets();
+    renderServiceControls();
     return;
   }
 
   const info = await window.api.wsProjectInfo(project);
   projectInfo = info.ok ? info : null;
 
+  renderExerciseBadge();
   $('project-path').textContent = info.ok ? info.path : '';
   $('project-path').title = info.ok ? info.path : '';
   $('btn-reset-exercise').classList.toggle('hidden', !(info.ok && info.template));
   applyExerciseTabs(exerciseForProject(projectInfo));
-  $('hsqldb-badge').classList.toggle('hidden', !(info.kinds || []).includes('sql'));
 
   updateRunTargets();
+  renderServiceControls();
 }
 
 /**
@@ -681,8 +683,13 @@ async function resetExercise() {
 // ═══════════════════════════════════════════
 
 /** runtime → 一覧に出すアイコン。course.yaml の runtime と対応させる */
+// Node.js には合う絵文字が無いので、ロゴと同じ緑の六角形を描く (大きさは絵文字にそろえる)
+const NODE_ICON = '<svg class="runtime-svg" viewBox="0 0 24 24" aria-hidden="true">' +
+  '<path d="M12 1.8 21 7v10l-9 5.2L3 17V7z" fill="#5fa04e"/>' +
+  '<path d="M12 6.2 16.9 9v6L12 17.8 7.1 15V9z" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85"/></svg>';
+
 const RUNTIME_ICONS = {
-  java: '☕', spring: '🌱', node: '🟩', react: '⚛️',
+  java: '☕', spring: '🌱', node: NODE_ICON, react: '⚛️',
   python: '🐍', static: '🌐', sql: '🗄', shell: '🖥', other: '📦',
 };
 
@@ -978,6 +985,18 @@ function renderExercises() {
     item.addEventListener('click', () => openExercise(course, exercise));
     group.appendChild(item);
   }
+  renderExerciseBadge();
+}
+
+/** コース名の右に、いま開いている演習をバッジで出す (演習一覧をスクロールしても見失わないように) */
+function renderExerciseBadge() {
+  const badge = $('current-exercise-badge');
+  const course = currentCourse();
+  const exercise = (course?.exercises || []).find(e => projectForExercise(course, e)?.name === project);
+  badge.classList.toggle('hidden', !exercise);
+  if (!exercise) { badge.textContent = ''; return; }
+  badge.textContent = exercise.name;
+  badge.title = tf('exerciseBadgeTitle', { name: exercise.lesson ? `${exercise.name}（${exercise.lesson}）` : exercise.name });
 }
 
 /** 講座ごとに開いているチャプター。まだ何も覚えていなければ fallback だけを開く */
@@ -1023,10 +1042,11 @@ async function openExercise(course, exercise, { preferProject = null, prepared =
     await reloadProjects();
     target = projects.find(p => p.name === name);
     if (!target) return;
-  } else if (exercise.openFiles?.length) {
+  } else {
     // 以前に作ったプロジェクトには、あとから雛形に足したファイル (SCHEMA.md など) が無い
-    // 最初に見せるファイルだけは補っておく (自分で書き換えたファイルは上書きしない)
-    await window.api.wsAddMissingFiles(target.name, exercise.openFiles, getLang());
+    // 最初に見せるファイルと、SQL を流す前に使う reset.sql だけは補っておく
+    // (自分で書き換えたファイルは上書きしない。雛形に無いものは何もしない)
+    await window.api.wsAddMissingFiles(target.name, [...(exercise.openFiles || []), SQL_RESET_FILE], getLang());
   }
 
   await selectProject(target.name, { openInitial: exercise.openFiles });
@@ -1131,16 +1151,26 @@ function setRunning(state) {
 function clearRunOutput() {
   $('output-result').textContent = t('outputPlaceholder');
   runLog = '';
+  runOutputFollow = true;
 }
 
 let runLog = '';   // チャットへ渡すための実行ログ (画面表示とは別に保持する)
+
+// 実行結果は末尾を追いかける。スクロールしているのは <pre> ではなく外側の .run-pane
+// 受講者が上へ戻って読んでいるあいだは動かさず、末尾まで戻したらまた追いかける
+let runOutputFollow = true;
+
+function scrollRunOutputToEnd() {
+  const pane = $('tab-result');
+  pane.scrollTop = pane.scrollHeight;
+}
 
 function appendRunOutput(text) {
   const pre = $('output-result');
   if (runLog === '') pre.textContent = '';
   runLog += text;
   pre.textContent += text;
-  pre.scrollTop = pre.scrollHeight;
+  if (runOutputFollow) scrollRunOutputToEnd();
 }
 
 async function runSelected() {
@@ -1237,6 +1267,8 @@ function showRunPane(paneId, { reloadPreview = true } = {}) {
   // 実行ログをチャットに渡すボタンは、実行結果タブでだけ意味がある
 
   if (paneId === 'tab-terminal') startTerminal();
+  // 隠れているあいだに届いた出力のぶん、表示したときに末尾へ合わせる
+  if (paneId === 'tab-result' && runOutputFollow) scrollRunOutputToEnd();
   if (paneId === 'tab-browser' && reloadPreview) fitPreview();
   if (paneId === 'tab-messaging') refreshMessaging();
 }
@@ -1257,14 +1289,13 @@ function renderMessaging() {
       `<span class="messaging-state" data-state="${s.state}">${escapeHtml(t(s.available ? `messaging_${s.state}` : 'runtimeMissing'))}</span></div>` +
       `<code>${escapeHtml(s.endpoint)}</code>` +
       `<div class="messaging-actions">` +
-      `<button class="btn btn-run" data-action="start" ${!idle || !s.available ? 'disabled' : ''}>${escapeHtml(t('messagingStart'))}</button>` +
-      `<button class="btn btn-stop" data-action="stop" ${!['running', 'starting'].includes(s.state) ? 'disabled' : ''}>${escapeHtml(t('messagingStop'))}</button>` +
       `<button class="btn" data-action="reset" ${!idle ? 'disabled' : ''}>${escapeHtml(t('messagingReset'))}</button>` +
       (s.managementUrl ? `<button class="btn" data-action="management" ${s.state !== 'running' ? 'disabled' : ''}>${escapeHtml(t('messagingManagement'))}</button>` : '') +
       '</div>' + (s.managementUrl ? `<small>${escapeHtml(t('messagingCredentials'))}</small>` : '') +
       (s.error ? `<p class="messaging-error">${escapeHtml(s.error)}</p>` : '') + '</div>';
   }).join('');
   renderMessagingLog();
+  renderServiceControls();
 }
 
 function renderMessagingLog() {
@@ -1284,12 +1315,97 @@ async function messagingAction(event) {
   }
   if (action === 'reset' && !await confirmDialog(tf('messagingConfirmReset', { name: id === 'kafka' ? 'Kafka' : 'RabbitMQ' }))) return;
   button.disabled = true;
+  await callMessaging(id, action);
+}
+
+async function callMessaging(id, action) {
   try {
     const call = { start: 'messagingStart', stop: 'messagingStop', reset: 'messagingReset' }[action];
     const result = await window.api[call](id);
     if (!result.ok) await alertDialog(result.error);
   } catch (err) { await alertDialog(err.message); }
   await refreshMessaging();
+}
+
+// ═══════════════════════════════════════════
+//  サーバーの起動・停止 (出力タブの行の右端)
+//
+//  HSQLDB も Kafka / RabbitMQ も customer-hub のような付き添いのプロセスも
+//  「実行」で自動的に起動するので、起動を先に押させない。
+//  ここは手で止めたい・先に起こしておきたいときの口で、演習が使うサーバー
+//  (SQL の実行対象がある / codinable.services.json に書いてある) と、
+//  いま動いているサーバーだけを出す (動いているものは止められるようにしておく)
+// ═══════════════════════════════════════════
+
+const SERVICE_NAMES = { kafka: 'Kafka', rabbitmq: 'RabbitMQ' };
+let companionStates = [];   // [{ id, port, projectDir, state }]
+
+function renderServiceControls() {
+  const live = state => ['running', 'starting', 'stopping'].includes(state);
+  const groups = [];
+
+  const usesSql = (projectInfo?.runnableFiles || []).some(f => f.kind === 'sql');
+  if (usesSql || sqlState !== 'stopped') {
+    groups.push({ id: 'hsqldb', name: t('serviceDb'), title: 'HSQLDB', state: sqlState, available: true });
+  }
+  for (const s of messagingStates) {
+    if (!(projectInfo?.services || []).includes(s.id) && !live(s.state)) continue;
+    groups.push({ id: s.id, name: SERVICE_NAMES[s.id], title: `${SERVICE_NAMES[s.id]} ${s.version || ''}`.trim(),
+                  state: s.state, available: s.available });
+  }
+  const declared = projectInfo?.processes || [];
+  const liveCompanions = companionStates.filter(c => live(c.state));
+  for (const id of new Set([...declared.map(p => p.id), ...liveCompanions.map(c => c.id)])) {
+    const state = companionStates.find(c => c.id === id)?.state || 'stopped';
+    const port = declared.find(p => p.id === id)?.port || companionStates.find(c => c.id === id)?.port;
+    // 宣言していないプロジェクトからは起こせない (止めるだけ)
+    groups.push({ id, kind: 'companion', name: id, title: `${id} :${port}`, state,
+                  available: declared.some(p => p.id === id) || live(state) });
+  }
+
+  $('service-controls').innerHTML = groups.map(g => {
+    const stateText = t(g.available ? `messaging_${g.state}` : 'runtimeMissing');
+    const canStart = g.available && ['stopped', 'error'].includes(g.state);
+    // Kafka / RabbitMQ は起動待ちの途中でも止められる (HSQLDB は起動が一瞬なので待つ)
+    const canStop = g.state === 'running' || (g.state === 'starting' && g.id !== 'hsqldb');
+    return `<span class="service-group" data-service="${g.id}" data-kind="${g.kind || ''}" title="${escapeHtml(`${g.title}: ${stateText}`)}">` +
+      `<span class="service-dot" data-state="${escapeHtml(g.state)}"></span>` +
+      `<button class="btn btn-run" data-action="start" ${canStart ? '' : 'disabled'}>` +
+        `${escapeHtml(tf('serviceStart', { name: g.name }))}</button>` +
+      `<button class="btn btn-stop" data-action="stop" ${canStop ? '' : 'disabled'}>` +
+        `${escapeHtml(tf('serviceStop', { name: g.name }))}</button>` +
+      '</span>';
+  }).join('');
+}
+
+async function serviceAction(event) {
+  const button = event.target.closest('button[data-action]');
+  if (!button || button.disabled) return;
+  const id = button.closest('[data-service]').dataset.service;
+  const action = button.dataset.action;
+  button.disabled = true;
+  if (id === 'hsqldb') {
+    if (action === 'start') await startSql(); else await stopSql();
+    return;
+  }
+  if (button.closest('[data-kind="companion"]')) {
+    const result = action === 'start' ? await window.api.companionStart(project, id) : await window.api.companionStop(id);
+    if (!result.ok) await alertDialog(result.error);
+    return;
+  }
+  await callMessaging(id, action);
+}
+
+// 付き添いのプロセスの出力は、行の頭に [id] を付けて実行結果へ流す
+const companionAtLineStart = {};
+function appendCompanionOutput(id, text) {
+  let out = '';
+  for (const ch of text.split(/(?<=\n)/)) {
+    if (companionAtLineStart[id] !== false) out += `[${id}] `;
+    out += ch;
+    companionAtLineStart[id] = ch.endsWith('\n');
+  }
+  appendRunOutput(out);
 }
 
 // ═══════════════════════════════════════════
@@ -1491,13 +1607,16 @@ function applyCoverageToEditor() {
 //  SQL (HSQLDB インメモリ)
 // ═══════════════════════════════════════════
 
-let sqlRunning = false;
+// stopped / starting / running / stopping (表示はメッセージングと同じ語を使う)
+let sqlState = 'stopped';
+// 演習ごとの初期化 SQL (テーブルを作り直して初期データを入れる)。ファイルを流す前に毎回流す
+const SQL_RESET_FILE = 'reset.sql';
+// いまの DB の中身がどのプロジェクトの reset.sql から始まっているか (null = 分からない)
+let sqlPreparedFor = null;
 
-function setSqlRunning(state) {
-  sqlRunning = state;
-  $('btn-sql-start').disabled = state;
-  $('btn-sql-stop').disabled  = !state;
-  $('btn-sql-run').disabled   = !state;
+function setSqlState(state) {
+  sqlState = state;
+  renderServiceControls();
 }
 
 function setSqlMessage(html, className = 'sql-message') {
@@ -1505,16 +1624,25 @@ function setSqlMessage(html, className = 'sql-message') {
 }
 
 async function startSql() {
+  if (sqlState === 'running') return;
+  sqlPreparedFor = null;
+  setSqlState('starting');
   setSqlMessage(escapeHtml(t('sqlStarting')));
   const res = await window.api.sqlStart('');
-  if (!res.ok) { setSqlMessage(escapeHtml(res.error || ''), 'sql-error'); return; }
-  setSqlRunning(true);
+  if (!res.ok) {
+    setSqlState('stopped');
+    setSqlMessage(escapeHtml(res.error || ''), 'sql-error');
+    return;
+  }
+  setSqlState('running');
   setSqlMessage(escapeHtml(t('sqlStarted')));
 }
 
 async function stopSql() {
+  setSqlState('stopping');
+  sqlPreparedFor = null;
   await window.api.sqlStop();
-  setSqlRunning(false);
+  setSqlState('stopped');
   setSqlMessage(escapeHtml(t('sqlStopped')));
 }
 
@@ -1526,13 +1654,6 @@ function currentSqlText() {
   const range = state.selection.main;
   if (!range.empty) return state.sliceDoc(range.from, range.to);
   return cm.getValue();
-}
-
-async function runSql() {
-  const sql = currentSqlText().trim();
-  if (!sql) { setSqlMessage(escapeHtml(t('sqlNoSql')), 'sql-error'); return; }
-  const res = await window.api.sqlRun(sql);
-  renderSqlResult(res);
 }
 
 /**
@@ -1548,20 +1669,48 @@ async function runSqlFromEditor(relPath) {
   showRunPane('tab-sql');
 
   const entry = relPath ? openFiles.get(relPath) : null;
-  const sql = (relPath && relPath !== activeFile && entry ? entry.cm.getValue()
-                                                          : currentSqlText()).trim();
+  const whole = relPath && relPath !== activeFile && entry;
+  const selected = !whole && !!activeEditor() && !activeEditor().view.state.selection.main.empty;
+  const sql = (whole ? entry.cm.getValue() : currentSqlText()).trim();
   if (!sql) { setSqlMessage(escapeHtml(t('sqlNoSql')), 'sql-error'); return; }
 
-  if (!sqlRunning) {
+  // ファイルを流すときは、その演習の reset.sql で毎回初期状態に戻してから流す
+  // (更新系の SQL を流すたびにデータが変わり、2 回目で主キー違反になる、を起こさない)
+  // 選択範囲だけを流すときは戻さない (1 文ずつ順に試せるように)。ただし別の演習の
+  // 状態が残っているとき (演習を切り替えた直後・DB を起こし直した直後) は戻す
+  const reset = await window.api.wsReadFile(project, SQL_RESET_FILE);
+  const doReset = reset.ok && (!selected || sqlPreparedFor !== project);
+  let note = '';
+  if (doReset) {
+    setSqlState('starting');
+    // 動いていれば PUBLIC スキーマを消して流し直し、止まっていれば起こしてから流す
+    const res = await window.api.sqlStart(reset.content);
+    if (!res.ok) {
+      setSqlState(res.running ? 'running' : 'stopped');
+      sqlPreparedFor = null;
+      setSqlMessage(escapeHtml(tf('sqlResetFailed', { file: SQL_RESET_FILE, error: res.error || '' })), 'sql-error');
+      return;
+    }
+    setSqlState('running');
+    sqlPreparedFor = project;
+    note = tf('sqlResetDone', { file: SQL_RESET_FILE });
+  } else if (sqlState !== 'running') {
     await startSql();
-    if (!sqlRunning) return;   // 起動に失敗した (理由は startSql が出している)
+    if (sqlState !== 'running') return;   // 起動に失敗した (理由は startSql が出している)
   }
-  renderSqlResult(await window.api.sqlRun(sql));
+  renderSqlResult(await window.api.sqlRun(sql), note);
 }
 
-function renderSqlResult(res) {
+function renderSqlResult(res, note = '') {
+  const noteHtml = note ? `<div class="sql-note">${escapeHtml(note)}</div>` : '';
   if (!res || res.error) {
-    setSqlMessage(escapeHtml(res?.error || ''), 'sql-error');
+    // 何文目で止まったかを出す (それより前の文は流れている)
+    const where = res?.statementIndex
+      ? `<div class="sql-error-where">${escapeHtml(tf('sqlErrorAt', { n: res.statementIndex }))}</div>` +
+        `<pre class="sql-error-statement">${escapeHtml(res.statement || '')}</pre>`
+      : '';
+    $('sql-result-wrap').innerHTML = noteHtml +
+      `<div class="sql-error">${where}${escapeHtml(res?.error || '')}</div>`;
     return;
   }
   // SELECT 以外 (INSERT / UPDATE / DDL) は更新件数だけが返る
@@ -1569,7 +1718,7 @@ function renderSqlResult(res) {
     const message = typeof res.affected === 'number' && res.affected >= 0
       ? tf('sqlUpdated', { n: res.affected })
       : t('sqlOk');
-    setSqlMessage(escapeHtml(message));
+    $('sql-result-wrap').innerHTML = noteHtml + `<div class="sql-message">${escapeHtml(message)}</div>`;
     return;
   }
 
@@ -1579,7 +1728,7 @@ function renderSqlResult(res) {
     `<tr>${row.map(cell => `<td>${cell === null || cell === undefined
       ? `<em>${escapeHtml(t('sqlNull'))}</em>` : escapeHtml(cell)}</td>`).join('')}</tr>`).join('');
 
-  $('sql-result-wrap').innerHTML =
+  $('sql-result-wrap').innerHTML = noteHtml +
     `<div class="sql-rowcount">${escapeHtml(tf('sqlRowCount', { n: rows.length }))}</div>` +
     `<div class="sql-table-wrap"><table class="sql-table">` +
       `<thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
@@ -1684,6 +1833,8 @@ async function startTerminal() {
       ...xtermFontFromCss(),
       cursorBlink: true,
       scrollback: 5000,
+      // xterm は自前のスクロールバーを描くので、幅は他の UI と同じ --scrollbar-size にそろえる
+      overviewRuler: { width: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--scrollbar-size'), 10) || 12 },
       theme: xtermThemeFromCss(),
     });
     xtermFit = new window.FitAddon.FitAddon();
@@ -1756,6 +1907,20 @@ function previewUrl(url) {
   const view = $('mini-browser');
   if (previewReady) view.loadURL(url).catch(() => { /* 別の読み込みで上書きされた */ });
   else view.setAttribute('src', url);
+}
+
+/**
+ * 演習が preview にパスを書いていれば、検知した URL のその場所を開く
+ * (/ に何も無いアプリで、プレビューが 404 から始まらないように)
+ */
+function withExercisePreviewPath(url) {
+  const path = exerciseForProject()?.preview;
+  if (!path) return url;
+  try {
+    const u = new URL(url);
+    if (u.pathname !== '/' || u.search) return url;   // アプリ自身が場所を示したときはそちらを使う
+    return u.origin + path;
+  } catch { return url; }
 }
 
 function fitPreview() {
@@ -2404,7 +2569,39 @@ async function openSettings() {
   renderCoursesInfo();
   renderRuntimeInfo();
 
+  // 開くたびに中央へ戻す (前回ドラッグした位置は持ち越さない)
+  $('settings-panel').style.transform = '';
   $('settings-overlay').classList.remove('hidden');
+}
+
+/**
+ * ダイアログを見出しの帯でつかんで動かせるようにする
+ * 位置は translate で持つ (中央寄せのレイアウトはそのまま)。画面の外へは出さない
+ */
+function makeDialogDraggable(panel, handle) {
+  handle.classList.add('dialog-drag-handle');
+  handle.addEventListener('pointerdown', event => {
+    if (event.button !== 0 || event.target.closest('button, input, select, textarea, a')) return;
+    const start = { x: event.clientX, y: event.clientY };
+    const [, tx = 0, ty = 0] = (panel.style.transform.match(/translate\((-?[\d.]+)px, (-?[\d.]+)px\)/) || []).map(Number);
+    const rect = panel.getBoundingClientRect();
+    try { handle.setPointerCapture(event.pointerId); } catch { /* 捕まえられなくてもドラッグはできる */ }
+    const move = ev => {
+      // 見出しの帯が少なくとも 40px は画面に残るようにする
+      const dx = Math.min(Math.max(ev.clientX - start.x, 40 - rect.right), window.innerWidth - 40 - rect.left);
+      const dy = Math.min(Math.max(ev.clientY - start.y, -rect.top), window.innerHeight - 40 - rect.top);
+      panel.style.transform = `translate(${tx + dx}px, ${ty + dy}px)`;
+    };
+    const up = () => {
+      handle.removeEventListener('pointermove', move);
+      handle.removeEventListener('pointerup', up);
+      handle.removeEventListener('pointercancel', up);
+    };
+    handle.addEventListener('pointermove', move);
+    handle.addEventListener('pointerup', up);
+    handle.addEventListener('pointercancel', up);
+    event.preventDefault();
+  });
 }
 
 function closeSettings({ revert = false } = {}) {
@@ -2591,6 +2788,7 @@ function setupResize(handleId, targetId, { axis, invert = false, storageKey, min
 // ═══════════════════════════════════════════
 
 function wireEvents() {
+  makeDialogDraggable($('settings-panel'), document.querySelector('#settings-panel .settings-header'));
   // ── ヘッダー ──
   // コース切り替え。開いているプロジェクトはそのままにして、演習一覧だけ入れ替える
   // (別の講座を見ながら今の作業を続けられるようにするため)
@@ -2651,11 +2849,15 @@ function wireEvents() {
     tab.addEventListener('click', () => showRunPane(tab.dataset.pane)));
 
   // ── SQL ──
-  $('btn-sql-start').addEventListener('click', startSql);
-  $('btn-sql-stop').addEventListener('click', stopSql);
-  $('btn-sql-run').addEventListener('click', runSql);
+  $('service-controls').addEventListener('click', serviceAction);
   $('messaging-services').addEventListener('click', messagingAction);
   $('messaging-log-select').addEventListener('change', renderMessagingLog);
+  // 末尾付近にいれば追いかけ、上へ戻したら止める (隠れているあいだの高さ 0 は判定に使わない)
+  $('tab-result').addEventListener('scroll', () => {
+    const pane = $('tab-result');
+    if (!pane.clientHeight) return;
+    runOutputFollow = pane.scrollHeight - pane.scrollTop - pane.clientHeight < 40;
+  });
 
   // ── プレビュー ──
   const view = $('mini-browser');
@@ -2746,6 +2948,18 @@ function wireIpc() {
     finally { window.api.replyUpdaterDialog(id, 0); }
   });
   window.api.onMessagingStatus(states => { messagingStates = states; renderMessaging(); });
+  window.api.onCompanionStatus(states => {
+    // preview を持つプロセス (React の画面など) が待ち受けを始めたら、プレビューでそこを開く
+    for (const s of states) {
+      const before = companionStates.find(c => c.id === s.id)?.state;
+      if (s.state === 'running' && before !== 'running' && s.preview) {
+        previewUrl(`http://localhost:${s.port}${s.preview}`);
+      }
+    }
+    companionStates = states;
+    renderServiceControls();
+  });
+  window.api.onCompanionLog(({ id, text }) => appendCompanionOutput(id, text));
   window.api.onMessagingLog(({ id, text }) => {
     const state = messagingStates.find(s => s.id === id);
     if (state) state.log = (state.log + text).slice(-64000);
@@ -2757,7 +2971,11 @@ function wireIpc() {
     appendRunOutput(code === 0 ? t('runExitOk') : tf('runExitNg', { code }));
     await refreshPreviewAvailability();
   });
-  window.api.onRunUrl(({ url }) => previewUrl(url));
+  window.api.onRunUrl(({ url }) => {
+    // 一緒に起動した画面 (React など) が先に待ち受けを始めていれば、プレビューはそちらのまま
+    const shown = companionStates.find(c => c.preview && c.state === 'running');
+    previewUrl(shown ? `http://localhost:${shown.port}${shown.preview}` : withExercisePreviewPath(url));
+  });
   window.api.onRunTestResults(data => {
     renderTestResults(data);
     showRunPane('tab-test-results');
@@ -2861,10 +3079,11 @@ async function boot() {
   clearTestResults();
   clearRunOutput();
   setRunning(false);
-  setSqlRunning(false);
   setPreviewAvailable(false);
   wireEvents();
   wireIpc();
+  // タブの行の右端に、動いているサーバーを出すため (演習の実行前でも止められるように)
+  refreshMessaging();
 
   // 演習一覧を先に読む (プロジェクト一覧の描画で「作成済み」の照合に使う)
   await reloadExercises();

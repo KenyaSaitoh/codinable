@@ -51,7 +51,7 @@ const config = require('./config');
 // 演習ごとに使うタブを決める。course.yaml の exercises[].tabs で明示でき、
 // 書かなければ runtime と雛形の中身から決める
 //   tests     … build.gradle がある (Gradle の test の結果を出す場所)
-//   messaging … codinable.services.json がある (Kafka / RabbitMQ を使う)
+//   messaging … codinable.services.json の services がある (Kafka / RabbitMQ を使う)
 // 実行結果 (output) はどの演習でも出す
 const TAB_IDS = ['output', 'tests', 'sql', 'terminal', 'messaging', 'preview'];
 const DEFAULT_TABS = {
@@ -73,7 +73,13 @@ function exerciseTabs(entry, templateDir, runtime) {
     for (const tab of DEFAULT_TABS[runtime] || TAB_IDS) tabs.add(tab);
     const has = name => fs.existsSync(path.join(templateDir, name));
     if (has('build.gradle') || has('build.gradle.kts')) tabs.add('tests');
-    if (has('codinable.services.json')) tabs.add('messaging');
+    // processes (customer-hub など) だけを書いた雛形にはメッセージングのタブを出さない
+    if (has('codinable.services.json')) {
+      try {
+        const { services } = JSON.parse(fs.readFileSync(path.join(templateDir, 'codinable.services.json'), 'utf8'));
+        if (Array.isArray(services) && services.length) tabs.add('messaging');
+      } catch { /* 壊れていれば実行時にエラーとして出る */ }
+    }
   }
   return TAB_IDS.filter(tab => tabs.has(tab));
 }
@@ -439,6 +445,8 @@ function readCourseRoot(root, lang) {
           //   file:<相対パス> / gradle:<タスク> / npm:<スクリプト> / static:<ルート> / java
           // を受け付ける。演習を選んだだけで「実行」が押せる状態にするためのもの
           run:         t.run ? String(t.run) : null,
+          // 実行でサーバーの URL を検知したとき、プレビューで最初に開くパス (/hello など)
+          preview:     typeof t.preview === 'string' && t.preview.startsWith('/') ? t.preview : null,
           name:        pickLang(t.names, lang, dirName),
           description: pickLang(t.descriptions, lang, ''),
           // 演習を開いた直後に開いておくファイル

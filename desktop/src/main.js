@@ -47,6 +47,7 @@ const terminal   = require('./main/terminal');
 const staticSrv  = require('./main/static-server');
 const sqlEngine  = require('./main/sql');
 const messaging  = require('./main/messaging');
+const companions = require('./main/companions');
 const agent      = require('./main/agent');
 const updater    = require('./main/updater');
 const lspServer  = require('./lsp-server');
@@ -156,6 +157,23 @@ for (const action of ['start', 'stop', 'reset']) {
   });
 }
 
+// 付き添いのプロセス (codinable.services.json の processes)
+ipcMain.handle('companion-status', () => companions.getManager().status());
+ipcMain.handle('companion-start', async (_event, { name, id } = {}) => {
+  try {
+    const dir = workspace.resolveProjectDir(name);
+    const def = dir && companions.requirements(dir).find(d => d.id === id);
+    if (!def) return { ok: false, error: 'not-found' };
+    await companions.getManager().stopOthers(dir);
+    await companions.getManager().start(dir, def, config.getUiLang());
+    return { ok: true };
+  } catch (err) { return { ok: false, error: err.message }; }
+});
+ipcMain.handle('companion-stop', async (_event, { id } = {}) => {
+  await companions.getManager().stop(id);
+  return { ok: true };
+});
+
 ipcMain.handle('open-browser', (_event, url) => {
   if (/^https?:\/\//i.test(String(url || ''))) shell.openExternal(url);
   return true;
@@ -235,8 +253,13 @@ ipcMain.handle('ws-add-missing-files', (_event, { name, files, lang } = {}) => {
 ipcMain.handle('ws-project-info', (_event, { name } = {}) => {
   const dir = workspace.resolveProjectDir(name);
   if (!dir || !fs.existsSync(dir)) return { ok: false, error: 'not-found' };
+  // services: 実行前に自動起動するサーバー。画面はそれを起動・停止ボタンとして出す
+  // processes: 実行のたびに一緒に起こすプロセス (customer-hub など)
+  let services = [], processes = [];
+  try { services = messaging.requirements(dir); } catch { /* 書き方の誤りは実行時に出す */ }
+  try { processes = companions.requirements(dir).map(({ id, port }) => ({ id, port })); } catch { /* 同上 */ }
   return { ok: true, name, path: dir, ...workspace.detectProject(dir),
-           ...workspace.readProjectMeta(dir) };
+           ...workspace.readProjectMeta(dir), services, processes };
 });
 
 // チャットへ渡すプロジェクトの中身 (添付操作の代わりに、送信時にまとめて渡す)
@@ -532,6 +555,11 @@ app.whenReady().then(() => {
       if (!win.webContents.isDestroyed()) win.webContents.send(`messaging-${channel}`, payload);
     }
   });
+  for (const channel of ['status', 'log']) companions.getManager().on(channel, payload => {
+    for (const win of BrowserWindow.getAllWindows()) {
+      if (!win.webContents.isDestroyed()) win.webContents.send(`companion-${channel}`, payload);
+    }
+  });
   // ワークスペースが無ければ作っておく (初回起動でファイルツリーが空でも迷わないように)
   try { fs.mkdirSync(config.getWorkspaceRoot(), { recursive: true }); } catch { /* 権限が無い環境では諦める */ }
   createSplash();
@@ -554,6 +582,9 @@ app.on('before-quit', event => {
   sqlEngine.stop();
   staticSrv.stop();
   lspServer.stopAll();
-  messaging.getManager().dispose().catch(err => console.error('[messaging] shutdown:', err))
+  Promise.all([
+    companions.getManager().stopAll().catch(err => console.error('[companions] shutdown:', err)),
+    messaging.getManager().dispose().catch(err => console.error('[messaging] shutdown:', err)),
+  ])
     .finally(() => { cleanupComplete = true; app.quit(); });
 });

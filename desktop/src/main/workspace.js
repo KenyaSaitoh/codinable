@@ -139,12 +139,18 @@ function collectRunnableFiles(projectDir, entries, { hasPackageJson, isStatic, i
   const files = entries.filter(e => !e.dir).map(e => e.path);
   const out   = [];
 
+  // Django のプロジェクトは manage.py が入口。urls.py や views.py は単体で動かすと必ず失敗するので並べない
+  const djangoRoots = files.filter(f => /(^|\/)manage\.py$/.test(f)).map(f => f.slice(0, -'manage.py'.length));
+  const inDjango = relPath => djangoRoots.some(root => relPath.startsWith(root) && !relPath.endsWith('manage.py'));
+
   // .py / .sh / .sql は単体で動かせる
   for (const relPath of files) {
     const lower = relPath.toLowerCase();
+    if (lower.endsWith('.py') && inDjango(relPath)) continue;
     if (lower.endsWith('.py') || lower.endsWith('.sh') || lower.endsWith('.bash')) {
       out.push({ relPath, kind: 'file' });
-    } else if (lower.endsWith('.sql')) {
+    } else if (lower.endsWith('.sql') && lower !== 'reset.sql') {
+      // ルートの reset.sql は SQL を流す前に毎回自動で流す初期化用なので、実行対象に並べない
       out.push({ relPath, kind: 'sql' });
     }
   }

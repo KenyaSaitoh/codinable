@@ -9,23 +9,16 @@
 | 場所 | 中身 | 起動方法 |
 |---|---|---|
 | このフォルダ直下 | Spring Boot（8083） | 実行対象 `gradle:bootRun` で「実行」 |
-| `frontend/` | 専用の React 画面（Vite、5173） | ターミナルで `npm run dev` |
+| `frontend/` | 専用の React 画面（Vite、5173） | 「実行」で一緒に起動 |
 
 ## 動かし方
 
-1. 実行対象 `gradle:bootRun` で「実行」を押し、バックエンドを起動します。
-2. ターミナルで React 画面を起動します。
-
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
-
-3. プレビューの URL 欄に `http://localhost:5173/` を入れて開き、Alice と Bob でそれぞれログインして、できる操作の違いを確かめます。
+1. 実行対象 `gradle:bootRun` で「実行」を押します。バックエンドと React 画面（`frontend/`）が一緒に起動します。`npm install` も必要なときに自動で走ります。
+2. React 画面の用意ができると、プレビューに `http://localhost:5173/` が開きます。Alice と Bob でそれぞれログインして、できる操作の違いを確かめます。
 
 - **ブラウザの入口は `http://localhost:5173` にそろえてください**（Vite の表示は 127.0.0.1 ですが、Cookie によるセッションと許可 Origin が localhost 前提です）。
 - 画面から `/api/security/...` への要求は、Vite（`frontend/vite.config.ts`）が 8083 へ転送します。
+- React 画面の出力は実行結果タブに `[frontend] ` を付けて出ます。「停止」ではバックエンドだけが止まり、React 画面は出力タブの行の右端にある「frontend停止」「frontend起動」で個別に操作します。
 - ターミナルから直接確かめる場合は、例えば `curl -i http://localhost:8083/employees` で 401 が返ります。
 
 ## 主なファイル

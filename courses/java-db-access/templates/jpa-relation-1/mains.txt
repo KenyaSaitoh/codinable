@@ -14,5 +14,5 @@ pro.kensait.jpa.company.main.crud.MapkeyMain
 pro.kensait.jpa.company.main.crud.FetchStrategyMain
 pro.kensait.jpa.company.main.crud.CascadeStrategyMain
 pro.kensait.jpa.company.main.crud.DeleteMain
-# 部署と社員のバージョン: 1 が読んで 20 秒待つ間に 2 が更新する
+# 部署と社員のバージョン: 1 が読んで 20 秒待つ間に 2 が更新する → 1 の更新は OptimisticLockException で失敗する
 pro.kensait.jpa.company.main.lock.CascadeOptimisticLockMain1 & pro.kensait.jpa.company.main.lock.CascadeOptimisticLockMain2

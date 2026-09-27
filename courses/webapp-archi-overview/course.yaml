@@ -46,7 +46,7 @@
 id: webapp-archi-overview
 order: 1
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.1.0
+version: 1.2.0
 
 names:
   ja: Webシステム＋生成AI 技術概要編
@@ -417,11 +417,12 @@ exercises:
 
   # ── チャプター6: SQL ────────────────────────────────
   # sql: は「指定した .sql を HSQLDB へ流す」実行対象
-  # DB が止まっていれば実行時に起こすので、先に「DB起動」を押す必要はない
+  # DB が止まっていれば実行時に起こすので、先に起動しておく必要はない
   # 結果は最後の 1 文だけが出る。1 文だけ流したいときは、その範囲を選択して実行する
   #
-  # どの演習も最初のファイルでテーブルを作り直すので、順番は問わない
-  # データを汚したら、最初のファイルをもう一度流せば元に戻る
+  # 雛形ルートの reset.sql（テーブルの作り直しと初期データ）は、ファイルを流す前に
+  # アプリが毎回自動で流す。どのファイルも何度でも初期データから実行でき、順番も問わない
+  # （範囲を選択して流したときだけは流さない。1 文ずつ順に試せるように）
   - id: sql-basics
     chapter: 6
     lesson: '6.1 データベースとSQLの基本（検索）'
@@ -435,12 +436,12 @@ exercises:
       ja: >-
         講義と同じ EMPLOYEE テーブル（4 件）を作り、SELECT で取り出します。
         主キー検索・射影・比較演算子と、AND / OR / IN / BETWEEN / LIKE / IS NULL の
-        条件の書き方が入っています。01_create.sql を流したあと 02・03 を実行してください。
+        条件の書き方が入っています。どのファイルも実行のたびに初期データから始まります。
       en: >-
         Creates the EMPLOYEE table from the lectures (4 rows) and queries it with SELECT.
         Covers primary-key lookups, projection, comparison operators and the
         AND / OR / IN / BETWEEN / LIKE / IS NULL conditions.
-        Run 01_create.sql first, then 02 and 03.
+        Every file starts from the initial data each time you run it.
     # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
     openFiles:
       - SCHEMA.md
@@ -458,12 +459,12 @@ exercises:
       ja: >-
         登録・更新・削除を実際に実行して、SELECT で結果を確かめます。
         主キー指定と条件指定の違い、WHERE を書き忘れたときに何が起きるかも扱います。
-        元の 4 件に戻したいときは 01_setup.sql をもう一度流してください。
+        実行のたびに元の 4 件から始まるので、何度でも試せます。
       en: >-
         Actually inserts, updates and deletes rows, checking the result with SELECT.
         Covers the difference between targeting by primary key and by condition, and
         what happens when you forget the WHERE clause.
-        Run 01_setup.sql again to get the original 4 rows back.
+        Every run starts again from the original 4 rows, so you can try as often as you like.
     # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
     openFiles:
       - SCHEMA.md

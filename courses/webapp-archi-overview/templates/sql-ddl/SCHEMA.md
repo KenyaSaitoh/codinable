@@ -10,12 +10,13 @@
 
 | 順番 | ファイル | 内容 |
 |---|---|---|
-| 1 | `01_create_table.sql` | PRODUCT を作り、3 件入れる（**最初に 1 回流す**） |
+| 1 | `01_create_table.sql` | PRODUCT を作り、3 件入れる（`reset.sql` と同じ内容） |
 | 2 | `02_constraints.sql` | 制約に反する INSERT。**すべてエラーになる**ので 1 文ずつ選択して実行する |
 | 3 | `03_alter_drop.sql` | カラムの追加・変更・削除（ALTER）と、テーブルの削除（DROP） |
 
 - `02_constraints.sql` をまとめて実行すると最初のエラーで止まります。それも正しい動きです
-- おかしくなったら `01_create_table.sql` を流し直せば元に戻ります
+- どのファイルも、「実行」するたびに `reset.sql` が先に流れて、テーブルが作り直され初期データに戻ります。何度実行しても同じ状態から始まります
+- 範囲を選択して「実行」したときは作り直しません（1 文ずつ順に試せるように）
 
 ## PRODUCT（商品）
 
@@ -31,7 +32,7 @@
 | `RELEASE_DATE` | `DATE` | | 発売日 |
 | `CREATED_AT` | `TIMESTAMP` | NOT NULL, 既定値 現在時刻 | 登録日時 |
 
-### 初期データ（`01_create_table.sql`）
+### 初期データ（`reset.sql`）
 
 | PRODUCT_ID | PRODUCT_NAME | PRODUCT_CODE | PRICE | STOCK | RATING | RELEASE_DATE |
 |---|---|---|---|---|---|---|

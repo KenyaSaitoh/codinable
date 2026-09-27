@@ -4121,7 +4121,7 @@ body.theme-dark .exercise-item.active {
   font-size: calc(var(--editor-font-size) - 2px);
 }
 
-/* ── SQL タブのツールバー ── */
+/* ── メッセージングタブ ── */
 .messaging-hint { margin: 0 0 10px; color: var(--text-muted); }
 #messaging-services { display: flex; flex-wrap: wrap; gap: 12px; }
 .messaging-service { flex: 1 1 230px; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; min-width: 0; }
@@ -4129,21 +4129,29 @@ body.theme-dark .exercise-item.active {
 .messaging-service code { display: block; overflow-wrap: anywhere; user-select: text; }
 .messaging-state[data-state="running"] { color: var(--accent-green, #238636); }
 .messaging-actions { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 6px; }
-.messaging-actions .btn { width: auto; }
+.messaging-actions .btn {
+  width: auto;
+  background: var(--bg-overlay);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+.messaging-actions .btn:not(:disabled):hover { background: var(--bg-hover); filter: none; }
+/* 無効のときも文字が読めるようにする (稼働中は初期化できない、と見て分かるように) */
+.messaging-actions .btn:disabled { opacity: 1; color: var(--text-muted); background: transparent; border-style: dashed; }
 .messaging-error { color: var(--accent-red, #e5534b); overflow-wrap: anywhere; }
 .messaging-log-toolbar { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
 .messaging-log { height: 150px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
 
-.sql-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
-  flex-shrink: 0;
-  border-bottom: 1px solid var(--border-color);
-  background: var(--bg-overlay);
-}
-.sql-hint { font-size: calc(var(--editor-font-size) - 4px); color: var(--text-muted); }
+/* ── 出力タブの行の右端: サーバー (HSQLDB / Kafka / RabbitMQ) の起動・停止 ── */
+.service-controls { margin-left: auto; display: flex; align-items: center; gap: 12px; padding: 3px 0; }
+.service-controls:empty { display: none; }
+.service-group { display: inline-flex; align-items: center; gap: 4px; }
+.service-group .btn { width: auto; min-width: 72px; padding: 2px 8px; font-size: 11px; letter-spacing: 0; }
+.service-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); opacity: 0.5; margin-right: 2px; }
+.service-dot[data-state="running"] { background: var(--accent-green, #238636); opacity: 1; }
+.service-dot[data-state="starting"],
+.service-dot[data-state="stopping"] { background: var(--accent-yellow, #d29922); opacity: 1; }
+.service-dot[data-state="error"] { background: var(--accent-red, #e5534b); opacity: 1; }
 
 /* ── 新規プロジェクトダイアログ ── */
 .template-card {
@@ -4578,3 +4586,50 @@ body.theme-dark .exercise-item.active {
   overflow-wrap: anywhere;
   flex-shrink: 0;
 }
+
+/* ── SQL タブ: 初期化の知らせと、何文目で止まったか ── */
+.sql-note { margin: 0 0 8px; font-size: calc(var(--editor-font-size) - 4px); color: var(--text-muted); }
+.sql-error-where { font-weight: 700; margin-bottom: 4px; }
+.sql-error-statement {
+  margin: 0 0 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: var(--bg-overlay);
+  color: var(--text-main);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+/* ── スクロールバーの幅 (全 UI 共通) ──
+   上の Chatinable 由来の 6px では細すぎてつまみにくいので、その倍にそろえる
+   ターミナル (xterm) は自前で描くので、renderer.js が同じ値を overviewRuler.width に渡す */
+:root { --scrollbar-size: 12px; }
+::-webkit-scrollbar { width: var(--scrollbar-size); height: var(--scrollbar-size); }
+::-webkit-scrollbar-thumb { border-radius: calc(var(--scrollbar-size) / 2); }
+::-webkit-scrollbar-corner { background: transparent; }
+
+/* ── 受講中の講座の帯: いま選んでいる演習 (文字だけ。枠で囲むと押せるように見えるので囲まない) ── */
+.current-exercise-badge {
+  min-width: 0;
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-main);
+  font-size: calc(var(--editor-font-size) - 2px);
+}
+/* コース名との区切り */
+.current-exercise-badge::before { content: '›'; margin: 0 8px 0 2px; color: var(--text-muted); }
+.current-exercise-badge.hidden { display: none; }
+
+/* 演習一覧の種類アイコンのうち、絵文字ではなく SVG で描くもの (Node.js)。絵文字と同じ大きさにする */
+.runtime-svg { width: 1.1em; height: 1.1em; vertical-align: -0.15em; }
+
+/* ── チャット: 吹き出しの幅 ──
+   上の 88% では右 (自分の発言は左) の余白が大きすぎるので、余白を半分にする */
+.chat-bubble { max-width: 94%; }
+
+/* ── ダイアログを見出しの帯でつかんで動かす (makeDialogDraggable) ── */
+.dialog-drag-handle { user-select: none; touch-action: none; }   /* カーソルはふつうの矢印のまま */
+

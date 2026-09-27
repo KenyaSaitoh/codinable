@@ -5,7 +5,7 @@ Spring for GraphQL の Query／Mutation による社員 CRUD です。GET では
 | 場所 | 中身 | 起動方法 |
 |---|---|---|
 | このフォルダ直下 | Spring Boot（8088、`/graphql`・`/graphiql`） | 実行対象 `gradle:bootRun` で「実行」 |
-| `frontend/` | 専用の React 画面（Vite、5173） | ターミナルで `npm run dev` |
+| `frontend/` | 専用の React 画面（Vite、5173） | 「実行」で一緒に起動 |
 
 ## DB について（Codinable での変更点）
 
@@ -15,17 +15,13 @@ Spring for GraphQL の Query／Mutation による社員 CRUD です。GET では
 
 ## 動かし方
 
-1. 実行対象 `gradle:bootRun` で「実行」を押します。
+1. 実行対象 `gradle:bootRun` で「実行」を押します。バックエンドと React 画面（`frontend/`）が一緒に起動します。`npm install` も必要なときに自動で走ります。
 2. プレビューの URL 欄に `http://localhost:8088/graphiql` を入れると、GraphiQL でクエリを対話的に試せます（例: `{ employees { id employeeName department { departmentName } } }`）。
-3. 専用の React 画面を使う場合は、ターミナルで起動し、プレビューの URL 欄に `http://localhost:5173/` を入れます。
-
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
+3. 専用の React 画面を使う場合は、プレビューの URL 欄に `http://localhost:5173/` を入れます（この演習ではプレビューは GraphiQL のまま切り替わりません）。
 
    画面の `/api/graphql/graphql` への要求は、Vite（`frontend/vite.config.ts`）が 8088 の `/graphql` へ転送します。
+
+   React 画面の出力は実行結果タブに `[frontend] ` を付けて出ます。「停止」ではバックエンドだけが止まり、React 画面は出力タブの行の右端にある「frontend停止」「frontend起動」で個別に操作します。
 
 curl の例は `curlメモ.txt` にあります（Windows のコマンドプロンプト向けの書き方です）。Codinable のターミナル（bash）では JSON を単一引用符で囲みます。
 

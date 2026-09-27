@@ -1,4 +1,4 @@
--- 更新（UPDATE）。01_setup.sql を流したあとに実行する
+-- 更新（UPDATE）。実行のたびに元の 4 件から始まる
 --
 -- UPDATE と DELETE は WHERE 句を書き忘れると全件が対象になる
 -- 実務では、同じ WHERE で SELECT して対象を確かめてから実行する
@@ -34,7 +34,7 @@ UPDATE EMPLOYEE SET DEPARTMENT_NAME = '総務部' WHERE DEPARTMENT_NAME IS NULL;
 
 -- ── WHERE を付け忘れるとどうなるか ───────────────────
 -- 次の 1 行の先頭の -- を外して実行すると、全員の月給が同じ値になる
--- 元に戻すには 01_setup.sql をもう一度流す
+-- もう一度このファイルを実行すれば、元の 4 件から始め直せる
 -- UPDATE EMPLOYEE SET SALARY = 1
 
 -- 更新後の状態を確かめる

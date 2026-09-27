@@ -36,6 +36,7 @@ const { decodeOutput, killTree, killPort, walkTree } = require('./util');
 const { resolveProjectDir, detectProject } = require('./workspace');
 const { JACOCO_INIT_SCRIPT, collectTestRunArtifacts } = require('../test-report');
 const messaging = require('./messaging');
+const companions = require('./companions');
 
 const CP_SEP = IS_WIN ? ';' : ':';
 
@@ -536,6 +537,16 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
       await messaging.getManager().ensure(services, () => token !== runToken);
       if (token !== runToken) return { ok: false, error: uiLang === 'en' ? 'Run cancelled' : '実行を停止しました' };
     }
+    // 付き添いのプロセス (customer-hub など) は実行のたびに起こし直す。起動は待たずに本体と並べて進める
+    const target = `${kind}:${kind === 'gradle' || kind === 'npm' ? task : relPath || ''}`;
+    const extras = companions.requirements(projectDir).filter(def => companions.appliesTo(def, target));
+    if (extras.length) {
+      send('run-output', (uiLang === 'en' ? 'Starting: ' : '一緒に起動: ') +
+        extras.map(def => `${def.id} (${def.port})`).join(', ') + '\n');
+    }
+    await companions.getManager().stopOthers(projectDir);
+    companions.getManager().restartFor(projectDir, extras, uiLang)
+      .catch(err => send('run-output', `\n❌ ${err.message}\n`));
   } catch (err) {
     send('run-output', `\n❌ ${err.message}\n`);
     send('run-exit', { code: -1, phase: 'prepare' });

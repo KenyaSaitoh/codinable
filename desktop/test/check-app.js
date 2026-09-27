@@ -5,7 +5,8 @@
 //   2. 静的ページの演習を選ぶと、プロジェクトが作られて実行対象が static: になる
 //   3. 実行するとプレビューが活性になり、止めると非活性に戻る
 //   4. ファイルを汚してから「初期化」で元に戻る
-//   5. SQL の演習を選んで実行すると、SQL タブに結果が出る
+//   5. SQL の演習を選んで実行すると、DB が自動で起動して SQL タブに結果が出る
+//      (DB の起動・停止はタブの行の右端だけにあり、SQL タブに実行ボタンは無い)
 //
 // ワークスペースと設定は一時ディレクトリに向けるので、実際の環境は汚さない
 //
@@ -185,6 +186,11 @@ async function run(cdp) {
   await clickExercise(cdp, 'sql-crud');
   await waitFor(cdp, `document.getElementById('run-target-select').value.startsWith('sql:')`,
                 20000, 'SQL の実行対象が sql: にならない');
+  check(await cdp.eval(`!document.querySelector('#tab-sql button')`), 'SQL タブにボタンが残っている');
+  await waitFor(cdp, `!!document.querySelector('#service-controls [data-service="hsqldb"]')`, 5000,
+                'タブの行の右端に DB の起動・停止が出ない');
+  check(await cdp.eval(`document.querySelector('#service-controls [data-service="hsqldb"] [data-action="stop"]').disabled`),
+        'DB が止まっているのに「DB停止」が押せる');
   await cdp.eval(`document.getElementById('btn-run').click()`);
   await waitFor(cdp, `document.querySelectorAll('#sql-result-wrap table tr').length > 1`, 60000,
                 'SQL を実行しても結果の表が出ない');
@@ -192,6 +198,47 @@ async function run(cdp) {
   check(/EMPLOYEE_NAME/i.test(cols), `SQL の結果の列が想定と違う: ${cols}`);
   const activePane = await cdp.eval(`document.querySelector('.run-pane.active')?.id`);
   check(activePane === 'tab-sql', `SQL 実行後に SQL タブが出ていない: ${activePane}`);
+  check(await cdp.eval(`document.querySelector('#service-controls [data-service="hsqldb"] .service-dot').dataset.state`) === 'running',
+        '実行で DB が起動したことがタブの行に出ない');
+  check(await cdp.eval(`!!document.querySelector('#sql-result-wrap .sql-note')`),
+        'reset.sql で作り直したことが SQL タブに出ない');
+  check(await cdp.eval(`![...document.getElementById('run-target-select').options].some(o => o.value === 'sql:reset.sql')`),
+        'reset.sql が実行対象に並んでいる');
+
+  // 5a. 更新系の SQL を 2 回続けて流しても、毎回初期データから始まるので主キー違反にならない
+  const runSqlTarget = async target => {
+    await cdp.eval(`(() => { const s = document.getElementById('run-target-select'); s.value = ${JSON.stringify(target)};
+                     s.dispatchEvent(new Event('change')); document.getElementById('sql-result-wrap').innerHTML = '';
+                     document.getElementById('btn-run').click(); })()`);
+    await waitFor(cdp, `!!document.querySelector('#sql-result-wrap table, #sql-result-wrap .sql-error, #sql-result-wrap .sql-message')`,
+                  30000, `${target} の結果が出ない`);
+    return cdp.eval(`document.getElementById('sql-result-wrap').textContent`);
+  };
+  for (let i = 1; i <= 2; i++) {
+    const text = await runSqlTarget('sql:02_insert.sql');
+    check(!/violation|エラー/i.test(text), `02_insert.sql の ${i} 回目がエラーになった: ${text.slice(0, 200)}`);
+    check(/10006/.test(text), `02_insert.sql の ${i} 回目に登録した行が出ない`);
+  }
+
+  // 5a'. 途中の文で失敗したら、何文目のどの文かを出す
+  await cdp.eval(`window.api.wsWriteFile(project, 'zz_error.sql', 'SELECT 1 FROM (VALUES (0));\\nINSERT INTO EMPLOYEE VALUES (10001, \\'Dup\\', NULL, 1);\\nSELECT 2 FROM (VALUES (0));\\n')`);
+  await cdp.eval(`refreshProjectInfo()`);
+  await waitFor(cdp, `[...document.getElementById('run-target-select').options].some(o => o.value === 'sql:zz_error.sql')`,
+                10000, '足した SQL が実行対象に出ない');
+  const errText = await runSqlTarget('sql:zz_error.sql');
+  check(/2 文目/.test(errText) && /INSERT INTO EMPLOYEE VALUES \(10001/.test(errText),
+        `失敗した文の位置と中身が出ない: ${errText.slice(0, 300)}`);
+  if (process.env.SHOTS) {
+    fs.writeFileSync(path.join(process.env.SHOTS, 'app-sql-error.png'), Buffer.from(await cdp.screenshot(), 'base64'));
+  }
+
+  await cdp.eval(`document.querySelector('#service-controls [data-service="hsqldb"] [data-action="stop"]').click()`);
+  await waitFor(cdp, `sqlState === 'stopped' && !document.querySelector('#service-controls [data-service="hsqldb"] [data-action="start"]').disabled`,
+                10000, '「DB停止」で DB が止まらない');
+  if (process.env.SHOTS) {
+    fs.mkdirSync(process.env.SHOTS, { recursive: true });
+    fs.writeFileSync(path.join(process.env.SHOTS, 'app-sql-controls.png'), Buffer.from(await cdp.screenshot(), 'base64'));
+  }
 
   // 5b. 以前に作った SQL の演習でも、テーブル構成の SCHEMA.md が補われてビューアで開く
   await clickExercise(cdp, 'sql-join');
@@ -210,6 +257,83 @@ async function run(cdp) {
   await sleep(1500);
   check(await cdp.eval(`!document.querySelector('[id^="run-stdin"]')`), 'シェルの実行中に標準入力の欄が出た');
   await cdp.eval(`document.getElementById('btn-run-stop').disabled || document.getElementById('btn-run-stop').click()`);
+
+  // 5d. 実行結果は画面を超えると末尾を追いかける。上へ戻して読んでいるあいだは動かさない
+  await cdp.eval(`showRunPane('tab-result'); clearRunOutput(); true`);
+  await cdp.eval(`(() => { for (let i = 0; i < 400; i++) appendRunOutput('line ' + i + '\\n'); return true; })()`);
+  await sleep(300);
+  const atEnd = `(() => { const p = document.getElementById('tab-result'); return p.scrollHeight > p.clientHeight && p.scrollHeight - p.scrollTop - p.clientHeight < 5; })()`;
+  check(await cdp.eval(atEnd), '実行結果が画面を超えても末尾までスクロールされない');
+  await cdp.eval(`document.getElementById('tab-result').scrollTop = 0; true`);
+  await sleep(300);
+  await cdp.eval(`appendRunOutput('more\\n'); true`);
+  await sleep(300);
+  check(await cdp.eval(`document.getElementById('tab-result').scrollTop === 0`), '上へ戻して読んでいるのに末尾へ動かされた');
+  await cdp.eval(`(() => { const p = document.getElementById('tab-result'); p.scrollTop = p.scrollHeight; return true; })()`);
+  await sleep(300);
+  await cdp.eval(`(() => { for (let i = 0; i < 50; i++) appendRunOutput('again ' + i + '\\n'); return true; })()`);
+  await sleep(300);
+  check(await cdp.eval(atEnd), '末尾へ戻したあと、また追いかけない');
+
+  // 5e. スクロールバーの幅はすべての UI で共通 (演習一覧・実行結果・チャット・ターミナル)
+  const barWidth = id => cdp.eval(`(() => { const el = document.getElementById(${JSON.stringify(id)});
+    const prev = el.style.overflowY; el.style.overflowY = 'scroll';
+    const w = el.offsetWidth - el.clientWidth - parseFloat(getComputedStyle(el).borderLeftWidth) - parseFloat(getComputedStyle(el).borderRightWidth);
+    el.style.overflowY = prev; return w; })()`);
+  for (const id of ['exercise-list', 'tab-result', 'chat-history']) {
+    const exists = await cdp.eval(`!!document.getElementById(${JSON.stringify(id)})`);
+    if (!check(exists, `スクロールバーの検査対象 #${id} が無い`)) continue;
+    const w = await barWidth(id);
+    check(Math.abs(w - 12) <= 1, `#${id} のスクロールバーの幅が 12px でない: ${w}`);
+  }
+  await cdp.eval(`document.getElementById('run-tab-terminal').click(); true`);
+  await waitFor(cdp, `!!document.querySelector('#xterm-wrap .xterm-scrollable-element > .scrollbar.vertical')`, 15000,
+                'ターミナルのスクロールバーが出ない');
+  const termBar = await cdp.eval(`document.querySelector('#xterm-wrap .xterm-scrollable-element > .scrollbar.vertical').offsetWidth`);
+  check(Math.abs(termBar - 12) <= 1, `ターミナルのスクロールバーの幅が 12px でない: ${termBar}`);
+  await cdp.eval(`showRunPane('tab-result'); true`);
+
+  // 5f. コース名に続けて、選んでいる演習の名前を文字だけで出す (枠で囲まない)
+  await clickExercise(cdp, 'sql-crud');
+  await waitFor(cdp, `projectInfo?.template === 'sql-crud'`, 20000, 'sql-crud が開かない');
+  await waitFor(cdp, `!document.getElementById('current-exercise-badge').classList.contains('hidden')`, 5000, '選んでいる演習の名前が出ない');
+  const badgeText = await cdp.eval(`document.getElementById('current-exercise-badge').textContent`);
+  const exName = await cdp.eval(`currentCourse().exercises.find(e => e.id === 'sql-crud').name`);
+  check(badgeText === exName, `演習名だけになっていない: ${badgeText}`);
+  check(await cdp.eval(`document.getElementById('current-exercise-badge').tagName`) === 'SPAN', '演習名が押せる要素になっている');
+  check(await cdp.eval(`getComputedStyle(document.getElementById('current-exercise-badge')).borderTopStyle`) === 'none', '演習名が枠で囲まれている');
+  if (process.env.SHOTS) {
+    fs.writeFileSync(path.join(process.env.SHOTS, 'app-exercise-badge.png'), Buffer.from(await cdp.screenshot(), 'base64'));
+  }
+
+  // 5g. チャットの吹き出しは幅の 94% まで広がる (右の余白を以前の半分に)
+  check(await cdp.eval(`(() => { const h = document.getElementById('chat-history'); const b = document.createElement('div');
+    b.className = 'chat-msg assistant'; b.innerHTML = '<div class="chat-bubble">' + 'あ'.repeat(400) + '</div>'; h.appendChild(b);
+    const inner = h.clientWidth - parseFloat(getComputedStyle(h).paddingLeft) - parseFloat(getComputedStyle(h).paddingRight);
+    const ratio = b.firstChild.getBoundingClientRect().width / inner; b.remove(); return ratio > 0.93 && ratio < 0.95; })()`),
+        'チャットの吹き出しが幅の 94% まで広がらない');
+
+  // 5h. 設定ダイアログは見出しの帯でつかんで動かせる。開き直すと中央に戻る
+  await cdp.eval(`document.getElementById('btn-settings').click(); true`);
+  await waitFor(cdp, `!document.getElementById('settings-overlay').classList.contains('hidden')`, 5000, '設定が開かない');
+  const dlgBefore = await cdp.eval(`(() => { const r = document.getElementById('settings-panel').getBoundingClientRect(); return [r.left, r.top]; })()`);
+  await cdp.eval(`(() => { const h = document.querySelector('#settings-panel .settings-header'); const r = h.getBoundingClientRect();
+    const x = r.left + 60, y = r.top + 10, o = { bubbles: true, pointerId: 1, button: 0, isPrimary: true };
+    h.dispatchEvent(new PointerEvent('pointerdown', { ...o, clientX: x, clientY: y }));
+    h.dispatchEvent(new PointerEvent('pointermove', { ...o, clientX: x - 150, clientY: y + 40 }));
+    h.dispatchEvent(new PointerEvent('pointerup', { ...o, clientX: x - 150, clientY: y + 40 }));
+    return true; })()`);
+  const dlgAfter = await cdp.eval(`(() => { const r = document.getElementById('settings-panel').getBoundingClientRect(); return [r.left, r.top]; })()`);
+  check(Math.round(dlgAfter[0] - dlgBefore[0]) === -150 && Math.round(dlgAfter[1] - dlgBefore[1]) === 40,
+        `設定ダイアログをドラッグしても動かない: ${dlgBefore} → ${dlgAfter}`);
+  check(await cdp.eval(`!document.getElementById('settings-overlay').classList.contains('hidden')`), 'ドラッグで設定が閉じた');
+  await cdp.eval(`document.getElementById('settings-close').click(); true`);
+  await cdp.eval(`document.getElementById('btn-settings').click(); true`);
+  await waitFor(cdp, `!document.getElementById('settings-overlay').classList.contains('hidden')`, 5000, '設定が開き直せない');
+  const reopened = await cdp.eval(`(() => { const r = document.getElementById('settings-panel').getBoundingClientRect(); return [r.left, r.top]; })()`);
+  check(Math.round(reopened[0]) === Math.round(dlgBefore[0]) && Math.round(reopened[1]) === Math.round(dlgBefore[1]),
+        '開き直しても中央に戻らない');
+  await cdp.eval(`document.getElementById('settings-close').click(); true`);
 
   // 6. チャットの Ask / Agent ラジオボタン
   check(await cdp.eval(`document.querySelectorAll('input[type="radio"][name="chat-mode"]').length`) === 2, 'Ask/Agent のラジオボタンが無い');
@@ -266,22 +390,25 @@ async function run(cdp) {
 async function checkMessaging(cdp) {
   await cdp.eval(`document.getElementById('run-tab-messaging').click()`);
   await waitFor(cdp, `document.querySelectorAll('.messaging-service').length === 2`, 10000, 'Messaging controls missing');
-  check(await cdp.eval(`document.querySelectorAll('.messaging-service button[data-action="start"]:not(:disabled)').length`) === 2,
-    'Bundled brokers not available');
+  check(await cdp.eval(`!document.querySelector('.messaging-service [data-action="start"], .messaging-service [data-action="stop"]')`),
+    'メッセージングタブに起動・停止ボタンが残っている');
+  check(await cdp.eval(`messagingStates.every(s => s.available)`), 'Bundled brokers not available');
   // 講座の演習 (Spring の producer / consumer) は常駐するため、ここでは同梱ブローカーの起動だけを見る
+  // 「実行」の自動起動と同じ口 (main の ensure) ではなく、IPC から直接起こす
   for (const id of ['kafka', 'rabbitmq']) {
-    await cdp.eval(`document.querySelector('[data-service="${id}"] [data-action="start"]').click()`);
-    await waitFor(cdp, `document.querySelector('[data-service="${id}"] .messaging-state').dataset.state === 'running'`, 120000, id + ' start button');
+    await cdp.eval(`window.api.messagingStart('${id}')`);
+    await waitFor(cdp, `document.querySelector('.messaging-service[data-service="${id}"] .messaging-state').dataset.state === 'running'`, 120000, id + ' start');
+    await waitFor(cdp, `!!document.querySelector('#service-controls [data-service="${id}"] [data-action="stop"]:not(:disabled)')`,
+                  5000, id + ' がタブの行の右端に出ない');
   }
   if (process.env.SHOTS) {
     fs.mkdirSync(process.env.SHOTS, { recursive: true });
     fs.writeFileSync(path.join(process.env.SHOTS, 'app-messaging.png'), Buffer.from(await cdp.screenshot(), 'base64'));
   }
-  // 停止 → 再起動のボタンも確かめる
-  await cdp.eval(`document.querySelector('[data-service="rabbitmq"] [data-action="stop"]').click()`);
-  await waitFor(cdp, `document.querySelector('[data-service="rabbitmq"] .messaging-state').dataset.state === 'stopped'`, 30000, 'RabbitMQ stop button');
-  await cdp.eval(`document.querySelector('[data-service="rabbitmq"] [data-action="start"]').click()`);
-  await waitFor(cdp, `document.querySelector('[data-service="rabbitmq"] .messaging-state').dataset.state === 'running'`, 90000, 'RabbitMQ start button');
+  // タブの行の右端の停止ボタン。演習が使わないサーバーは、止まればそこから消える
+  await cdp.eval(`document.querySelector('#service-controls [data-service="rabbitmq"] [data-action="stop"]').click()`);
+  await waitFor(cdp, `document.querySelector('.messaging-service[data-service="rabbitmq"] .messaging-state').dataset.state === 'stopped'`, 30000, 'RabbitMQ stop button');
+  await waitFor(cdp, `!document.querySelector('#service-controls [data-service="rabbitmq"]')`, 5000, '止めた RabbitMQ がタブの行に残っている');
   console.log('Messaging UI and both brokers checked');
 }
 

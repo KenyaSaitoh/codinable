@@ -1,0 +1,6 @@
+{
+  "processes": [
+    {"id": "api", "dir": "api", "run": "gradle:bootRun", "port": 8095, "when": ["gradle:bootRun"]},
+    {"id": "frontend", "dir": "frontend", "run": "npm:dev", "port": 5173, "when": ["gradle:bootRun"], "preview": "/"}
+  ]
+}

@@ -5,7 +5,7 @@
 | 場所 | 中身 | 起動方法 |
 |---|---|---|
 | このフォルダ直下 | プロデューサー（`spring-kafka-producer`、8091） | 実行対象 `gradle:bootRun` で「実行」 |
-| `consumer/` | コンシューマー（`spring-kafka-consumer`、8092） | ターミナルで `../gradlew.bat bootRun` |
+| `consumer/` | コンシューマー（`spring-kafka-consumer`、8092） | 「実行」で一緒に起動 |
 
 ## Kafka について（Codinable での変更点）
 
@@ -17,17 +17,11 @@
 
 ## 動かし方
 
-1. 実行対象 `gradle:bootRun` で「実行」を押し、Kafka とプロデューサーを起動します。
-2. ターミナルでコンシューマーを起動します（プロデューサーとは別のターミナルのまま動かし続けます）。
-
-   ```bash
-   cd consumer
-   ../gradlew.bat bootRun
-   ```
-
-   `../gradlew.bat` は、ルートで一度「実行」を押すと Codinable が作ります。
-
-3. もう 1 つターミナルを開き（または Codinable 外のターミナルで）、イベントを送って受信履歴を確かめます。
+1. 実行対象 `gradle:bootRun` で「実行」を押します。Kafka・プロデューサー・コンシューマー（`consumer/`）が一緒に起動します。
+   - コンシューマーの出力は実行結果タブに `[consumer] ` を付けて出ます。「実行」のたびに起動し直すので、受信履歴は空から始まります。
+   - 「停止」で止まるのはプロデューサーだけです。コンシューマーは、出力タブの行の右端にある「consumer停止」「consumer起動」で個別に止めたり起動したりできます。
+2. コンシューマーの用意ができると、プレビューに受信履歴 `http://localhost:8092/events` が開きます。
+3. ターミナルでイベントを送り、受信履歴を確かめます。
 
    ```bash
    curl -i -X POST http://localhost:8091/events -H 'Content-Type: application/json' \

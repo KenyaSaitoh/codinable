@@ -22,6 +22,8 @@ function requirements(projectDir) {
   if (!fs.existsSync(file)) return [];
   if (fs.statSync(file).size > 4096) throw new Error('codinable.services.json is too large');
   const config = JSON.parse(fs.readFileSync(file, 'utf8'));
+  // processes (付き添いのプロセス) だけを書いたファイルもある
+  if (config.services === undefined) return [];
   if (!Array.isArray(config.services) || config.services.some(id => !IDS.includes(id))) {
     throw new Error('codinable.services.json: services must contain only "kafka" or "rabbitmq"');
   }

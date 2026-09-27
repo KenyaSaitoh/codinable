@@ -5,8 +5,8 @@
 | 場所 | 中身 | 起動方法 |
 |---|---|---|
 | このフォルダ直下 | プロデューサー（`spring-amqp-producer`、8093） | 実行対象 `gradle:bootRun` で「実行」 |
-| `consumer/` | コンシューマー（`spring-amqp-consumer`、8094） | ターミナルで `../gradlew.bat bootRun` |
-| `frontend/` | 専用の React 画面（Vite、5173） | ターミナルで `npm run dev` |
+| `consumer/` | コンシューマー（`spring-amqp-consumer`、8094） | 「実行」で一緒に起動 |
+| `frontend/` | 専用の React 画面（Vite、5173） | 「実行」で一緒に起動 |
 
 ## RabbitMQ について（Codinable での変更点）
 
@@ -17,23 +17,10 @@
 
 ## 動かし方
 
-1. 実行対象 `gradle:bootRun` で「実行」を押し、RabbitMQ とプロデューサーを起動します。
-2. ターミナルでコンシューマーを起動します（動かし続けます）。
-
-   ```bash
-   cd consumer
-   ../gradlew.bat bootRun
-   ```
-
-   `../gradlew.bat` は、ルートで一度「実行」を押すと Codinable が作ります。
-
-3. 別のターミナルで React 画面を起動し、プレビューの URL 欄に `http://localhost:5173/` を入れます。イベントを送信して 202 を確かめ、「受信履歴を取得」を押します。
-
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
+1. 実行対象 `gradle:bootRun` で「実行」を押します。RabbitMQ・プロデューサー・コンシューマー（`consumer/`）・React 画面（`frontend/`）が一緒に起動します。`npm install` も必要なときに自動で走ります。
+   - コンシューマーと React 画面の出力は、実行結果タブに `[consumer] `・`[frontend] ` を付けて出ます。「実行」のたびに起動し直すので、受信履歴は空から始まります。
+   - 「停止」で止まるのはプロデューサーだけです。コンシューマーと React 画面は、出力タブの行の右端にある「consumer停止」「frontend停止」などで個別に止めたり起動したりできます。
+2. React 画面の用意ができると、プレビューに `http://localhost:5173/` が開きます。イベントを送信して 202 を確かめ、「受信履歴を取得」を押します。
 
    画面の `/api/amqp/...` は 8093（プロデューサー）、`/api/amqp-consumer/...` は 8094（コンシューマー）へ Vite が転送します（`frontend/vite.config.ts`）。
 
