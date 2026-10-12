@@ -3,6 +3,8 @@ package pro.kensait.spring.calc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -45,5 +47,29 @@ class CalcServiceTest {
     @DisplayName("0 で割ると例外になる")
     void testDivideByZero() {
         assertThrows(IllegalArgumentException.class, () -> calcService.divide(10.0, 0.0));
+    }
+
+    @Test
+    @DisplayName("計算すると新しい順に履歴が残る")
+    void testHistory() {
+        calcService.add(10.0, 20.0);
+        calcService.multiply(2.0, 3.0);
+        assertEquals(List.of("2.0 × 3.0 = 6.0", "10.0 + 20.0 = 30.0"), calcService.getHistory(10));
+    }
+
+    @Test
+    @DisplayName("履歴は limit 件までに絞れる")
+    void testHistoryLimit() {
+        calcService.add(1.0, 1.0);
+        calcService.add(2.0, 2.0);
+        calcService.add(3.0, 3.0);
+        assertEquals(List.of("3.0 + 3.0 = 6.0", "2.0 + 2.0 = 4.0"), calcService.getHistory(2));
+    }
+
+    @Test
+    @DisplayName("0 除算は履歴に残らない")
+    void testDivideByZeroNotRecorded() {
+        assertThrows(IllegalArgumentException.class, () -> calcService.divide(10.0, 0.0));
+        assertEquals(List.of(), calcService.getHistory(10));
     }
 }

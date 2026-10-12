@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>計算履歴 (Express)</title>
+</head>
+<body>
+  <h2>計算履歴 (Express)</h2>
+  <hr>
+  <!-- <% %> の中は普通の JavaScript なので、for 文でリストの要素ごとに繰り返せる -->
+  <% if (entries.length === 0) { %>
+  <div>履歴はありません</div>
+  <% } else { %>
+  <ul>
+    <% for (const entry of entries) { %>
+    <li><%= entry %></li>
+    <% } %>
+  </ul>
+  <% } %>
+  <hr>
+  <a href="/">戻る</a>
+</body>
+</html>

@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /*
  * リクエストを受け取り、CalcService に計算させ、表示するテンプレートの名前を返す
@@ -76,5 +77,18 @@ public class CalcController {
             return "CalcInputPage";
         }
         return "CalcOutputPage";
+    }
+
+    /*
+     * 計算履歴を表示する
+     *
+     * 計算 (/add など) は履歴というサーバーの状態を変えるので POST、
+     * 履歴の表示は取得するだけで状態を変えないので GET にする
+     * /history?limit=5 のクエリパラメータは @RequestParam で受け取る (省略時は 10)
+     */
+    @GetMapping("/history")
+    public String showHistory(@RequestParam(defaultValue = "10") int limit, Model model) {
+        model.addAttribute("history", calcService.getHistory(limit));
+        return "CalcHistoryPage";
     }
 }

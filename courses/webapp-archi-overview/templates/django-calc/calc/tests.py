@@ -11,6 +11,10 @@ from . import services
 
 
 class CalcServiceTest(SimpleTestCase):
+    def setUp(self):
+        # 履歴はモジュールの変数に溜まるので、テストごとに空にする
+        services._history.clear()
+
     def test_add(self):
         self.assertEqual(services.add(10, 20), 30)
 
@@ -27,8 +31,26 @@ class CalcServiceTest(SimpleTestCase):
         with self.assertRaises(ValueError):
             services.divide(10, 0)
 
+    def test_history_newest_first(self):
+        services.add(10, 20)
+        services.multiply(2, 3)
+        self.assertEqual(services.get_history(10), ["2 × 3 = 6", "10 + 20 = 30"])
+
+    def test_history_limit(self):
+        for n in range(3):
+            services.add(n, n)
+        self.assertEqual(services.get_history(2), ["2 + 2 = 4", "1 + 1 = 2"])
+
+    def test_divide_by_zero_not_recorded(self):
+        with self.assertRaises(ValueError):
+            services.divide(10, 0)
+        self.assertEqual(services.get_history(10), [])
+
 
 class CalcViewTest(SimpleTestCase):
+    def setUp(self):
+        services._history.clear()
+
     def test_index_displays_form(self):
         response = self.client.get(reverse("calc:index"))
         for label in ["足し算", "引き算", "掛け算", "割り算"]:
@@ -55,3 +77,14 @@ class CalcViewTest(SimpleTestCase):
     def test_get_is_not_allowed_for_calculation(self):
         response = self.client.get(reverse("calc:add"))
         self.assertEqual(response.status_code, 405)
+
+    def test_history_shows_newest_first_with_limit(self):
+        self.client.post(reverse("calc:add"), {"param1": "10", "param2": "20"})
+        self.client.post(reverse("calc:multiply"), {"param1": "2", "param2": "3"})
+        response = self.client.get(reverse("calc:history"), {"limit": "1"})
+        self.assertContains(response, "2.0 × 3.0 = 6.0")
+        self.assertNotContains(response, "10.0 + 20.0 = 30.0")
+
+    def test_history_empty_and_invalid_limit(self):
+        response = self.client.get(reverse("calc:history"), {"limit": "abc"})
+        self.assertContains(response, "履歴はありません")

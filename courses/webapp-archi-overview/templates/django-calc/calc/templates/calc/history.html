@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>計算履歴 (Django)</title>
+</head>
+<body>
+  <h2>計算履歴 (Django)</h2>
+  <hr>
+  <!-- for タグはリストの要素ごとに繰り返す。empty はリストが空のときに出る -->
+  <ul>
+    {% for item in history %}
+    <li>{{ item }}</li>
+    {% empty %}
+    <li>履歴はありません</li>
+    {% endfor %}
+  </ul>
+  <hr>
+  <a href="{% url 'calc:index' %}">戻る</a>
+</body>
+</html>

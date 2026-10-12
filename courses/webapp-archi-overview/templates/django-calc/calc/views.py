@@ -13,8 +13,27 @@ from . import services
 from .forms import CalcForm
 
 
+DEFAULT_LIMIT = 10
+
+
 def index(request: HttpRequest) -> HttpResponse:
     return render(request, "calc/input.html", {"form": CalcForm()})
+
+
+def history(request: HttpRequest) -> HttpResponse:
+    """計算履歴を表示する。
+
+    計算 (add など) は履歴というサーバーの状態を変えるので POST、
+    履歴の表示は取得するだけで状態を変えないので GET にする。
+    /history?limit=5 のクエリパラメータは request.GET から取り出す (文字列なので int に変換)。
+    """
+    try:
+        limit = int(request.GET.get("limit", DEFAULT_LIMIT))
+    except ValueError:
+        limit = DEFAULT_LIMIT
+    if limit < 1:
+        limit = DEFAULT_LIMIT
+    return render(request, "calc/history.html", {"history": services.get_history(limit)})
 
 
 @require_POST

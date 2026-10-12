@@ -21,13 +21,31 @@ app.use(express.urlencoded({ extended: false }));
 
 // ── ビジネスロジック ──
 // Express を知らない関数として切り離しておく (Spring MVC 版の CalcService にあたる)
-const calcService = {
+const operations = {
   add:      (param1, param2) => param1 + param2,
   subtract: (param1, param2) => param1 - param2,
   multiply: (param1, param2) => param1 * param2,
   divide:   (param1, param2) => {
     if (param2 === 0) throw new Error('0 で割ることはできません');
     return param1 / param2;
+  },
+};
+const symbols = { add: '+', subtract: '-', multiply: '×', divide: '÷' };
+
+// 計算履歴。メモリ上に持つだけなので、サーバーを再起動すると消え、全利用者で共有される
+// 実際のアプリケーションではデータベースに保存する
+const history = [];
+
+const calcService = {
+  // 計算して、計算式と結果を履歴に追加する
+  calculate(operator, param1, param2) {
+    const result = operations[operator](param1, param2);
+    history.push(`${param1} ${symbols[operator]} ${param2} = ${result}`);
+    return result;
+  },
+  // 新しい順に limit 件までの履歴を返す
+  getHistory(limit) {
+    return history.slice(-limit).reverse();
   },
 };
 
@@ -46,8 +64,17 @@ app.get('/', (req, res) => {
   res.render('input', { form: {}, errors: {}, error: null });
 });
 
+// 計算履歴を表示する
+// 計算 (/add など) は履歴というサーバーの状態を変えるので POST、
+// 履歴の表示は取得するだけで状態を変えないので GET にする
+// /history?limit=5 のクエリパラメータは req.query に入る (文字列なので数値に直す)
+app.get('/history', (req, res) => {
+  const limit = parseInt(req.query.limit, 10);
+  res.render('history', { entries: calcService.getHistory(limit > 0 ? limit : 10) });
+});
+
 // 同じフォームを、押したボタンによって別の URL へ送る (views/input.ejs の formaction)
-for (const operator of Object.keys(calcService)) {
+for (const operator of Object.keys(operations)) {
   app.post(`/${operator}`, (req, res) => {
     const form = { param1: req.body.param1, param2: req.body.param2 };
     const errors = { param1: validate(form.param1), param2: validate(form.param2) };
@@ -61,7 +88,7 @@ for (const operator of Object.keys(calcService)) {
     const param1 = Number(form.param1);
     const param2 = Number(form.param2);
     try {
-      const result = calcService[operator](param1, param2);
+      const result = calcService.calculate(operator, param1, param2);
       res.render('output', { param1, param2, result });
     } catch (err) {
       // 入力形式は正しいが処理として成立しない場合 (業務エラー) は入力画面に戻す

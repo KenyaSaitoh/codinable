@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>計算履歴</title>
+</head>
+<body>
+  <h2>計算履歴</h2>
+  <hr>
+  <!-- th:each は Model のリストの要素ごとに <li> を繰り返し出力する -->
+  <ul th:unless="${#lists.isEmpty(history)}">
+    <li th:each="item : ${history}" th:text="${item}"></li>
+  </ul>
+  <div th:if="${#lists.isEmpty(history)}">履歴はありません</div>
+  <hr>
+  <a th:href="@{/}">戻る</a>
+</body>
+</html>
