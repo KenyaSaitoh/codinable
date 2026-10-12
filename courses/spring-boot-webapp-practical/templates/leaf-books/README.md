@@ -4,49 +4,56 @@ React の画面（`frontend/`）と、JSON を返す Spring Boot の REST API
 （このフォルダ直下、ポート 8080）で動く書店アプリです。
 ログインと顧客登録では、外部 API の Customer Hub（ポート 8081）を呼びます。
 
+## この雛形を使う演習
+
+| 演習 | 主に読むファイル |
+|---|---|
+| SPA版のバックエンドをレイヤで読む（2.1） | `src/main/java/pro/kensait/leafbooks/` の `api/` `service/` `repository/` `entity/` `external/`（例: `api/OrderController.java`） |
+| ReactのSPAで状態の移り変わりを追う（5.1） | `frontend/src/App.tsx`、`frontend/src/contexts/CartContext.tsx`、`frontend/src/pages/OrderConfirmPage.tsx` |
+| REST APIのJWT認証とエラー応答を確かめる（5.1） | `api/AuthController.java`、`security/JwtAuthenticationFilter.java`、`api/OrderController.java`、`api/GlobalExceptionHandler.java` |
+
 ## Codinable での動かし方
 
-動かすプロセスは 3 つです。「実行」で REST API と Customer Hub が起動し、
-React の開発サーバーだけをターミナルから起動します。
+動かすプロセスは 3 つで、ツールバーの **▶ アプリ実行** を押すとまとめて起動します
+（`codinable.services.json` に書いてあります）。
 
-1. **実行対象 `gradle:bootRun` を選んで「実行」** → REST API が `http://localhost:8080` で起動する。
-   ログイン・顧客登録で呼ぶ Customer Hub（`customer-hub/`、ポート 8081）も一緒に起動する
-   （`codinable.services.json` に書いてある。出力には `[customer-hub]` を付けて出る）
+| プロセス | ポート | 出力の目印 |
+|---|---|---|
+| REST API（このフォルダ直下） | 8080 | なし |
+| Customer Hub（`customer-hub/`、ログイン・顧客登録で呼ぶ外部 API） | 8081 | `[customer-hub]` |
+| React の開発サーバー（`frontend/`、`npm run dev`） | 5173 | `[frontend]` |
 
-2. **React の開発サーバーをターミナルで起動する**
-
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
-
-   表示された `http://localhost:5173` をプレビューの URL 欄に入れて開きます。
-   `/api` への要求は Vite が `http://localhost:8080` へ中継します（`vite.config.ts`）。
-
-3. ログイン画面でメールアドレス `alice@gmail.com`、パスワード `password` を入れる
+1. **▶ アプリ実行** を押す。初回は `frontend/` の `npm install` が自動で走るので少し時間がかかる
+2. React の画面が待ち受けを始めると、プレビューが `http://localhost:5173` に移る。
+   `/api` への要求は Vite が `http://localhost:8080` へ中継する（`frontend/vite.config.ts`）
+3. ログイン画面でメールアドレス `alice@gmail.com`、パスワード `password` を入れ、
+   書籍の選択 → カート → 注文確認 → 注文 → 注文履歴と進める
    （bob / carol / dave / ellen も同じパスワード）
+
+Customer Hub と React の画面は「停止」では止まりません。止める・起動し直すときは出力タブの行の右端のボタンを使います。
 
 REST API は `/api/auth/login` 以外は認証が必要です。
 ブラウザで `http://localhost:8080/api/books` を直接開くと 403 になるのはそのためです。
 
-実行対象 `gradle:test` では、Service（Mockito）・Repository（`@DataJpaTest`）・
-CustomerApiClient のテストが走ります。
+## テスト
+
+`src/test/java/pro/kensait/leafbooks/` のテストクラス（Service の Mockito テスト、Repository の `@DataJpaTest`、
+`external/CustomerApiClientTest.java` など）を開いて、エディタの右上の ▶ 実行で流してください。
+例: `repository/StockRepositoryTest.java`、`service/order/OrderServiceTest.java`。
 
 ## curl で API を確かめる
 
 JWT は HttpOnly Cookie（`token`）で、更新系の要求には CSRF トークン
 （Cookie `XSRF-TOKEN` の値をヘッダー `X-XSRF-TOKEN` に）が要ります。
 
-```bash
-curl -s -c cj -b cj -o /dev/null http://localhost:8080/api/books   # XSRF-TOKEN を受け取る（本体は 403）
-X=$(grep XSRF cj | awk '{print $7}')
-curl -s -c cj -b cj -H "Content-Type: application/json" -H "X-XSRF-TOKEN: $X" \
-  -X POST http://localhost:8080/api/auth/login \
-  -d '{"email":"alice@gmail.com","password":"password"}'
-curl -s -b cj http://localhost:8080/api/books
-curl -s -b cj http://localhost:8080/api/orders/history
-```
+▶ アプリ実行で起動したまま、`curl/` のスクリプトを開いて、エディタの右上の ▶ 実行で送ります。
+
+| スクリプト | 確かめること |
+|---|---|
+| `curl/01_before_login.sh` | ログイン前の `/api/books` は 403（XSRF-TOKEN の Cookie だけ受け取る） |
+| `curl/02_login.sh` | XSRF-TOKEN を付けて alice でログインし、JWT の Cookie で `/api/books` と `/api/orders/history` を取得する |
+
+Cookie は一時ファイル（cookie jar）に保存して次の要求へ持ち回り、終わったら消しています。
 
 ## DB
 

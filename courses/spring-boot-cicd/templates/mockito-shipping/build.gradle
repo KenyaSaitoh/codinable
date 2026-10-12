@@ -34,7 +34,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-// 「実行」で固定料金のクライアントとメモリ内保存を使い、3,600 円の注文を 1 件保存する例を出す
+// ▶ アプリ実行で固定料金のクライアントとメモリ内保存を使い、3,600 円の注文を 1 件保存する例を出す
 application {
     mainClass = 'pro.kensait.shipping.ShippingApplication'
 }
@@ -49,7 +49,7 @@ test {
 
 // JDK 21 以降は実行中のエージェント読み込みが制限され、JDK 25 では Mockito が
 // 自分自身をアタッチできずにモックの生成に失敗する。mockito-core を -javaagent で渡しておく
-// （Codinable の「test」も同じ指定を自動で足すが、build やターミナルからの実行でも動くようにする）
+// （Codinable の test も同じ指定を自動で足すが、build など別のタスクから動かしても効くようにする）
 configurations {
     mockitoAgent
 }

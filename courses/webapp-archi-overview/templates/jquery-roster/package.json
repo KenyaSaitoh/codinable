@@ -1,0 +1,14 @@
+{
+  "name": "jquery-roster",
+  "version": "1.0.0",
+  "private": true,
+  "description": "jQuery の名簿管理アプリケーションと、その REST API サーバー",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "jquery": "^3.7.1"
+  }
+}

@@ -11,7 +11,7 @@
 //    - 「run」は起動クラス pro.kensait.course.SampleLauncher を動かす。mains.txt に書いた main を
 //      上から順に実行し、main ごとに sql/hsqldb/*.sql を流して初期データに戻す
 //      （ロックの確認のように 2 つを同時に動かす行は「A & B」と書く）
-//    - 1 つだけ動かすときは、ターミナルで .\gradlew.bat run -PmainClass=完全修飾クラス名
+//    - 1 つだけ動かすときは、その main を開いてエディタの右上の ▶ 実行（run -PmainClass=完全修飾クラス名）
 //  教材の main・エンティティ・Mapper は元のまま
 
 plugins {

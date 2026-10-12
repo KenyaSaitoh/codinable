@@ -10,28 +10,24 @@
 
 ## 動かし方
 
-実行対象 `gradle:bootRun` で「実行」を押し、ターミナルで確かめます（ポート 8080）。
+▶ アプリ実行で起動したまま（ポート 8080）、`curl/` のスクリプトを順に開いて、エディタの右上の ▶ 実行で送ります。
+各スクリプトの先頭のコメントに、期待する結果を書いてあります。
 
-```bash
-curl -i http://localhost:8080/employees/10001
-curl -i http://localhost:8080/actuator/health
-curl -i http://localhost:8080/actuator/info
-curl -i http://localhost:8080/actuator/metrics/employee.get.count
-```
+| スクリプト | 確かめること |
+|---|---|
+| `01_call_api.sh` | 社員 API を呼んでメトリクスを発生させる |
+| `02_health.sh`〜`03_info.sh` | `/actuator/health`・`/actuator/info` |
+| `04_metrics.sh`〜`07_http_server_requests.sh` | メトリクス名の一覧、カスタムカウンター、JVM、HTTP リクエストの統計 |
+| `08_env.sh`〜`09_env_property.sh` | 設定値の一覧と 1 項目 |
+| `10_loggers.sh`〜`11_change_log_level.sh` | ログレベルの一覧と、再起動なしの変更 |
+| `12_mappings.sh`〜`13_beans.sh` | リクエストマッピングと Bean の一覧 |
 
 - `/actuator/health` … `components.database` にカスタムの `DatabaseHealthIndicator` の結果（DB 名と社員件数）が出ます
 - `/actuator/info` … `info.app.*` と `AppInfoContributor` の起動時刻・Java バージョン
 - `/actuator/metrics` … `employee.get.count`（カスタムカウンター）、`http.server.requests`、`jvm.memory.used` など
 - `/actuator/env`・`/actuator/loggers`・`/actuator/mappings`・`/actuator/beans` も公開しています
 
-ログレベルを再起動なしで変更する例:
-
-```bash
-curl -i -X POST http://localhost:8080/actuator/loggers/pro.kensait.spring.employee \
-  -H 'Content-Type: application/json' -d '{"configuredLevel":"DEBUG"}'
-```
-
-その他の確認手順は `curlメモ.txt` にあります（Windows のコマンドプロンプト向けの書き方です。bash では `-d` の JSON を単一引用符で囲みます）。講座にある「HSQLDB サーバーを止めて DOWN（503）を再現する」手順は、インメモリ DB では行えません。
+`05_employee_get_count.sh` を `01_call_api.sh` の前後で送ると、カウンターが増えるのを確かめられます。講座にある「HSQLDB サーバーを止めて DOWN（503）を再現する」手順は、インメモリ DB では行えません。
 
 ## 主なファイル
 

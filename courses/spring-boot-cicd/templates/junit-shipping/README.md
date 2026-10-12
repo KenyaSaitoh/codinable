@@ -15,10 +15,10 @@ Spring も DB も使わない、通常の Java プロジェクトです。
 
 ## Codinable での動かし方
 
-| 実行対象 | 内容 |
+| 操作 | 内容 |
 |---|---|
-| `test`（既定） | `ShippingFeePolicyTest` を実行し、テスト結果にケースごとの成否を表示 |
-| `run` | `ShippingApplication` で GOLD 会員・基本料金4,000円の割引例（3,600円）をコンソールに出す |
+| `ShippingFeePolicyTest.java` を開いて、エディタの右上の ▶ 実行 | テストを流し、テスト結果にケースごとの成否を表示 |
+| ツールバーの ▶ アプリ実行 | `ShippingApplication` で GOLD 会員・基本料金4,000円の割引例（3,600円）をコンソールに出す |
 
 `@ParameterizedTest` の各行（例：`"GOLD, 3334, 3001"`）が別々のテストケースとして結果に並びます。
 `@CsvSource` の期待値や `ShippingFeePolicy` の丸め方を書き換えて、どのケースが失敗するかを確かめてください。

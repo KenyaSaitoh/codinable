@@ -14,30 +14,24 @@
 
 ## Codinable での動かし方
 
-| 実行対象 | 内容 |
+| 操作 | 内容 |
 |---|---|
-| `test`（既定） | Chromium を用意し、アプリをランダムポートで自動起動して9ケースを実行する |
-| `bootRun` | アプリを起動する。プレビューで <http://localhost:8080/employees> を開き、手で操作できる |
+| `EmployeePlaywrightTest.java` を開いて、エディタの右上の ▶ 実行 | Chromium を用意し、アプリをランダムポートで自動起動して9ケースを実行する |
+| ツールバーの ▶ アプリ実行 | アプリを起動する。プレビューで <http://localhost:8080/employees> を開き、手で操作できる |
 
-- **テストのために bootRun しておく必要はありません**。テストが自分でアプリを起動します
-- **初回の test は Chromium のダウンロード（百数十 MB）が走るため時間がかかります**。
+- **テストのために ▶ アプリ実行で起動しておく必要はありません**。テストが自分でアプリを起動します
+- **初回のテストは Chromium のダウンロード（百数十 MB）が走るため時間がかかります**。
   インターネット接続が必要です。2回目以降はすぐ始まります
 - 元のサンプルはこのテスト（`@Tag("e2e")`）を専用タスク `e2eTest` で流していました。
-  Codinable の「test」で走るよう、その設定を `test` に移しています（`build.gradle` のコメント参照）
+  テストクラスの ▶ 実行（test タスク）で走るよう、その設定を `test` に移しています（`build.gradle` のコメント参照）
 
 ## 失敗の調査
 
 `build/reports/playwright/` に、ケースごとの画面（`<テストメソッド名>.png`）と
 Trace（`<テストメソッド名>.zip`）を保存します。成功時も保存されます。
-Trace は、一度「実行」を押して `gradlew.bat` ができた後、ターミナルから開けます。
+Trace は、テストを流した後に `scripts/01_show_trace.sh` を開いて、エディタの右上の ▶ 実行で開けます
+（Playwright の Trace Viewer が開きます。既定は `registersEditsAndDeletesEmployee.zip`。
+別の Trace はスクリプトの `-Ptrace=` の例を参考に書き換えます）。
 
-```bash
-./gradlew.bat showPlaywrightTrace
-./gradlew.bat showPlaywrightTrace -Ptrace=build/reports/playwright/failedEditKeepsStoredValuesAndCanBeCorrected.zip
-```
-
-ブラウザを表示して動きを見たい場合:
-
-```bash
-./gradlew.bat test -Dplaywright.headless=false --rerun-tasks
-```
+ブラウザを表示して動きを見たい場合は、`scripts/02_test_headed.sh` を ▶ 実行します
+（`gradlew.bat test -Dplaywright.headless=false --rerun-tasks`）。

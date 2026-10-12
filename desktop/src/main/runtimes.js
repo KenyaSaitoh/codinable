@@ -111,7 +111,7 @@ function resolvePython() {
   return fs.existsSync(bundled) ? bundled : (IS_WIN ? 'python' : 'python3');
 }
 
-// ── Bash (ターミナル) ──────────────────────────────────────
+// ── Bash (演習のシェルのスクリプト) ──────────────────────────────────────
 
 function resolveBashDir() {
   const bundled = resolveRuntimeDir('bash');
@@ -216,14 +216,6 @@ function getDevEnv(uiLang = null, options = {}) {
   return env;
 }
 
-/** ターミナル用シェル */
-function resolveTerminalShell() {
-  if (!IS_WIN) return { exe: '/bin/bash', args: ['-i'], name: 'bash' };
-  const bash = resolveBash();
-  if (bash) return { exe: bash, args: ['-i'], name: 'bash' };
-  return { exe: 'cmd.exe', args: ['/Q', '/K', 'prompt $G'], name: 'cmd' };
-}
-
 /** 設定パネルに出す同梱ランタイムのバージョン情報 */
 function probeRuntimes(decodeOutput) {
   const { execFile } = require('child_process');
@@ -282,7 +274,6 @@ module.exports = {
   resolveHsqldb,
   resolveGradleWrapperJar,
   getDevEnv,
-  resolveTerminalShell,
   probeRuntimes,
   getJavaRuntimeOptions,
   getJavacRuntimeOptions,

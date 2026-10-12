@@ -12,22 +12,16 @@ RestClient でステータス・JSON・保存後の DB 状態を検証します�
 
 ## Codinable での動かし方
 
-| 実行対象 | 内容 |
+| 操作 | 内容 |
 |---|---|
-| `test`（既定） | アプリと HSQLDB（インメモリ）をテストが自動で起動し、テスト結果を表示 |
-| `bootRun` | API を起動する。プレビューで <http://localhost:8080/> を開くと、API を呼ぶ簡単な画面（`static/index.html`）が出る |
+| `EmployeeApiTest.java` を開いて、エディタの右上の ▶ 実行 | アプリと HSQLDB（インメモリ）をテストが自動で起動し、テスト結果を表示 |
+| ツールバーの ▶ アプリ実行 | API を起動する。プレビューで <http://localhost:8080/> を開くと、API を呼ぶ簡単な画面（`static/index.html`）が出る |
 
 元のサンプルは HSQLDB サーバー（`localhost:9001`）に接続する設定でした。Codinable では
-HSQLDB サーバーを使わず、`bootRun` でもインメモリ（`jdbc:hsqldb:mem:testdb`）で起動し、
+HSQLDB サーバーを使わず、▶ アプリ実行（bootRun）でもインメモリ（`jdbc:hsqldb:mem:testdb`）で起動し、
 `sql/hsqldb/2_EMPLOYEE_DDL.sql` と `3_EMPLOYEE_DML.sql` を流します（`application.yml` のコメント参照）。
-SQL は Codinable の SQL 実行でも中身を確かめられます。
 
-bootRun 中は、ターミナルから API を確かめられます。
-
-```bash
-curl http://localhost:8080/employees
-curl http://localhost:8080/employees/10001
-curl http://localhost:8080/departments
-```
+▶ アプリ実行で起動している間は、`curl/01_employees.sh`・`curl/02_masters.sh` を開いてエディタの右上の ▶ 実行で送ると、
+API の応答を確かめられます（社員の一覧・1 件取得・部署の一覧）。
 
 API の仕様は `swagger.yaml` にあります。

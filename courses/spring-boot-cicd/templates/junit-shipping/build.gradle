@@ -29,7 +29,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-// 「実行」で GOLD 会員 4,000 円の割引例をコンソールに出す
+// ▶ アプリ実行で GOLD 会員 4,000 円の割引例をコンソールに出す
 application {
     mainClass = 'pro.kensait.shipping.ShippingApplication'
 }

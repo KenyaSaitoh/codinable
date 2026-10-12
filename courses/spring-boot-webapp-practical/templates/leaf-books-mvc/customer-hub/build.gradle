@@ -1,5 +1,5 @@
 // Customer Hub（顧客の登録・照会を提供する REST API。ポート 8081）
-// Leaf Books（MVC 版）がログインと顧客登録で呼ぶ連携先。ターミナルから起動する
+// Leaf Books（MVC 版）がログインと顧客登録で呼ぶ連携先。親フォルダの ▶ アプリ実行で一緒に起動する（codinable.services.json）
 // 元はリポジトリ learn_spring_aidd_practical のマルチプロジェクト
 // （ルート build.gradle の subprojects {} と project 固有ブロック）で、
 // それを単独で動く 1 ファイルに畳んだもの

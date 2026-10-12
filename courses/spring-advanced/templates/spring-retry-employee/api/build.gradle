@@ -1,6 +1,6 @@
 // 呼び出し先の確認用 API（基礎編 learn_spring_aidd_basic の rest-employee-restclient-api・8095）
-// ルートのアプリとは別の Gradle プロジェクト。ターミナルで cd api → ../gradlew.bat bootRun で起動し、
-// Ctrl+C で止めて「障害」、もう一度起動して「復旧」を観察する
+// ルートのアプリとは別の Gradle プロジェクト。ルートの ▶ アプリ実行で一緒に起動し（codinable.services.json の processes）、
+// 出力タブの行の右端の「api停止」で止めて「障害」、「api起動」でもう一度起動して「復旧」を観察する
 // 社員データはメモリ内にあり、再起動で初期状態（6 件）に戻る
 // （基礎編ではコンソールクライアントと組にしたテストがあるが、ここでは API 本体だけを置いている）
 

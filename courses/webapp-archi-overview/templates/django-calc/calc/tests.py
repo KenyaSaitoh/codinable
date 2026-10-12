@@ -1,4 +1,4 @@
-"""ターミナルから python manage.py test で実行する。
+"""run_tests.sh (python manage.py test) を開いて、エディタの右上の ▶ 実行で流す。
 
 Spring MVC 版の CalcServiceTest と同じく、まず services を画面抜きで確かめ、
 そのあと View を通したときの振る舞いを確かめる。

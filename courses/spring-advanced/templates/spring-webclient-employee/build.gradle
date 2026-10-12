@@ -1,6 +1,6 @@
 // WebClient の確認用 API（rest-employee-webclient-api・8087）
 // 講座リポジトリでは api/ と client/ が別々のサブプロジェクトになっている。Codinable では
-// このルートが API（実行ボタンで bootRun）、client/ が Java コンソール（ターミナルで run）になる
+// このルートが API（▶ アプリ実行で bootRun）、client/ が Java コンソール（client/run.sh で run）になる
 // 品質ゲート用の Checkstyle / SpotBugs / PIT などは Codinable では使わないので入れていない
 
 plugins {

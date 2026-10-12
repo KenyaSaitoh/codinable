@@ -14,28 +14,37 @@
 
 ## 動かし方
 
-1. 実行対象で `gradle:bootRun` を選び、「実行」を押す
-2. ターミナル（Git Bash）で `client/curlメモ.txt` の curl を送る（`curl.exe` は `curl` に読み替える）
-   - `http://localhost:8080/api` で 3 つの Repository へのリンク
-   - `http://localhost:8080/api/employees?sort=employeeId,asc` で HAL とページ情報
+1. ツールバーの ▶ アプリ実行で起動する
+2. 起動したまま、`curl/` のスクリプトを順に開いて、エディタの右上の ▶ 実行で送る
+   - `01_api_root.sh` … `http://localhost:8080/api` で 3 つの Repository へのリンク
+   - `02_paging.sh`・`03_masters.sh` … HAL の `_embedded`・`_links`・`page`
+   - `04_search.sh`・`05_projection.sh` … `/search` 配下の検索メソッドと Projection
+   - `06_create_employee.sh` … Controller なしの POST（本文は `client/employee-create.json`）
+   - `07_etag.sh` … ETag を If-Match に付けた更新と、古い ETag での 412
+   - `08_not_exposed.sh` … 非公開の検索メソッドは 404、マスターへの書き込みは 405
+
+   PUT・DELETE・304 まで含めた一連の例は `client/requests.http` にある
 
 ### 確認用の画面（client/）を使う場合
 
 `client/src` は API の応答を観察するための補助画面です（npm も外部 CDN も使わない、素の HTML / JavaScript）。
 API は `http://localhost:5500` と `http://127.0.0.1:5500` からのアクセスだけを CORS で許可しているので、
-5500 番で配信します。API を「実行」で起動したまま、ターミナルで次を実行します。
+5500 番で配信します。
 
-```bash
-python -m http.server 5500 --bind 127.0.0.1 --directory client/src
-```
+1. ▶ アプリ実行で API を起動したまま、`client/serve.sh` を開いてエディタの右上の ▶ 実行で配信を始める
+   （`python -m http.server 5500 --bind 127.0.0.1 --directory client/src` がアプリの脇で動き続ける）
+2. プレビューの URL に `http://127.0.0.1:5500` を入れて開く
 
-プレビューの URL に `http://127.0.0.1:5500` を入れて開きます（止めるときはターミナルで Ctrl+C）。
-実行対象の `static:client/src` で配信すると API の実行が止まり、ポートも 5500 にならないので使いません。
+配信は「停止」で止まります。別のスクリプト（`curl/` など）を ▶ 実行したときも止まるので、
+画面を使うときは curl のスクリプトと交互に使わず、必要になったら `client/serve.sh` を動かし直してください。
 
-実行対象を `gradle:test` にすると、`EmployeeDataRestTest` が生成された HTTP API を実 DB 込みで確かめます。
+## テスト
+
+`src/test/java/pro/kensait/spring/employee/EmployeeDataRestTest.java` を開いてエディタの右上の ▶ 実行で流すと、
+生成された HTTP API を実 DB 込みで確かめます。
 
 ## DB について
 
 サンプルは起動時に `--spring.profiles.active=demo` を付けて、インメモリの HSQLDB を使っていました。
-Codinable の「実行」は引数を渡さないので、`application.yml` に `spring.profiles.default: demo` を書き、
+Codinable の ▶ アプリ実行は引数を渡さないので、`application.yml` に `spring.profiles.default: demo` を書き、
 何も指定しなければ demo（起動のたびに初期データへ戻るインメモリ DB）になるようにしてあります。

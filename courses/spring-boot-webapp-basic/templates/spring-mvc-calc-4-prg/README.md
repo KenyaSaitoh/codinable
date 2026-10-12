@@ -8,10 +8,15 @@
 
 ## 動かし方
 
-1. 実行対象で `gradle:bootRun` を選び、「実行」を押す
+1. ツールバーの ▶ アプリ実行で起動する
 2. プレビューで `http://localhost:8080/` を開き、足し算を実行する
 3. URL が `/viewAddResult` に変わっていること、再読み込みしても POST が再送されないことを確かめる
    （フラッシュ属性は 1 回きりなので、再読み込み後は値が消える）
 
 `logback-spring.xml` の設定により、ログはコンソールに加えてプロジェクト直下の
 `spring_mvc_calc_4.log` にも書き出されます。
+
+## 主なファイル
+
+- `src/main/java/pro/kensait/spring/calc/web/CalcController.java` … redirect とフラッシュ属性
+- `src/main/resources/templates/CalcInputPage.html` … th:object と th:errors による再表示

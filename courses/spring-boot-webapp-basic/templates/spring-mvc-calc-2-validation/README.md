@@ -8,8 +8,15 @@
 
 ## 動かし方
 
-1. 実行対象で `gradle:bootRun` を選び、「実行」を押す
+1. ツールバーの ▶ アプリ実行で起動する
 2. プレビューで `http://localhost:8080/` を開く
 3. 空欄・文字・範囲外（例: 2000）を入れて送信し、入力画面にエラーが出ることを確かめる
 
 エラーメッセージの文言は `ValidationMessages.properties` にあります。
+
+## 主なファイル
+
+- `src/main/java/pro/kensait/spring/calc/web/CalcParam.java` … 入力値と検証の制約
+- `src/main/java/pro/kensait/spring/calc/web/CalcController.java` … BindingResult による分岐
+- `src/main/java/pro/kensait/spring/calc/service/CalcService.java` … 計算
+- `src/main/resources/ValidationMessages.properties` … エラーメッセージ

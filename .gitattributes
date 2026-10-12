@@ -1,0 +1,3 @@
+# 演習のシェル (curl/*.sh など) は同梱の bash で動かすので、CRLF にしない
+*.sh   text eol=lf
+*.bash text eol=lf

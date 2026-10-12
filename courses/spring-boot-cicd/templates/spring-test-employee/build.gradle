@@ -50,10 +50,10 @@ tasks.named('bootJar') {
 
 // 元のサンプルは test から @Tag("it") / @Tag("e2e") を除外し、結合テストを
 // 別タスク integrationTest で流していた（第8章の CI もこの分け方を前提にしている）
-// Codinable の「test」ボタンは test タスクの結果だけを表示するため、ここでは除外タグを外し、
+// Codinable はテストクラスを ▶ 実行したとき test タスクの結果だけを表示するため、ここでは除外タグを外し、
 // 単体テスト（EmployeeParamTest / EmployeeServiceTest）・Web スライス（EmployeeControllerWebTest）・
 // @Tag("it") の結合テスト（EmployeeRepositoryTest / EmployeeApplicationIntegrationTest）を
-// 1 回でまとめて流す。タグ自体はソースに残してあるので、分け方はテストクラスで確かめられる
+// どれも test タスクで流せるようにする。タグ自体はソースに残してあるので、分け方はテストクラスで確かめられる
 test {
     useJUnitPlatform()
     testLogging {
@@ -62,7 +62,7 @@ test {
     }
 }
 
-// 原稿・CI と同じ分け方で流したいときに使う（ターミナルから gradlew.bat integrationTest）
+// 原稿・CI と同じ分け方で流したいときに使う（scripts/01_integration_test.sh を ▶ 実行。gradlew.bat integrationTest）
 tasks.register('integrationTest', Test) {
     group = 'verification'
     description = 'Run integration tests tagged with @Tag("it")'
@@ -75,8 +75,8 @@ tasks.register('integrationTest', Test) {
 
 // JDK 21 以降は実行中のエージェント読み込みが制限され、JDK 25 では Mockito が
 // 自分自身をアタッチできずにモックの生成に失敗する。mockito-core を -javaagent で渡しておく
-// （バージョンは Spring Boot の BOM が管理する。Codinable の「test」も同じ指定を自動で足すが、
-//   build やターミナルからの実行でも動くようにする）
+// （バージョンは Spring Boot の BOM が管理する。Codinable の test も同じ指定を自動で足すが、
+//   build やスクリプトからの実行でも動くようにする）
 configurations {
     mockitoAgent
 }

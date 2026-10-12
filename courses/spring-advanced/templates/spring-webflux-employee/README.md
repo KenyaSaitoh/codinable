@@ -4,26 +4,18 @@ Mono／Flux による社員 CRUD と給与範囲検索、`GET /employees/stream`
 
 | 場所 | 中身 | 起動方法 |
 |---|---|---|
-| このフォルダ直下 | Spring Boot（WebFlux、8089） | 実行対象 `gradle:bootRun` で「実行」 |
-| `frontend/` | 専用の React 画面（Vite、5173） | 「実行」で一緒に起動 |
+| このフォルダ直下 | Spring Boot（WebFlux、8089） | ▶ アプリ実行 |
+| `frontend/` | 専用の React 画面（Vite、5173） | ▶ アプリ実行で一緒に起動 |
 
 ## 動かし方
 
-1. 実行対象 `gradle:bootRun` で「実行」を押します。バックエンドと React 画面（`frontend/`）が一緒に起動します。`npm install` も必要なときに自動で走ります。
-2. ターミナルで確かめる場合:
-
-   ```bash
-   curl -i http://localhost:8089/employees/10001
-   curl -i "http://localhost:8089/employees/query_by_salary?lowerSalary=300000&upperSalary=400000"
-   curl -N http://localhost:8089/employees/stream
-   ```
-
-   最後の SSE は 1 秒ごとに `data:` が届き、`complete` イベントで終わります。
+1. ▶ アプリ実行を押します。バックエンドと React 画面（`frontend/`）が一緒に起動します。`npm install` も必要なときに自動で走ります。
+2. curl で確かめる場合は、`curl/` のスクリプトを順に開いて、エディタの右上の ▶ 実行で送ります（アプリは止まりません）。
+   `01_get_employee.sh` 〜 `06_remove_employee.sh` が取得・検索・登録・更新・削除（404 を含む）、
+   `07_stream.sh` が SSE（`curl -N`）です。SSE は 1 秒ごとに `data:` が届き、`complete` イベントで終わります。
 3. React 画面の用意ができると、プレビューに `http://localhost:5173/` が開きます。配信の開始・停止を画面から操作できます。
 
    React 画面の出力は実行結果タブに `[frontend] ` を付けて出ます。「停止」ではバックエンドだけが止まり、React 画面は出力タブの行の右端にある「frontend停止」「frontend起動」で個別に操作します。
-
-curl の例は `curlメモ.txt` にもあります（Windows のコマンドプロンプト向けの書き方です。bash では `-d` の JSON を単一引用符で囲みます）。
 
 ## 主なファイル
 

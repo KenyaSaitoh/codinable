@@ -42,7 +42,7 @@ function debounce(fn, ms) {
 let appInfo     = null;   // get-app-info の結果 (バージョン・モデル一覧・キーの有無)
 let projects    = [];     // ワークスペース直下のプロジェクト一覧
 let project     = null;   // 選択中のプロジェクト名
-let projectInfo = null;   // detectProject の結果 (kinds / gradleTasks / npmScripts / staticRoot)
+let projectInfo = null;   // detectProject の結果 (kinds / staticRoot / runnableFiles / run)
 let courses     = [];     // コースパック (演習一覧と新規コース開始・再開ダイアログで使う)
 // 受講中の講座。選べるのは「新規コース開始・再開」ダイアログだけ (openCourseDialog)
 let activeCourseId = localStorage.getItem('lastCourse') || '';
@@ -81,7 +81,6 @@ function applyTheme(id) {
   document.querySelectorAll('#theme-grid .theme-btn')
     .forEach(b => b.classList.toggle('active', b.dataset.theme === def.id));
   localStorage.setItem('theme', def.id);
-  applyTerminalTheme();
 }
 
 function applyFontSize(size) {
@@ -89,14 +88,12 @@ function applyFontSize(size) {
   $('font-size-display').textContent = `${size}px`;
   forEachEditor(cm => cm.refresh());
   localStorage.setItem('fontSize', size);
-  applyTerminalFont();
 }
 
 function applyFontFamily(family) {
   document.documentElement.style.setProperty('--editor-font-family', family);
   forEachEditor(cm => cm.refresh());
   localStorage.setItem('fontFamily', family);
-  applyTerminalFont();
 }
 
 function applyKeymap(keymap) {
@@ -268,6 +265,7 @@ async function saveFile(relPath) {
   if (res.ok) {
     entry.dirty = false;
     renderTabs();
+    if (relPath === activeFile) updateFileRunButton();
   } else {
     await alertDialog(tf('saveFailed', { error: res.error || '' }));
   }
@@ -308,7 +306,7 @@ async function openFile(relPath, { focus = true } = {}) {
     },
   });
 
-  // Markdown (README や SCHEMA.md) は読むためのものなので、最初はビューアで見せる
+  // Markdown (演習の概要の README.md など) は読むためのものなので、最初はビューアで見せる
   // 「編集」に切り替えれば書き換えられる。どちらで見ているかはタブごとに覚える
   const entry = { host, cm, dirty: false, mode, preview: mode === 'text/markdown' };
   openFiles.set(relPath, entry);
@@ -388,6 +386,7 @@ function closeAllFiles() {
   $('md-preview').classList.add('hidden');
   $('btn-md-preview').classList.add('hidden');
   renderTabs();
+  updateFileRunButton();
 }
 
 function renderTabs() {
@@ -435,6 +434,46 @@ function toggleMdPreview() {
 
 let treeEntries  = [];
 const collapsed  = new Set();   // 折りたたんでいるディレクトリの相対パス
+const treeFlash  = new Set();   // 演習を選んだ直後に目立たせているファイル
+let treeFlashTimer = null;
+
+/**
+ * 演習を選んだとき、その演習で単独に動かすファイルをツリーで 3 秒ほど目立たせる
+ *   - run が sql: / file: の演習 → そのファイル (最初に動かすもの)
+ *   - run が gradle:test の演習 → テストクラス
+ *   - それ以外 → ▶ バッジの付いたファイル (テストクラス・main など)。
+ *     ▶ アプリ実行と同じものになるクラス (@SpringBootApplication) は除く
+ * 折りたたまれたディレクトリの中にあれば開き、最初の 1 つまでスクロールする
+ */
+function flashExerciseFiles(exercise) {
+  const runs = projectInfo?.fileRuns || {};
+  const run  = exercise?.run || '';
+  const app  = runEntries().app;
+  const fromRun = /^(sql|file):/.test(run) ? run.split(/:(.*)/s)[1] : null;
+  const testsFirst = run === projectInfo?.run?.test;
+  const paths = fromRun && runs[fromRun] && runs[fromRun] !== app
+    ? [fromRun]
+    : Object.keys(runs)
+        .filter(p => runs[p] !== app && (!testsFirst || runs[p].startsWith('gradle:test ')))
+        .slice(0, 12);
+  if (!paths.length) return;
+
+  for (const p of paths) {
+    const parts = p.split('/');
+    for (let i = 1; i < parts.length; i++) collapsed.delete(parts.slice(0, i).join('/'));
+  }
+  treeFlash.clear();
+  paths.forEach(p => treeFlash.add(p));
+  renderTree();
+  const first = [...$('file-tree').querySelectorAll('.tree-file.flash')][0];
+  first?.scrollIntoView({ block: 'nearest' });
+
+  clearTimeout(treeFlashTimer);
+  treeFlashTimer = setTimeout(() => {
+    treeFlash.clear();
+    $('file-tree').querySelectorAll('.tree-file.flash').forEach(el => el.classList.remove('flash'));
+  }, 3200);
+}
 
 async function reloadTree() {
   if (!project) { treeEntries = []; renderTree(); return; }
@@ -478,10 +517,15 @@ function renderTree() {
         renderTree();
       });
     } else {
+      // 単独で動かせるファイル (開くとエディタの右上に ▶ 実行が出る) には ▶ のバッジを付ける
+      const runnable = !!projectInfo?.fileRuns?.[entry.path];
       el.className = 'tree-file' + (entry.path === activeFile ? ' current' : '') +
-                     (entry.text ? ' editable' : '');
+                     (entry.text ? ' editable' : '') + (runnable ? ' runnable' : '') +
+                     (treeFlash.has(entry.path) ? ' flash' : '');
+      el.dataset.path = entry.path;
       el.innerHTML = `<span class="tree-icon">${fileTypeIcon(name)}</span>` +
-                     `<span>${escapeHtml(name)}</span>`;
+                     `<span class="tree-name">${escapeHtml(name)}</span>` +
+                     (runnable ? `<span class="tree-run-badge" title="${escapeHtml(t('treeRunBadgeTitle'))}">▶</span>` : '');
       el.addEventListener('click', () => openFile(entry.path));
     }
 
@@ -606,7 +650,6 @@ async function selectProject(name, { openInitial = [] } = {}) {
   }
 
   startLspIfNeeded();
-  restartTerminalIfVisible();
 }
 
 async function refreshProjectInfo() {
@@ -1043,7 +1086,7 @@ async function openExercise(course, exercise, { preferProject = null, prepared =
     target = projects.find(p => p.name === name);
     if (!target) return;
   } else {
-    // 以前に作ったプロジェクトには、あとから雛形に足したファイル (SCHEMA.md など) が無い
+    // 以前に作ったプロジェクトには、あとから雛形に足したファイル (README.md など) が無い
     // 最初に見せるファイルと、SQL を流す前に使う reset.sql だけは補っておく
     // (自分で書き換えたファイルは上書きしない。雛形に無いものは何もしない)
     await window.api.wsAddMissingFiles(target.name, [...(exercise.openFiles || []), SQL_RESET_FILE], getLang());
@@ -1066,85 +1109,124 @@ function uniqueProjectName(base) {
 }
 
 /**
- * 演習が宣言している実行対象を選ぶ。これが「実行環境の自動切り替え」にあたる
+ * 演習が宣言している run を反映する。これが「実行環境の自動切り替え」にあたる
  *
- * course.yaml の run は実行対象セレクトと同じ書式
+ * course.yaml の run は実行対象の書式 ('gradle:test' / 'sql:01_select.sql' …)
+ *   - 🧪 テスト実行の対象と同じ   → 🧪 テスト実行を主役のボタンにする
+ *   - app と同じ種類の gradle: / npm: → ▶ アプリ実行が動かすものをそれに差し替える (gradle:build の演習など)
+ *   - sql: / file:                → 最初に動かすファイル。エディタで開いてタブの右上の ▶ 実行で動かす
  */
 async function applyExerciseRunTarget(exercise) {
+  flashExerciseFiles(exercise);
   if (!exercise.run) return;
   // 実行対象のファイルはここでは開かない。最初に見せるファイルは演習ごとに
   // openFiles で決めてあり (1 つが原則)、ここで開くとそれを押しのけてしまう
-  // 実行対象は 'kind:パス' でファイルを指すので、開いていなくても動かせる
-  selectRunTarget(exercise.run);
-}
-
-/** 実行対象セレクトにその選択肢があれば選ぶ (無ければ触らない) */
-function selectRunTarget(value) {
-  const select = $('run-target-select');
-  if (![...select.options].some(opt => opt.value === value)) return;
-  select.value = value;
-  $('btn-run').disabled = running || !project;
+  // 割り当て自体は runEntries がプロジェクトの演習から読む
+  updateRunTargets();
 }
 
 // ═══════════════════════════════════════════
 //  実行
+//
+//  ツールバーは「▶ アプリ実行」と「🧪 テスト実行」の 2 つだけ。何を動かすかは
+//  プロジェクトの中身から 1 つに決まる (workspace.js の pickRunEntries)。
+//  Gradle のタスクや npm のスクリプトを並べて選ばせると、受講者は何を選べばよいかで迷う
+//  ファイル 1 つ (テストクラス・main・SQL・シェル …) を動かすのは、エディタのタブの
+//  右上の「▶ 実行」。開いているファイルが単独で動かせるときだけ出る (fileRunTarget)
+//  どれで動かしても、実行は 1 本だけで、ログは同じ「実行結果」に流れる
 // ═══════════════════════════════════════════
 
 let running = false;
 
+/** 開いているプロジェクトの演習が course.yaml で宣言している run */
+function plannedRun() {
+  return exerciseForProject(projectInfo)?.run || null;
+}
+
 /**
- * 実行できるものを select に並べる。値は 'kind' または 'kind:引数'
- *
- * 並ぶ内容はプロジェクトの中身だけで決まり、エディタで選んでいるファイルには
- * 依存しない。README を開いているあいだ実行できなくなる、といったことを避ける
- * 先頭に来るものが既定になるので、そのプロジェクトの「本命」から並べる
+ * いまのプロジェクトで「▶ アプリ実行」が動かすものと、演習の主役
+ *   primary: 'app'  … ▶ アプリ実行を塗りつぶす
+ *            'test' … テストが主役 (run が gradle:test)。テストクラスを開いてエディタの ▶ 実行で流す
+ *            'file' … ファイル単位の演習 (run が sql: / file:)
+ * test (テスト全体) はボタンには出さない。e2e の検査が使う
  */
+function runEntries() {
+  const base = projectInfo?.run || { app: null, test: null };
+  const entries = { ...base, primary: 'app' };
+  const planned = plannedRun();
+  if (!planned) return entries;
+  if (planned === base.test) entries.primary = 'test';
+  else if (/^(sql|file):/.test(planned) && planned !== base.app) entries.primary = 'file';
+  else if (/^(gradle|npm):/.test(planned) && base.app?.split(':')[0] === planned.split(':')[0]) {
+    entries.app = planned;
+  }
+  return entries;
+}
+
+/** 実行対象の表示名 (ボタンの title に使う) */
+function runTargetLabel(value) {
+  const [kind, arg = ''] = value.split(/:(.*)/s);
+  if (kind === 'gradle') return tf('runTargetGradle', { task: arg });
+  if (kind === 'npm')    return tf('runTargetNpm', { script: arg });
+  if (kind === 'static') return t('runTargetStatic');
+  if (kind === 'java')   return t('runTargetJava');
+  return arg;
+}
+
+/** ツールバーとエディタの実行ボタンを、いまのプロジェクトと開いているファイルに合わせる */
 function updateRunTargets() {
-  const select = $('run-target-select');
-  const previous = select.value;
-  select.innerHTML = '';
+  updateRunButtons();
+  updateFileRunButton();
+}
 
-  const kinds   = projectInfo?.kinds || [];
-  const options = [];
+function updateRunButtons() {
+  const entries = runEntries();
+  const { app } = entries;
+  const runBtn = $('btn-run');
+  runBtn.disabled = running || !project || !app;
+  runBtn.title    = app ? runTargetLabel(app) : t('runNoApp');
+  // アプリを動かす演習では塗りつぶす。テストやファイル単位の演習では、主役はエディタの ▶ 実行
+  runBtn.classList.toggle('primary', entries.primary === 'app' && !!app);
+  // 自動テストが「▶ アプリ実行が何を動かすか」を読めるようにしておく
+  $('toolbar').dataset.primaryTarget = app || '';
+  $('btn-run-file').disabled = running && !runsBeside(fileRun);
+}
 
-  for (const task of projectInfo?.gradleTasks || []) {
-    options.push([`gradle:${task}`, tf('runTargetGradle', { task })]);
-  }
-  for (const script of projectInfo?.npmScripts || []) {
-    options.push([`npm:${script}`, tf('runTargetNpm', { script })]);
-  }
-  // 静的配信は npm スクリプトが無いときだけ。Vite などは index.html が
-  // あっても dev サーバー越しでないと動かないので、並べると壊れた選択肢になる
-  if (projectInfo?.staticRoot !== null && projectInfo?.staticRoot !== undefined &&
-      !(projectInfo?.npmScripts || []).length) {
-    options.push([`static:${projectInfo.staticRoot}`, t('runTargetStatic')]);
-  }
-  for (const entry of projectInfo?.runnableFiles || []) {
-    // .sql は子プロセスではなく常駐の HSQLDB へ流す (SQL タブに結果が出る)
-    const key = entry.kind === 'sql' ? 'runTargetSql' : 'runTargetFile';
-    options.push([`${entry.kind}:${entry.relPath}`, tf(key, { name: entry.relPath })]);
-  }
-  // main を持つ .java が拾えなかったときの保険 (自動でエントリポイントを探す)
-  if (kinds.includes('java') && !kinds.includes('gradle') &&
-      !(projectInfo?.runnableFiles || []).some(e => e.relPath.endsWith('.java'))) {
-    options.push(['java', t('runTargetJava')]);
-  }
+/**
+ * アプリを止めずに脇で動かす実行対象か (curl/01_get.sh のようなシェルのスクリプト)
+ * ▶ アプリ実行で起こしたアプリへ API を送るためのものなので、アプリが動いていても押せる
+ */
+function runsBeside(target) {
+  return /^file:.+\.(sh|bash)$/i.test(target || '');
+}
 
-  if (!options.length) options.push(['', t('runTargetNone')]);
-  for (const [value, label] of options) {
-    const opt = document.createElement('option');
-    opt.value = value;
-    opt.textContent = label;
-    select.appendChild(opt);
-  }
-  if (options.some(([value]) => value === previous)) select.value = previous;
+// エディタで開いているファイルを単独で動かすときの実行対象 (動かせなければ null)
+let fileRun = null;
 
-  $('btn-run').disabled = !project || !select.value;
+/**
+ * エディタのタブの右上の「▶ 実行」を、開いているファイルに合わせて出し入れする
+ * 中身 (main や @Test の有無) で決まるので、開いたとき・保存したときに問い合わせる
+ */
+async function updateFileRunButton() {
+  const rel = activeFile, proj = project;
+  const target = proj && rel ? await window.api.wsFileRunTarget(proj, rel) : null;
+  if (rel !== activeFile || proj !== project) return;   // 問い合わせ中に切り替わった
+  fileRun = target;
+  if (projectInfo?.fileRuns && (projectInfo.fileRuns[rel] || null) !== target) {
+    if (target) projectInfo.fileRuns[rel] = target;
+    else delete projectInfo.fileRuns[rel];
+    renderTree();
+  }
+  const btn = $('btn-run-file');
+  btn.classList.toggle('hidden', !target);
+  btn.disabled = running && !runsBeside(target);
+  btn.title = target ? tf('runFileTitle', { name: rel.split('/').pop() }) : '';
+  btn.dataset.target = target || '';
 }
 
 function setRunning(state) {
   running = state;
-  $('btn-run').disabled      = state || !project || !$('run-target-select').value;
+  updateRunButtons();
   $('btn-run-stop').disabled = !state;
 }
 
@@ -1173,9 +1255,19 @@ function appendRunOutput(text) {
   if (runOutputFollow) scrollRunOutputToEnd();
 }
 
-async function runSelected() {
+/** ▶ アプリ実行 */
+function runApp() { return runTarget(runEntries().app); }
+
+/** エディタの ▶ 実行 (開いているファイルだけ) */
+function runActiveFile() { return runTarget(fileRun); }
+
+/** Ctrl+Enter: 開いているファイルが動かせればそれ、無ければ ▶ アプリ実行 */
+function runShortcut() {
+  return fileRun ? runActiveFile() : runApp();
+}
+
+async function runTarget(value) {
   if (!project) { await alertDialog(t('runNoProject')); return; }
-  const value = $('run-target-select').value;
   if (!value) { await alertDialog(t('runNoTarget')); return; }
 
   const [kind, arg = ''] = value.split(/:(.*)/s);
@@ -1190,6 +1282,22 @@ async function runSelected() {
   // 保存していない内容で動かして混乱しないよう、先に全部書き出す
   for (const relPath of openFiles.keys()) await saveFile(relPath);
 
+  // アプリが動いているあいだのシェル (curl のスクリプト) は、アプリを止めずに脇で動かす
+  // 出力はアプリのログに続けて同じ「実行結果」に流す
+  if (running && runsBeside(value)) {
+    showRunPane('tab-result');
+    appendRunOutput(`
+${tf('runSideStart', { name: arg })}
+`);
+    const side = await window.api.runSide({ project, relPath: arg });
+    if (!side.ok) appendRunOutput(`
+${tf('runFailed', { error: side.error || '' })}
+`);
+    return;
+  }
+
+  // どのボタンで動かしても、ログは同じ「実行結果」に流す
+  // テストのときはメソッド単位の結果をテスト結果タブにも出す
   showRunPane('tab-result');
   clearRunOutput();
   if (kind === 'gradle' && arg.split(/\s+/).includes('test')) renderTestResultsRunning();
@@ -1209,17 +1317,15 @@ async function runSelected() {
   setRunning(true);
 }
 
-/** ツリーの右クリックから直接ファイルを実行する */
+/** ツリーの右クリックから直接ファイルを実行する (開いてからエディタの ▶ 実行と同じものを動かす) */
 async function runFile(relPath) {
   await openFile(relPath);
-  // 実行対象に無いファイル (実行できないもの) なら選択は変えずに何もしない
-  const value = /\.sql$/i.test(relPath) ? `sql:${relPath}` : `file:${relPath}`;
-  selectRunTarget(value);
-  if ($('run-target-select').value !== value) {
+  const target = await window.api.wsFileRunTarget(project, relPath);
+  if (!target) {
     await alertDialog(tf('runNotRunnable', { name: relPath }));
     return;
   }
-  await runSelected();
+  await runTarget(target);
 }
 
 async function stopRun() {
@@ -1242,7 +1348,7 @@ async function stopRun() {
 
 const RUN_TAB_IDS = {
   output: 'run-tab-output', tests: 'run-tab-tests', sql: 'run-tab-sql',
-  terminal: 'run-tab-terminal', messaging: 'run-tab-messaging', preview: 'run-tab-browser',
+  messaging: 'run-tab-messaging', preview: 'run-tab-browser',
 };
 
 function applyExerciseTabs(exercise) {
@@ -1266,7 +1372,6 @@ function showRunPane(paneId, { reloadPreview = true } = {}) {
     pane.classList.toggle('active', pane.id === paneId));
   // 実行ログをチャットに渡すボタンは、実行結果タブでだけ意味がある
 
-  if (paneId === 'tab-terminal') startTerminal();
   // 隠れているあいだに届いた出力のぶん、表示したときに末尾へ合わせる
   if (paneId === 'tab-result' && runOutputFollow) scrollRunOutputToEnd();
   if (paneId === 'tab-browser' && reloadPreview) fitPreview();
@@ -1368,13 +1473,14 @@ function renderServiceControls() {
     const canStart = g.available && ['stopped', 'error'].includes(g.state);
     // Kafka / RabbitMQ は起動待ちの途中でも止められる (HSQLDB は起動が一瞬なので待つ)
     const canStop = g.state === 'running' || (g.state === 'starting' && g.id !== 'hsqldb');
-    return `<span class="service-group" data-service="${g.id}" data-kind="${g.kind || ''}" title="${escapeHtml(`${g.title}: ${stateText}`)}">` +
-      `<span class="service-dot" data-state="${escapeHtml(g.state)}"></span>` +
+    // 出力欄の右の縦の列に「● 名前」と、その下に起動・停止を積む
+    return `<div class="service-group" data-service="${g.id}" data-kind="${g.kind || ''}" title="${escapeHtml(`${g.title}: ${stateText}`)}">` +
+      `<div class="service-name"><span class="service-dot" data-state="${escapeHtml(g.state)}"></span>${escapeHtml(g.name)}</div>` +
       `<button class="btn btn-run" data-action="start" ${canStart ? '' : 'disabled'}>` +
         `${escapeHtml(tf('serviceStart', { name: g.name }))}</button>` +
       `<button class="btn btn-stop" data-action="stop" ${canStop ? '' : 'disabled'}>` +
         `${escapeHtml(tf('serviceStop', { name: g.name }))}</button>` +
-      '</span>';
+      '</div>';
   }).join('');
 }
 
@@ -1732,133 +1838,6 @@ function renderSqlResult(res, note = '') {
     `<div class="sql-rowcount">${escapeHtml(tf('sqlRowCount', { n: rows.length }))}</div>` +
     `<div class="sql-table-wrap"><table class="sql-table">` +
       `<thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
-}
-
-// ═══════════════════════════════════════════
-//  ターミナル (node-pty + xterm.js)
-// ═══════════════════════════════════════════
-
-// ANSI 16 色はテーマごとに持つ (元になった VS Code テーマの terminal.ansi* と同じ値)
-const XTERM_PALETTES = {
-  'github-light': {
-    black: '#24292f', red: '#cf222e', green: '#116329', yellow: '#4d2d00', blue: '#0969da',
-    magenta: '#8250df', cyan: '#1b7c83', white: '#6e7781', brightBlack: '#57606a',
-    brightRed: '#a40e26', brightGreen: '#1a7f37', brightYellow: '#633c01',
-    brightBlue: '#218bff', brightMagenta: '#a475f9', brightCyan: '#3192aa', brightWhite: '#8c959f',
-  },
-  'github-dark': {
-    black: '#484f58', red: '#ff7b72', green: '#3fb950', yellow: '#d29922', blue: '#58a6ff',
-    magenta: '#bc8cff', cyan: '#39c5cf', white: '#b1bac4', brightBlack: '#6e7681',
-    brightRed: '#ffa198', brightGreen: '#56d364', brightYellow: '#e3b341',
-    brightBlue: '#79c0ff', brightMagenta: '#d2a8ff', brightCyan: '#56d4dd', brightWhite: '#f0f6fc',
-  },
-  'one-dark-pro': {
-    black: '#3f4451', red: '#e05561', green: '#8cc265', yellow: '#d18f52', blue: '#4aa5f0',
-    magenta: '#c162de', cyan: '#42b3c2', white: '#d7dae0', brightBlack: '#4f5666',
-    brightRed: '#ff616e', brightGreen: '#a5e075', brightYellow: '#f0a45d',
-    brightBlue: '#4dc4ff', brightMagenta: '#de73ff', brightCyan: '#4cd1e0', brightWhite: '#e6e6e6',
-  },
-  'tokyo-night': {
-    black: '#15161e', red: '#f7768e', green: '#9ece6a', yellow: '#e0af68', blue: '#7aa2f7',
-    magenta: '#bb9af7', cyan: '#7dcfff', white: '#a9b1d6', brightBlack: '#414868',
-    brightRed: '#f7768e', brightGreen: '#9ece6a', brightYellow: '#e0af68',
-    brightBlue: '#7aa2f7', brightMagenta: '#bb9af7', brightCyan: '#7dcfff', brightWhite: '#c0caf5',
-  },
-  dracula: {
-    black: '#21222c', red: '#ff5555', green: '#50fa7b', yellow: '#f1fa8c', blue: '#bd93f9',
-    magenta: '#ff79c6', cyan: '#8be9fd', white: '#f8f8f2', brightBlack: '#6272a4',
-    brightRed: '#ff6e6e', brightGreen: '#69ff94', brightYellow: '#ffffa5',
-    brightBlue: '#d6acff', brightMagenta: '#ff92df', brightCyan: '#a4ffff', brightWhite: '#ffffff',
-  },
-  'solarized-light': {
-    black: '#073642', red: '#dc322f', green: '#859900', yellow: '#b58900', blue: '#268bd2',
-    magenta: '#d33682', cyan: '#2aa198', white: '#eee8d5', brightBlack: '#002b36',
-    brightRed: '#cb4b16', brightGreen: '#586e75', brightYellow: '#657b83',
-    brightBlue: '#839496', brightMagenta: '#6c71c4', brightCyan: '#93a1a1', brightWhite: '#fdf6e3',
-  },
-};
-
-let xterm    = null;
-let xtermFit = null;
-
-function xtermThemeFromCss() {
-  // テーマの CSS 変数は body[data-theme] に定義されているので body から読む
-  const style = getComputedStyle(document.body);
-  const read = name => style.getPropertyValue(name).trim();
-  const bg = read('--bg-base')  || '#0d1117';
-  const fg = read('--text-main') || '#e6edf3';
-  const def = resolveTheme(document.body.dataset.theme);
-  return {
-    background: bg, foreground: fg, cursor: fg, cursorAccent: bg,
-    selectionBackground: `${read('--accent-blue') || '#2f81f7'}55`,
-    ...(XTERM_PALETTES[def.id] || XTERM_PALETTES[def.dark ? 'github-dark' : 'github-light']),
-  };
-}
-
-function xtermFontFromCss() {
-  const style = getComputedStyle(document.documentElement);
-  const size  = parseFloat(style.getPropertyValue('--editor-font-size'));
-  return {
-    fontFamily: style.getPropertyValue('--editor-font-family').trim() ||
-                "'JetBrains Mono', Consolas, monospace",
-    fontSize:   Number.isFinite(size) && size > 0 ? size : 13,
-  };
-}
-
-function applyTerminalTheme() {
-  if (xterm) xterm.options.theme = xtermThemeFromCss();
-}
-
-function applyTerminalFont() {
-  if (!xterm) return;
-  const font = xtermFontFromCss();
-  xterm.options.fontFamily = font.fontFamily;
-  xterm.options.fontSize   = font.fontSize;
-  fitTerminal();
-}
-
-function fitTerminal() {
-  if (!xtermFit) return;
-  try { xtermFit.fit(); } catch { /* 表示されていないときは測れない */ }
-}
-
-async function startTerminal() {
-  if (!project) {
-    if (xterm) xterm.write(t('termNoProject'));
-    return;
-  }
-  if (!xterm) {
-    if (!window.Terminal) return;
-    xterm = new window.Terminal({
-      ...xtermFontFromCss(),
-      cursorBlink: true,
-      scrollback: 5000,
-      // xterm は自前のスクロールバーを描くので、幅は他の UI と同じ --scrollbar-size にそろえる
-      overviewRuler: { width: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--scrollbar-size'), 10) || 12 },
-      theme: xtermThemeFromCss(),
-    });
-    xtermFit = new window.FitAddon.FitAddon();
-    xterm.loadAddon(xtermFit);
-    xterm.open($('xterm-wrap'));
-    // キー入力はそのまま PTY へ渡す (Ctrl+C も SIGINT として届く)
-    xterm.onData(data => window.api.termInput(data));
-    xterm.onResize(({ cols, rows }) => window.api.termResize({ cols, rows }));
-    if (window.ResizeObserver) {
-      const refit = debounce(() => fitTerminal(), 80);
-      new ResizeObserver(refit).observe($('xterm-wrap'));
-    }
-  }
-
-  fitTerminal();
-  await window.api.termStart({ cols: xterm.cols, rows: xterm.rows, project });
-}
-
-/** プロジェクトを切り替えたとき、ターミナルタブを見ていれば開き直す */
-function restartTerminalIfVisible() {
-  if (!xterm) return;
-  xterm.clear();
-  if ($('tab-terminal').classList.contains('active')) startTerminal();
-  else window.api.termStop();
 }
 
 // ═══════════════════════════════════════════
@@ -2770,7 +2749,6 @@ function setupResize(handleId, targetId, { axis, invert = false, storageKey, min
     handle.classList.remove('dragging');
     document.removeEventListener('mousemove', onMove);
     document.removeEventListener('mouseup', onUp);
-    fitTerminal();
     forEachEditor(cm => cm.refresh());
   };
 
@@ -2841,11 +2819,9 @@ function wireEvents() {
   $('btn-md-preview').addEventListener('click', toggleMdPreview);
 
   // ── 実行 ──
-  $('btn-run').addEventListener('click', runSelected);
+  $('btn-run').addEventListener('click', runApp);
+  $('btn-run-file').addEventListener('click', runActiveFile);
   $('btn-run-stop').addEventListener('click', stopRun);
-  $('run-target-select').addEventListener('change', () => {
-    $('btn-run').disabled = running || !project || !$('run-target-select').value;
-  });
   document.querySelectorAll('.run-tab').forEach(tab =>
     tab.addEventListener('click', () => showRunPane(tab.dataset.pane)));
 
@@ -2916,11 +2892,10 @@ function wireEvents() {
     }
     if ((ev.ctrlKey || ev.metaKey) && ev.key === 'Enter') {
       ev.preventDefault();
-      if (!running) runSelected();
+      if (!running) runShortcut();
     }
   });
 
-  window.addEventListener('resize', debounce(() => fitTerminal(), 120));
   // 閉じるときに書き損じないよう、未保存の変更を同期的に投げておく
   window.addEventListener('beforeunload', () => {
     for (const [relPath, entry] of openFiles) {
@@ -2972,6 +2947,9 @@ function wireIpc() {
     appendRunOutput(code === 0 ? t('runExitOk') : tf('runExitNg', { code }));
     await refreshPreviewAvailability();
   });
+  window.api.onRunSideExit(({ code }) => {
+    appendRunOutput(code === 0 ? t('runSideExitOk') : tf('runSideExitNg', { code }));
+  });
   window.api.onRunUrl(({ url }) => {
     // 一緒に起動した画面 (React など) が先に待ち受けを始めていれば、プレビューはそちらのまま
     const shown = companionStates.find(c => c.preview && c.state === 'running');
@@ -2982,8 +2960,6 @@ function wireIpc() {
     showRunPane('tab-test-results');
   });
 
-  window.api.onTermOutput(data => xterm?.write(data));
-  window.api.onTermExit(({ code }) => xterm?.write(tf('termExited', { code })));
 
   window.api.onChatStart(() => { /* 吹き出しは送信時に用意してある */ });
   window.api.onChatChunk(text => {

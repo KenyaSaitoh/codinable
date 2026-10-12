@@ -41,9 +41,13 @@ function killPort(port) {
       if (err || !stdout.trim()) return resolve([]);
       const pids = new Set();
       for (const line of stdout.trim().split('\n')) {
+        // Proto / ローカル / 外部 / 状態 / PID。findstr は外部アドレスのポートにも当たるので、
+        // ローカルのポートが一致するもの (= その番号で待ち受けている側) だけを止める
+        // (そのポートへ繋いでいるだけのプロセス、たとえばプレビューの通信まで落とさない)
         const parts = line.trim().split(/\s+/);
         const pid   = parts[parts.length - 1];
-        if (/^\d+$/.test(pid) && pid !== '0') pids.add(pid);
+        if (!parts[1] || !parts[1].endsWith(`:${port}`)) continue;
+        if (/^\d+$/.test(pid) && pid !== '0' && pid !== String(process.pid)) pids.add(pid);
       }
       if (!pids.size) return resolve([]);
       Promise.all([...pids].map(pid => new Promise(r => exec(`taskkill /F /PID ${pid}`, () => r(pid)))))

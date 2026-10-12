@@ -11,7 +11,6 @@
 //    main/courses.js       コースパック (講座ごとのサンプル雛形・講座の単独更新)
 //    main/updater.js       アプリ本体の更新 (electron-updater)
 //    main/runner.js        実行エンジン (Gradle / npm / java / python / node / bash)
-//    main/terminal.js      ターミナル (node-pty)
 //    main/static-server.js 静的 Web ページ配信
 //    main/sql.js           HSQLDB インメモリ SQL 実行
 //    lsp-server.js         Java 言語サーバー (jdtls) の起動と中継
@@ -43,7 +42,6 @@ const util       = require('./main/util');
 const workspace  = require('./main/workspace');
 const courses    = require('./main/courses');
 const runner     = require('./main/runner');
-const terminal   = require('./main/terminal');
 const staticSrv  = require('./main/static-server');
 const sqlEngine  = require('./main/sql');
 const messaging  = require('./main/messaging');
@@ -258,8 +256,17 @@ ipcMain.handle('ws-project-info', (_event, { name } = {}) => {
   let services = [], processes = [];
   try { services = messaging.requirements(dir); } catch { /* 書き方の誤りは実行時に出す */ }
   try { processes = companions.requirements(dir).map(({ id, port }) => ({ id, port })); } catch { /* 同上 */ }
-  return { ok: true, name, path: dir, ...workspace.detectProject(dir),
+  const info = workspace.detectProject(dir);
+  // fileRuns: 単独で動かせるファイル (ツリーの ▶ バッジ・演習を選んだときのハイライト)
+  return { ok: true, name, path: dir, ...info, fileRuns: workspace.listFileRuns(dir, info),
            ...workspace.readProjectMeta(dir), services, processes };
+});
+
+// エディタのタブの右上の「▶ 実行」: 開いているファイルだけを動かすときの実行対象 (動かせなければ null)
+ipcMain.handle('ws-file-run-target', (_event, { name, relPath } = {}) => {
+  const dir = workspace.resolveProjectDir(name);
+  if (!dir || !fs.existsSync(dir)) return null;
+  return workspace.fileRunTarget(dir, relPath);
 });
 
 // チャットへ渡すプロジェクトの中身 (添付操作の代わりに、送信時にまとめて渡す)
@@ -286,16 +293,11 @@ ipcMain.handle('ws-reveal',       (_event, { name, relPath } = {}) =>
 ipcMain.handle('run-start', (event, payload = {}) =>
   runner.start(event, { uiLang: config.getUiLang(), ...payload }));
 ipcMain.handle('run-stop',  () => runner.stop());
+// curl のスクリプトなど、実行中のアプリを止めずに脇で動かすシェル
+ipcMain.handle('run-side', (event, payload = {}) =>
+  runner.startSide(event, { uiLang: config.getUiLang(), ...payload }));
 ipcMain.handle('run-status', () => ({ running: runner.isRunning() }));
 
-// ═══════════════════════════════════════════════════════════
-//  ターミナル
-// ═══════════════════════════════════════════════════════════
-
-ipcMain.handle('term-start', (event, opts = {}) => terminal.start(event, opts));
-ipcMain.handle('term-stop',  () => terminal.stop());
-ipcMain.on('term-input',  (_event, data) => terminal.write(data));
-ipcMain.on('term-resize', (_event, size) => terminal.resize(size));
 
 // ═══════════════════════════════════════════════════════════
 //  Web プレビュー (静的ページ配信)
@@ -578,7 +580,6 @@ app.on('before-quit', event => {
   if (cleanupPending) return;
   cleanupPending = true;
   runner.disposeAll();
-  terminal.stop();
   sqlEngine.stop();
   staticSrv.stop();
   lspServer.stopAll();

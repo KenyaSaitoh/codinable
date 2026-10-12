@@ -53,16 +53,16 @@ const config = require('./config');
 //   tests     … build.gradle がある (Gradle の test の結果を出す場所)
 //   messaging … codinable.services.json の services がある (Kafka / RabbitMQ を使う)
 // 実行結果 (output) はどの演習でも出す
-const TAB_IDS = ['output', 'tests', 'sql', 'terminal', 'messaging', 'preview'];
+const TAB_IDS = ['output', 'tests', 'sql', 'messaging', 'preview'];
 const DEFAULT_TABS = {
   static: ['output', 'preview'],
-  java:   ['output', 'terminal'],
-  spring: ['output', 'terminal', 'preview'],
-  node:   ['output', 'terminal', 'preview'],
-  react:  ['output', 'terminal', 'preview'],
-  python: ['output', 'terminal', 'preview'],
+  java:   ['output'],
+  spring: ['output', 'preview'],
+  node:   ['output', 'preview'],
+  react:  ['output', 'preview'],
+  python: ['output', 'preview'],
   sql:    ['output', 'sql'],
-  shell:  ['output', 'terminal'],
+  shell:  ['output'],
 };
 
 function exerciseTabs(entry, templateDir, runtime) {
@@ -451,7 +451,7 @@ function readCourseRoot(root, lang) {
           description: pickLang(t.descriptions, lang, ''),
           // 演習を開いた直後に開いておくファイル
           openFiles:   Array.isArray(t.openFiles) ? t.openFiles.map(String) : [],
-          // 出力欄に出すタブ (output / tests / sql / terminal / messaging / preview)
+          // 出力欄に出すタブ (output / tests / sql / messaging / preview)
           tabs:        exerciseTabs(t, templateDir, String(t.runtime || 'other')),
         };
       })

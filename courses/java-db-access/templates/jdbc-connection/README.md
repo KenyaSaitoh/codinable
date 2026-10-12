@@ -17,6 +17,6 @@ JDBC URL `jdbc:hsqldb:mem:connection_course` を、`jdbc:<subprotocol>:<subname>
 
 ## Codinable での動かし方
 
-- 実行対象で **Gradle: test** を選び、「実行」を押します。結果はテスト結果タブにメソッド単位で出ます。
+- `ConnectionFactoryTest.java`（`src/test/java`）を開いて、エディタの右上の **▶ 実行** で流してください。結果はテスト結果タブにメソッド単位で出ます。
 - テストはプロジェクト専用のインメモリ DB（`jdbc:hsqldb:mem:connection_course`）を自分で作って使うので、DB サーバーの起動は要りません。
 - このプロジェクトに main はありません（テストが入口です）。

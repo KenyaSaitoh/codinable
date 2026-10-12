@@ -1,16 +1,17 @@
 // ═══════════════════════════════════════════════════════════
-//  DB を題材にする演習の SCHEMA.md (使うテーブルの構成) を作り直す
+//  DB を題材にする演習の README.md の「この演習で使うテーブル」の節を作り直す
 //
 //    node scripts/build-schema-docs.js
 //
 //  DB アクセス (JDBC / MyBatis / JPA / トランザクション …) の演習は、コードより先に
-//  「どんなテーブルを読み書きするのか」が分かっていないと読めない。そこで SQL の演習と
-//  同じく、テーブル構成の SCHEMA.md を最初に開く (course.yaml の openFiles)
+//  「どんなテーブルを読み書きするのか」が分かっていないと読めない。演習を選ぶと開く
+//  README.md (演習の概要) の末尾に、テーブル構成の節を置く。節は
+//  <!-- schema:begin --> 〜 <!-- schema:end --> で囲み、流し直すとそこだけ書き換える
 //
 //  中身は雛形の実際の DDL / DML を HSQLDB に流して作る (scripts/SchemaDoc.java)
 //  DDL を直したら、これを流し直せば説明も追従する
 //  テーブルをエンティティから自動生成する演習 (JPA の drop-and-create) は DDL が無いので、
-//  SCHEMA.md を手で書き、ここでは触らない (MANUAL)
+//  節を手で書き、ここでは触らない (MANUAL)
 // ═══════════════════════════════════════════════════════════
 
 const fs   = require('fs');
@@ -32,8 +33,15 @@ const TARGETS = {
   'spring-boot-cicd':             ['database-rider-employee'],
 };
 
-// テーブルをエンティティから作る (DDL が無い) ので、SCHEMA.md を手で書いている雛形
+// テーブルをエンティティから作る (DDL が無い) ので、README.md のテーブルの節を手で書いている雛形
 const MANUAL = new Set(['java-db-access/jpa-crud', 'java-db-access/jpa-relations']);
+
+const BEGIN = '<!-- schema:begin -->';
+const END   = '<!-- schema:end -->';
+
+function readText(file) {
+  try { return fs.readFileSync(file, 'utf8'); } catch { return ''; }
+}
 
 function sourcesOf(dir) {
   const rel = p => path.relative(dir, p).split(path.sep).join('/');
@@ -89,7 +97,7 @@ function main() {
     for (const [dirName, users] of byDir) {
       const dir = path.join(COURSES, course, 'templates', dirName);
       if (MANUAL.has(`${course}/${dirName}`)) {
-        if (!fs.existsSync(path.join(dir, 'SCHEMA.md'))) problems.push(`${course}/${dirName}: 手書きの SCHEMA.md が無い`);
+        if (!readText(path.join(dir, 'README.md')).includes(BEGIN)) problems.push(`${course}/${dirName}: README.md に手書きのテーブルの節が無い`);
         continue;
       }
       const src = sourcesOf(dir);
@@ -104,26 +112,35 @@ function main() {
       if (res.stderr.trim()) problems.push(`${course}/${dirName}: ${res.stderr.trim()}`);
 
       const names = users.map(e => `「${e.names.ja}」`).join('・');
-      const doc = [
-        '# この演習で使うテーブル',
+      const section = [
+        BEGIN,
+        // 講座を作る側への注意は、受講者の画面 (Markdown ビューア) には出さない
+        '<!-- この節は desktop/scripts/build-schema-docs.js が DDL から作っている。',
+        '     テーブルを変えたら、手で直さずに node scripts/build-schema-docs.js で作り直すこと -->',
+        '## この演習で使うテーブル',
         '',
         `${names}のコードが読み書きするテーブルです。`,
         src.how,
         '',
-        // 講座を作る側への注意は、受講者の画面 (Markdown ビューア) には出さない
-        '<!-- この説明は desktop/scripts/build-schema-docs.js が DDL から作っている。',
-        '     テーブルを変えたら、手で直さずに node scripts/build-schema-docs.js で作り直すこと -->',
-        '',
-        res.stdout.trimEnd(),
+        // SchemaDoc の見出し (## テーブル名) は節の中なので 1 段下げる
+        res.stdout.trimEnd().replace(/^(#{1,5}) /gm, '#$1 '),
+        END,
         '',
       ].join('\n');
-      fs.writeFileSync(path.join(dir, 'SCHEMA.md'), doc, 'utf8');
+      const readmePath = path.join(dir, 'README.md');
+      const readme = readText(readmePath);
+      if (!readme) { problems.push(`${course}/${dirName}: README.md が無い`); continue; }
+      const i = readme.indexOf(BEGIN), j = readme.indexOf(END);
+      const next = i >= 0 && j > i
+        ? readme.slice(0, i) + section + readme.slice(j + END.length).replace(/^\r?\n/, '')
+        : readme.trimEnd() + '\n\n' + section;
+      fs.writeFileSync(readmePath, next, 'utf8');
       written++;
       console.log(`  ${course}/${dirName}  (${users.map(e => e.id).join(', ')})`);
     }
   }
   for (const p of problems) console.log('NG   ' + p);
-  console.log(`\nSCHEMA.md を ${written} 件作りました。`);
+  console.log(`\nREADME.md のテーブルの節を ${written} 件作りました。`);
   process.exit(problems.length ? 1 : 0);
 }
 

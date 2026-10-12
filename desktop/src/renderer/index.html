@@ -9,10 +9,6 @@
        CM6 は ESM でしか配布されず素の <script> から読めないため、
        builder/build-editor.js が esbuild で vendor/cm6.js (IIFE / グローバル CM6) を生成する -->
   <script src="vendor/cm6.js"></script>
-  <!-- PTY ターミナル (xterm.js) -->
-  <link rel="stylesheet" href="../../node_modules/@xterm/xterm/css/xterm.css">
-  <script src="../../node_modules/@xterm/xterm/lib/xterm.js"></script>
-  <script src="../../node_modules/@xterm/addon-fit/lib/addon-fit.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -263,8 +259,12 @@
             </div>
           </div>
 
-          <!-- 開いているファイルのタブ -->
-          <div class="editor-tabs" id="editor-tabs"></div>
+          <!-- 開いているファイルのタブ。右端の「▶ 実行」は開いているファイルだけを動かす
+               (単独で動かせるファイル: テストクラス・main・SQL・シェルなど を開いているときだけ出る) -->
+          <div class="editor-tabs-row" id="editor-tabs-row">
+            <div class="editor-tabs" id="editor-tabs"></div>
+            <button class="btn btn-run btn-run-file primary hidden" id="btn-run-file" data-i18n="btnRunFile">▶ 実行</button>
+          </div>
 
           <!-- CodeMirror のインスタンスを開いたファイルごとに置く (表示は 1 つだけ) -->
           <div class="editor-hosts" id="editor-hosts">
@@ -278,8 +278,9 @@
         <!-- ツールバー (実行系) -->
         <div class="toolbar" id="toolbar">
           <div class="gradle-task-group">
-            <select class="gradle-task-select" id="run-target-select" data-i18n-title="runTargetTitle" title="実行する内容を選びます"></select>
-            <button class="btn btn-run" id="btn-run" data-i18n="btnRun">実行</button>
+            <!-- プロジェクト全体を動かすのは ▶ アプリ実行だけ。テストクラス・main・SQL・シェルなど
+                 ファイル 1 つは、開いてエディタのタブの右端の ▶ 実行で動かす -->
+            <button class="btn btn-run" id="btn-run" data-i18n="btnRun" disabled>▶ アプリ実行</button>
           </div>
           <button class="btn btn-stop" id="btn-run-stop" data-i18n="btnStop" disabled>停止</button>
           <!-- プレビューの口は下のタブだけにする。実行すると待ち受けを検知して自動で開く -->
@@ -293,62 +294,59 @@
             <button class="run-tab active" id="run-tab-output" data-pane="tab-result" data-i18n="tabOutput">実行結果</button>
             <button class="run-tab" id="run-tab-tests" data-pane="tab-test-results" data-i18n="tabTests" data-i18n-title="tabTestsTitle" title="テストメソッド単位の成否・失敗内容・カバレッジ">テスト結果</button>
             <button class="run-tab" id="run-tab-sql" data-pane="tab-sql" data-i18n="tabSql" data-i18n-title="tabSqlTitle" title="HSQLDB に SQL を実行します">🗄 SQL</button>
-            <button class="run-tab" id="run-tab-terminal" data-pane="tab-terminal" data-i18n="tabTerminal" data-i18n-title="tabTerminalTitle" title="プロジェクトのフォルダで動くターミナル (bash)">🖥 ターミナル</button>
             <button class="run-tab" id="run-tab-messaging" data-pane="tab-messaging" data-i18n="tabMessaging">メッセージング</button>
-            <button class="run-tab" id="run-tab-browser" data-pane="tab-browser" data-i18n="tabBrowser" data-i18n-title="tabBrowserTitle" title="Web アプリ・静的ページの動作確認">🌐 プレビュー</button>
-            <!-- 演習が使うサーバー (HSQLDB / Kafka / RabbitMQ) の起動・停止。「実行」で自動起動するので、
-                 ここは手で止めたい・先に起こしておきたいときの口。中身は renderServiceControls が作る -->
-            <div class="service-controls" id="service-controls"></div>
+            <button class="run-tab" id="run-tab-browser" data-pane="tab-browser" data-i18n="tabBrowser" data-i18n-title="tabBrowserTitle" title="Web アプリ・静的ページの動作確認">🌐 Webブラウザ</button>
           </div>
-          <div class="run-output-body">
+          <div class="run-output-main">
+            <div class="run-output-body">
 
-            <!-- 実行結果 -->
-            <div class="run-pane active" id="tab-result">
-              <pre class="output-pre" id="output-result" data-i18n="outputPlaceholder">ここに実行結果が表示されます。</pre>
-            </div>
+              <!-- 実行結果 -->
+              <div class="run-pane active" id="tab-result">
+                <pre class="output-pre" id="output-result" data-i18n="outputPlaceholder">ここに実行結果が表示されます。</pre>
+              </div>
 
-            <!-- テスト結果 (JUnit XML + JaCoCo) -->
-            <div class="run-pane" id="tab-test-results">
-              <div class="test-results-wrap" id="test-results-wrap">
-                <div class="test-results-placeholder" data-i18n="testResultsPlaceholder">Gradle の test タスクを実行すると、テストメソッド単位の結果がここに出ます。</div>
+              <!-- テスト結果 (JUnit XML + JaCoCo) -->
+              <div class="run-pane" id="tab-test-results">
+                <div class="test-results-wrap" id="test-results-wrap">
+                  <div class="test-results-placeholder" data-i18n="testResultsPlaceholder">Gradle の test タスクを実行すると、テストメソッド単位の結果がここに出ます。</div>
+                </div>
+              </div>
+
+              <!-- SQL (HSQLDB インメモリ) -->
+              <div class="run-pane" id="tab-sql">
+                <div class="sql-result-wrap" id="sql-result-wrap">
+                  <div class="sql-placeholder" data-i18n="sqlPlaceholder">「実行」を押すと、選んだ .sql を HSQLDB に流して結果をここに出します（DB は自動で起動します）。</div>
+                </div>
+              </div>
+
+              <div class="run-pane" id="tab-messaging">
+                <p class="messaging-hint" data-i18n="messagingHint">使うサーバーは「実行」で自動的に起動します。起動・停止はタブの行の右端で行えます。データは停止後も保存されます。</p>
+                <div id="messaging-services"></div>
+                <div class="messaging-log-toolbar">
+                  <label for="messaging-log-select" data-i18n="messagingLog">サーバーログ</label>
+                  <select id="messaging-log-select"><option value="kafka">Kafka</option><option value="rabbitmq">RabbitMQ</option></select>
+                </div>
+                <pre class="output-pre messaging-log" id="messaging-log"></pre>
+              </div>
+
+              <!-- Web プレビュー -->
+              <div class="run-pane browser-pane" id="tab-browser">
+                <div class="browser-toolbar">
+                  <button class="browser-btn" id="browser-back"    data-i18n-title="browserBack" title="戻る">←</button>
+                  <button class="browser-btn" id="browser-forward" data-i18n-title="browserForward" title="進む">→</button>
+                  <button class="browser-btn" id="browser-reload"  data-i18n-title="browserReload" title="再読み込み">⟳</button>
+                  <input type="text" class="browser-url" id="browser-url"
+                         value="" spellcheck="false" placeholder="http://localhost:8080">
+                  <button class="browser-btn" id="browser-go"       data-i18n-title="browserGo" title="開く">▶</button>
+                  <button class="browser-btn" id="browser-external" data-i18n-title="browserExternal" title="外部ブラウザで開く">↗</button>
+                </div>
+                <webview id="mini-browser" class="mini-browser" src="about:blank"></webview>
               </div>
             </div>
-
-            <!-- SQL (HSQLDB インメモリ) -->
-            <div class="run-pane" id="tab-sql">
-              <div class="sql-result-wrap" id="sql-result-wrap">
-                <div class="sql-placeholder" data-i18n="sqlPlaceholder">「実行」を押すと、選んだ .sql を HSQLDB に流して結果をここに出します（DB は自動で起動します）。</div>
-              </div>
-            </div>
-
-            <!-- ターミナル (node-pty + xterm.js) -->
-            <div class="run-pane" id="tab-messaging">
-              <p class="messaging-hint" data-i18n="messagingHint">使うサーバーは「実行」で自動的に起動します。起動・停止はタブの行の右端で行えます。データは停止後も保存されます。</p>
-              <div id="messaging-services"></div>
-              <div class="messaging-log-toolbar">
-                <label for="messaging-log-select" data-i18n="messagingLog">サーバーログ</label>
-                <select id="messaging-log-select"><option value="kafka">Kafka</option><option value="rabbitmq">RabbitMQ</option></select>
-              </div>
-              <pre class="output-pre messaging-log" id="messaging-log"></pre>
-            </div>
-
-            <div class="run-pane terminal-pane" id="tab-terminal">
-              <div class="xterm-wrap" id="xterm-wrap"></div>
-            </div>
-
-            <!-- Web プレビュー -->
-            <div class="run-pane browser-pane" id="tab-browser">
-              <div class="browser-toolbar">
-                <button class="browser-btn" id="browser-back"    data-i18n-title="browserBack" title="戻る">←</button>
-                <button class="browser-btn" id="browser-forward" data-i18n-title="browserForward" title="進む">→</button>
-                <button class="browser-btn" id="browser-reload"  data-i18n-title="browserReload" title="再読み込み">⟳</button>
-                <input type="text" class="browser-url" id="browser-url"
-                       value="" spellcheck="false" placeholder="http://localhost:8080">
-                <button class="browser-btn" id="browser-go"       data-i18n-title="browserGo" title="開く">▶</button>
-                <button class="browser-btn" id="browser-external" data-i18n-title="browserExternal" title="外部ブラウザで開く">↗</button>
-              </div>
-              <webview id="mini-browser" class="mini-browser" src="about:blank"></webview>
-            </div>
+            <!-- 演習が使うサーバー (HSQLDB / Kafka / RabbitMQ / 付き添いのプロセス) の起動・停止。
+                 「▶ アプリ実行」で自動起動するので、ここは手で止めたい・先に起こしておきたいときの口。
+                 出力欄の右に縦に並べる。中身は renderServiceControls が作る -->
+            <div class="service-controls" id="service-controls"></div>
           </div>
         </div>
 

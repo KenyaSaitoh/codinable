@@ -3986,19 +3986,46 @@ body.theme-dark .exercise-item.active {
 /* 右端のサーバーのボタンが増えても、タブの見出しは 1 行のまま (ボタンのほうを折り返す) */
 .run-tab { white-space: nowrap; flex-shrink: 0; }
 
-/* ── 実行対象のセレクト ──
-   講座・演習によって幅が変わると「実行」ボタンの位置が動くので、幅は固定にする
-   文字は開いたときの一覧も含めて読みやすい大きさにする (一覧はセレクトの文字の大きさに従う) */
-.gradle-task-select {
-  width: 320px;
-  max-width: 320px;
-  height: 30px;
-  padding: 3px 10px;
-  font-size: calc(var(--editor-font-size) - 2px);
-  text-overflow: ellipsis;
-}
-.gradle-task-select option { font-size: calc(var(--editor-font-size) - 2px); }
 .gradle-task-group .btn-run, .toolbar .btn-stop { height: 30px; }
+
+/* ── ▶ アプリ実行 / 🧪 テスト実行 ──
+   演習の主役のほう (course.yaml の run) を塗りつぶして、どちらを押せばよいかを示す
+   押せないほうは .btn:disabled で薄くなる。文言が長いので幅は中身に合わせる */
+.gradle-task-group .btn-run { width: auto; min-width: 86px; padding: 4px 12px; }
+.gradle-task-group .btn-run.primary,
+.btn-run-file.primary {
+  background: var(--btn-action-bg);
+  border-color: var(--btn-action-bg);
+  color: #fff;
+}
+.gradle-task-group .btn-run.primary:not(:disabled):hover,
+.btn-run-file.primary:not(:disabled):hover { background: var(--btn-action-hover); }
+
+/* ── エディタのタブの右端の ▶ 実行 (開いているファイルだけを動かす) ──
+   タブは横にスクロールし、ボタンは縮めない (タブが増えてもボタンが隠れない) */
+.editor-tabs-row {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  background: var(--bg-overlay);
+  border-bottom: 1px solid var(--border-color);
+}
+.editor-tabs-row:has(#editor-tabs:empty) { display: none; }
+.editor-tabs-row #editor-tabs {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  border-bottom: none;
+}
+.btn-run-file {
+  flex-shrink: 0;
+  width: auto;
+  min-width: 80px;
+  height: 24px;
+  margin: 3px 8px 3px 6px;
+  padding: 2px 16px;
+  font-size: 12px;
+}
 
 /* ── 設定: 横幅を使って 2 段にし、スクロールせずに全体を見せる ── */
 .settings-panel { width: 940px; max-width: 94vw; max-height: 92vh; }
@@ -4144,12 +4171,27 @@ body.theme-dark .exercise-item.active {
 .messaging-log-toolbar { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
 .messaging-log { height: 150px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
 
-/* ── 出力タブの行の右端: サーバー (HSQLDB / Kafka / RabbitMQ) の起動・停止 ── */
-.service-controls { margin-left: auto; display: flex; align-items: center; gap: 4px 12px; padding: 3px 0;
-                    flex-wrap: wrap; justify-content: flex-end; min-width: 0; }
+/* ── 出力欄の右の縦の列: サーバー (HSQLDB / Kafka / RabbitMQ / 付き添いのプロセス) の起動・停止 ──
+   タブの行に並べると横幅を取り合うので、出力欄の右に縦に積む。サーバーごとに
+   「● 名前」の見出しと、起動・停止を 1 段ずつ */
+.run-output-main { flex: 1; min-height: 0; display: flex; }
+.run-output-main > .run-output-body { flex: 1; min-width: 0; }
+.service-controls {
+  flex: 0 0 auto;
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 10px;
+  overflow-y: auto;
+  border-left: 1px solid var(--border-color);
+  background: var(--bg-overlay);
+}
 .service-controls:empty { display: none; }
-.service-group { display: inline-flex; align-items: center; gap: 4px; }
-.service-group .btn { width: auto; min-width: 72px; padding: 2px 8px; font-size: 11px; letter-spacing: 0; }
+.service-group { display: flex; flex-direction: column; gap: 4px; }
+.service-name { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--text-main);
+                overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.service-group .btn { width: 100%; padding: 3px 8px; font-size: 11px; letter-spacing: 0; }
 .service-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); opacity: 0.5; margin-right: 2px; }
 .service-dot[data-state="running"] { background: var(--accent-green, #238636); opacity: 1; }
 .service-dot[data-state="starting"],
@@ -4549,7 +4591,7 @@ body.theme-dark .exercise-item.active {
 .chat-copy.copied,
 .chat-code-copy.copied { color: var(--accent-green); border-color: var(--accent-green); }
 
-/* ── Markdown ビューア (README・SCHEMA.md) ──
+/* ── Markdown ビューア (演習の概要の README.md など) ──
    エディタの入れ物は中身を隠しても場所を取るので、ビューアを出しているあいだは畳む */
 .editor-section:has(#md-preview:not(.hidden)) #editor-hosts { display: none; }
 .md-preview { background: var(--bg-base); color: var(--text-main); }
@@ -4636,3 +4678,36 @@ body.theme-dark .exercise-item.active {
 /* ── ダイアログを見出しの帯でつかんで動かす (makeDialogDraggable) ── */
 .dialog-drag-handle { user-select: none; touch-action: none; }   /* カーソルはふつうの矢印のまま */
 
+
+/* ── ファイルツリー: 単独で動かせるファイルの ▶ バッジと、演習を選んだ直後のハイライト ──
+   バッジはエディタの右上の ▶ 実行と同じ色。ハイライトは 3 秒ほどで消える (renderer.js の flashExerciseFiles) */
+.tree-file .tree-name { overflow: hidden; text-overflow: ellipsis; }
+.tree-run-badge {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 0 5px;
+  border-radius: 8px;
+  font-size: 9px;
+  line-height: 14px;
+  background: var(--btn-action-bg);
+  color: #fff;
+}
+.tree-file.flash { animation: tree-flash 1s ease-in-out 3; }
+@keyframes tree-flash {
+  0%, 100% { background: transparent; }
+  50%      { background: color-mix(in srgb, var(--accent-yellow, #e5c07b) 45%, transparent); color: var(--text-main); }
+}
+
+/* ── ネイティブの select の一覧 (モデル選択・設定画面) ──
+   select 自体を透明にしていると、開いた一覧は OS の明るい地のまま文字だけテーマの色になり、
+   ダークテーマでは何も読めなくなる。一覧の地と文字をテーマの色で塗り、ダーク系では
+   ブラウザにも暗い一覧として描かせる */
+body.theme-dark select { color-scheme: dark; }
+/* 開いた一覧の地 (選択肢の下の余白を含む) は select 自体の背景色で塗られる。透明だと
+   白い地が選択肢の下に線のように残るので、ヘッダーの丸い枠と同じ色で塗っておく */
+.llm-select { background-color: var(--bg-overlay); }
+select option,
+select optgroup {
+  background: var(--bg-input, var(--bg-surface));
+  color: var(--text-main);
+}

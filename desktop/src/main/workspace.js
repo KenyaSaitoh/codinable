@@ -63,24 +63,19 @@ function detectProject(projectDir) {
 
   // ── Gradle / Spring Boot ──
   const gradleFile = ['build.gradle', 'build.gradle.kts'].find(f => names.has(f));
-  let gradleTasks = [];
   if (gradleFile) {
     kinds.push('gradle');
     const build = readTextSafe(path.join(projectDir, gradleFile));
-    const isSpring = /org\.springframework\.boot|spring-boot-starter/.test(build);
-    if (isSpring) kinds.push('spring');
-    gradleTasks = isSpring
-      ? ['bootRun', 'test', 'build', 'clean build', 'bootJar']
-      : ['run', 'test', 'build', 'clean build'];
+    if (/org\.springframework\.boot|spring-boot-starter/.test(build)) kinds.push('spring');
   }
 
   // ── Node.js / npm ──
-  let npmScripts = [];
+  let npmScripts = {};
   if (names.has('package.json')) {
     kinds.push('node');
     try {
       const pkg = JSON.parse(readTextSafe(path.join(projectDir, 'package.json')));
-      npmScripts = Object.keys(pkg.scripts || {});
+      npmScripts = pkg.scripts || {};
     } catch { /* package.json が壊れていてもプロジェクト自体は開けるようにする */ }
   }
 
@@ -110,20 +105,139 @@ function detectProject(projectDir) {
   // ── SQL ──
   if (hasAnyExt(entries, '.sql')) kinds.push('sql');
 
+  const runnableFiles = collectRunnableFiles(projectDir, entries, {
+    hasPackageJson: names.has('package.json'),
+    isStatic: staticRoot !== null,
+    isGradle: kinds.includes('gradle'),
+    inNestedPackage,
+  });
+
   return {
     kinds,
-    gradleTasks,
-    npmScripts,
     // '' はプロジェクトルート自身が配信ルートという意味
     staticRoot,
-    runnableFiles: collectRunnableFiles(projectDir, entries, {
-      hasPackageJson: names.has('package.json'),
-      isStatic: staticRoot !== null,
-      isGradle: kinds.includes('gradle'),
-      inNestedPackage,
+    runnableFiles,
+    run: pickRunEntries({
+      kinds, npmScripts, staticRoot, names,
+      hasGradleTests: [...names].some(n => n.startsWith('src/test/')),
     }),
     hasGradleWrapper: names.has('gradlew') || names.has('gradlew.bat'),
   };
+}
+
+/**
+ * ツールバーの「▶ アプリ実行」と「🧪 テスト実行」が何を動かすかを決める
+ *
+ * Gradle のタスクや npm のスクリプトを並べて選ばせると、受講者は何を選べば
+ * よいかで迷う。プロジェクト全体として意味があるのは「アプリを動かす」と
+ * 「テストする」の 2 つだけなので、それぞれの入口をプロジェクトの中身から 1 つに決める
+ * ファイル 1 つを動かすのはエディタのタブの右上の「▶ 実行」(fileRunTarget)
+ * 値は実行対象の書式 ('gradle:bootRun' / 'npm:dev' / 'static:' …)
+ *
+ *   app:   ▶ アプリ実行で動かすもの。SQL やスクリプトのようにファイル単位で動かす
+ *          プロジェクトでは null (ボタンは押せない)
+ *   test:  🧪 テスト実行で動かすもの。テストが無ければ null (ボタンは押せない)
+ */
+function pickRunEntries({ kinds, npmScripts, staticRoot, names, hasGradleTests }) {
+  if (kinds.includes('gradle')) {
+    return {
+      app:  kinds.includes('spring') ? 'gradle:bootRun' : 'gradle:run',
+      test: hasGradleTests ? 'gradle:test' : null,
+    };
+  }
+
+  const scripts = Object.keys(npmScripts);
+  if (scripts.length) {
+    // dev サーバー (Vite) があればそれ、無ければ start。build や lint は入口にしない
+    const app = ['dev', 'start'].find(s => scripts.includes(s));
+    // npm init の既定 ("Error: no test specified") はテストが無いのと同じ
+    const test = npmScripts.test && !/no test specified/.test(npmScripts.test) ? 'npm:test' : null;
+    return { app: app ? `npm:${app}` : null, test };
+  }
+
+  // Django は manage.py が入口 (引数なしで runserver になるようにしてある)
+  if (names.has('manage.py')) return { app: 'file:manage.py', test: null };
+
+  // 静的配信は npm スクリプトが無いときだけ。Vite などは index.html が
+  // あっても dev サーバー越しでないと動かない
+  if (staticRoot !== null) return { app: `static:${staticRoot}`, test: null };
+
+  return { app: null, test: null };
+}
+
+/**
+ * エディタのタブの右上の「▶ 実行」で、そのファイルだけを動かすときの実行対象
+ * 単独で意味のある結果が出ないファイルは null (ボタンを出さない)
+ *
+ *   .sql / .sh / .py / 単体の .js・.ts / Gradle を使わない .java の main
+ *       → collectRunnableFiles が拾ったもの ('sql:…' / 'file:…')
+ *   Gradle の src/test/java のテストクラス → そのクラスのテストだけ ('gradle:test --tests …')
+ *   Gradle の src/main/java の main        → その main だけ (下の gradleMainTarget)
+ *   @SpringBootApplication のクラス        → アプリそのもの (▶ アプリ実行と同じ)
+ */
+function fileRunTarget(projectDir, relPath) {
+  if (!projectDir || !relPath) return null;
+  const info = detectProject(projectDir);
+  const listed = info.runnableFiles.find(f => f.relPath === relPath);
+  if (listed) return `${listed.kind}:${listed.relPath}`;
+  return gradleFileRun(projectDir, relPath, info);
+}
+
+/**
+ * プロジェクトの中の「単独で動かせるファイル」をまとめて返す ({ 相対パス: 実行対象 })
+ * ファイルツリーのバッジ (▶) と、演習を選んだときのハイライトに使う
+ */
+function listFileRuns(projectDir, info = detectProject(projectDir)) {
+  const runs = {};
+  for (const f of info.runnableFiles) runs[f.relPath] = `${f.kind}:${f.relPath}`;
+  if (info.kinds.includes('gradle')) {
+    const javaFiles = walkTree(projectDir, { limit: 2500 })
+      .filter(e => !e.dir && /^src\/(main|test)\/java\/.+\.java$/.test(e.path))
+      .slice(0, 400);
+    for (const { path: relPath } of javaFiles) {
+      const target = gradleFileRun(projectDir, relPath, info);
+      if (target) runs[relPath] = target;
+    }
+  }
+  return runs;
+}
+
+/** Gradle のプロジェクトの .java を 1 つだけ動かす実行対象 (動かせなければ null) */
+function gradleFileRun(projectDir, relPath, info) {
+  if (!info.kinds.includes('gradle')) return null;
+  // 入れ子の Gradle プロジェクト (client/ など) はルートのタスクでは動かせないので対象にしない
+  const m = /^src\/(main|test)\/java\/.+\.java$/.exec(relPath);
+  if (!m) return null;
+  const source = readTextSafe(path.join(projectDir, relPath.split('/').join(path.sep)));
+  const pkg  = /^\s*package\s+([\w.]+)\s*;/m.exec(source)?.[1];
+  const fqcn = (pkg ? `${pkg}.` : '') + path.basename(relPath, '.java');
+
+  if (m[1] === 'test') {
+    const isTest = /@(Test|ParameterizedTest|RepeatedTest|TestFactory)\b/.test(source) &&
+                   !/\babstract\s+class\b/.test(source);
+    return isTest ? `gradle:test --tests ${fqcn}` : null;
+  }
+  if (!/\bstatic\s+void\s+main\s*\(/.test(source)) return null;
+  if (/@SpringBootApplication\b/.test(source)) return info.run.app;
+  return gradleMainTarget(projectDir, fqcn, info);
+}
+
+/**
+ * Gradle のプロジェクトで main を 1 つだけ動かす実行対象
+ *
+ * java-db-access の雛形は run が -PmainClass を受け取り、main ごとに DB を初期データへ
+ * 戻してから動かすので、それに任せる。受け取らない build.gradle には、runner.js が
+ * init script で codinableMain タスク (main のクラスパスで JavaExec) を足す
+ */
+function gradleMainTarget(projectDir, fqcn, info) {
+  const gradleFile = ['build.gradle', 'build.gradle.kts'].map(f => path.join(projectDir, f)).find(f => fs.existsSync(f));
+  const build = gradleFile ? readTextSafe(gradleFile) : '';
+  // application { mainClass = … } そのもの (SampleLauncher など) は ▶ アプリ実行と同じ
+  const appMain = /mainClass\s*=\s*['"]([\w.]+)['"]/.exec(build)?.[1];
+  if (appMain === fqcn) return info.run.app;
+  return /hasProperty\(\s*['"]mainClass['"]\s*\)/.test(build)
+    ? `gradle:run -PmainClass=${fqcn}`
+    : `gradle:codinableMain -PcodinableMain=${fqcn}`;
 }
 
 /**
@@ -149,8 +263,10 @@ function collectRunnableFiles(projectDir, entries, { hasPackageJson, isStatic, i
     if (lower.endsWith('.py') && inDjango(relPath)) continue;
     if (lower.endsWith('.py') || lower.endsWith('.sh') || lower.endsWith('.bash')) {
       out.push({ relPath, kind: 'file' });
-    } else if (lower.endsWith('.sql') && lower !== 'reset.sql') {
+    } else if (lower.endsWith('.sql') && lower !== 'reset.sql' && !isGradle) {
       // ルートの reset.sql は SQL を流す前に毎回自動で流す初期化用なので、実行対象に並べない
+      // Gradle のプロジェクトの .sql はアプリが起動時にインメモリ DB へ流すもので、
+      // 共有の HSQLDB へ単独で流しても意味がないので対象にしない
       out.push({ relPath, kind: 'sql' });
     }
   }
@@ -275,7 +391,7 @@ function createProject({ name, templateDir = null, courseId = null, template = n
  * 雛形にあって作業用プロジェクトに無いファイルを足す (上書きはしない)
  *
  * プロジェクトは作った時点の雛形の写しなので、あとから雛形に足したファイル
- * (SQL の演習の SCHEMA.md など) は、以前に作ったプロジェクトには無い
+ * (演習の概要の README.md など) は、以前に作ったプロジェクトには無い
  * 演習を開くときに「最初に見せるファイル」だけをこれで補う
  */
 function addMissingFromTemplate({ name, templateDir, files }) {
@@ -464,6 +580,8 @@ module.exports = {
   resolveProjectDir,
   resolveInProject,
   detectProject,
+  fileRunTarget,
+  listFileRuns,
   listProjects,
   readProjectMeta,
   writeProjectMeta,

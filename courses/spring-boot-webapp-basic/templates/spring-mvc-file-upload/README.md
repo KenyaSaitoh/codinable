@@ -8,8 +8,14 @@
 
 ## 動かし方
 
-1. 実行対象で `gradle:bootRun` を選び、「実行」を押す
+1. ツールバーの ▶ アプリ実行で起動する
 2. プレビューで `http://localhost:8080/` を開き、タイトルとファイルを選んで保存する
 3. 結果画面の `/files/{id}` で保存した内容を確かめる
 
 保存先は OS の一時フォルダの下の `spring-file-upload` です。
+
+## 主なファイル
+
+- `src/main/java/pro/kensait/spring/upload/FileUploadController.java` … MultipartFile の受け取り
+- `src/main/java/pro/kensait/spring/upload/FileStorageService.java` … 保存
+- `src/main/resources/templates/FileUploadPage.html` … multipart/form-data のフォーム

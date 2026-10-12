@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
  * CalcService の単体テスト
  * Spring を起動せず、素の Java オブジェクトとして試せる
  *
- * 実行対象で「Gradle: test」を選ぶと、テスト結果タブに一覧が出る
+ * このファイルを開いてエディタの右上の ▶ 実行で流すと、テスト結果タブに一覧が出る
  */
 class CalcServiceTest {
 

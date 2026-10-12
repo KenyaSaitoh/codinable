@@ -8,7 +8,14 @@
 
 ## 動かし方
 
-1. 実行対象で `gradle:bootRun` を選び、「実行」を押す
+1. ツールバーの ▶ アプリ実行で起動する
 2. プレビューで `http://localhost:8080/` を開く
 3. 掛け算で 1000 × 1000（上限超過）、割り算で 0 除算を試し、エラー画面へ分岐することを確かめる
 4. 割り算で 1 ÷ 3 を試し、小数第 4 位で丸められることを確かめる
+
+## 主なファイル
+
+- `src/main/java/pro/kensait/spring/calc/web/CalcController.java` … 例外を受け取ってエラー画面へ
+- `src/main/java/pro/kensait/spring/calc/config/ConfigHolder.java` … config.properties の値
+- `src/main/java/pro/kensait/spring/calc/service/CalcService.java` … BigDecimal の計算と業務例外
+- `src/main/resources/config.properties・messages.properties` … 設定値と文言

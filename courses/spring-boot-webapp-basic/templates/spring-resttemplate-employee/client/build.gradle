@@ -1,6 +1,6 @@
 // コンソールの HTTP クライアント。処理が終わると終了し、待ち受けポートは開かない
 // ルートの確認用 API とは別の、独立した Gradle プロジェクト（ルートの settings.gradle には含めない）
-// ターミナルで cd client → ../gradlew.bat run で動かす
+// client/run.sh を開いて、エディタの右上の ▶ 実行で動かす（ルートの gradlew.bat を使う）
 plugins {
     id 'java'
     id 'org.springframework.boot' version '4.1.0'

@@ -3,10 +3,9 @@
 // 元のサンプルは親 build.gradle と gradle/employee-app.gradle に設定を分けたマルチプロジェクト
 // だった。Codinable では単独で動く必要があるため 1 ファイルに畳んでいる
 //
-// Codinable の実行対象に出る Gradle タスクは bootRun / test / build / bootJar だけで、
-// gatlingRun は選べない。そこで次の 2 段で動かす
-//   1. 実行対象「bootRun」で負荷を受けるアプリを http://localhost:8080 に起動する
-//   2. ターミナルで gradlew.bat gatlingRun を実行する（接続先の既定は http://localhost:8080）
+// Codinable の ▶ アプリ実行は bootRun なので、gatlingRun は次の 2 段で動かす
+//   1. ▶ アプリ実行で負荷を受けるアプリを http://localhost:8080 に起動する
+//   2. 起動したまま scripts/01_gatling_run.sh を開いて ▶ 実行する（gradlew.bat gatlingRun。接続先の既定は http://localhost:8080）
 plugins {
     id 'java'
     id 'org.springframework.boot' version '4.1.0'
@@ -53,7 +52,7 @@ tasks.named('processTestResources') {
 
 // 元のサンプルは test から @Tag("it") を除外し、別タスク integrationTest で流していた
 // この章のテスト（EmployeeApplicationSmokeTest）は @Tag("it") なので、Codinable の
-// 「test」ボタンで走るよう除外タグを外している（アプリと H2 はテストが自動で起動する）
+// テストクラスの ▶ 実行（test タスク）で走るよう除外タグを外している（アプリと H2 はテストが自動で起動する）
 test {
     useJUnitPlatform()
     testLogging {

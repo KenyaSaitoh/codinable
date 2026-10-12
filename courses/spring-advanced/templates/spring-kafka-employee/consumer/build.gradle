@@ -2,7 +2,7 @@
 // このプロジェクトの依存関係を 1 ファイルにまとめたもの
 // バージョン変数（springBootVer など）は外して Spring Boot の BOM に任せている
 // 品質ゲート用の Checkstyle / SpotBugs / PIT などは Codinable では使わないので入れていない
-// ここはコンシューマー（受信側・8092）。ターミナルで cd consumer → ../gradlew.bat bootRun で起動する
+// ここはコンシューマー（受信側・8092）。ルートの ▶ アプリ実行で一緒に起動する（codinable.services.json の processes）
 
 plugins {
     id 'java'

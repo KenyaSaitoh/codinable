@@ -1,4 +1,4 @@
-# VS Code REST Client拡張用。curlだけで確認する場合はcurlメモ.txtを参照。
+# VS Code REST Client拡張用。curlで確認する場合はプロジェクト直下の curl/*.sh を ▶ 実行で送る。
 @base = http://localhost:8080/api
 
 ### Repositoryの入口

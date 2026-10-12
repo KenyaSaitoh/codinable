@@ -9,10 +9,15 @@
 
 ## 動かし方
 
-1. 実行対象で `gradle:bootRun` を選び、「実行」を押す
+1. ツールバーの ▶ アプリ実行で起動する
 2. プレビューで `http://localhost:8080/` を開き、何回か計算する
 3. `/viewResult?id=1` を開き直し、同じ結果を何度でも取得できることを確かめる
 4. `/viewHistory1`・`/viewHistory2`・`/viewHistory3` で履歴一覧を、
    `/viewResultByQuery?id=1`・`/viewResultByPath/1` で ID 指定の表示を確かめる
 
 履歴はメモリー上にあるので、停止すると消えます。
+
+## 主なファイル
+
+- `src/main/java/pro/kensait/spring/calc/web/CalcController.java` … ID 付きのリダイレクトと履歴の表示
+- `src/main/java/pro/kensait/spring/calc/service/CalcDAO.java` … メモリー上の履歴

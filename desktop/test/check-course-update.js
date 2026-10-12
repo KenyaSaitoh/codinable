@@ -30,6 +30,9 @@ const check = (cond, message) => { if (!cond) problems.push(message); return !!c
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 const NEW_VERSION = '9.9.0';
+// 手元 (同梱) の版は course.yaml から読む (講座を直すたびに version は上がる)
+const bundledVersion = id => String(yaml.load(fs.readFileSync(
+  path.resolve(__dirname, '../../courses', id, 'course.yaml'), 'utf8')).version);
 const RENAMED     = '（更新版）HTMLの基本構造を読む';
 
 main().then(() => {
@@ -119,7 +122,7 @@ async function main() {
 
     const readConfig = () => JSON.parse(fs.readFileSync(path.join(userData, 'codinable-config.json'), 'utf8'));
     // 起動時に、取り組み中の講座は今の版に固定される
-    check(readConfig().coursePins?.['spring-boot-cicd'] === '1.0.0',
+    check(readConfig().coursePins?.['spring-boot-cicd'] === bundledVersion('spring-boot-cicd'),
           `取り組み中の講座が今の版に固定されていない: ${JSON.stringify(readConfig().coursePins)}`);
 
     // ── 1. まだ始めていない講座を新規で始める → 新しい版を取り込む ──
@@ -142,7 +145,7 @@ async function main() {
     const staticTabs = await visibleTabs();
     check(staticTabs === 'run-tab-output,run-tab-browser', `静的ページの演習のタブが想定と違う: ${staticTabs}`);
     await clickExercise(cdp, 'sql-basics');
-    await waitFor(cdp, `document.getElementById('run-target-select').value.startsWith('sql:')`, 20000, 'SQL の演習が開かない');
+    await waitFor(cdp, `projectInfo?.template === 'sql-basics' && Object.values(projectInfo.fileRuns || {}).some(v => v.startsWith('sql:'))`, 20000, 'SQL の演習が開かない');
     const sqlTabs = await visibleTabs();
     check(sqlTabs === 'run-tab-output,run-tab-sql', `SQL の演習のタブが想定と違う: ${sqlTabs}`);
     console.log(`OK  出力タブの出し分け (静的: ${staticTabs} / SQL: ${sqlTabs})`);
@@ -165,7 +168,7 @@ async function main() {
     await waitFor(cdp, `projectInfo?.courseId === 'java-db-access'`, 30000, '配信先に届かないと講座を始められない');
     check(await cdp.eval(`document.getElementById('simple-dialog-overlay').classList.contains('hidden')`),
           '配信先に届かないときにダイアログが出ている');
-    check(readConfig().coursePins?.['java-db-access'] === '1.0.0', '配信先に届かないとき、手元の版に固定されていない');
+    check(readConfig().coursePins?.['java-db-access'] === bundledVersion('java-db-access'), '配信先に届かないとき、手元の版に固定されていない');
     console.log('OK  配信先に届かなくても手元の版で始まる');
   } catch (err) {
     problems.push(err.message);

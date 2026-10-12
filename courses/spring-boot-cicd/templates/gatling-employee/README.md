@@ -19,19 +19,15 @@ assertions は「全60件・各リクエスト20件」「失敗0件」「全体 
 
 ## Codinable での動かし方
 
-Codinable の実行対象には `gatlingRun` が出ないため、負荷を受けるアプリと Gatling を分けて動かします。
+▶ アプリ実行が動かすのは `bootRun` なので、負荷を受けるアプリと Gatling を分けて動かします。
 
-1. 実行対象 `bootRun`（既定）で「実行」を押し、アプリを <http://localhost:8080> で起動する
+1. ツールバーの **▶ アプリ実行** を押し、アプリを <http://localhost:8080> で起動する
    （プレビューで `/employees` が開けば準備完了）
-2. アプリを起動したまま、ターミナルで Gatling を実行する
-
-```bash
-curl http://localhost:8080/actuator/health
-./gradlew.bat gatlingRun
-```
+2. アプリを起動したまま `scripts/01_gatling_run.sh` を開き、エディタの右上の **▶ 実行** を押す。
+   health を確かめてから `./gradlew.bat gatlingRun` が走ります（アプリは止まりません）
 
 接続先の既定は `http://localhost:8080` です（環境変数 `GATLING_BASE_URL` で変えられます）。
-結果はターミナルに集計が出るほか、`build/reports/gatling/employeesimulation-<実行日時>/index.html` に
+結果は出力に集計が出るほか、`build/reports/gatling/employeesimulation-<実行日時>/index.html` に
 HTML レポートができます。assertions を満たさないと Gradle も失敗で終わります。
 
 画面から初期社員を変更・削除した場合は、アプリを止めて起動し直してから測ります
@@ -39,10 +35,11 @@ HTML レポートができます。assertions を満たさないと Gradle も�
 
 ## テスト
 
-実行対象 `test` では、負荷をかける前の確認として `EmployeeApplicationSmokeTest` を実行します。
+負荷をかける前の確認として、`src/test/java/pro/kensait/spring/employee/EmployeeApplicationSmokeTest.java` を開いて、
+エディタの右上の ▶ 実行で流してください。
 アプリと H2 をテストが自動で起動し、一覧 HTML・health と、CSV の3行が初期データと対応していることを確かめます。
 元のサンプルではこのテスト（`@Tag("it")`）を `integrationTest` で流していました。
-Codinable の「test」で走るよう、除外タグを外しています（`build.gradle` のコメント参照）。
+テストクラスの ▶ 実行（test タスク）で走るよう、除外タグを外しています（`build.gradle` のコメント参照）。
 
 JDK 25 で Gatling を動かすため、`build.gradle` の `gatling.jvmArgs` に
 `--add-opens=java.base/java.lang=ALL-UNNAMED` などを指定しています。

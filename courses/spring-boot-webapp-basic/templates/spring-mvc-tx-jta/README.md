@@ -10,7 +10,7 @@
 
 ## 動かし方
 
-1. 実行対象で `gradle:bootRun` を選び、「実行」を押す
+1. ツールバーの ▶ アプリ実行で起動する
 2. `http://localhost:8080/JtaPage.html` を開き、PARAMETER に 100 や -5 を入れて送る
    （`http://localhost:8080/jta?param=100` を直接開いてもよい）
 3. 正常時は `NORMAL END`、負の値では `ERROR OCCURED!!!` が返ることと、実行ログの流れを確かめる
@@ -25,3 +25,32 @@
 - Atomikos のスターターを `transactions-spring-boot3-starter:6.0.0` から
   Spring Boot 4 用の `transactions-spring-boot4-starter:6.0.1` に替えた（前者は Spring Boot 4 で起動できない）
 - Atomikos のトランザクションログは `build/atomikos` に出す
+
+## 主なファイル
+
+- `src/main/java/pro/kensait/spring/tx/XaDataSourceConfig.java` … 2 つの XA データソース
+- `src/main/java/pro/kensait/spring/tx/FooBean.java・BarBean.java・QuxBean.java` … グローバルトランザクション
+- `src/main/java/pro/kensait/spring/tx/FugaController.java` … /jta
+
+<!-- schema:begin -->
+<!-- この節は desktop/scripts/build-schema-docs.js が DDL から作っている。
+     テーブルを変えたら、手で直さずに node scripts/build-schema-docs.js で作り直すこと -->
+## この演習で使うテーブル
+
+「JTA で 2 つのデータソースを 1 つのトランザクションにする」のコードが読み書きするテーブルです。
+テーブルはインメモリの HSQLDB に作られます（定義: `sql/hsqldb/1_SPRING_TX_JTA_DDL.sql`、初期データ: `sql/hsqldb/2_SPRING_TX_JTA_DML.sql`）。
+
+### BUSINESS_JTA
+
+| カラム | 型 | 制約 |
+|---|---|---|
+| `NAME` | `VARCHAR(10)` | 主キー |
+| `COUNT` | `INT` | NOT NULL |
+
+初期データ（2 件）
+
+| NAME | COUNT |
+|---|---|
+| Bar | 0 |
+| Qux | 0 |
+<!-- schema:end -->

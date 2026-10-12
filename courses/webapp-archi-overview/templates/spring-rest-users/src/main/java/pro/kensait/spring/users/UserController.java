@@ -24,13 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
  * @RestController は @Controller + @ResponseBody に相当し、
  * 戻り値のオブジェクトを Jackson が JSON に変換して本文にする
  *
- * 動かしたあと、ターミナルタブで curl を叩いて確かめられる:
- *   curl -s http://localhost:8080/api/users
- *   curl -s http://localhost:8080/api/users/1
- *   curl -si -X POST http://localhost:8080/api/users \
- *        -H "Content-Type: application/json" \
- *        -d '{"name":"Carol","email":"carol@example.com"}'
- *   curl -si -X DELETE http://localhost:8080/api/users/1
+ * ▶ アプリ実行で動かしたまま、curl/ のスクリプトを順に開いて
+ * エディタの右上の ▶ 実行で送ると確かめられる:
+ *   curl/01_list_users.sh   一覧取得 (GET /api/users)
+ *   curl/02_get_user.sh     1 件取得 (GET /api/users/1)
+ *   curl/03_create_user.sh  登録 (POST /api/users、201 と Location)
+ *   curl/04_delete_user.sh  削除 (DELETE /api/users/1、204) と削除後の 404
  */
 @RestController
 @RequestMapping("/api/users")

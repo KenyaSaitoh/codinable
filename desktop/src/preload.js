@@ -53,6 +53,7 @@ contextBridge.exposeInMainWorld('api', {
   wsCreateProject:  payload       => ipcRenderer.invoke('ws-create-project', payload),
   wsResetTemplate:  (name, lang)  => ipcRenderer.invoke('ws-reset-template', { name, lang }),
   wsProjectInfo:    name          => ipcRenderer.invoke('ws-project-info', { name }),
+  wsFileRunTarget:  (name, relPath) => ipcRenderer.invoke('ws-file-run-target', { name, relPath }),
   wsAddMissingFiles: (name, files, lang) =>
                                      ipcRenderer.invoke('ws-add-missing-files', { name, files, lang }),
   wsProjectContext: name          => ipcRenderer.invoke('ws-project-context', { name }),
@@ -70,6 +71,8 @@ contextBridge.exposeInMainWorld('api', {
   // ── 実行 ──
   runStart:         payload       => ipcRenderer.invoke('run-start', payload),
   runStop:          ()            => ipcRenderer.invoke('run-stop'),
+  runSide:          payload       => ipcRenderer.invoke('run-side', payload),
+  onRunSideExit:    handler       => subscribe('run-side-exit', handler),
   runStatus:        ()            => ipcRenderer.invoke('run-status'),
   onRunOutput:      handler       => subscribe('run-output', handler),
   onRunExit:        handler       => subscribe('run-exit', handler),
@@ -77,12 +80,6 @@ contextBridge.exposeInMainWorld('api', {
   onRunTestResults: handler       => subscribe('run-test-results', handler),
 
   // ── ターミナル ──
-  termStart:        opts          => ipcRenderer.invoke('term-start', opts),
-  termStop:         ()            => ipcRenderer.invoke('term-stop'),
-  termInput:        data          => ipcRenderer.send('term-input', data),
-  termResize:       size          => ipcRenderer.send('term-resize', size),
-  onTermOutput:     handler       => subscribe('term-output', handler),
-  onTermExit:       handler       => subscribe('term-exit', handler),
 
   // ── Web プレビュー ──
   previewServe:     (name, relPath) => ipcRenderer.invoke('preview-serve', { name, relPath }),

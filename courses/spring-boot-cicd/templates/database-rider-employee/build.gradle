@@ -39,7 +39,7 @@ dependencies {
 
 // 元のサンプルは test から @Tag("it") を除外し、別タスク integrationTest で流していた
 // この章のテスト（EmployeeDatabaseRiderTest）はすべて @Tag("it") なので、そのままでは
-// Codinable の「test」ボタンで 1 件も走らない。ここでは除外タグを外して test で流す
+// Codinable でテストクラスを ▶ 実行しても（test タスク）1 件も走らない。ここでは除外タグを外して test で流す
 // （アプリはランダムポートで、H2 はテストごとに自動で起動する）
 test {
     useJUnitPlatform()

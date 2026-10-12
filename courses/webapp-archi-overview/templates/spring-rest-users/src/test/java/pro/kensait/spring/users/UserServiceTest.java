@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
  * Spring を起動しないので速い。ビジネスロジックの確認はここで済ませ、
  * HTTP のやりとりは UserControllerTest に任せる、という役割分担にする
  *
- * 実行対象で「Gradle: test」を選ぶと、テスト結果タブに一覧とカバレッジが出る
+ * このファイルを開いてエディタの右上の ▶ 実行で流すと、テスト結果タブに一覧とカバレッジが出る
  */
 class UserServiceTest {
 

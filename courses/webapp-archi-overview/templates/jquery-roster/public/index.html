@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!--
+  jQuery で作る名簿管理アプリケーション (レッスン7.2.1)
+
+  画面は編集領域とテーブル領域の 2 つから成る
+  振る舞いはすべて app.js にあり、$.ajax で REST API (server.js) と通信する
+
+  試すこと:
+    1. 名前・年齢・性別を入れて「登録」 → POST で登録され、採番された ID の行が増える
+    2. 行の「編集」 → その行の td のテキストが編集領域に転記される
+       値を変えて「登録」 → ID があるので PUT で更新される
+    3. 行の「削除」 → DELETE で削除され、行が消える
+    4. 開発者ツールの Network タブで、送られた HTTP メソッドと JSON を確かめる
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>名簿管理 (jQuery)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>名簿管理 (jQuery)</h1>
+  </header>
+
+  <main>
+    <!-- 編集領域 -->
+    <section class="panel">
+      <h2>編集</h2>
+      <div class="form">
+        <label for="personId">ID（新規は空欄。サーバーが採番する）</label>
+        <input type="text" id="personId" readonly>
+
+        <label for="personName">名前</label>
+        <input type="text" id="personName">
+
+        <label for="age">年齢</label>
+        <input type="number" id="age" min="0">
+
+        <label for="gender">性別</label>
+        <select id="gender">
+          <option value="male">男性</option>
+          <option value="female">女性</option>
+        </select>
+
+        <div class="buttons">
+          <button type="button" id="registerButton">登録</button>
+          <button type="button" id="clearButton" class="secondary">クリア</button>
+        </div>
+      </div>
+      <p class="message" id="message"></p>
+    </section>
+
+    <!-- テーブル領域 -->
+    <section class="panel">
+      <h2>一覧</h2>
+      <table id="personTable">
+        <thead>
+          <tr><th>ID</th><th>名前</th><th>年齢</th><th>性別</th><th></th></tr>
+        </thead>
+        <!-- 行は app.js が組み立てる。Person のデータはこの td のテキストとして保持される -->
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- jQuery 本体 (server.js が node_modules から配信する) を先に読み込む -->
+  <script src="/vendor/jquery/jquery.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

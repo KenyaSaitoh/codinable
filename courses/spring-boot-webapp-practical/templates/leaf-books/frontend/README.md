@@ -2,17 +2,11 @@
 
 Leaf Books の画面です。データは親フォルダの REST API（`http://localhost:8080`）から取得します。
 
-```bash
-cd frontend
-npm install     # 初回だけ
-npm run dev     # http://localhost:5173 で起動
-```
-
-表示された URL を Codinable のプレビューの URL 欄に入れて開きます。
-先に REST API（親フォルダの「実行」）と Customer Hub（`customer-hub/` をターミナルで起動）を
-動かしておいてください。`/api` への要求は `vite.config.ts` の proxy で 8080 へ中継されます。
-
-`npm run build` で `dist/` に本番用のファイルを出力します。
+親フォルダで ▶ アプリ実行を押すと、REST API と Customer Hub と一緒にこの画面の開発サーバー
+（`npm run dev`、`http://localhost:5173`）も起動し、待ち受けを始めるとプレビューがこの画面に移ります
+（親フォルダの `codinable.services.json`。出力には `[frontend]` が付きます）。
+依存（`node_modules`）が無いときは、起動の前に `npm install` が自動で走ります。
+`/api` への要求は `vite.config.ts` の proxy で 8080 へ中継されます。
 
 ## 構成
 

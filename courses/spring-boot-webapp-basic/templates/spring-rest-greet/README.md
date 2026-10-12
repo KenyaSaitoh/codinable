@@ -15,13 +15,19 @@
 
 ## 動かし方
 
-1. 実行対象で `gradle:bootRun` を選び、「実行」を押す
-2. ターミナル（Git Bash）で curl を送る
+1. ▶ アプリ実行で起動する
+2. 起動したまま、`curl/` のスクリプトを順に開いて、エディタの右上の ▶ 実行で送る
 
-```bash
-curl -i http://localhost:8080/greet/hello/Alice
-curl -i "http://localhost:8080/greet/morning?name=Alice"
-curl -i -X POST -d "name=Alice" http://localhost:8080/greet/afternoon
-curl -i -X POST -H "Content-Type: application/json" -d '{"name":"Alice"}' http://localhost:8080/greet/evening
-curl -i -H "name: Alice" http://localhost:8080/greet/night
-```
+| スクリプト | 値の場所 |
+|---|---|
+| `curl/01_path_variable.sh` | パス（`/greet/hello/Alice`・`/greet/goodbye/Alice`） |
+| `curl/02_query_param.sh` | クエリ（`?name=Alice`） |
+| `curl/03_form.sh` | フォーム（`-d 'name=Alice'`） |
+| `curl/04_json_body.sh` | JSON 本文（`{"name":"Alice"}`） |
+| `curl/05_header.sh` | `name` ヘッダー |
+
+## 主なファイル
+
+- `src/main/java/pro/kensait/spring/greet/rest/api/GreetApi.java` … 値の受け取り方ごとのメソッド
+- `src/main/java/pro/kensait/spring/greet/rest/api/GreetingRequest.java` … JSON 本文を受け取る型
+- `curl/` … 上の表のスクリプト

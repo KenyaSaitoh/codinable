@@ -2,10 +2,11 @@
 //
 // 確かめること
 //   1. 演習一覧が course.yaml の件数どおりに、チャプターごとに並ぶ
-//   2. 静的ページの演習を選ぶと、プロジェクトが作られて実行対象が static: になる
+//   2. 静的ページの演習を選ぶと、プロジェクトが作られて ▶ アプリ実行が static: になる (実行対象のセレクトは無い)
 //   3. 実行するとプレビューが活性になり、止めると非活性に戻る
 //   4. ファイルを汚してから「初期化」で元に戻る
-//   5. SQL の演習を選んで実行すると、DB が自動で起動して SQL タブに結果が出る
+//   5. SQL の演習は ▶ アプリ実行が押せず、ツリーの SQL に ▶ バッジが付き、最初のファイルが 3 秒ほど目立つ
+//      SQL のファイルを開いてエディタの ▶ 実行を押すと、DB が自動で起動して SQL タブに結果が出る
 //      (DB の起動・停止はタブの行の右端だけにあり、SQL タブに実行ボタンは無い)
 //
 // ワークスペースと設定は一時ディレクトリに向けるので、実際の環境は汚さない
@@ -28,11 +29,11 @@ const wsRoot   = path.join(tmp, 'ws');
 fs.mkdirSync(userData, { recursive: true });
 fs.mkdirSync(wsRoot,   { recursive: true });
 
-// SCHEMA.md を雛形に足す前に作った SQL の演習を再現する (SCHEMA.md が無く、SQL は自分で書き換え済み)
+// README.md (テーブル構成) を雛形に足す前に作った SQL の演習を再現する (README.md が無く、SQL は自分で書き換え済み)
 const OLD_SQL = path.join(wsRoot, 'sql-join');
 const EDITED_SQL = '-- 自分で書き換えた内容\nSELECT 1 FROM (VALUES (0));\n';
 fs.cpSync(path.resolve(__dirname, '../../courses/webapp-archi-overview/templates/sql-join'), OLD_SQL, { recursive: true });
-fs.rmSync(path.join(OLD_SQL, 'SCHEMA.md'));
+fs.rmSync(path.join(OLD_SQL, 'README.md'));
 fs.writeFileSync(path.join(OLD_SQL, '01_setup.sql'), EDITED_SQL, 'utf8');
 fs.mkdirSync(path.join(OLD_SQL, '.codinable'), { recursive: true });
 fs.writeFileSync(path.join(OLD_SQL, '.codinable', 'project.json'),
@@ -130,10 +131,14 @@ async function run(cdp) {
 
   // 2. 静的ページの演習を選ぶ
   await clickExercise(cdp, 'html-form');
-  await waitFor(cdp, `document.getElementById('run-target-select').value.startsWith('static:')`,
-                20000, '静的ページの実行対象が static: にならない');
+  await waitFor(cdp, `document.getElementById('toolbar').dataset.primaryTarget.startsWith('static:')`,
+                20000, '静的ページの ▶ アプリ実行が static: にならない');
+  check(await cdp.eval(`!document.getElementById('btn-test')`), 'ツールバーに 🧪 テスト実行が残っている');
+  check(await cdp.eval(`!document.getElementById('run-tab-terminal')`), 'ターミナルのタブが残っている');
+  check(await cdp.eval(`document.getElementById('run-tab-browser').textContent.includes('Webブラウザ')`), 'プレビューのタブ名が「Webブラウザ」になっていない');
+  check(await cdp.eval(`!document.getElementById('run-target-select')`), '実行対象のセレクトが残っている');
   const opened = await cdp.eval(`[...document.querySelectorAll('.editor-tab')].map(t => t.title || t.textContent).join(',')`);
-  check(/index\.html/.test(opened), `openFiles が開かれていない: ${opened}`);
+  check(/README\.md/.test(opened), `openFiles (演習の概要の README.md) が開かれていない: ${opened}`);
   check(await cdp.eval(`!document.getElementById('btn-reset-exercise').classList.contains('hidden')`),
         '演習を選んでも「初期化」が出ない');
   check(await cdp.eval(`document.querySelectorAll('.exercise-item .q-status').length`) === 0,
@@ -184,14 +189,27 @@ async function run(cdp) {
 
   // 5. SQL の演習
   await clickExercise(cdp, 'sql-crud');
-  await waitFor(cdp, `document.getElementById('run-target-select').value.startsWith('sql:')`,
-                20000, 'SQL の実行対象が sql: にならない');
+  await waitFor(cdp, `projectInfo?.template === 'sql-crud' && !!projectInfo.fileRuns?.['01_setup.sql']`,
+                20000, 'SQL の演習が開かない');
+  // ファイル単位の演習: ▶ アプリ実行は押せず、SQL のファイルにはツリーで ▶ バッジが付き、
+  // 演習の最初のファイル (run) がしばらく目立つ
+  check(await cdp.eval(`document.getElementById('btn-run').disabled`), 'SQL の演習で ▶ アプリ実行が押せる');
+  check(await cdp.eval(`!!document.querySelector('#file-tree .tree-file.runnable[data-path="02_insert.sql"] .tree-run-badge')`),
+        'SQL のファイルにツリーの ▶ バッジが付かない');
+  check(await cdp.eval(`!document.querySelector('#file-tree .tree-file.runnable[data-path="README.md"]')`),
+        'README.md に ▶ バッジが付いている');
+  check(await cdp.eval(`!!document.querySelector('#file-tree .tree-file.flash[data-path="01_setup.sql"]')`),
+        '演習を選んでも最初に流すファイルがツリーで目立たない');
+  check(await cdp.eval(`document.getElementById('btn-run-file').classList.contains('hidden')`),
+        'README.md を開いているのにエディタの ▶ 実行が出ている');
+  await sleep(3800);
+  check(await cdp.eval(`!document.querySelector('#file-tree .tree-file.flash')`), 'ツリーのハイライトが消えない');
   check(await cdp.eval(`!document.querySelector('#tab-sql button')`), 'SQL タブにボタンが残っている');
   await waitFor(cdp, `!!document.querySelector('#service-controls [data-service="hsqldb"]')`, 5000,
                 'タブの行の右端に DB の起動・停止が出ない');
   check(await cdp.eval(`document.querySelector('#service-controls [data-service="hsqldb"] [data-action="stop"]').disabled`),
         'DB が止まっているのに「DB停止」が押せる');
-  await cdp.eval(`document.getElementById('btn-run').click()`);
+  check(await cdp.eval(CLICK_RUN('sql:01_setup.sql')), 'SQL のファイルを開いてもエディタの ▶ 実行が出ない');
   await waitFor(cdp, `document.querySelectorAll('#sql-result-wrap table tr').length > 1`, 60000,
                 'SQL を実行しても結果の表が出ない');
   const cols = await cdp.eval(`[...document.querySelectorAll('#sql-result-wrap table th')].map(th => th.textContent).join(',')`);
@@ -202,14 +220,12 @@ async function run(cdp) {
         '実行で DB が起動したことがタブの行に出ない');
   check(await cdp.eval(`!!document.querySelector('#sql-result-wrap .sql-note')`),
         'reset.sql で作り直したことが SQL タブに出ない');
-  check(await cdp.eval(`![...document.getElementById('run-target-select').options].some(o => o.value === 'sql:reset.sql')`),
-        'reset.sql が実行対象に並んでいる');
+  check(await cdp.eval(`!projectInfo.fileRuns['reset.sql']`), 'reset.sql が単独で実行できるファイルになっている');
 
   // 5a. 更新系の SQL を 2 回続けて流しても、毎回初期データから始まるので主キー違反にならない
   const runSqlTarget = async target => {
-    await cdp.eval(`(() => { const s = document.getElementById('run-target-select'); s.value = ${JSON.stringify(target)};
-                     s.dispatchEvent(new Event('change')); document.getElementById('sql-result-wrap').innerHTML = '';
-                     document.getElementById('btn-run').click(); })()`);
+    await cdp.eval(`(() => { document.getElementById('sql-result-wrap').innerHTML = ''; })()`);
+    await cdp.eval(CLICK_RUN(target));
     await waitFor(cdp, `!!document.querySelector('#sql-result-wrap table, #sql-result-wrap .sql-error, #sql-result-wrap .sql-message')`,
                   30000, `${target} の結果が出ない`);
     return cdp.eval(`document.getElementById('sql-result-wrap').textContent`);
@@ -223,8 +239,8 @@ async function run(cdp) {
   // 5a'. 途中の文で失敗したら、何文目のどの文かを出す
   await cdp.eval(`window.api.wsWriteFile(project, 'zz_error.sql', 'SELECT 1 FROM (VALUES (0));\\nINSERT INTO EMPLOYEE VALUES (10001, \\'Dup\\', NULL, 1);\\nSELECT 2 FROM (VALUES (0));\\n')`);
   await cdp.eval(`refreshProjectInfo()`);
-  await waitFor(cdp, `[...document.getElementById('run-target-select').options].some(o => o.value === 'sql:zz_error.sql')`,
-                10000, '足した SQL が実行対象に出ない');
+  await waitFor(cdp, `projectInfo.fileRuns?.['zz_error.sql'] === 'sql:zz_error.sql'`,
+                10000, '足した SQL が単独で実行できるファイルにならない');
   const errText = await runSqlTarget('sql:zz_error.sql');
   check(/2 文目/.test(errText) && /INSERT INTO EMPLOYEE VALUES \(10001/.test(errText),
         `失敗した文の位置と中身が出ない: ${errText.slice(0, 300)}`);
@@ -240,20 +256,20 @@ async function run(cdp) {
     fs.writeFileSync(path.join(process.env.SHOTS, 'app-sql-controls.png'), Buffer.from(await cdp.screenshot(), 'base64'));
   }
 
-  // 5b. 以前に作った SQL の演習でも、テーブル構成の SCHEMA.md が補われてビューアで開く
+  // 5b. 以前に作った SQL の演習でも、テーブル構成を書いた README.md が補われてビューアで開く
   await clickExercise(cdp, 'sql-join');
-  await waitFor(cdp, `projectInfo?.template === 'sql-join' && activeFile === 'SCHEMA.md'`, 20000,
-                '以前に作った SQL の演習で SCHEMA.md が開かない');
+  await waitFor(cdp, `projectInfo?.template === 'sql-join' && activeFile === 'README.md'`, 20000,
+                '以前に作った SQL の演習で README.md が開かない');
   check(await cdp.eval(`!document.getElementById('md-preview').classList.contains('hidden')`),
-        'SCHEMA.md がビューアで表示されていない');
-  check(fs.existsSync(path.join(OLD_SQL, 'SCHEMA.md')), '以前に作ったプロジェクトに SCHEMA.md が補われていない');
+        'README.md がビューアで表示されていない');
+  check(fs.existsSync(path.join(OLD_SQL, 'README.md')), '以前に作ったプロジェクトに README.md が補われていない');
   check(fs.readFileSync(path.join(OLD_SQL, '01_setup.sql'), 'utf8') === EDITED_SQL,
-        'SCHEMA.md を補うときに、自分で書き換えたファイルが上書きされた');
+        'README.md を補うときに、自分で書き換えたファイルが上書きされた');
 
   // 5c. シェルの演習を実行しても、標準入力の欄は出ない
   await clickExercise(cdp, 'http-curl');
   await waitFor(cdp, `projectInfo?.template === 'http-curl'`, 20000, 'HTTP の演習が開かない');
-  await cdp.eval(`document.getElementById('btn-run').click()`);
+  check(await cdp.eval(CLICK_RUN('file:01_get.sh')), 'シェルのファイルを開いてもエディタの ▶ 実行が出ない');
   await sleep(1500);
   check(await cdp.eval(`!document.querySelector('[id^="run-stdin"]')`), 'シェルの実行中に標準入力の欄が出た');
   await cdp.eval(`document.getElementById('btn-run-stop').disabled || document.getElementById('btn-run-stop').click()`);
@@ -286,12 +302,6 @@ async function run(cdp) {
     const w = await barWidth(id);
     check(Math.abs(w - 12) <= 1, `#${id} のスクロールバーの幅が 12px でない: ${w}`);
   }
-  await cdp.eval(`document.getElementById('run-tab-terminal').click(); true`);
-  await waitFor(cdp, `!!document.querySelector('#xterm-wrap .xterm-scrollable-element > .scrollbar.vertical')`, 15000,
-                'ターミナルのスクロールバーが出ない');
-  const termBar = await cdp.eval(`document.querySelector('#xterm-wrap .xterm-scrollable-element > .scrollbar.vertical').offsetWidth`);
-  check(Math.abs(termBar - 12) <= 1, `ターミナルのスクロールバーの幅が 12px でない: ${termBar}`);
-  await cdp.eval(`showRunPane('tab-result'); true`);
 
   // 5f. コース名に続けて、選んでいる演習の名前を文字だけで出す (枠で囲まない)
   await clickExercise(cdp, 'sql-crud');
@@ -363,19 +373,17 @@ async function run(cdp) {
   if (process.env.CHECK_JAVA_TESTS) {
     await clickExercise(cdp, 'spring-rest-users');
     await waitFor(cdp, `projectInfo?.template === 'spring-rest-users' && !running`, 20000, 'Spring REST exercise did not open');
-    await cdp.eval(`(() => { const s = document.getElementById('run-target-select'); s.value = 'gradle:test'; s.dispatchEvent(new Event('change')); document.getElementById('btn-run').click(); })()`);
+    // テストの演習: ▶ アプリ実行は塗りつぶさず、テストクラスがツリーで光る。テストクラスを開いてエディタの ▶ 実行で流す
+    check(await cdp.eval(`!document.getElementById('btn-run').classList.contains('primary')`), 'テストの演習で ▶ アプリ実行が塗りつぶされている');
+    check(await cdp.eval(`[...document.querySelectorAll('#file-tree .tree-file.flash')].every(el => /Test\\.java$/.test(el.dataset.path))`),
+          'テストの演習でテストクラス以外が光っている');
+    const testClass = await cdp.eval(`Object.values(projectInfo.fileRuns).find(v => v.startsWith('gradle:test --tests '))`);
+    check(!!testClass, 'テストクラスが単独で実行できるファイルにならない');
+    await cdp.eval(CLICK_RUN(testClass));
     await waitFor(cdp, `/BUILD (SUCCESSFUL|FAILED)/.test(document.getElementById('output-result').textContent)`, 240000, 'JUnit did not finish');
     check(await cdp.eval(`document.getElementById('output-result').textContent.includes('BUILD SUCCESSFUL')`), 'JUnit failed');
     await waitFor(cdp, `document.querySelectorAll('.tr-case').length > 0`, 10000, 'JUnit results were not displayed');
     console.log('Spring Boot / JUnit results checked');
-  }
-
-  if (process.env.CHECK_TERMINAL) {
-    await cdp.eval(`globalThis.runtimeProbe = ''; window.api.onTermOutput(text => { globalThis.runtimeProbe += text; }); document.getElementById('run-tab-terminal').click();`);
-    await sleep(1000);
-    await cdp.eval(`window.api.termInput('java -version\\rnode --version\\rpython --version\\r')`);
-    await waitFor(cdp, `/25\\./.test(globalThis.runtimeProbe) && /v24\\./.test(globalThis.runtimeProbe) && /Python 3\\.13/.test(globalThis.runtimeProbe)`, 15000, 'Terminal bundled runtimes');
-    console.log('Terminal Java / Node / Python checked');
   }
 
   if (process.env.CHECK_MESSAGING) await checkMessaging(cdp);
@@ -414,8 +422,8 @@ async function checkMessaging(cdp) {
 
 async function checkWebServerExercise(cdp, exerciseId, target, urlPattern, label) {
   await clickExercise(cdp, exerciseId);
-  await waitFor(cdp, `document.getElementById('run-target-select').value === ${JSON.stringify(target)}`,
-                20000, `${label} の実行対象が ${target} にならない`);
+  await waitFor(cdp, `document.getElementById('toolbar').dataset.primaryTarget === ${JSON.stringify(target)}`,
+                20000, `${label} の ▶ アプリ実行が ${target} にならない`);
   await cdp.eval(`document.getElementById('btn-run').click()`);
   await waitFor(cdp, `document.getElementById('btn-preview').disabled === false`, 360000,
                 `${label} を実行してもプレビューが有効にならない`);
@@ -425,6 +433,18 @@ async function checkWebServerExercise(cdp, exerciseId, target, urlPattern, label
   await waitFor(cdp, `document.getElementById('btn-run-stop').disabled === true`, 30000,
                 `${label} を停止できない`);
 }
+
+// 単独で動かせるファイルを、受講者と同じく「開いてエディタの右上の ▶ 実行を押す」で動かす式
+const CLICK_RUN = target => `(async () => {
+  const t = ${JSON.stringify(target)};
+  const rel = Object.keys(projectInfo?.fileRuns || {}).find(p => projectInfo.fileRuns[p] === t);
+  if (!rel) return false;
+  await openFile(rel);
+  await updateFileRunButton();
+  const btn = document.getElementById('btn-run-file');
+  if (btn.classList.contains('hidden') || btn.dataset.target !== t) return false;
+  btn.click(); return true;
+})()`;
 
 async function clickExercise(cdp, id) {
   const ok = await cdp.eval(`(() => {

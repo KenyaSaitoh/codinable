@@ -6,6 +6,12 @@
 
 ## 動かし方
 
-1. 実行対象で `gradle:bootRun` を選び、「実行」を押す
+1. ツールバーの ▶ アプリ実行で起動する
 2. プレビューで `http://localhost:8080/` を開き、計算する
 3. 結果画面から税込計算へ進み、前の画面の結果が引き継がれていることを確かめる
+
+## 主なファイル
+
+- `src/main/java/pro/kensait/spring/calc/web/CalcController.java` … @SessionAttributes と /calcTax
+- `src/main/java/pro/kensait/spring/calc/web/CalcSession.java` … セッションに保持する値
+- `src/main/java/pro/kensait/spring/calc/service/TaxService.java` … 税込金額の計算

@@ -21,23 +21,23 @@
 #    lesson       対応するレッスン番号と名前。一覧の副題に出る
 #    runtime      実行環境（java / spring / node / react / python / static / sql / shell）
 #                 一覧のアイコンとタグになる
-#    run          実行対象の既定値。演習を選ぶだけで「実行」が押せる状態になる
-#                 書式は実行対象セレクトと同じ:
-#                   file:<相対パス> / gradle:<タスク> / npm:<スクリプト> /
+#    run          主役の動かし方。gradle:bootRun / npm:… / static: は ▶ アプリ実行で動かすもの
+#                 gradle:test はテストが主役の演習（テストクラスを開いてエディタの右上の ▶ 実行で流す。
+#                 アプリはファイルツリーでテストクラスを目立たせる）
+#                 ファイル単位で動かす演習では最初に動かすファイル（sql: / file:。エディタの右上の ▶ 実行で動かす）
+#                 書式: file:<相対パス> / sql:<相対パス> / gradle:<タスク> / npm:<スクリプト> /
 #                   static:<配信ルート・空文字はプロジェクト直下> / java
 #    suggestName  作業用プロジェクト名の既定値
 #    names        演習名（言語ごと）
 #    descriptions 「何をどう動かすか」の説明（言語ごと）
 #    openFiles    演習を開いた直後に開くファイル（プロジェクト相対パス）
-#                 その演習の主役のファイルを 1 つ選ぶ（静的ページは index.html、
-#                 SQL は SCHEMA.md、Spring Boot は Controller など）。2 つにするのは
-#                 README.md にしか無い手順を読ませるときだけ（README.md, 主役 の順）
+#                 雛形直下の README.md（演習の概要。ビューアで開く）を 1 つだけ書く。
+#                 SQL の演習はテーブル構成・初期データ・流す順番も README.md に書く
 #                 node desktop/test/check-courses.js で確かめられる
-#    tabs         出力欄に出すタブ（省略可）。output / tests / sql / terminal /
+#    tabs         出力欄に出すタブ（省略可）。output / tests / sql /
 #                 messaging / preview から選ぶ。output は常に出る
 #                 省略すると runtime から決まる（static: preview、sql: sql、
-#                 java: terminal、spring / node / react / python: terminal と preview、
-#                 shell: terminal）。雛形に build.gradle があれば tests、
+#                 spring / node / react / python: preview）。雛形に build.gradle があれば tests、
 #                 codinable.services.json があれば messaging が加わる
 #
 #  講座を直して配信するときは version を上げてから npm run release:courses を実行する
@@ -46,7 +46,7 @@
 id: webapp-archi-overview
 order: 1
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.4.0
+version: 1.6.0
 
 names:
   ja: Webシステム＋生成AI 技術概要編
@@ -114,7 +114,7 @@ exercises:
         It contains headings, paragraphs, links, an image and the id / class attributes.
         Edit a tag, save, and reload the preview to see what changes.
     openFiles:
-      - index.html
+      - README.md
 
   - id: html-list-table
     chapter: 3
@@ -135,7 +135,7 @@ exercises:
         Covers thead vs tbody, th vs td, and nested lists.
         Add rows and items to see where each part appears.
     openFiles:
-      - index.html
+      - README.md
 
   - id: html-semantic
     chapter: 3
@@ -156,7 +156,7 @@ exercises:
         with each region labelled by its tag name so the structure is visible.
         Also shows how div / span differ, and attributes that help accessibility.
     openFiles:
-      - index.html
+      - README.md
 
   - id: html-form
     chapter: 3
@@ -178,7 +178,7 @@ exercises:
         Submit it empty and the browser blocks it; submit it properly and the values
         show up in the URL.
     openFiles:
-      - index.html
+      - README.md
 
   # ── チャプター3: JavaScript（振る舞い）──────────────────
   - id: js-dom
@@ -200,7 +200,7 @@ exercises:
         textContent and classList. The HTML holds the "before" text, so comparing the
         source with the preview shows exactly what the script did.
     openFiles:
-      - index.html
+      - README.md
 
   - id: js-events
     chapter: 3
@@ -221,7 +221,7 @@ exercises:
         addEventListener and logs them as they fire.
         Interact with the page to see which action produces which event.
     openFiles:
-      - index.html
+      - README.md
 
   - id: js-form
     chapter: 3
@@ -242,7 +242,7 @@ exercises:
         collects the values with FormData. Checks that HTML validation attributes
         cannot express - matching passwords, minimum length - are done in JavaScript.
     openFiles:
-      - index.html
+      - README.md
 
   - id: js-fetch
     chapter: 3
@@ -263,7 +263,7 @@ exercises:
         The point is that the page itself is never reloaded - the basis of the SPA in
         chapter 10. A button that deliberately triggers a 404 exercises the error path.
     openFiles:
-      - index.html
+      - README.md
 
   # ── チャプター3: CSS（修飾）─────────────────────────
   - id: css-selectors
@@ -285,7 +285,7 @@ exercises:
         ways to write colours (name / hex / RGB / RGBA) and the font and background
         properties. Also shows which rule wins (specificity) and what is inherited.
     openFiles:
-      - index.html
+      - README.md
 
   - id: css-box
     chapter: 3
@@ -306,7 +306,7 @@ exercises:
         Also compares how box-sizing changes the rendered width for the same width
         value, and how display and overflow behave. Change the numbers and watch.
     openFiles:
-      - index.html
+      - README.md
 
   - id: css-position
     chapter: 3
@@ -327,7 +327,7 @@ exercises:
         stacking order with z-index. Scroll the preview to see how the fixed button
         and the sticky heading behave differently.
     openFiles:
-      - index.html
+      - README.md
 
   - id: css-layout
     chapter: 3
@@ -348,7 +348,7 @@ exercises:
         Compares the values of justify-content, how flex distributes width, and how
         grid-column spans cells. Resize the preview to see the wrapping.
     openFiles:
-      - index.html
+      - README.md
 
   - id: css-responsive
     chapter: 3
@@ -371,7 +371,7 @@ exercises:
         and CSS variables that keep colours and spacing in one place.
         Drag the divider between editor and preview to change the width.
     openFiles:
-      - index.html
+      - README.md
 
   - id: static-web
     chapter: 3
@@ -392,7 +392,7 @@ exercises:
         JavaScript. Try adding and removing rows to see how the three files divide the
         work. The React version in chapter 10 (react-spa) covers the same subject.
     openFiles:
-      - index.html
+      - README.md
 
   - id: http-curl
     chapter: 4
@@ -406,17 +406,15 @@ exercises:
     descriptions:
       ja: >-
         リクエストライン・ヘッダー・ステータスコードを curl で確かめるスクリプトです。
-        3 本あるので、実行対象を切り替えて順に実行してください。
-        ターミナルタブで同じコマンドを直接打つこともできます。
+        3 本あるので、順に開いてエディタの右上の ▶ 実行で動かしてください。
       en: >-
         Scripts that use curl to inspect request lines, headers and status codes.
-        There are three; switch the run target to try each one.
-        You can also type the same commands directly in the terminal tab.
+        There are three; open each in turn and press ▶ Run at the top right of the editor.
     openFiles:
-      - 01_get.sh
+      - README.md
 
   # ── チャプター6: SQL ────────────────────────────────
-  # sql: は「指定した .sql を HSQLDB へ流す」実行対象
+  # sql: は「指定した .sql を HSQLDB へ流す」対象ファイル（開いてエディタの右上の ▶ 実行で流す）
   # DB が止まっていれば実行時に起こすので、先に起動しておく必要はない
   # 結果は最後の 1 文だけが出る。1 文だけ流したいときは、その範囲を選択して実行する
   #
@@ -437,14 +435,16 @@ exercises:
         講義と同じ EMPLOYEE テーブル（講義の 4 件を含む 16 件）を作り、SELECT で取り出します。
         主キー検索・射影・比較演算子と、AND / OR / IN / BETWEEN / LIKE / IS NULL の
         条件の書き方が入っています。どのファイルも実行のたびに初期データから始まります。
+        番号順に .sql を開き、エディタの右上の ▶ 実行で流してください。
       en: >-
         Creates the EMPLOYEE table from the lectures (16 rows, including the 4 from the lecture) and queries it with SELECT.
         Covers primary-key lookups, projection, comparison operators and the
         AND / OR / IN / BETWEEN / LIKE / IS NULL conditions.
         Every file starts from the initial data each time you run it.
-    # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
+        Open the .sql files in numbered order and run each with ▶ Run at the top right of the editor.
+    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ▶ 実行で流す
     openFiles:
-      - SCHEMA.md
+      - README.md
 
   - id: sql-crud
     chapter: 6
@@ -460,14 +460,16 @@ exercises:
         登録・更新・削除を実際に実行して、SELECT で結果を確かめます。
         主キー指定と条件指定の違い、WHERE を書き忘れたときに何が起きるかも扱います。
         実行のたびに元の 16 件から始まるので、何度でも試せます。
+        番号順に .sql を開き、エディタの右上の ▶ 実行で流してください。
       en: >-
         Actually inserts, updates and deletes rows, checking the result with SELECT.
         Covers the difference between targeting by primary key and by condition, and
         what happens when you forget the WHERE clause.
         Every run starts again from the original 16 rows, so you can try as often as you like.
-    # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
+        Open the .sql files in numbered order and run each with ▶ Run at the top right of the editor.
+    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ▶ 実行で流す
     openFiles:
-      - SCHEMA.md
+      - README.md
 
   - id: sql-aggregate
     chapter: 6
@@ -483,13 +485,15 @@ exercises:
         COUNT / SUM / AVG / MAX / MIN と GROUP BY・HAVING、
         ORDER BY・DISTINCT・LIMIT です。部署ごとの人数や平均月給を出します。
         NULL が集計からどう扱われるか、AVG が整数で返る理由も確かめられます。
+        番号順に .sql を開き、エディタの右上の ▶ 実行で流してください。
       en: >-
         COUNT / SUM / AVG / MAX / MIN together with GROUP BY, HAVING, ORDER BY,
         DISTINCT and LIMIT - head counts and average salary per department.
         Also shows how NULL is treated and why AVG comes back as an integer.
-    # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
+        Open the .sql files in numbered order and run each with ▶ Run at the top right of the editor.
+    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ▶ 実行で流す
     openFiles:
-      - SCHEMA.md
+      - README.md
 
   - id: sql-ddl
     chapter: 6
@@ -505,14 +509,16 @@ exercises:
         CREATE TABLE でデータ型と制約（NOT NULL / UNIQUE / PRIMARY KEY / CHECK /
         DEFAULT）を指定し、ALTER TABLE と DROP TABLE で変更・削除します。
         02_constraints.sql はすべてエラーになる SQL で、制約が働くことを失敗で確かめます。
+        番号順に .sql を開き、エディタの右上の ▶ 実行で流してください。
       en: >-
         Specifies data types and constraints (NOT NULL / UNIQUE / PRIMARY KEY / CHECK /
         DEFAULT) with CREATE TABLE, then changes and drops it with ALTER and DROP TABLE.
         Every statement in 02_constraints.sql fails on purpose - that is how you see
         the constraints working.
-    # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
+        Open the .sql files in numbered order and run each with ▶ Run at the top right of the editor.
+    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ▶ 実行で流す
     openFiles:
-      - SCHEMA.md
+      - README.md
 
   - id: sql-join
     chapter: 6
@@ -528,14 +534,16 @@ exercises:
         部署を別テーブルに分け、外部キーで参照する形にします。
         INNER JOIN と LEFT JOIN の違い（部署未設定の社員、社員のいない部署）、
         サブクエリ、ビュー、ON DELETE CASCADE を実際に動かして確かめます。
+        番号順に .sql を開き、エディタの右上の ▶ 実行で流してください。
       en: >-
         Moves departments into their own table, referenced by a foreign key.
         Shows the difference between INNER JOIN and LEFT JOIN (an employee with no
         department, a department with no employees), plus subqueries, views and
         ON DELETE CASCADE.
-    # テーブル構成を先に読んでもらう。SQL は実行対象のセレクトで選んで流す
+        Open the .sql files in numbered order and run each with ▶ Run at the top right of the editor.
+    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ▶ 実行で流す
     openFiles:
-      - SCHEMA.md
+      - README.md
 
   - id: javascript-basics
     chapter: 7
@@ -548,13 +556,39 @@ exercises:
       en: Run JavaScript and TypeScript
     descriptions:
       ja: >-
-        Node.js で直接動かせるスクリプトです。基本・非同期処理・TypeScript の 3 本あります。
+        Node.js で直接動かせるスクリプトです。基本・非同期処理・TypeScript の 3 本あり、開いてエディタの右上の ▶ 実行で動かします。
         .ts も型を書いたままそのまま実行できます（Node.js のtype stripping）。
       en: >-
-        Scripts you can run directly with Node.js: basics, async, and TypeScript.
+        Scripts you can run directly with Node.js: basics, async, and TypeScript. Open one and press ▶ Run at the top right of the editor.
         The .ts file runs as-is, types included (Node.js type stripping).
     openFiles:
-      - 01_basics.js
+      - README.md
+
+  - id: jquery-roster
+    chapter: 7
+    lesson: '7.2.1 jQueryとDOM操作ライブラリの時代'
+    runtime: node
+    # 依存 (express / jquery) は実行前に自動で入る (runner.js の needsNpmInstall)
+    run: 'npm:start'
+    suggestName: jquery-roster
+    names:
+      ja: jQueryの名簿管理アプリケーションを動かす
+      en: Run the jQuery roster application
+    descriptions:
+      ja: >-
+        原稿の名簿管理アプリケーションを jQuery で書いたものです。登録は POST、更新は PUT、
+        削除は DELETE を $.ajax で送ります。▶ アプリ実行を押すと、初回だけ依存パッケージを
+        自動で入れてから REST API サーバー（原稿の JAX-RS 版と同じ URL と JSON）を起動し、
+        プレビュータブが開きます。「編集」で、行の td のテキストを DOM をたどって取り出す
+        様子を確かめ、チャプター10.1 の React 版と見比べてください。
+      en: >-
+        The roster application from the course, written with jQuery. Registering sends POST,
+        updating sends PUT and deleting sends DELETE via $.ajax. Press ▶ Run app to install the
+        dependencies on the first launch and start the REST API server (same URLs and JSON
+        as the JAX-RS version in the course); the preview tab opens. See how "Edit" walks the
+        DOM to read the td text of a row, and compare it with the React version in chapter 10.1.
+    openFiles:
+      - README.md
 
   - id: spring-mvc-calc
     chapter: 8
@@ -567,17 +601,17 @@ exercises:
       en: Run a Spring MVC application
     descriptions:
       ja: >-
-        Controller + Thymeleaf の計算アプリケーションです。「実行」でサーバーが起動し、
+        Controller + Thymeleaf の計算アプリケーションです。▶ アプリ実行でサーバーが起動し、
         プレビュータブが自動で開きます（初回は Gradle の取得に数分かかります）。
         入力値検証や 0 除算のエラーも試せます。計算は POST、「計算履歴を見る」は GET
         （/history?limit=5 のように件数も指定できる）で、HTTP メソッドの使い分けを確かめられます。
       en: >-
-        A Controller + Thymeleaf calculator. Run it and the server starts, opening the
+        A Controller + Thymeleaf calculator. Press ▶ Run app and the server starts, opening the
         preview tab automatically (the first run downloads Gradle and takes a few minutes).
         Validation errors and division by zero are worth trying too. Calculations use POST and
         the history page uses GET (/history?limit=5), showing how HTTP methods are chosen.
     openFiles:
-      - src/main/java/pro/kensait/spring/calc/CalcController.java
+      - README.md
 
   - id: django-calc
     chapter: 8
@@ -591,18 +625,19 @@ exercises:
     descriptions:
       ja: >-
         Spring MVC 版と同じ計算アプリケーション（四則演算・入力値検証・0 除算のエラー・計算履歴）を
-        Django で書いたものです。「実行」を押すと、初回だけ依存パッケージを自動で準備して
+        Django で書いたものです。▶ アプリ実行を押すと、初回だけ依存パッケージを自動で準備して
         開発サーバーを起動し、プレビュータブが開きます。URLconf・View・Form・Template・
         services の役割を、Spring MVC 版の Controller・CalcParam・Thymeleaf・CalcService と
-        見比べてください。
+        見比べてください。テストは run_tests.sh を開いて、エディタの右上の ▶ 実行で流せます。
       en: >-
         The same calculator as the Spring MVC version (four operations, input validation,
-        the division-by-zero error and the calculation history), written with Django. Run it to install dependencies on the
+        the division-by-zero error and the calculation history), written with Django. Press ▶ Run app to install dependencies on the
         first launch and start the development server; the preview tab opens. Compare the
         URLconf, View, Form, Template and services with the Spring MVC Controller, CalcParam,
-        Thymeleaf template and CalcService.
+        Thymeleaf template and CalcService. To run the tests, open run_tests.sh and press
+        ▶ Run at the top right of the editor.
     openFiles:
-      - calc/views.py
+      - README.md
 
   - id: express-calc
     chapter: 8
@@ -617,36 +652,38 @@ exercises:
     descriptions:
       ja: >-
         Spring MVC 版と同じ計算アプリケーション（四則演算・入力値検証・0 除算のエラー・計算履歴）を
-        Express + EJS で書いたものです。「実行」を押すと、初回だけ依存パッケージを自動で
+        Express + EJS で書いたものです。▶ アプリ実行を押すと、初回だけ依存パッケージを自動で
         入れてからサーバーを起動し、プレビュータブが開きます。
       en: >-
         The same calculator as the Spring MVC version (four operations, input validation,
-        the division-by-zero error and the calculation history), written with Express + EJS. Run it to install the
+        the division-by-zero error and the calculation history), written with Express + EJS. Press ▶ Run app to install the
         dependencies on the first launch and start the server; the preview tab opens.
     openFiles:
-      - app.js
+      - README.md
 
   - id: spring-rest-users
     chapter: 9
     lesson: '9.1 WebAPIによるアプリケーション連携'
     runtime: spring
-    # 既定はテスト実行。テスト結果タブでメソッド単位の成否とカバレッジが見える
+    # テストが主役。テストクラスを開いてエディタの右上の ▶ 実行で流すと、テスト結果タブでメソッド単位の成否とカバレッジが見える
     run: 'gradle:test'
+    preview: '/api/users'
     suggestName: spring-rest-users
     names:
       ja: Web APIとユニットテストを動かす
       en: Run a Web API and its unit tests
     descriptions:
       ja: >-
-        /api/users の CRUD を返す REST API です。まず「Gradle: test」でテスト結果タブを確かめ、
-        次に「Gradle: bootRun」で起動してターミナルから curl を叩いてみてください
-        （コマンド例は UserController のコメントにあります）。
+        /api/users の CRUD を返す REST API です。まず src/test/java の UserServiceTest.java と
+        UserControllerTest.java を開いて、エディタの右上の ▶ 実行で流し、テスト結果タブを確かめてください。
+        次に ▶ アプリ実行で起動したまま、curl/ のスクリプトを順に開いてエディタの右上の ▶ 実行で送ってください。
       en: >-
-        A REST API serving CRUD on /api/users. First run "Gradle: test" and look at the
-        Tests tab, then run "Gradle: bootRun" and call it with curl from the terminal
-        (example commands are in the comments of UserController).
+        A REST API serving CRUD on /api/users. First open UserServiceTest.java and
+        UserControllerTest.java under src/test/java, press ▶ Run at the top right of the editor
+        and look at the Tests tab. Then keep the app running with ▶ Run app, open the scripts
+        in curl/ in order and press ▶ Run at the top right of the editor.
     openFiles:
-      - src/main/java/pro/kensait/spring/users/UserController.java
+      - README.md
 
   # ── チャプター10: React ─────────────────────────────
   # 原稿の説明順に小さな演習を並べ、最後に名簿管理の総合演習へ進む
@@ -667,7 +704,7 @@ exercises:
         Reuse UserCard with different props and inspect the parent-child component tree.
         The small page demonstrates JSX expressions, className and rendering from an array.
     openFiles:
-      - src/UserCard.tsx
+      - README.md
 
   - id: react-state-props
     chapter: 10
@@ -686,7 +723,7 @@ exercises:
         A parent owns a list with useState and passes data and a delete callback as props.
         Interact with it to see state changes trigger a new render.
     openFiles:
-      - src/UserList.tsx
+      - README.md
 
   - id: react-form-events
     chapter: 10
@@ -705,7 +742,7 @@ exercises:
         Handle onChange and onSubmit in controlled inputs whose values stay in state.
         Submission keeps the page in place and renders a confirmation from state.
     openFiles:
-      - src/ProfileForm.tsx
+      - README.md
 
   - id: react-fetch-hooks
     chapter: 10
@@ -724,7 +761,7 @@ exercises:
         Fetch local JSON from useEffect and keep loading, error and data in state.
         The useUsers hook separates reusable data logic from the display component.
     openFiles:
-      - src/hooks/useUsers.ts
+      - README.md
 
   - id: react-spa
     chapter: 10
@@ -738,12 +775,12 @@ exercises:
       en: Run a React SPA
     descriptions:
       ja: >-
-        Vite + React + TypeScript の名簿管理です。「実行」を押すと、初回だけ依存パッケージを
+        Vite + React + TypeScript の名簿管理です。▶ アプリ実行を押すと、初回だけ依存パッケージを
         自動で準備してから起動し、プレビュータブが開きます（初回は数分かかることがあります）。
         チャプター3の静的ページと同じ題材なので、作り方の違いを見比べてください。
       en: >-
-        A Vite + React + TypeScript roster. Run it to install dependencies automatically
+        A Vite + React + TypeScript roster. Press ▶ Run app to install dependencies automatically
         on the first launch, start Vite, and open the Preview tab (the first run may take a few minutes).
         It is the same subject as the static page in chapter 3, so compare the approaches.
     openFiles:
-      - src/App.tsx
+      - README.md

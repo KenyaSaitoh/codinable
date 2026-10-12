@@ -313,6 +313,31 @@ function pipInstallStep(projectDir, env) {
 
 // ── 実行仕様の組み立て ─────────────────────────────────────
 
+// エディタの「▶ 実行」で Gradle のプロジェクトの main を 1 つだけ動かすタスク
+// (-PmainClass を受け取らない build.gradle 向け。workspace.js の gradleMainTarget)
+// run タスクがあれば、その JVM 引数・システムプロパティ・作業ディレクトリを引き継ぐ
+const MAIN_INIT_SCRIPT = `
+rootProject {
+  afterEvaluate { p ->
+    if (!p.plugins.hasPlugin('java')) return
+    p.tasks.register('codinableMain', JavaExec) {
+      group = 'codinable'
+      description = 'Runs one main class (Codinable)'
+      classpath = p.sourceSets.main.runtimeClasspath
+      mainClass = p.findProperty('codinableMain')
+      standardInput = System.in
+      def run = p.tasks.findByName('run')
+      if (run instanceof JavaExec) {
+        jvmArgs run.jvmArgs
+        systemProperties run.systemProperties
+        environment run.environment
+        workingDir run.workingDir
+      }
+    }
+  }
+}
+`;
+
 /**
  * @returns {{ steps: Array, run: object, label: string, isTest?: boolean }}
  */
@@ -325,22 +350,27 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
       const wrapper = ensureGradleWrapper(projectDir);
       if (!wrapper.ok) throw new Error(wrapper.error);
 
-      const safeTask = /^[\w:. -]+$/.test(String(task || '').trim())
+      // '=' は「▶ 実行」で main を 1 つ選ぶ -PmainClass=… / -PcodinableMain=… のため
+      const safeTask = /^[\w:.= -]+$/.test(String(task || '').trim())
         ? String(task).trim() : 'build';
-      const isTest = safeTask.split(/\s+/).includes('test');
-      const isBootRun = safeTask.split(/\s+/).includes('bootRun');
+      const words = safeTask.split(/\s+/);
+      const isTest = words.includes('test');
+      const isBootRun = words.includes('bootRun');
 
       let extra = '';
+      const addInitScript = (name, content) => {
+        const initPath = path.join(projectDir, '.codinable', name);
+        fs.mkdirSync(path.dirname(initPath), { recursive: true });
+        fs.writeFileSync(initPath, content, 'utf8');
+        extra += ` -I "${initPath}"`;
+      };
       if (isTest) {
         // テストのカバレッジは JaCoCo を init script で後付けする
         // (雛形の build.gradle に JaCoCo の記述を強いないため)
-        const initPath = path.join(projectDir, '.codinable', 'jacoco.init.gradle');
-        try {
-          fs.mkdirSync(path.dirname(initPath), { recursive: true });
-          fs.writeFileSync(initPath, JACOCO_INIT_SCRIPT, 'utf8');
-          extra = ` -I "${initPath}"`;
-        } catch { /* カバレッジが取れなくてもテスト自体は動かす */ }
+        try { addInitScript('jacoco.init.gradle', JACOCO_INIT_SCRIPT); }
+        catch { /* カバレッジが取れなくてもテスト自体は動かす */ }
       }
+      if (words.includes('codinableMain')) addInitScript('main.init.gradle', MAIN_INIT_SCRIPT);
 
       const gradlew = IS_WIN
         ? path.join(projectDir, 'gradlew.bat')
@@ -506,6 +536,7 @@ function execStep(step, send) {
 
 async function stop() {
   runToken++;
+  await stopSide();
   if (!current) return { ok: true };
   const task = current;
   current = null;
@@ -640,13 +671,62 @@ function isRunning() {
   return !!current;
 }
 
+// ── 脇で動かすシェル ─────────────────────────────────────
+//
+// API を叩く curl のスクリプト (curl/01_get.sh など) は、▶ アプリ実行で起動した
+// アプリに向けて送るものなので、実行中のアプリを止めずに脇で動かす
+// 動かし続けるスクリプト (client/serve.sh の静的サーバーなど) もあるので、
+// 脇のスクリプトは同時にいくつでも動かせる。同じスクリプトをもう一度動かしたときだけ
+// 前のものを止める。出力は同じ「実行結果」に流し、終わったら run-side-exit を送る
+// 本体を止めたとき (停止ボタン・別の実行) は一緒に止める
+const sides = new Map();   // relPath → proc
+
+async function stopSide(relPath = null) {
+  const targets = relPath ? [relPath].filter(p => sides.has(p)) : [...sides.keys()];
+  await Promise.all(targets.map(p => { const proc = sides.get(p); sides.delete(p); return killTree(proc); }));
+}
+
+async function startSide(event, { project, relPath, uiLang } = {}) {
+  const wc   = event.sender;
+  const send = (channel, payload) => { if (!wc.isDestroyed()) wc.send(channel, payload); };
+  const projectDir = resolveProjectDir(project);
+  if (!projectDir || !fs.existsSync(projectDir)) return { ok: false, error: 'プロジェクトが見つかりません' };
+  if (!/\.(sh|bash)$/i.test(relPath || '')) return { ok: false, error: 'シェルのスクリプトだけを脇で動かせます' };
+
+  let spec;
+  try { spec = buildSpec({ kind: 'file', projectDir, relPath, uiLang }); }
+  catch (err) { return { ok: false, error: err.message }; }
+
+  await stopSide(relPath);
+  let proc;
+  try {
+    proc = spawn(spec.run.exe, spec.run.args, { cwd: spec.run.cwd, env: spec.run.env, windowsHide: true, stdio: STDIO });
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+  sides.set(relPath, proc);
+  const onData = chunk => send('run-output', decodeOutput(chunk));
+  proc.stdout.on('data', onData);
+  proc.stderr.on('data', onData);
+  proc.on('error', err => send('run-output', `
+❌ ${err.message}
+`));
+  proc.on('close', code => {
+    if (sides.get(relPath) === proc) sides.delete(relPath);
+    send('run-side-exit', { code, relPath });
+  });
+  return { ok: true, label: spec.label };
+}
+
 /** 終了時のクリーンアップ */
 function disposeAll() {
   if (current) { killTree(current.proc); current = null; }
+  for (const proc of sides.values()) killTree(proc);
+  sides.clear();
 }
 
 module.exports = {
-  start, stop, isRunning, disposeAll,
+  start, stop, isRunning, disposeAll, startSide,
   ensureGradleWrapper, detectUrl, detectProject,
   // テスト用に公開
   buildSpec, createUrlDetector,

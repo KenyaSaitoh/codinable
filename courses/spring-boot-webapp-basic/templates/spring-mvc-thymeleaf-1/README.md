@@ -13,8 +13,13 @@
 
 ## 動かし方
 
-1. 実行対象で `gradle:bootRun` を選び、「実行」を押す
+1. ツールバーの ▶ アプリ実行で起動する
 2. プレビューで `http://localhost:8080/` を開き、各ページへ進む
 
 サンプルは `thymeleaf-extras-java8time` を依存に入れていましたが、Thymeleaf 3.1 以降は
 `#temporals` が本体に含まれるため、ここでは外してあります。
+
+## 主なファイル
+
+- `src/main/java/pro/kensait/spring/thymeleaf/ThymeleafController.java` … 各ページへ値を渡す Controller
+- `src/main/resources/templates/` … 上の表の各テンプレート

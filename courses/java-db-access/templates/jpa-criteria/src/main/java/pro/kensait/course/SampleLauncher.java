@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 /*
- * Codinable の「実行」ボタンから教材の main を動かすための起動クラス
+ * Codinable の ▶ アプリ実行から教材の main を動かすための起動クラス
  *
  * 元の教材は HSQLDB サーバーの testdb を setupHsqldb で初期化してから、
  * main を 1 つずつ -PmainClass で選んで実行する。Codinable はサーバーも引数も使えないので、
@@ -20,7 +20,7 @@ import java.util.List;
  *   3. main を呼び出す。例外で終わっても次の main へ進み、最後に一覧を出す
  *
  * 「A & B」と書いた行は、A を起動して数秒後に B を別スレッドで起動する。
- * 元の教材で 2 つのターミナルから同時に動かしていたロックの確認を、
+ * 元の教材で 2 つのプロセスを同時に動かしていたロックの確認を、
  * 1 回の実行の中で（別々の DB セッションとして）再現するためのもの
  */
 public final class SampleLauncher {
