@@ -251,7 +251,7 @@ courses/<講座ID>/
 
 | 講座ID | 対応する Udemy 講座 | 演習 |
 |---|---|---|
-| `webapp-archi-overview` | Web システム＋生成AI 技術概要編 | 全 30 件（下記） |
+| `webapp-archi-overview` | Webシステムアーキテクチャ概要 | 全 30 件（下記） |
 | `spring-boot-webapp-basic` | Spring Boot Webアプリ基礎 | 24 件（DI / MVC・Thymeleaf / 入力検証 / PRG・セッション / ファイル / JDBC・JPA・MyBatis / トランザクション / REST / RestClient） |
 | `spring-advanced` | Spring 高度な仕組み | 13 件（WebClient・WebSocket / OAuth2・OIDC / Security / GraphQL / WebFlux・Kafka・RabbitMQ / Resilience・Retry / Actuator・Observability） |
 | `spring-boot-cicd` | Spring Boot CICD | 9 件（JUnit・Mockito / Spring の結合テスト / Database Rider・API テスト / Playwright / Gatling / CI） |

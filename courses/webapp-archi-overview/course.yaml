@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════
-#  Udemy「Webシステム＋生成AI 技術概要編」の演習
+#  Udemy「Webシステムアーキテクチャ概要」の演習
 #
 #  講義そのものは動画側にあるため、ここには「開いてすぐ動く最小構成」だけを置く
 #  受講者は演習を選んで実行し、動きを確かめながら動画を進める
@@ -49,8 +49,8 @@ order: 1
 version: 1.6.0
 
 names:
-  ja: Webシステム＋生成AI 技術概要編
-  en: 'Web Systems + Generative AI: Technology Overview'
+  ja: Webシステムアーキテクチャ概要
+  en: Web System Architecture Overview
 
 descriptions:
   ja: >-
