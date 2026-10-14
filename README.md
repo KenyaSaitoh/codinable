@@ -3,7 +3,7 @@
 Udemy 講座の受講環境として使う、Windows 向けのデスクトップ開発環境（Electron 製）。
 
 エディタ・ファイルツリー・実行・テスト結果・Web ブラウザ（プレビュー）・SQL 実行を
-1 つのウィンドウにまとめてあり、**Java / Node.js / Python / Bash / HSQLDB / Kafka / RabbitMQ を同梱**しているため、
+1 つのウィンドウにまとめてあり、**Java / Node.js / Python / Bash / HSQLDB / Payara Server / Kafka / RabbitMQ を同梱**しているため、
 受講者は個別に開発環境を作らなくても講座を始められる。
 
 LLM とのチャットも使えるが、これは任意機能である（API キーを登録しなければ使わないだけで、
@@ -46,6 +46,7 @@ Windows + Git Bash で、リポジトリ直下の `setup.bat` を実行する（
 | `runtime/node/` | Node.js 24（`npm` / `npx` 同梱） |
 | `runtime/python/` | Python 3.13（embeddable 版に `pip` を入れたもの） |
 | `runtime/bash/` | PortableGit から抜いた `bash` + coreutils + `curl` |
+| `runtime/payara/` | Payara Server 7（Jakarta EE 11。Jakarta EE の講座の WAR を動かす） |
 | `runtime/kafka/` | Apache Kafka 4.3.1（KRaft、学習用の単一ノード） |
 | `runtime/rabbitmq/` | RabbitMQ 4.3.6（管理プラグインを有効にして起動） |
 | `runtime/erlang/` | Erlang/OTP 28.5 と起動に必要な Visual C++ ランタイム DLL |
@@ -109,6 +110,21 @@ codinable/
 IntelliJ で開いても成立する。
 
 ## 演習
+
+### Payara Server（Jakarta EE）
+
+`war` プラグインの Gradle プロジェクト（Spring Boot でないもの）では、**▶ アプリ実行**（`gradle:payaraRun`）が
+`gradle war` で WAR を作り、同梱の Payara Server 7 に起動時デプロイする。デプロイが終わると、
+WAR のファイル名から決まるコンテキストルート（`http://localhost:8080/<WAR 名>/`）がプレビューに開く。
+演習の `preview` はコンテキストルートから書く（`/jakarta-servlet-hello/hello`）。
+
+- ドメインは実行のたびに配布物の `domain1` から `%APPDATA%Codinablepayaradomainscodinable` に作り直す
+  （前の演習のアプリや JMS のデータを持ち越さない）。OSGi のキャッシュだけは引き継ぐので、起動は数秒
+- 待ち受けは 127.0.0.1 だけ（JMS の 7676 を除く）。Hazelcast は止めてある
+- 同梱の HSQLDB の JDBC ドライバーをドメインの `lib` に置く
+- 雛形が JDBC の接続プールや JMS の宛先を asadmin で作るときは、`payara/post-boot-commands.asadmin` に
+  1 行 1 コマンドで書く（デプロイの前に流れる）
+- デプロイに失敗したらサーバーを止め、実行結果にエラーを残す
 
 ### Kafka / RabbitMQ
 

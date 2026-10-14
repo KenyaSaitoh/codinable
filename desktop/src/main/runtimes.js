@@ -250,7 +250,7 @@ function probeRuntimes(decodeOutput) {
     java, node, npm, python, bash,
     hsqldb: !!resolveHsqldb(),
     gradleWrapper: !!resolveGradleWrapperJar(),
-    ...Object.fromEntries(['kafka', 'rabbitmq', 'erlang'].map(name => {
+    ...Object.fromEntries(['payara', 'kafka', 'rabbitmq', 'erlang'].map(name => {
       try { return [name, fs.readFileSync(path.join(resolveRuntimeDir(name), 'codinable-version.txt'), 'utf8').trim()]; }
       catch { return [name, null]; }
     })),

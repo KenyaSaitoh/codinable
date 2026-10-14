@@ -1,0 +1,100 @@
+# ═══════════════════════════════════════════════════════════
+#  Udemy「Jakarta EE Webアプリ基礎」の演習
+#
+#  講義そのものは動画側にあり、ここには講座原稿（01_master）のコードを
+#  Codinable 単独で動く形にしたものを置く。問題を出して解かせることはしない
+#
+#  雛形は war プラグインの Gradle プロジェクトで、▶ アプリ実行（gradle:payaraRun）が
+#  WAR を作って同梱の Payara Server 7 へデプロイする（desktop/src/main/payara.js）
+#  WAR のファイル名がコンテキストルートになるので、preview はコンテキストルートから書く
+#
+#  exercises[] の項目は spring-boot-webapp-basic/course.yaml と同じ
+#  （runtime は jakarta、run は gradle:payaraRun）
+# ═══════════════════════════════════════════════════════════
+id: jakartaee-webapp-basic
+order: 11
+# 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
+version: 1.0.0
+
+names:
+  ja: Jakarta EE Webアプリ基礎
+  en: 'Jakarta EE Web Apps: Fundamentals'
+
+descriptions:
+  ja: >-
+    Jakarta EE 11 の Web アプリケーションを、サーブレットと JSP、CDI とレイヤー設計、
+    Jakarta Faces の画面生成・入力検証・画面遷移、ファイルの送受信、JDBC と Jakarta Persistence・
+    Jakarta Data、Jakarta Transactions、Jakarta REST とクライアント API の順に動かして確かめる講座の演習です。
+    WAR は同梱の Payara Server 7 へデプロイして動かします。
+  en: >-
+    Exercises for the course that runs a Jakarta EE 11 web application step by step:
+    servlets and JSP, CDI and layering, page rendering, validation and navigation with Jakarta Faces,
+    file upload and download, JDBC, Jakarta Persistence and Jakarta Data, Jakarta Transactions,
+    and Jakarta REST with the client API. WARs are deployed to the bundled Payara Server 7.
+
+# チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
+chapters:
+  2:
+    ja: 'Jakarta EEとサーブレットによるHTTP処理'
+    en: 'HTTP Processing with Jakarta EE and Servlets'
+  3:
+    ja: 'JSPとMVCパターンによる画面生成'
+    en: 'Rendering Pages with JSP and the MVC Pattern'
+  4:
+    ja: 'CDIによるDIとレイヤー設計'
+    en: 'DI and Layered Design with CDI'
+  5:
+    ja: 'Jakarta Facesによる画面生成'
+    en: 'Rendering Pages with Jakarta Faces'
+  6:
+    ja: 'Jakarta Facesの入力検証・変換・例外処理'
+    en: 'Validation, Conversion and Exception Handling in Jakarta Faces'
+  7:
+    ja: '画面遷移とスコープによる状態管理'
+    en: 'Navigation and State Management with Scopes'
+  8:
+    ja: 'ファイルのアップロードとダウンロード'
+    en: 'File Upload and Download'
+  9:
+    ja: 'DataSourceとJDBCによるデータベースアクセス'
+    en: 'Database Access with DataSource and JDBC'
+  10:
+    ja: 'Jakarta Persistenceと永続化コンテキスト'
+    en: 'Jakarta Persistence and the Persistence Context'
+  11:
+    ja: 'Criteria APIとJakarta Dataによる検索'
+    en: 'Queries with the Criteria API and Jakarta Data'
+  12:
+    ja: 'Jakarta Transactionsによるトランザクション管理と伝播'
+    en: 'Transaction Management and Propagation with Jakarta Transactions'
+  13:
+    ja: 'Jakarta RESTによるREST API'
+    en: 'REST APIs with Jakarta REST'
+  14:
+    ja: 'クライアントAPIによる同期HTTP通信'
+    en: 'Synchronous HTTP Communication with the Client API'
+
+exercises:
+  - id: jakarta-servlet-hello
+    chapter: 2
+    lesson: '2.1 Jakarta EEとサーブレットによるHTTP処理'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/jakarta-servlet-hello/hello'
+    suggestName: jakarta-servlet-hello
+    names:
+      ja: サーブレットのライフサイクルを見る
+      en: See the servlet lifecycle
+    descriptions:
+      ja: >-
+        /hello に対応付けた HelloServlet を Payara Server 7 へデプロイします。
+        ▶ アプリ実行で WAR を作ってデプロイすると、プレビューに
+        http://localhost:8080/jakarta-servlet-hello/hello が開きます。
+        実行結果で、デプロイの時点で HelloServlet#init が出ていることと、WAR のファイル名がコンテキストルートになっていることを確かめてください。
+      en: >-
+        Deploys HelloServlet, mapped to /hello, to Payara Server 7.
+        ▶ Run app builds the WAR and deploys it, then the preview opens
+        http://localhost:8080/jakarta-servlet-hello/hello.
+        In the run output, check that HelloServlet#init appears at deployment and that the WAR file name became the context root.
+    openFiles:
+      - README.md

@@ -37,6 +37,7 @@ const { resolveProjectDir, detectProject } = require('./workspace');
 const { JACOCO_INIT_SCRIPT, collectTestRunArtifacts } = require('../test-report');
 const messaging = require('./messaging');
 const companions = require('./companions');
+const payara = require('./payara');
 
 const CP_SEP = IS_WIN ? ';' : ':';
 
@@ -357,6 +358,29 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
       const isTest = words.includes('test');
       const isBootRun = words.includes('bootRun');
 
+      const gradlew = IS_WIN
+        ? path.join(projectDir, 'gradlew.bat')
+        : path.join(projectDir, 'gradlew');
+
+      // Jakarta EE: Gradle で WAR を作り、同梱の Payara Server へ起動時デプロイする
+      // payaraRun は Gradle のタスクではなく、この 2 段をまとめた Codinable の実行対象
+      // サーバーの起動コマンドは WAR ができてから組み立てる (prepareRun)
+      if (words[0] === 'payaraRun') {
+        return {
+          label: 'Payara Server',
+          steps: [{
+            label: 'gradle war',
+            command: `"${gradlew}" war --console=plain`,
+            shell: true, cwd: projectDir, env,
+          }],
+          prepareRun: () => payara.prepareRun({ projectDir, uiLang, env }),
+          createOutputFilter: payara.createOutputFilter,
+          // 前の実行が残したサーバー (別の演習の Payara や bootRun) を片付ける
+          freePort: [payara.PORTS.http, payara.PORTS.admin, payara.PORTS.https],
+          waitsForDeploy: true,
+        };
+      }
+
       let extra = '';
       const addInitScript = (name, content) => {
         const initPath = path.join(projectDir, '.codinable', name);
@@ -372,9 +396,6 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
       }
       if (words.includes('codinableMain')) addInitScript('main.init.gradle', MAIN_INIT_SCRIPT);
 
-      const gradlew = IS_WIN
-        ? path.join(projectDir, 'gradlew.bat')
-        : path.join(projectDir, 'gradlew');
       return {
         label:   `gradle ${safeTask}`,
         isTest,
@@ -584,15 +605,15 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
     return { ok: false, error: err.message };
   }
 
-  if (spec.freePort) {
-    const killed = await killPort(spec.freePort);
+  for (const port of [].concat(spec.freePort || [])) {
+    const killed = await killPort(port);
     if (killed.length) {
-      send('run-output', `⚠️  ポート ${spec.freePort} を使用中のプロセス (PID: ${killed.join(', ')}) を終了しました\n`);
+      send('run-output', `⚠️  ポート ${port} を使用中のプロセス (PID: ${killed.join(', ')}) を終了しました\n`);
     }
   }
 
   send('run-output', `▶ ${spec.label}\n\n`);
-  if (spec.previewUrl) {
+  if (spec.previewUrl || spec.waitsForDeploy) {
     send('run-output', uiLang === 'en'
       ? '⏳ Preparing the web app. The first run may take a few minutes.\n\n'
       : '⏳ Webアプリを準備しています。初回は依存関係の準備に数分かかることがあります。\n\n');
@@ -610,6 +631,18 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
     }
     if (step.onSuccess) step.onSuccess();
     if (step.label !== spec.label) send('run-output', '\n');
+  }
+
+  // 前処理の結果 (Gradle が作った WAR など) を使って、本体の起動コマンドを決める
+  if (spec.prepareRun) {
+    try {
+      spec.run = await spec.prepareRun();
+    } catch (err) {
+      send('run-output', `\n❌ ${err.message}\n`);
+      send('run-exit', { code: -1, phase: 'prepare' });
+      return { ok: true };
+    }
+    if (token !== runToken) return { ok: true };
   }
 
   let proc;
@@ -632,10 +665,25 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
     urlSent = true;
     send('run-url', { url });
   };
+  // アプリケーションサーバーは、待ち受けを始めてもアプリのデプロイが終わるまで画面が無い
+  // そのためポートや出力の URL ではなく、デプロイの完了を見てからプレビューへ進む
+  const filter = spec.createOutputFilter ? spec.createOutputFilter() : null;
   const onData = chunk => {
-    const text = decodeOutput(chunk);
-    send('run-output', text);
-    if (!urlSent) {
+    let text = decodeOutput(chunk);
+    if (filter) {
+      const seen = filter.feed(text);
+      text = seen.text;
+      if (seen.deployed) announceUrl(`http://localhost:${payara.PORTS.http}${seen.contextRoot || ''}/`);
+      if (seen.failed) {
+        text += uiLang === 'en'
+          ? '\n❌ The WAR could not be deployed. See the error above, then stop the server.\n'
+          : '\n❌ WARのデプロイに失敗しました。上のエラーを確認してください。サーバーを停止します。\n';
+        // アプリの無いサーバーを動かし続けると、実行中に見えたままになる (bootRun の起動失敗と同じく終わらせる)
+        setTimeout(() => { if (current && current.proc === proc) killTree(proc); }, 500);
+      }
+    }
+    if (text) send('run-output', text);
+    if (!urlSent && !filter) {
       const url = detectRunUrl(text);
       if (url) announceUrl(url);
     }

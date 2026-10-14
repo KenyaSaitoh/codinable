@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 #  Codinable - 開発環境セットアップスクリプト
 #
 #  git clone した直後のリポジトリに、同梱物 (git 管理外) を用意する
@@ -9,6 +9,7 @@
 #    runtime/python/             embeddable Python
 #    runtime/bash/               PortableGit から bash + coreutils + curl を抽出
 #    runtime/kafka/ rabbitmq/ erlang/  学習用メッセージングサーバー
+#    runtime/payara/             Payara Server 7 (Jakarta EE 11 の講座の WAR を動かす)
 #    resources/jdtls/            Eclipse JDT Language Server (Java の LSP)
 #    resources/gradle-wrapper/   gradle-wrapper.jar (雛形に wrapper が無いとき用)
 #    hsqldb/hsqldb-2.7.3.jar     SQL 学習用の組み込み DB
@@ -18,7 +19,7 @@
 #    powershell -ExecutionPolicy Bypass -File scripts\setup.ps1 -Only java,jdtls
 # ============================================================
 param(
-  # 一部だけ入れ直したいとき: java / node / python / bash / jdtls / gradle / hsqldb / kafka / rabbitmq / erlang
+  # 一部だけ入れ直したいとき: java / node / python / bash / jdtls / gradle / hsqldb / payara / kafka / rabbitmq / erlang
   [string[]] $Only = @(),
   # 既にあるものも作り直す
   [switch] $Force
@@ -46,14 +47,20 @@ $hsqldbVer  = "2.7.3"
 $hsqldbUrl  = "https://repo1.maven.org/maven2/org/hsqldb/hsqldb/$hsqldbVer/hsqldb-$hsqldbVer.jar"
 $gradleVer  = "9.6.1"
 $gradleUrl  = "https://services.gradle.org/distributions/gradle-$gradleVer-bin.zip"
+# Payara の版はアプリ側 (desktop/src/payara-config.js) と共有する
+$payaraVer  = [regex]::Match((Get-Content (Join-Path $root "desktop\src\payara-config.js") -Raw),
+                             "payara: '([0-9A-Za-z.]+)'").Groups[1].Value
+if (-not $payaraVer) { throw "payara-config.js に Payara の版がありません" }
+$payaraUrl  = "https://repo1.maven.org/maven2/fish/payara/distributions/payara/$payaraVer/payara-$payaraVer.zip"
 
 # jlink に含めるモジュール (javac + Spring Boot + HSQLDB + JUnit が動く構成)
 # jdk.attach は Mockito の inline mock maker が自分をアタッチするのに要る
 # (無いと "No compatible attachment provider" でモック生成が失敗する)
 # jdk.net は Redis クライアント Lettuce (Netty) が jdk.net.ExtendedSocketOptions を読むのに要る
+# jdk.naming.dns は Payara Server が起動時に --add-exports で開く (無いと起動のたびに警告が出る)
 $jlinkModules = "java.se,jdk.compiler,jdk.zipfs,jdk.charsets,jdk.crypto.ec," +
                 "jdk.crypto.cryptoki,jdk.unsupported,jdk.management,jdk.httpserver,jdk.localedata," +
-                "jdk.attach,jdk.net"
+                "jdk.attach,jdk.net,jdk.naming.dns"
 
 # Windows 標準の bsdtar を **フルパスで** 呼ぶ。PATH 上に Git for Windows の
 # GNU tar があると "C:\..." をリモートホスト指定と解釈して失敗する
@@ -220,6 +227,30 @@ Step "gradle" (Join-Path $resources "gradle-wrapper\gradle-wrapper.jar") {
 Step "hsqldb" (Join-Path $root "hsqldb\hsqldb-$hsqldbVer.jar") {
   New-Item -ItemType Directory -Force (Join-Path $root "hsqldb") | Out-Null
   Invoke-WebRequest -Uri $hsqldbUrl -OutFile (Join-Path $root "hsqldb\hsqldb-$hsqldbVer.jar") -UseBasicParsing
+}
+
+# ---- Payara Server (Jakarta EE の講座の WAR をデプロイして動かす) ----
+# 配布物そのまま (domains/domain1 も含む) を置く。同梱物には書き込まず、実行のたびに
+# domain1 をユーザー領域へ写して使う (desktop/src/main/payara.js)
+# 起動に使う Java は同梱の runtime/java
+Step "payara" (Join-Path $runtime "payara\codinable-version.txt") {
+  $zip = Join-Path $work "payara.zip"
+  Invoke-WebRequest -Uri $payaraUrl -OutFile $zip -UseBasicParsing
+  $expected = ((Invoke-WebRequest -Uri ($payaraUrl + ".sha512") -UseBasicParsing).Content -replace '\s', '')
+  $expected = [regex]::Match($expected, '[a-fA-F0-9]{128}').Value
+  if (-not $expected -or (Get-FileHash $zip -Algorithm SHA512).Hash -ne $expected) { throw "Payara のチェックサムが一致しません" }
+  $ext = Join-Path $work "payara"
+  if (Test-Path $ext) { Remove-Item -Recurse -Force $ext }
+  # Expand-Archive は 260 文字を超えるパスで失敗するので bsdtar で展開する
+  New-Item -ItemType Directory -Force $ext | Out-Null
+  & $tarExe -xf $zip -C $ext
+  if ($LASTEXITCODE -ne 0) { throw "Payara の展開に失敗しました" }
+  $payaraOut = Join-Path $runtime "payara"
+  if (Test-Path $payaraOut) { Remove-Item -Recurse -Force $payaraOut }
+  Move-Item (Join-Path $ext "payara7") $payaraOut
+  if (-not (Test-Path (Join-Path $payaraOut "glassfish\lib\client\appserver-cli.jar"))) { throw "Payara の展開に失敗しました" }
+  Set-Content -Path (Join-Path $payaraOut "codinable-version.txt") -Value $payaraVer -Encoding ASCII
+  Remove-Item -Recurse -Force $ext -ErrorAction SilentlyContinue
 }
 
 # Kafka / RabbitMQ / Erlang are portable distributions used by the messaging tab.

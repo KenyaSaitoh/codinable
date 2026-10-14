@@ -67,6 +67,8 @@ function detectProject(projectDir) {
     kinds.push('gradle');
     const build = readTextSafe(path.join(projectDir, gradleFile));
     if (/org\.springframework\.boot|spring-boot-starter/.test(build)) kinds.push('spring');
+    // war プラグインの Jakarta EE のアプリは、WAR を同梱の Payara Server へデプロイして動かす
+    else if (/id\s*\(?\s*['"]war['"]|apply\s+plugin\s*:\s*['"]war['"]/.test(build)) kinds.push('jakarta');
   }
 
   // ── Node.js / npm ──
@@ -141,7 +143,8 @@ function detectProject(projectDir) {
 function pickRunEntries({ kinds, npmScripts, staticRoot, names, hasGradleTests }) {
   if (kinds.includes('gradle')) {
     return {
-      app:  kinds.includes('spring') ? 'gradle:bootRun' : 'gradle:run',
+      app:  kinds.includes('spring') ? 'gradle:bootRun'
+          : kinds.includes('jakarta') ? 'gradle:payaraRun' : 'gradle:run',
       test: hasGradleTests ? 'gradle:test' : null,
     };
   }

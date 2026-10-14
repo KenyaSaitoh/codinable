@@ -42,6 +42,10 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
   `.sql` / `.sh` / `.py` / 単体の `.js`）。単独で動かせるファイルはツリーに ▶ のバッジが付き
   （`listFileRuns` → `projectInfo.fileRuns`）、演習を選んだ直後は 3 秒ほど目立たせる
   （`flashExerciseFiles`）。Mentral Code IDE の「1 ファイル実行」と同じ考え方
+- **Jakarta EE は `main/payara.js`**。`war` プラグインの雛形の ▶ アプリ実行は `gradle:payaraRun`
+  （Gradle のタスクではない。runner.js が `gradle war` → `prepareRun` でドメインを作り直して
+  Payara を起動時デプロイで起こす）。プレビューへ進むのはデプロイの完了をログで見てから
+  （ポートは先に開くので waitForPort は使わない）。版は `src/payara-config.js`
 - **Kafka / RabbitMQ は `main/messaging.js` で別管理**。必要時のみ起動し、
   通常の実行停止では落とさず、アプリ終了時に停止する。雛形ルートの
   `codinable.services.json` の `services` 配列で実行前の自動起動を宣言できる。
@@ -122,11 +126,11 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
 
 - **`chapter` / `lesson` は実際の講座に合わせる**。`lesson` は一覧の副題に出るので、
   受講者が動画のどこと対応するか迷わない粒度（番号 + 名前）にする
-- **`runtime`** は `java` / `spring` / `node` / `react` / `python` / `static` /
+- **`runtime`** は `java` / `spring` / `jakarta` / `node` / `react` / `python` / `static` /
   `sql` / `shell` のいずれか。アイコンとタグになる。増やすときは
   `renderer.js` の `RUNTIME_ICONS` と `i18n.js` の `runtime_*` を両方足す
 - **`run` はどのボタンを主役にするか**（書式は `file:<パス>` / `sql:<パス>` /
-  `gradle:<タスク>` / `npm:<スクリプト>` / `static:<ルート>`）。`gradle:test` なら
+  `gradle:<タスク>` / `npm:<スクリプト>` / `static:<ルート>`。Jakarta EE は `gradle:payaraRun`）。`gradle:test` なら
   ▶ アプリ実行は塗りつぶさず、テストクラスをツリーで光らせる（テストはテストクラスを
   開いて ▶ 実行で流す）。`gradle:build` のように ▶ アプリ実行と同じ種類のものは
   ▶ アプリ実行が動かすものを差し替える。`sql:` / `file:` はファイル単位で動かす演習の

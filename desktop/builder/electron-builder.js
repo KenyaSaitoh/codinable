@@ -52,6 +52,8 @@ module.exports = {
     { from: '../runtime/node',             to: 'runtime/node',   filter: ['**/*'] },
     { from: '../runtime/python',           to: 'runtime/python', filter: ['**/*'] },
     { from: '../runtime/bash',             to: 'runtime/bash',   filter: ['**/*'] },
+    // Jakarta EE の講座の WAR を動かすアプリケーションサーバー (main/payara.js)
+    { from: '../runtime/payara',           to: 'runtime/payara', filter: ['**/*'] },
     { from: '../runtime/kafka',            to: 'runtime/kafka',  filter: ['**/*'] },
     { from: '../runtime/rabbitmq',         to: 'runtime/rabbitmq', filter: ['**/*'] },
     { from: '../runtime/erlang',           to: 'runtime/erlang', filter: ['**/*'] },

@@ -732,7 +732,7 @@ const NODE_ICON = '<svg class="runtime-svg" viewBox="0 0 24 24" aria-hidden="tru
   '<path d="M12 6.2 16.9 9v6L12 17.8 7.1 15V9z" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85"/></svg>';
 
 const RUNTIME_ICONS = {
-  java: '☕', spring: '🌱', node: NODE_ICON, react: '⚛️',
+  java: '☕', spring: '🌱', jakarta: '🐟', node: NODE_ICON, react: '⚛️',
   python: '🐍', static: '🌐', sql: '🗄', shell: '🖥', other: '📦',
 };
 
@@ -1897,7 +1897,12 @@ function withExercisePreviewPath(url) {
   if (!path) return url;
   try {
     const u = new URL(url);
-    if (u.pathname !== '/' || u.search) return url;   // アプリ自身が場所を示したときはそちらを使う
+    if (u.search) return url;
+    // Payara はデプロイしたアプリのコンテキストルート (/jakarta-servlet-hello/ など) を知らせてくる
+    // preview がコンテキストルートから書いてあれば、そのまま開く
+    const root = u.pathname.replace(/\/$/, '');
+    if (root && path.startsWith(root + '/')) return u.origin + path;
+    if (u.pathname !== '/') return url;   // アプリ自身が場所を示したときはそちらを使う
     return u.origin + path;
   } catch { return url; }
 }
@@ -2622,6 +2627,7 @@ async function renderRuntimeInfo() {
     ['bash',    status.bash],
     ['HSQLDB',  status.hsqldb ? 'OK' : null],
     ['Gradle Wrapper', status.gradleWrapper ? 'OK' : null],
+    ['Payara Server', status.payara],
     ['Apache Kafka', status.kafka],
     ['RabbitMQ', status.rabbitmq],
     ['Erlang/OTP', status.erlang],
