@@ -1,6 +1,6 @@
-# jakarta-fault-tolerance-employee — MicroProfile Fault Tolerance による障害への対処
+# jakarta-fault-tolerance-employee — MicroProfile Fault Tolerance による耐障害性の向上
 
-チャプター 9.1「MicroProfile Fault Toleranceによる障害への対処」の演習です。
+チャプター 9.1「MicroProfile Fault Toleranceによる耐障害性の向上」の演習です。
 Payara Server 上のアプリケーションが、MicroProfile Rest Client で別プロセスの社員API（8095）を呼び、
 `@CircuitBreaker`・`@Bulkhead`・`@Timeout`・`@Retry`・`@Fallback` で遮断・同時実行数・時間・再試行・代替応答を制御します。
 

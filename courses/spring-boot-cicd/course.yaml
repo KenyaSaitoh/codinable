@@ -28,7 +28,7 @@
 id: spring-boot-cicd
 order: 4
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.3.0
+version: 1.4.0
 
 names:
   ja: Spring Boot CI/CD
@@ -38,7 +38,7 @@ descriptions:
   ja: >-
     JUnit・Mockito によるテスト設計から、Spring Boot Test（DataJpaTest / MockMvc）、
     Database Rider と RestClient による HTTP の結合テスト、Playwright による E2E、
-    Gatling による負荷試験、GitHub Actions による CI と成果物までを扱う講座の演習です。
+    Gatling による負荷テスト、GitHub Actions による CI と成果物までを扱う講座の演習です。
     DB は組み込みの H2 またはインメモリの HSQLDB で動くため、DB サーバーを別に起動する必要はありません。
   en: >-
     Exercises for the course that goes from test design with JUnit and Mockito through

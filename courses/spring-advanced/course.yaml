@@ -33,7 +33,7 @@
 id: spring-advanced
 order: 3
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.5.0
+version: 1.7.0
 
 names:
   ja: Spring FW 高度な仕組み
@@ -41,17 +41,16 @@ names:
 
 descriptions:
   ja: >-
-    社員管理システムを題材に、WebClient と WebSocket、OAuth 2／OIDC、Spring Security、
+    社員管理システムを題材に、WebClient と WebSocket、Spring Security、
     GraphQL、WebFlux、Kafka と RabbitMQ、リトライとサーキットブレーカー、Actuator と
     OpenTelemetry までを扱う講座の演習です。サンプルは Java 25 / Spring Boot 4.1 で動き、
     DB は HSQLDB のインメモリ、Kafka と RabbitMQ は Codinable 同梱のものを使います。
-    Google のログインの演習だけは、Google 側でのクライアント登録が必要です。
   en: >-
     Exercises for the course that builds on an employee management system: WebClient and
-    WebSocket, OAuth 2 / OIDC, Spring Security, GraphQL, WebFlux, Kafka and RabbitMQ,
+    WebSocket, Spring Security, GraphQL, WebFlux, Kafka and RabbitMQ,
     retry and circuit breakers, Actuator and OpenTelemetry. The samples run on Java 25 /
     Spring Boot 4.1 with an in-memory HSQLDB, and use the Kafka and RabbitMQ bundled with
-    Codinable. Only the Google sign-in exercise needs a client registered on the Google side.
+    Codinable.
 
 udemy:
   url: https://github.com/KenyaSaitoh/learn_spring_aidd_advanced
@@ -74,7 +73,7 @@ chapters:
     ja: 'リアクティブ処理と非同期メッセージング'
     en: 'Reactive Processing and Asynchronous Messaging'
   8:
-    ja: '障害への対処とリトライ・サーキットブレーカー'
+    ja: '耐障害性の向上とリトライ・サーキットブレーカー'
     en: 'Handling Failures with Retries and Circuit Breakers'
   9:
     ja: 'Springの観測・監視機能'
@@ -125,31 +124,6 @@ exercises:
         ▶ Run app starts the STOMP backend (port 8096) together with the React screen (frontend/,
         port 5173), which opens in the preview. Open the same http://localhost:5173/ in an
         external browser as well, connect both, and watch a notice from one reach both.
-    openFiles:
-      - README.md
-
-  # ── チャプター4: OAuth 2・OIDC・JWT ───────────────────────
-  - id: spring-sec-employee-google
-    chapter: 4
-    lesson: '4.1 OAuth 2・OIDC・JWTによる認証連携'
-    runtime: spring
-    run: 'gradle:bootRun'
-    suggestName: spring-sec-employee-google
-    names:
-      ja: GoogleでOIDCログインする
-      en: Sign in with OIDC through Google
-    descriptions:
-      ja: >-
-        自分の Google Cloud で OAuth クライアントを作成し、リダイレクト URI に
-        http://localhost:8084/login/oauth2/code/google を登録してから、.env.example を .env に
-        コピーしてクライアント ID とシークレットを書きます。▶ アプリ実行でバックエンド（8084）と
-        React の画面（5173）が一緒に起動し、プレビューに開いた画面からログインして、
-        閲覧だけが許されることを確かめます。
-      en: >-
-        Create an OAuth client in your own Google Cloud project with the redirect URI
-        http://localhost:8084/login/oauth2/code/google, then copy .env.example to .env and fill
-        in the client ID and secret. ▶ Run app starts the backend (port 8084) together with the React
-        screen (port 5173), which opens in the preview; sign in and see that only reading is allowed.
     openFiles:
       - README.md
 
@@ -278,7 +252,7 @@ exercises:
   # ── チャプター8: リトライとサーキットブレーカー ──────────────
   - id: spring-resilience-employee
     chapter: 8
-    lesson: '8.1 障害への対処とリトライ・サーキットブレーカー'
+    lesson: '8.1 耐障害性の向上とリトライ・サーキットブレーカー'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/resilience-demo'
@@ -308,7 +282,7 @@ exercises:
 
   - id: spring-retry-employee
     chapter: 8
-    lesson: '8.1 障害への対処とリトライ・サーキットブレーカー'
+    lesson: '8.1 耐障害性の向上とリトライ・サーキットブレーカー'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/retry-demo'

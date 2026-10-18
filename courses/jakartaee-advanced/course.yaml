@@ -21,7 +21,7 @@
 id: jakartaee-advanced
 order: 12
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.0.0
+version: 1.1.0
 
 names:
   ja: Jakarta EE 高度な仕組み
@@ -68,7 +68,7 @@ chapters:
     ja: 'Jakarta Messagingによる非同期メッセージング'
     en: 'Asynchronous Messaging with Jakarta Messaging'
   9:
-    ja: 'MicroProfile Fault Toleranceによる障害への対処'
+    ja: 'MicroProfile Fault Toleranceによる耐障害性の向上'
     en: 'Handling Failures with MicroProfile Fault Tolerance'
   10:
     ja: '観測・監視機能'
@@ -292,10 +292,10 @@ exercises:
         both WARs. Run curl/01_send_event.sh with ▶ Run to see that sending the same event twice leaves one entry in the history.
     openFiles:
       - README.md
-  # ── チャプター9: MicroProfile Fault Toleranceによる障害への対処 ────
+  # ── チャプター9: MicroProfile Fault Toleranceによる耐障害性の向上 ────
   - id: jakarta-fault-tolerance-employee
     chapter: 9
-    lesson: '9.1 MicroProfile Fault Toleranceによる障害への対処'
+    lesson: '9.1 MicroProfile Fault Toleranceによる耐障害性の向上'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-fault-tolerance-employee/api/resilience-demo'
