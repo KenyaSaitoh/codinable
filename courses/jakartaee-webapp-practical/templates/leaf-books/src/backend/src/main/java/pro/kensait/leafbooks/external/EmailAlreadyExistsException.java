@@ -1,4 +1,4 @@
-package pro.kensait.leafbooks.service.customer;
+package pro.kensait.leafbooks.external;
 
 // メールアドレス重複時にスローされる例外クラス
 public class EmailAlreadyExistsException extends RuntimeException {

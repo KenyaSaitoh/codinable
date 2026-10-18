@@ -16,7 +16,7 @@ import pro.kensait.jakartaee.employee.entity.ReceivedEvent;
 @Path("/events")
 @RequestScoped
 public class ReceivedEventResource {
-    @PersistenceContext(unitName = "consumerPU")
+    @PersistenceContext
     private EntityManager em;
 
     @GET

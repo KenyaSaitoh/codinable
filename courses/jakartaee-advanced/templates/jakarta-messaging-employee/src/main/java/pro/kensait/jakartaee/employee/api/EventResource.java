@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.Response;
 import java.util.Map;
 import pro.kensait.jakartaee.employee.service.EmployeeEvent;
 import pro.kensait.jakartaee.employee.service.EventSendService;
+import pro.kensait.jakartaee.employee.service.PoisonMessageSender;
 
 /*
  * 社員イベントの送信（POST /api/events）
@@ -22,6 +23,8 @@ import pro.kensait.jakartaee.employee.service.EventSendService;
 public class EventResource {
     @Inject
     private EventSendService eventSendService;
+    @Inject
+    private PoisonMessageSender poisonMessageSender;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -37,7 +40,7 @@ public class EventResource {
     @Path("/raw")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response sendRaw(String text) {
-        eventSendService.sendRaw(text);
+        poisonMessageSender.send(text);
         return Response.accepted().build();
     }
 }

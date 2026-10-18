@@ -17,7 +17,7 @@ import pro.kensait.jakartaee.employee.entity.ReceivedEvent;
 public class EmployeeEventHandler {
     private static final Logger logger = Logger.getLogger(EmployeeEventHandler.class.getName());
 
-    @PersistenceContext(unitName = "consumerPU")
+    @PersistenceContext
     private EntityManager em;
 
     @Transactional(Transactional.TxType.MANDATORY) // 【1】

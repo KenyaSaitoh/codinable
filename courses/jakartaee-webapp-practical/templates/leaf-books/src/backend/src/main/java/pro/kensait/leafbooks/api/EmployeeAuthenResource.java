@@ -16,9 +16,9 @@ import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 import pro.kensait.leafbooks.api.dto.EmployeeLoginRequest;
 import pro.kensait.leafbooks.api.dto.EmployeeLoginResponse;
-import pro.kensait.leafbooks.api.dto.ErrorResponse;
-import pro.kensait.leafbooks.dao.EmployeeDao;
+import pro.kensait.leafbooks.common.ErrorResponse;
 import pro.kensait.leafbooks.entity.Employee;
+import pro.kensait.leafbooks.service.employee.EmployeeService;
 import pro.kensait.leafbooks.security.EmployeeJwtUtil;
 
 /**
@@ -33,7 +33,7 @@ public class EmployeeAuthenResource {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeAuthenResource.class);
 
     @Inject
-    private EmployeeDao employeeDao;
+    private EmployeeService employeeService;
 
     @Inject
     private EmployeeJwtUtil jwtUtil;
@@ -48,7 +48,7 @@ public class EmployeeAuthenResource {
         logger.info("[ EmployeeAuthenResource#login ] employeeCode: {}", request.employeeCode());
 
         try {
-            Employee employee = employeeDao.findByCode(request.employeeCode());
+            Employee employee = employeeService.getEmployeeByCode(request.employeeCode());
 
             if (employee == null) {
                 logger.warn("Employee not found: {}", request.employeeCode());

@@ -15,16 +15,16 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
-import pro.kensait.leafbooks.api.dto.ErrorResponse;
+import pro.kensait.leafbooks.common.ErrorResponse;
 import pro.kensait.leafbooks.api.dto.LoginRequest;
 import pro.kensait.leafbooks.api.dto.LoginResponse;
 import pro.kensait.leafbooks.api.dto.RegisterRequest;
+import pro.kensait.leafbooks.external.EmailAlreadyExistsException;
 import pro.kensait.leafbooks.external.dto.CustomerTO;
-import pro.kensait.leafbooks.external.CustomerHubRestClient;
 import pro.kensait.leafbooks.security.CsrfTokenService;
 import pro.kensait.leafbooks.security.JwtUtil;
 import pro.kensait.leafbooks.security.AuthContext;
-import pro.kensait.leafbooks.service.customer.EmailAlreadyExistsException;
+import pro.kensait.leafbooks.service.customer.CustomerService;
 import pro.kensait.leafbooks.util.AddressUtil;
 
 /**
@@ -38,7 +38,7 @@ public class AuthResource {
     private static final Logger logger = LoggerFactory.getLogger(AuthResource.class);
 
     @Inject
-    private CustomerHubRestClient customerHubClient;
+    private CustomerService customerService;
 
     @Inject
     private JwtUtil jwtUtil;
@@ -58,38 +58,10 @@ public class AuthResource {
         logger.info("[ AuthResource#login ] email: {}", request.email());
 
         try {
-            // 顧客情報を取得
-            CustomerTO customer = customerHubClient.findByEmail(request.email());
-
+            // 顧客の照会とパスワードの照合は CustomerService が行う（Customer Hub を呼ぶのも Service）
+            CustomerTO customer = customerService.authenticate(request.email(), request.password());
             if (customer == null) {
-                logger.warn("[ AuthResource#login ] Customer not found: {}", request.email());
-                ErrorResponse errorResponse = new ErrorResponse(
-                        Response.Status.UNAUTHORIZED.getStatusCode(),
-                        "Unauthorized",
-                        "メールアドレスまたはパスワードが正しくありません",
-                        "/api/auth/login"
-                );
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .type(MediaType.APPLICATION_JSON)
-                        .entity(errorResponse)
-                        .build();
-            }
-
-            // パスワード照合（BCryptハッシュまたは平文パスワードをサポート）
-            boolean passwordMatch;
-            String storedPassword = customer.password();
-            
-            // BCryptハッシュかどうかを判定（$2a$, $2b$, $2y$ で始まる）
-            if (storedPassword.startsWith("$2a$") || storedPassword.startsWith("$2b$") || storedPassword.startsWith("$2y$")) {
-                // BCryptハッシュの場合
-                passwordMatch = BCrypt.checkpw(request.password(), storedPassword);
-            } else {
-                // 平文パスワードの場合（開発環境用）
-                passwordMatch = request.password().equals(storedPassword);
-            }
-            
-            if (!passwordMatch) {
-                logger.warn("[ AuthResource#login ] Password mismatch for email: {}", request.email());
+                logger.warn("[ AuthResource#login ] Authentication failed: {}", request.email());
                 ErrorResponse errorResponse = new ErrorResponse(
                         Response.Status.UNAUTHORIZED.getStatusCode(),
                         "Unauthorized",
@@ -221,8 +193,8 @@ public class AuthResource {
                     request.address()
             );
 
-            // 顧客登録（外部API経由）
-            CustomerTO createdCustomer = customerHubClient.register(customerTO);
+            // 顧客登録（CustomerService が外部API の Customer Hub を呼ぶ）
+            CustomerTO createdCustomer = customerService.registerCustomer(customerTO);
 
             // JWT生成
             String jwt = jwtUtil.generateToken(createdCustomer.customerId(), createdCustomer.email());
@@ -301,7 +273,7 @@ public class AuthResource {
         Integer customerId = authContext.getCustomerId();
 
         // 顧客情報を取得
-        CustomerTO customer = customerHubClient.findById(customerId);
+        CustomerTO customer = customerService.getCustomer(customerId);
         if (customer == null) {
             ErrorResponse errorResponse = new ErrorResponse(
                     Response.Status.NOT_FOUND.getStatusCode(),

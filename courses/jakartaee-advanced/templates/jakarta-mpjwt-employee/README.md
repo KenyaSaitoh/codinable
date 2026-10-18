@@ -7,6 +7,8 @@
 アクセストークンの発行者は、講座本編では Keycloak（realm: `learn`）ですが、この演習では Docker を使わずに動かせるよう、
 同じ形のパスで JWKS とトークンを返す教材用の簡易な発行者（`issuer/`）を一緒にデプロイします。
 発行者の URI は `http://localhost:8080/jakarta-mpjwt-issuer/realms/learn` です。
+そのため `microprofile-config.properties` の `mp.jwt.verify.publickey.location` と `mp.jwt.verify.issuer` だけは、講座のコード
+（Keycloak の `http://localhost:8180/realms/learn`）と違い、この発行者の URL を指しています。ほかの設定とコードは講座と同じです。
 
 | 場所 | 中身 | 動かし方 |
 |---|---|---|

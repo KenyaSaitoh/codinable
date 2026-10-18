@@ -35,6 +35,18 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 - 更新と論理削除は `employeeRepository.update(...)` を呼んで保存する。Repository は状態を持たない前提なので、setter を呼べば保存される、という振る舞いには頼らない
 - `03_conflict.sh`: 同じ社員を 2 人が編集すると、後から保存した側は「ほかの人が先に更新しました」になる
 
+## 仕様と Payara Server 7.2026.9 の違い
+
+この演習には、Payara Server 7.2026.9 の Jakarta Data の実装に合わせた箇所が 2 つあります。
+
+- `EmployeeService#create` の `entityManager.flush()`: Jakarta Data 1.0 の仕様では、`insert` の戻り値に採番された ID が入る
+  （`jakarta.data.repository.Insert` の API ドキュメント）。Payara 7.2026.9 の `insert` は INSERT を送る前に戻り、
+  社員 ID が `null` のままになる（社員コードが `Enull` になる）ので、同じトランザクションの永続化コンテキストを flush して ID を確定させている。
+  講座のコードには無い、この演習だけの回避策
+- `searchByNameAndSalary` の `@Query` に `from Employee` と `order by employeeId` を書いている: 仕様上はどちらも省略でき、
+  並び順は `@OrderBy` でも指定できる（Jakarta Data 1.0 の 5.5.1・4.7.1）。Payara 7.2026.9 では、`Page` を返すメソッドで
+  `from` の無い問い合わせが失敗し、`@Query` に付けた `@OrderBy` も効かないため、仕様の範囲内で両方を問い合わせに書いている（講座のコードも同じ）
+
 <!-- schema:begin -->
 <!-- この節は desktop/scripts/build-schema-docs.js が DDL から作っている。
      テーブルを変えたら、手で直さずに node scripts/build-schema-docs.js で作り直すこと -->

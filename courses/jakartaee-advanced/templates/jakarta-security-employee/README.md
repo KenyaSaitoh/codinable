@@ -31,7 +31,7 @@ PBKDF2 によるパスワードのハッシュ化、CSRF トークンとセッ�
 | `src/main/java/pro/kensait/jakartaee/employee/web/CsrfFilter.java`・`CsrfResource.java` | CSRF トークンの発行と照合 |
 | `src/main/java/pro/kensait/jakartaee/employee/web/CorsFilter.java` | 5173 から直接呼ぶ構成のための CORS の応答ヘッダー（この演習の画面では働かない） |
 | `src/main/webapp/WEB-INF/web.xml` | `security-constraint`・`deny-uncovered-http-methods`・`session-config` |
-| `payara/post-boot-commands.asadmin` | Payara の場合の、グループ名をそのままロールにする設定 |
+| `payara/post-boot-commands.asadmin` | Payara の場合の、グループ名をそのままロールにする設定と、セッション Cookie の `SameSite=Lax` |
 
 ## 動かし方
 
@@ -48,3 +48,6 @@ PBKDF2 によるパスワードのハッシュ化、CSRF トークンとセッ�
 - ログインの POST も変更要求なので、先に `GET /api/csrf` でトークンを取る。ログインに成功するとトークンは破棄され、次の変更操作の前に取り直す
 - 未ログインの POST は、CSRF の検証より先にコンテナの判定で 401 になる。403 は「ロール不足」と「CSRF トークンの不一致」の両方で返るので、条件を 1 つずつ変えて確かめる
 - ログインのたびに `SECURITY_SESSION` の値が変わる（`changeSessionId` によるセッション固定化の対策）
+- `Set-Cookie: SECURITY_SESSION=...; HttpOnly;SameSite=Lax;SameSite=Lax` の `SameSite=Lax` は、講座のとおり `web.xml` の `cookie-config` に書いてある。
+  ただし Payara の場合（7.2026.9 で確認）、Servlet 6.0 以降の `<attribute>` を Set-Cookie に出さないため、
+  `payara/post-boot-commands.asadmin` で Payara Server の HTTP の設定からも同じ値を付けている（Payara Server は 2 回続けて書くが、値は同じ）

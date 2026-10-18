@@ -39,7 +39,7 @@ Jakarta REST の書店 API と React の画面で動かします。顧客情報�
 |---|---|
 | `src/backend/src/main/java/pro/kensait/leafbooks/entity/OrderDetail.java`・`OrderDetailPK.java` | `@IdClass` による複合主キー |
 | `src/backend/src/main/java/pro/kensait/leafbooks/dao/BookDao.java` | JPQL と Criteria API による検索 |
-| `src/backend/src/main/java/pro/kensait/leafbooks/api/StockResource.java` | version を照合する在庫の更新（409） |
+| `src/backend/src/main/java/pro/kensait/leafbooks/service/stock/StockService.java` | version を照合する在庫の更新（409）。リソースクラスは DAO を使わず Service を呼ぶ |
 | `src/backend/src/main/java/pro/kensait/leafbooks/external/CustomerHubRestClient.java` | Customer Hub の呼び出しと失敗の扱い |
 | `src/backend/src/main/java/pro/kensait/leafbooks/dao/OrderTranDao.java` | DTO 投影と JOIN FETCH |
 

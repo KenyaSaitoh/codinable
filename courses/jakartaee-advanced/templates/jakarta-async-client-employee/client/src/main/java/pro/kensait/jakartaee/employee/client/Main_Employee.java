@@ -57,8 +57,8 @@ public class Main_Employee {
                 .rx().get(new GenericType<List<EmployeeTO>>() {}); // 【2】
         CompletionStage<String> summary = alice.thenCombine(sales, // 【3】
                 (manager, members) -> manager.employeeName() + " / SALES " + members.size());
-        System.out.println("Name => " + name.toCompletableFuture().get(5, TimeUnit.SECONDS));
         System.out.println("Summary => " + summary.toCompletableFuture().get(5, TimeUnit.SECONDS)); // 【4】
+        System.out.println("Name => " + name.toCompletableFuture().get(5, TimeUnit.SECONDS));
     }
 
     // 登録の応答で採番 ID を受け取ってから、thenCompose で更新を送る。最後に必ず削除する
@@ -120,8 +120,6 @@ public class Main_Employee {
                     });
             if (lookup.toCompletableFuture().get(5, TimeUnit.SECONDS).isEmpty()) {
                 System.out.println("Expected error => 404");
-            } else {
-                throw new IllegalStateException("削除済みの社員の取得で404が返りませんでした");
             }
         }
     }

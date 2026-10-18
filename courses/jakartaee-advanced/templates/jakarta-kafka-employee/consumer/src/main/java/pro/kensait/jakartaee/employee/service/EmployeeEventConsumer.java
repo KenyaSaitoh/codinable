@@ -52,9 +52,7 @@ public class EmployeeEventConsumer {
     @PreDestroy
     void stop() {
         running = false; // 【5】
-        if (consumer != null) {
-            consumer.wakeup(); // 【6】
-        }
+        consumer.wakeup(); // 【6】
     }
 
     private void pollLoop() {

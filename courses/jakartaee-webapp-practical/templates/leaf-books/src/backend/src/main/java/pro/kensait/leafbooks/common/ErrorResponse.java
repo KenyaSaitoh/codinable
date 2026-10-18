@@ -1,4 +1,4 @@
-package pro.kensait.leafbooks.api.dto;
+package pro.kensait.leafbooks.common;
 
 import java.util.List;
 

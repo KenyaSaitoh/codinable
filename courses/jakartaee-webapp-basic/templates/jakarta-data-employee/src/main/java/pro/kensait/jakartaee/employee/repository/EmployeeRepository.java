@@ -39,8 +39,8 @@ public interface EmployeeRepository
     Page<Employee> byStatus(String status, PageRequest pageRequest);
 
     // @Query: JDQL の問い合わせ。select は戻り値から決まるので省略している
-    // （演習用: JDQL では from も省略できるが、Payara 7.2026.9 は Page を返す問い合わせで from の無い JDQL を扱えないため書いている。
-    //   並び順も、Payara 7.2026.9 では @OrderBy が @Query の結果に効かなかったため、問い合わせの order by で指定している）
+    // 仕様上は from も省略でき、order by の代わりに @OrderBy も使えるが、Payara 7.2026.9 では
+    // Page を返すメソッドで from の無い問い合わせが失敗し、@Query に付けた @OrderBy も効かないため、両方を問い合わせに書いている
     @Query("""
             from Employee
             where status = 'active'

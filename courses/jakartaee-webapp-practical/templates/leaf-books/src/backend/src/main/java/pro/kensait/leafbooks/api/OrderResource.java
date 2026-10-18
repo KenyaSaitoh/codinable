@@ -21,13 +21,11 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pro.kensait.leafbooks.api.dto.ErrorResponse;
+import pro.kensait.leafbooks.common.ErrorResponse;
 import pro.kensait.leafbooks.api.dto.OrderDetailResponse;
 import pro.kensait.leafbooks.api.dto.OrderHistoryResponse;
 import pro.kensait.leafbooks.api.dto.OrderRequest;
 import pro.kensait.leafbooks.api.dto.OrderResponse;
-import pro.kensait.leafbooks.dao.BookDao;
-import pro.kensait.leafbooks.entity.Book;
 import pro.kensait.leafbooks.entity.OrderDetail;
 import pro.kensait.leafbooks.entity.OrderTran;
 import pro.kensait.leafbooks.security.AuthContext;
@@ -52,9 +50,6 @@ public class OrderResource {
 
     @Inject
     private AuthContext authContext;
-
-    @Inject
-    private BookDao bookDao;
 
     @Inject
     private DeliveryFeeService deliveryFeeService;
@@ -226,9 +221,7 @@ public class OrderResource {
         // 明細が見つからなければ NotFoundException → 404
         OrderDetail orderDetail = orderService.getOrderDetail(tranId, detailId);
 
-        Book book = bookDao.findById(orderDetail.getBookId());
-        String publisherName = (book != null && book.getPublisher() != null)
-                ? book.getPublisher().getPublisherName() : "不明";
+        String publisherName = orderService.getPublisherName(orderDetail.getBookId());
 
         OrderDetailResponse response = new OrderDetailResponse(
                 orderDetail.getOrderDetailId(),
@@ -250,10 +243,8 @@ public class OrderResource {
         if (orderTran.getOrderDetails() != null) {
             orderDetails = orderTran.getOrderDetails().stream()
                     .map(detail -> {
-                        Book book = bookDao.findById(detail.getBookId());
-                        String publisherName = (book != null && book.getPublisher() != null)
-                                ? book.getPublisher().getPublisherName() : "不明";
-                        
+                        String publisherName = orderService.getPublisherName(detail.getBookId());
+
                         return new OrderDetailResponse(
                                 detail.getOrderDetailId(),
                                 detail.getBookId(),

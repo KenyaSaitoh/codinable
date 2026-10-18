@@ -4,8 +4,8 @@
 社員管理API の社員取得を、自動計装（HTTP サーバーのスパン）、`@WithSpan`、`Tracer` で計装し、
 ログにトレースIDとスパンIDを出力します。社員は同梱の HSQLDB（インメモリ）にあり、デプロイのたびに 16 件の初期データへ戻ります。
 
-講座本編ではスパンを OTLP で Jaeger へ送りますが、Codinable では外部の受信先を用意しないので、
-スパンを実行結果（Payara Server のログ）へ書き出す設定にしています（`otel.traces.exporter=console`）。
+講座のとおり、Jaeger などの受信先は用意せず、スパンを実行結果（Payara Server のログ）へ書き出す設定にしています
+（`otel.traces.exporter=console`。Jaeger へ送るときの `otlp` の 3 行は `#` で無効にしてある）。
 
 ## 見るファイル
 
@@ -25,6 +25,6 @@
 実行結果（スパンはまとめて書き出されるので、数秒遅れることがある）で、次を確かめます。
 
 - `[ EmployeeService#getEmployee ] traceId=... spanId=...` のログと、`employee.get` のスパンのトレースIDが同じ
-- `employee.get` のスパンと `GET /jakarta-telemetry-employee/api/employees/{employeeId}` のスパン（Payara の場合、名前にコンテキストルートが入る）は同じトレースIDを持ち、`employee.get` が子になる
+- `employee.get` のスパンと `GET /jakarta-telemetry-employee/api/employees/{employeeId}` のスパン（OpenTelemetry の意味規約どおり、ルートにコンテキストルートが入る）は同じトレースIDを持ち、`employee.get` が子になる
 - `traceparent` ヘッダーで送ったトレースID `4bf92f3577b34da6a3ce929d0e0e4736` が、そのまま引き継がれている
 - `employee.get` のスパンには `employee.id=10001` と `employee.type` の属性、`employee.get-all` には `employee.count=16` が付く

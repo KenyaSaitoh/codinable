@@ -15,20 +15,6 @@ import pro.kensait.jakartaee.employee.entity.Job;
 /** 社員と部署・役職を EntityManager で読み書きする（データアクセス層） */
 @ApplicationScoped
 public class EmployeeRepository {
-    // 検索と件数取得で共通の条件。null のパラメータはその条件を使わない
-    // （演習用: EclipseLink は null のパラメータを SQL に NULL と書き込み、HSQLDB は LIKE の右辺の NULL をエラーにするので、
-    //   キーワードだけ COALESCE で空文字列にしている。:keyword IS NULL の判定は変わらない）
-    private static final String CONDITIONS = """
-             WHERE e.status = 'active'
-               AND (:keyword IS NULL
-                    OR e.employeeName LIKE CONCAT('%', COALESCE(:keyword, ''), '%'))
-               AND (:departmentId IS NULL
-                    OR d.departmentId = :departmentId)
-               AND (:jobId IS NULL OR e.job.jobId = :jobId)
-               AND (:salaryFrom IS NULL OR :salaryFrom <= e.salary)
-               AND (:salaryTo IS NULL OR e.salary <= :salaryTo)
-            """;
-
     @PersistenceContext(unitName = "EmployeePU")
     private EntityManager entityManager;
 
@@ -65,6 +51,29 @@ public class EmployeeRepository {
         return jobId == null ? null : entityManager.find(Job.class, jobId);
     }
 
+    // 検索と件数取得で共通の条件。null のパラメータはその条件を使わない
+    // （EclipseLink は null のパラメータを SQL に NULL と書き込み、HSQLDB は LIKE の右辺の NULL をエラーにするので、
+    //   キーワードだけ COALESCE で空文字列にしている。:keyword IS NULL の判定は変わらない）
+    private static final String CONDITIONS = """
+             WHERE e.status = 'active'
+               AND (:keyword IS NULL
+                    OR e.employeeName LIKE CONCAT('%', COALESCE(:keyword, ''), '%'))
+               AND (:departmentId IS NULL
+                    OR d.departmentId = :departmentId)
+               AND (:jobId IS NULL OR e.job.jobId = :jobId)
+               AND (:salaryFrom IS NULL OR :salaryFrom <= e.salary)
+               AND (:salaryTo IS NULL OR e.salary <= :salaryTo)
+            """;
+
+    private void bind(TypedQuery<?> query,
+            EmployeeSearchCriteria criteria) {
+        query.setParameter("keyword", criteria.getKeyword());
+        query.setParameter("departmentId", criteria.getDepartmentId());
+        query.setParameter("jobId", criteria.getJobId());
+        query.setParameter("salaryFrom", criteria.getSalaryFrom());
+        query.setParameter("salaryTo", criteria.getSalaryTo());
+    }
+
     public List<Employee> search(EmployeeSearchCriteria criteria,
             int offset, int limit) {
         TypedQuery<Employee> query = entityManager.createQuery(
@@ -83,14 +92,5 @@ public class EmployeeRepository {
                 + CONDITIONS, Long.class);
         bind(query, criteria);
         return query.getSingleResult();
-    }
-
-    private void bind(TypedQuery<?> query,
-            EmployeeSearchCriteria criteria) {
-        query.setParameter("keyword", criteria.getKeyword());
-        query.setParameter("departmentId", criteria.getDepartmentId());
-        query.setParameter("jobId", criteria.getJobId());
-        query.setParameter("salaryFrom", criteria.getSalaryFrom());
-        query.setParameter("salaryTo", criteria.getSalaryTo());
     }
 }

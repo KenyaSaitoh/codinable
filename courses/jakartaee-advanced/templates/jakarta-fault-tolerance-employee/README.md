@@ -35,7 +35,7 @@ Payara Server 上のアプリケーションが、MicroProfile Rest Client で�
 - 遮断（OPEN）の間は、実行結果に `[ EmployeeClientService#getEmployees ]` が出ずに `fallbackEmployees` だけが出る（社員API へ通信していない）
 - `04_retry.sh` の `[ EmployeeClientService#getEmployeesWithRetry ]` は約 1 秒（800〜1200 ミリ秒）間隔で 3 回出て、最後に `EmployeeFallbackHandler#handle` に失敗の例外名が出る
 - 回路の状態はアプリケーションのメモリにあるので、▶ アプリ実行し直すと CLOSED から始まる
-- Payara の場合（7.2026.9 で確認）、`@CircuitBreaker` の `delayUnit = ChronoUnit.SECONDS` が効かず `delay = 10` が 10 ミリ秒になるため、
-  `microprofile-config.properties` で同じ 10 秒をミリ秒（`delay=10000`・`delayUnit=MILLIS`）として与え直している
+- `src/main/webapp/WEB-INF/beans.xml` は講座のコードには出てこない。Rest Client の仕様では `@RegisterRestClient` を付けたインタフェースは
+  そのまま CDI の Bean になるが、Payara の場合（7.2026.9 で確認）は `bean-discovery-mode="all"` にしないと `@Inject @RestClient` で注入できないため置いている
 - 回路の状態の変化は、`http://localhost:8080/metrics` の `ft_circuitbreaker_calls_total`（`circuitBreakerOpen` が遮断された回数）や
   `ft_circuitbreaker_opened_total` でも確かめられる

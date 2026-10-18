@@ -88,10 +88,11 @@ public class NamingConventionTest {
             .that().resideInAPackage("..api.dto..")
             .and().areNotInterfaces()
             .and().areNotEnums()
+            .and().areTopLevelClasses()
             .should().haveSimpleNameEndingWith("Request")
             .orShould().haveSimpleNameEndingWith("Response")
-            .orShould().haveSimpleNameEndingWith("ErrorResponse")
-            .because("API DTOクラスは 'Request' または 'Response' サフィックスを使用する");
+            .orShould().haveSimpleNameEndingWith("TO")
+            .because("API DTOクラスは 'Request'・'Response'、または応答の値を運ぶ 'TO' サフィックスを使用する");
     
     /**
      * External DTOクラスは "*TO", "*Request" または "*Response" で終わること

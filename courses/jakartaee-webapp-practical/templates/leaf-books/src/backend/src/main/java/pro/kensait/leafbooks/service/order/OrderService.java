@@ -131,6 +131,14 @@ public class OrderService implements OrderServiceIF {
         return orderDetailList;
     }
 
+    // サービスメソッド：書籍の出版社名を取得する（応答の明細に載せる。書籍が見つからなければ「不明」）
+    @Override
+    public String getPublisherName(Integer bookId) {
+        Book book = bookDao.findById(bookId);
+        return (book != null && book.getPublisher() != null)
+                ? book.getPublisher().getPublisherName() : "不明";
+    }
+
     // サービスメソッド：注文する
     @Override
     public OrderTran orderBooks(OrderTO orderTO) {

@@ -12,7 +12,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
-import pro.kensait.leafbooks.api.dto.ErrorResponse;
+import pro.kensait.leafbooks.common.ErrorResponse;
 
 /**
  * バリデーション例外マッパー

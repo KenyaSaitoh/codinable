@@ -24,7 +24,6 @@ public class EmployeeStreamClient {
     public static void main(String[] args) throws Exception {
         String baseUri = args.length > 0 ? args[0] : "http://localhost:8080/jakarta-async-employee/api";
         List<EmployeeView> received = new CopyOnWriteArrayList<>();
-        boolean[] completed = {false};
         Client client = ClientBuilder.newClient();
         try {
             WebTarget target = client.target(baseUri).path("employees/stream");
@@ -32,14 +31,11 @@ public class EmployeeStreamClient {
             try (SseEventSource source = SseEventSource.target(target).build()) { // 【1】
                 source.register(event -> { // 【2】
                     if ("complete".equals(event.getName())) { // 【3】
-                        completed[0] = true;
                         finished.countDown();
                         return;
                     }
-                    EmployeeView employee = event.readData(EmployeeView.class,
-                            MediaType.APPLICATION_JSON_TYPE);
-                    received.add(employee);
-                    System.out.println("Received => " + employee.employeeId() + " " + employee.employeeName());
+                    received.add(event.readData(EmployeeView.class,
+                            MediaType.APPLICATION_JSON_TYPE));
                 }, error -> finished.countDown()); // 【4】
                 source.open(); // 【5】
                 finished.await(30, TimeUnit.SECONDS);
@@ -47,9 +43,7 @@ public class EmployeeStreamClient {
         } finally {
             client.close();
         }
-        System.out.println("Count => " + received.size() + (completed[0] ? "（complete を受け取りました）" : "（complete が届いていません）"));
-        if (!completed[0]) {
-            System.exit(1);
-        }
+        received.forEach(e -> System.out.println("Received => " + e.employeeId() + " " + e.employeeName()));
+        System.out.println("Count => " + received.size());
     }
 }

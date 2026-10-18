@@ -46,7 +46,6 @@ public class EmployeeService {
     public List<EmployeeTO> getEmployeesAll() {
         Span span = tracer.spanBuilder("employee.get-all").startSpan(); // 【2】
         try (Scope scope = span.makeCurrent()) { // 【3】
-            logWithTrace("[ EmployeeService#getEmployeesAll ]");
             List<EmployeeTO> employees = entityManager
                     .createQuery("SELECT e FROM Employee e ORDER BY e.employeeId",
                             Employee.class)

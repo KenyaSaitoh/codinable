@@ -1,15 +1,12 @@
 package pro.kensait.jakartaee.employee.entity;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  * EMPLOYEE テーブルの 1 行を保持する JavaBean（Jakarta Persistence のエンティティではない）
  * 部署と役職はオブジェクトの関連ではなく、ID で保持する
  */
-public class Employee implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class Employee {
     public static final String ACTIVE = "active";
     public static final String DELETED = "deleted";
 

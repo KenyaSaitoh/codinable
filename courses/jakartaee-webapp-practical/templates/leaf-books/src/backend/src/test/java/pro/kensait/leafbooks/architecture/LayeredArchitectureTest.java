@@ -7,6 +7,8 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import org.junit.jupiter.api.Test;
 
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage;
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.simpleNameEndingWith;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 
 /**
@@ -25,13 +27,14 @@ public class LayeredArchitectureTest {
      * レイヤー依存関係ルール
      * 
      * 依存関係:
-     * - API層 → Service層、DTO、External、Security
+     * - API層 → Service層、DTO、External、Security。ServiceのEntityを応答のDTOへ変換するため、Entityも参照してよい
      * - Service層 → DAO層、Entity、DTO、External
-     * - DAO層 → Entity
+     * - DAO層 → Entity。JPQLのコンストラクタ式でServiceのTO（表示用の投影）を作ることだけは許す
      * - Entity層 → （独立）※Commonは許可
      * - DTO → （独立）
      * - External層 → （独立）※ExternalのDTOは許可
      * - Security層 → （独立）※ServiceとEntityは許可
+     * - Common（ErrorResponse など）はどの層からも使ってよい
      */
     @ArchTest
     static final ArchRule layer_dependencies_are_respected = layeredArchitecture()
@@ -50,7 +53,11 @@ public class LayeredArchitectureTest {
         .whereLayer("API").mayNotBeAccessedByAnyLayer()
         .whereLayer("Service").mayOnlyBeAccessedByLayers("API", "Security")
         .whereLayer("DAO").mayOnlyBeAccessedByLayers("Service")
-        .whereLayer("Entity").mayOnlyBeAccessedByLayers("DAO", "Service", "External");
+        .whereLayer("Entity").mayOnlyBeAccessedByLayers("API", "DAO", "Service", "External")
+
+        // DAOのDTO投影（SELECT new …TO(…)）が作るServiceのTOは、依存方向の例外として扱う
+        .ignoreDependency(resideInAPackage("..dao.."),
+                resideInAPackage("..service..").and(simpleNameEndingWith("TO")));
     
     /**
      * DTOとEntityの分離ルール

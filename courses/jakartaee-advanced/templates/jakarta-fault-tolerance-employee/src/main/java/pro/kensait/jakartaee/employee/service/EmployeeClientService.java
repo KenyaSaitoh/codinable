@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -33,7 +32,7 @@ public class EmployeeClientService {
 
     @CircuitBreaker(requestVolumeThreshold = 4, // 【1】
             failureRatio = 0.5, // 【2】
-            delay = 10, delayUnit = ChronoUnit.SECONDS, // 【3】
+            delay = 10000, // 【3】
             successThreshold = 2) // 【4】
     @Timeout(3000)
     @Fallback(fallbackMethod = "fallbackEmployees")

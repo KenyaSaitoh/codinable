@@ -25,7 +25,9 @@ MicroProfile Telemetry の `Meter` によるカウンター `employee.get.count`
 ## 結果のどこを見るか
 
 - Payara の場合、ヘルスのエンドポイントはアプリケーションのコンテキストルート（`/jakarta-health-employee`）ではなく、サーバーのルートの `/health` にある
+- Payara の場合、`data` の値は数値（`withData` に渡した `long`）も `"16"` のような文字列で出る。`data` を付けないチェックにも空の `data` が付く
+  （どちらも仕様の範囲内で、製品によって出し方が違う）
 - 全体の `status` は、すべてのチェックの論理積。1 つでも DOWN なら全体も DOWN で、HTTP ステータスは 503 になる
-- メトリクスは、講座本編では OTLP で外部の受信先へ送るが、Codinable では受信先を用意しないので、
-  実行結果（Payara Server のログ）へ 60 秒ごとに書き出している（`otel.metrics.exporter=console`）。
+- メトリクスは、講座のとおり OTLP の受信先を用意せず、実行結果（Payara Server のログ）へ 60 秒ごとに書き出している
+  （`otel.metrics.exporter=console`）。
   `02_employee_metrics.sh` のあと、`employee.get.count` の値が 3 になっていることを確かめる（存在しない社員の要求も数える）

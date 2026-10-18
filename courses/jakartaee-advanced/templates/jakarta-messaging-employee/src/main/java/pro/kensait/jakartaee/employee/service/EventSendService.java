@@ -29,12 +29,4 @@ public class EventSendService {
                 .setProperty("eventType", event.eventType()) // 【5】
                 .send(queue, JSONB.toJson(event)); // 【6】
     }
-
-    // 教材用: JSON として読めない本文をそのまま送る（受信側の再配送とデッドレターキューの確認用）
-    public void sendRaw(String text) {
-        context.createProducer()
-                .setDeliveryMode(DeliveryMode.PERSISTENT)
-                .setProperty("eventType", "UNKNOWN")
-                .send(queue, text);
-    }
 }

@@ -41,14 +41,6 @@ public class EmployeeResource {
         return service.findAll();
     }
 
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"BASIC", "ADMIN"})
-    public Employee employee(@PathParam("id") int id) {
-        return service.find(id);
-    }
-
     @DELETE
     @Path("/{id}")
     @RolesAllowed("ADMIN") // 【4】

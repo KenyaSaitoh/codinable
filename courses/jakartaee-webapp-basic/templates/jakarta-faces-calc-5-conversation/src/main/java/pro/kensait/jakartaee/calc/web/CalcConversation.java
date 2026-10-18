@@ -17,8 +17,6 @@ import pro.kensait.jakartaee.calc.service.TaxService;
 @Named
 @ConversationScoped
 public class CalcConversation implements Serializable {
-    private static final long serialVersionUID = 1L;
-
     @Inject
     private Conversation conversation;
     @Inject

@@ -17,4 +17,5 @@ public interface OrderServiceIF {
     OrderDetail getOrderDetail(Integer tranId, Integer detailId);
     List<OrderDetail> getOrderDetails(Integer orderTranId);
     OrderTran orderBooks(OrderTO orderTO);
+    String getPublisherName(Integer bookId);
 }

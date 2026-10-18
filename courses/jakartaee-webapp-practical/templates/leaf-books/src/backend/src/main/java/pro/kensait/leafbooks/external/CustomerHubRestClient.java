@@ -17,7 +17,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pro.kensait.leafbooks.external.dto.CustomerTO;
 import pro.kensait.leafbooks.external.dto.ErrorResponse;
-import pro.kensait.leafbooks.service.customer.EmailAlreadyExistsException;
 
 /**
  * leaf-books-rest APIを呼び出すRESTクライアント

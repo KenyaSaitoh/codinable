@@ -16,7 +16,7 @@ import pro.kensait.jakartaee.employee.entity.Job;
 @ApplicationScoped
 public class EmployeeRepository {
     // 検索と件数取得で共通の条件。null のパラメータはその条件を使わない
-    // （演習用: EclipseLink は null のパラメータを SQL に NULL と書き込み、HSQLDB は LIKE の右辺の NULL をエラーにするので、
+    // （EclipseLink は null のパラメータを SQL に NULL と書き込み、HSQLDB は LIKE の右辺の NULL をエラーにするので、
     //   キーワードだけ COALESCE で空文字列にしている。:keyword IS NULL の判定は変わらない）
     private static final String CONDITIONS = """
              WHERE e.status = 'active'

@@ -6,6 +6,8 @@ import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage;
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.simpleNameEndingWith;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 
@@ -98,5 +100,8 @@ public class PackageStructureTest {
         slices()
             .matching("pro.kensait.leafbooks.(*)..")
             .should().beFreeOfCycles()
+            // DAOのDTO投影が作るServiceのTOは、LayeredArchitectureTest と同じく依存方向の例外として扱う
+            .ignoreDependency(resideInAPackage("..dao.."),
+                    resideInAPackage("..service..").and(simpleNameEndingWith("TO")))
             .because("サイクル依存は複雑性を増加させる");
 }

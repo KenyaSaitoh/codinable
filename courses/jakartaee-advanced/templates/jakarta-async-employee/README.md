@@ -33,7 +33,7 @@ Jakarta REST の非同期応答とサーバー送信イベント（SSE）によ�
    - `01_summary.sh` … 3 通りの非同期応答（`AsyncResponse`・`CompletionStage`・`@Asynchronous`）
    - `02_stream.sh` … SSE の社員一覧（約 16 秒）
    - `03_transfer.sh` … 異動の登録、SSE の `transferred`、異動履歴
-4. `client/run.sh` を開いて ▶ 実行すると、Java のクライアントが SSE を受信して 16 件と `complete` を確かめる
+4. `client/run.sh` を開いて ▶ 実行すると、Java のクライアントが SSE を受信し、`complete` までに 16 件が届いたことを確かめる
 
 ## 結果のどこを見るか
 

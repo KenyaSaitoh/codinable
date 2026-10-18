@@ -1,5 +1,6 @@
 package pro.kensait.leafbooks.service.customer;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +52,16 @@ public class CustomerService {
             return null;
         }
         
-        // パスワード検証（平文比較）
-        if (!customer.password().equals(password)) {
+        // パスワード照合（BCryptハッシュ、または開発用の平文に対応）
+        // ログインの照合はこの 1 か所にまとめ、リソースクラスには書かない
+        String storedPassword = customer.password();
+        boolean passwordMatch;
+        if (storedPassword.startsWith("$2a$") || storedPassword.startsWith("$2b$") || storedPassword.startsWith("$2y$")) {
+            passwordMatch = BCrypt.checkpw(password, storedPassword);
+        } else {
+            passwordMatch = password.equals(storedPassword);
+        }
+        if (!passwordMatch) {
             logger.warn("Password mismatch for: " + email);
             return null;
         }

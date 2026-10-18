@@ -33,7 +33,7 @@ const TARGETS = {
   'spring-boot-cicd':             ['database-rider-employee'],
   'jakartaee-webapp-basic':       ['jakarta-faces-employee-jdbc', 'jakarta-faces-employee-jpa',
                                    'jakarta-faces-employee-criteria', 'jakarta-data-employee',
-                                   'jakarta-tx', 'jakarta-tx-xa', 'jakarta-rest-employee'],
+                                   'jakarta-tx', 'jakarta-rest-employee'],
   'jakartaee-webapp-practical':   ['leaf-books-persistence', 'customer-hub'],
 };
 

@@ -2,3 +2,8 @@
 # Payara の場合: アイデンティティストアが返したグループ名を、そのまま同じ名前のロールとして扱う
 # （既定のグループとロールの対応付け。これが無いと、BASIC・ADMIN のグループがロールにならず 403 になる）
 set configs.config.server-config.security-service.activate-default-principal-to-role-mapping=true
+# Payara の場合（7.2026.9 で確認）: web.xml の cookie-config の <attribute>（SameSite=Lax）は Servlet 6.0 以降の仕様だが、
+# Payara Server は Set-Cookie に出さない。同じ SameSite=Lax を、Payara Server の HTTP の設定で付ける
+# （Payara Server はこの属性を 2 回続けて書くが、値は同じ Lax なので Webブラウザの扱いは変わらない）
+set configs.config.server-config.network-config.protocols.protocol.http-listener-1.http.cookie-same-site-enabled=true
+set configs.config.server-config.network-config.protocols.protocol.http-listener-1.http.cookie-same-site-value=Lax

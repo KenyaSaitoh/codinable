@@ -13,7 +13,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pro.kensait.leafbooks.api.dto.ErrorResponse;
+import pro.kensait.leafbooks.common.ErrorResponse;
 
 /**
  * 画像API リソースクラス

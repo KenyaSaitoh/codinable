@@ -1,6 +1,5 @@
 package pro.kensait.jakartaee.employee.entity;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -15,9 +14,7 @@ import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "EMPLOYEE")
-public class Employee implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class Employee {
     public static final String ACTIVE = "active";
     public static final String DELETED = "deleted";
 

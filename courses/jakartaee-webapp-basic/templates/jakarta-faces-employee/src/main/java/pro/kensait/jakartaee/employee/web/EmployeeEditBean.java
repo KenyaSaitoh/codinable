@@ -21,8 +21,6 @@ import pro.kensait.jakartaee.employee.service.EmployeeService;
 @Named
 @ConversationScoped
 public class EmployeeEditBean implements Serializable {
-    private static final long serialVersionUID = 1L;
-
     @Inject
     private Conversation conversation;
     @Inject
