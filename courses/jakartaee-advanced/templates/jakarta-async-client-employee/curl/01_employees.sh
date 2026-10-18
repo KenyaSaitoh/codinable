@@ -11,4 +11,4 @@ curl -sS -i "$api/employees/10001"
 echo
 curl -sS -i "$api/employees/query_by_department?departmentId=3"
 echo
-curl -sS -o /dev/null -w '%{http_code}\n' "$api/employees/99999"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' "$api/employees/99999"

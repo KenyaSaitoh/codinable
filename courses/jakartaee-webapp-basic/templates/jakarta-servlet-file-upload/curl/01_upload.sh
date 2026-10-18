@@ -7,7 +7,7 @@ dir=$(mktemp -d)
 printf 'hello upload\n' > "$dir/memo.txt"
 cd "$dir"   # curl へは相対パスで渡す（Windows の curl は /tmp のようなパスを読めない）
 set -x
-curl -s -i -F "title=Memo" -F "file=@memo.txt;filename=fakepath/memo.txt;type=text/plain" \
+curl -sS -i -F "title=Memo" -F "file=@memo.txt;filename=fakepath/memo.txt;type=text/plain" \
   http://localhost:8080/jakarta-servlet-file-upload/files | grep -E '^HTTP|^Location'
-curl -s -L -F "title=Memo" -F "file=@memo.txt;filename=fakepath/memo.txt;type=text/plain" \
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' -L -F "title=Memo" -F "file=@memo.txt;filename=fakepath/memo.txt;type=text/plain" \
   http://localhost:8080/jakarta-servlet-file-upload/files | grep -E '<dd>'

@@ -17,12 +17,12 @@ token() {   # $1=ユーザー名 $2=パスワード $3=取り出す項目（acce
     -d scope=openid -d "username=$1" -d "password=$2" "$token_endpoint" \
     | sed -E "s/.*\"$3\":\"([^\"]+)\".*/\1/"
 }
-curl -sS -o /dev/null -w '%{http_code}\n' "$api/employees"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' "$api/employees"
 alice=$(token alice 1111 access_token)
-curl -sS -o /dev/null -w '%{http_code}\n' -H "Authorization: Bearer $alice" "$api/employees"
-curl -sS -o /dev/null -w '%{http_code}\n' -X DELETE -H "Authorization: Bearer $alice" "$api/employees/10016"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' -H "Authorization: Bearer $alice" "$api/employees"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' -X DELETE -H "Authorization: Bearer $alice" "$api/employees/10016"
 bob=$(token bob 2222 access_token)
-curl -sS -o /dev/null -w '%{http_code}\n' -X DELETE -H "Authorization: Bearer $bob" "$api/employees/10016"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' -X DELETE -H "Authorization: Bearer $bob" "$api/employees/10016"
 id_token=$(token bob 2222 id_token)
-curl -sS -o /dev/null -w '%{http_code}\n' -H "Authorization: Bearer $id_token" "$api/employees"
-curl -sS -o /dev/null -w '%{http_code}\n' -H "Authorization: Bearer ${bob%?????}AAAAA" "$api/employees"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' -H "Authorization: Bearer $id_token" "$api/employees"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' -H "Authorization: Bearer ${bob%?????}AAAAA" "$api/employees"

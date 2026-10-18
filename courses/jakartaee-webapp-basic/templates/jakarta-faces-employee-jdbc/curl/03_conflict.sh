@@ -5,7 +5,7 @@
 #   1. 先に保存した利用者 A は「社員ID 10001 を更新しました」（VERSION が 0 → 1）
 #   2. 後から保存した利用者 B は「ほかの人が先に更新しました。読み込み直してください」
 #      B の画面は VERSION 0 のままなので、UPDATE … WHERE EMPLOYEE_ID = ? AND VERSION = ? の更新件数が 0 になる
-source "$(dirname "$0")/faces.sh"
+source "$(dirname "$0")/faces.inc"
 jarA=$(mktemp); jarB=$(mktemp)
 set -x
 open "$jarA" "EmployeeFormPage.xhtml?employeeId=10001"; pageA=$page

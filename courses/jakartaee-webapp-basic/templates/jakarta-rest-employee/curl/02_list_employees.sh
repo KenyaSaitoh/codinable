@@ -4,6 +4,6 @@
 # 期待する結果: 200 と {"content":[…5 件…],"totalElements":16,"totalPages":4}
 #              2 ページ目の content は 10006 Frank から
 set -x
-curl -s http://localhost:8080/jakarta-rest-employee/api/employees
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' http://localhost:8080/jakarta-rest-employee/api/employees
 echo
-curl -s "http://localhost:8080/jakarta-rest-employee/api/employees?page=2"
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "http://localhost:8080/jakarta-rest-employee/api/employees?page=2"

@@ -50,6 +50,13 @@
         <role-name>ADMIN</role-name>
     </security-role>
 
+    <!-- protected-views のトークンが無いときの ProtectedViewException は、Payara の既定のエラー画面
+         (例外の内容) ではなく、理由を示す画面にする。状態コードは 500 のまま -->
+    <error-page>
+        <exception-type>jakarta.faces.application.ProtectedViewException</exception-type>
+        <location>/errors/protected-view.html</location>
+    </error-page>
+
     <session-config>
         <session-timeout>30</session-timeout>
         <cookie-config>

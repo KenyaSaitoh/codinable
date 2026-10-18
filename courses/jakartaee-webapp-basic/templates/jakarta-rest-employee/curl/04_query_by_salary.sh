@@ -3,4 +3,4 @@
 # 前提: 先に ▶ アプリ実行で WAR をデプロイしておく
 # 期待する結果: 200 と、月給 450,000 以上の Alice・Bob・Ivan・Justin の配列
 set -x
-curl -s "http://localhost:8080/jakarta-rest-employee/api/employees/query_by_salary?lowerSalary=450000"
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "http://localhost:8080/jakarta-rest-employee/api/employees/query_by_salary?lowerSalary=450000"

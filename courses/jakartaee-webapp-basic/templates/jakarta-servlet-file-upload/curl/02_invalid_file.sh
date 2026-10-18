@@ -8,7 +8,7 @@ printf 'MZ' > "$dir/tool.exe"
 : > "$dir/empty.txt"
 cd "$dir"   # curl へは相対パスで渡す
 set -x
-curl -s -w '%{http_code}\n' -F "title=Tool" -F "file=@tool.exe" \
-  http://localhost:8080/jakarta-servlet-file-upload/files | grep -E '<p>|^[0-9]{3}$'
-curl -s -w '%{http_code}\n' -F "title=Empty" -F "file=@empty.txt" \
-  http://localhost:8080/jakarta-servlet-file-upload/files | grep -E '<p>|^[0-9]{3}$'
+curl -sS -w 'HTTP/%{http_version} %{http_code}\n' -F "title=Tool" -F "file=@tool.exe" \
+  http://localhost:8080/jakarta-servlet-file-upload/files | grep -E '<p>|^HTTP/'
+curl -sS -w 'HTTP/%{http_version} %{http_code}\n' -F "title=Empty" -F "file=@empty.txt" \
+  http://localhost:8080/jakarta-servlet-file-upload/files | grep -E '<p>|^HTTP/'

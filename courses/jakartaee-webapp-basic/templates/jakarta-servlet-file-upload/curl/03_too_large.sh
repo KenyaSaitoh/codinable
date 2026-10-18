@@ -6,5 +6,5 @@ dir=$(mktemp -d)
 head -c $((6 * 1024 * 1024)) /dev/zero > "$dir/large.txt"
 cd "$dir"   # curl へは相対パスで渡す
 set -x
-curl -s -o /dev/null -w '%{http_code}\n' -F "title=Large" -F "file=@large.txt" \
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' -F "title=Large" -F "file=@large.txt" \
   http://localhost:8080/jakarta-servlet-file-upload/files

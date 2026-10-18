@@ -5,5 +5,5 @@
 #              続けて一覧を GET すると Carol が見つからない（件数 0）
 #              データはメモリー上にあるので、▶ アプリ実行でデプロイし直すと元に戻る
 set -x
-curl -s -i -X POST http://localhost:8080/jakarta-jsp-employee/employees/delete -d employeeId=10003 | head -5
-curl -s http://localhost:8080/jakarta-jsp-employee/employees | grep -c Carol || true
+curl -sS -i -X POST http://localhost:8080/jakarta-jsp-employee/employees/delete -d employeeId=10003 | head -5
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' http://localhost:8080/jakarta-jsp-employee/employees | grep -c Carol || true

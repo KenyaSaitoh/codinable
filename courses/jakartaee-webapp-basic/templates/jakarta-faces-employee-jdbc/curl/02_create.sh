@@ -5,7 +5,7 @@
 #   1. 氏名が空欄・役職なし・月給 -1 → 項目ごとのエラー
 #   2. 正しく入力 → 一覧へリダイレクトし「社員ID 10017（E10017）を登録しました」
 #      INSERT で採番された ID から、同じトランザクションの updateCode が社員コードを作っている
-source "$(dirname "$0")/faces.sh"
+source "$(dirname "$0")/faces.inc"
 jar=$(mktemp)
 set -x
 open "$jar" EmployeeFormPage.xhtml

@@ -8,8 +8,8 @@
 URL=http://localhost:8080/jakarta-faces-calc-4-prg/CalcInputPage.xhtml
 jar=$(mktemp)
 set -x
-viewState=$(curl -s -c "$jar" -b "$jar" "$URL" | sed -n 's/.*name="jakarta.faces.ViewState"[^>]*value="\([^"]*\)".*/\1/p')
-headers=$(curl -s -D - -o /dev/null -c "$jar" -b "$jar" "$URL" \
+viewState=$(curl -sS -c "$jar" -b "$jar" "$URL" | sed -n 's/.*name="jakarta.faces.ViewState"[^>]*value="\([^"]*\)".*/\1/p')
+headers=$(curl -sS -D - -o /dev/null -c "$jar" -b "$jar" "$URL" \
   --data-urlencode "calcForm=calcForm" \
   --data-urlencode "calcForm:param1=30" \
   --data-urlencode "calcForm:param2=10" \
@@ -17,5 +17,5 @@ headers=$(curl -s -D - -o /dev/null -c "$jar" -b "$jar" "$URL" \
   --data-urlencode "jakarta.faces.ViewState=$viewState")
 echo "$headers" | grep -E "^HTTP|^Location"
 location=$(echo "$headers" | sed -n 's/^Location: *//Ip' | tr -d '\r')
-curl -s -c "$jar" -b "$jar" "$location" | grep '計算結果'
-curl -s -c "$jar" -b "$jar" "$location" | grep '計算結果'
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' -c "$jar" -b "$jar" "$location" | grep '計算結果'
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' -c "$jar" -b "$jar" "$location" | grep '計算結果'

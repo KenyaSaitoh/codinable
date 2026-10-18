@@ -3,6 +3,6 @@
 # 前提: 先に ▶ アプリ実行で WAR をデプロイしておく
 # 期待する結果: どちらも 200 と JSON の配列（部署 1 PLANNING 〜 4 PRODUCT、役職 1 ASSOCIATE 〜 4 MANAGER）
 set -x
-curl -s -i http://localhost:8080/jakarta-rest-employee/api/departments
+curl -sS -i http://localhost:8080/jakarta-rest-employee/api/departments
 echo
-curl -s -i http://localhost:8080/jakarta-rest-employee/api/jobs
+curl -sS -i http://localhost:8080/jakarta-rest-employee/api/jobs

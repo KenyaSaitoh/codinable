@@ -12,14 +12,14 @@ vs() { sed -n 's/.*name="jakarta.faces.ViewState"[^>]*value="\([^"]*\)".*/\1/p';
 act() { sed -n "s/.*<form id=\"$1\"[^>]*action=\"\([^\"]*\)\".*/\1/p" | sed 's/&amp;/\&/g'; }
 loc() { sed -n 's/^Location: *//Ip' | tr -d '\r'; }
 set -x
-page=$(curl -s -c "$jar" -b "$jar" "$BASE/EmployeeTablePage.xhtml")
-input=$(curl -s -D - -o /dev/null -c "$jar" -b "$jar" "http://localhost:8080$(echo "$page" | act tableForm)" \
+page=$(curl -sS -c "$jar" -b "$jar" "$BASE/EmployeeTablePage.xhtml")
+input=$(curl -sS -D - -o /dev/null -c "$jar" -b "$jar" "http://localhost:8080$(echo "$page" | act tableForm)" \
   --data-urlencode "tableForm=tableForm" --data-urlencode "tableForm:createButton=x" \
   --data-urlencode "jakarta.faces.ViewState=$(echo "$page" | vs)" | loc)
 echo "入力画面: $input"
-page=$(curl -s -c "$jar" -b "$jar" "$input")
+page=$(curl -sS -c "$jar" -b "$jar" "$input")
 send() {
-  curl -s -c "$jar" -b "$jar" "http://localhost:8080$(echo "$page" | act inputForm)" -D - \
+  curl -sS -c "$jar" -b "$jar" "http://localhost:8080$(echo "$page" | act inputForm)" -D - \
     --data-urlencode "inputForm=inputForm" \
     --data-urlencode "inputForm:employeeName=$1" \
     --data-urlencode "inputForm:departmentName=$2" \
@@ -30,10 +30,10 @@ send() {
 send "" SALES 300000 | grep -oE '<span style="color: red">[^<]*</span>'
 confirm=$(send Zoe SALES 300000 | loc)
 echo "確認画面: $confirm"
-page=$(curl -s -c "$jar" -b "$jar" "$confirm")
+page=$(curl -sS -c "$jar" -b "$jar" "$confirm")
 echo "$page" | grep -E '<div>'
-table=$(curl -s -D - -o /dev/null -c "$jar" -b "$jar" "http://localhost:8080$(echo "$page" | act confirmForm)" \
+table=$(curl -sS -D - -o /dev/null -c "$jar" -b "$jar" "http://localhost:8080$(echo "$page" | act confirmForm)" \
   --data-urlencode "confirmForm=confirmForm" --data-urlencode "confirmForm:updateButton=x" \
   --data-urlencode "jakarta.faces.ViewState=$(echo "$page" | vs)" | loc)
 echo "一覧: $table"
-curl -s -c "$jar" -b "$jar" "$table" | grep -A3 '10017'
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' -c "$jar" -b "$jar" "$table" | grep -A3 '10017'

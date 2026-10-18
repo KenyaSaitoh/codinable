@@ -6,8 +6,8 @@
 #   2. 2 回目の PUT（If-Match に古い ETag）→ 412 Precondition Failed（evaluatePreconditions。サービスまで進まない）
 U=http://localhost:8080/jakarta-rest-employee/api
 set -x
-etag=$(curl -s -i $U/employees/10002 | sed -n 's/^ETag: *//Ip' | tr -d '\r')
+etag=$(curl -sS -i $U/employees/10002 | sed -n 's/^ETag: *//Ip' | tr -d '\r')
 version=$(echo "$etag" | tr -d '"')
 body="{\"employeeName\":\"Bob\",\"departmentId\":1,\"jobId\":4,\"salary\":460000,\"entranceDate\":\"2012-04-01\",\"version\":$version}"
-curl -s -i -X PUT $U/employees/10002 -H 'Content-Type: application/json' -H "If-Match: $etag" -d "$body" | grep -E '^HTTP|^ETag'
-curl -s -i -X PUT $U/employees/10002 -H 'Content-Type: application/json' -H "If-Match: $etag" -d "$body" | grep -E '^HTTP|^ETag'
+curl -sS -i -X PUT $U/employees/10002 -H 'Content-Type: application/json' -H "If-Match: $etag" -d "$body" | grep -E '^HTTP|^ETag'
+curl -sS -i -X PUT $U/employees/10002 -H 'Content-Type: application/json' -H "If-Match: $etag" -d "$body" | grep -E '^HTTP|^ETag'

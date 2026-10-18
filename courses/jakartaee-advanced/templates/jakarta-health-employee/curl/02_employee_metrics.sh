@@ -8,6 +8,6 @@
 #   同じ出力に、実行環境が収集する http.server.request.duration や jvm.memory.used なども並ぶ
 set -x
 api=http://localhost:8080/jakarta-health-employee/api
-curl -sS -o /dev/null -w '%{http_code}\n' "$api/employees/10001"
-curl -sS -o /dev/null -w '%{http_code}\n' "$api/employees/10002"
-curl -sS -o /dev/null -w '%{http_code}\n' "$api/employees/99999"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' "$api/employees/10001"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' "$api/employees/10002"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' "$api/employees/99999"

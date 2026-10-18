@@ -6,7 +6,7 @@
 #   param=-5  → ERROR OCCURRED!!!。Bar・Qux とも COUNT=100 のまま
 #              （2 つの XA データソースが FooBean の 1 つのトランザクションに参加し、Qux の例外で両方が取り消される）
 set -x
-curl -s "http://localhost:8080/jakarta-tx-xa/jta?param=100"; echo
-curl -s "http://localhost:8080/jakarta-tx-xa/business"
-curl -s "http://localhost:8080/jakarta-tx-xa/jta?param=-5"; echo
-curl -s "http://localhost:8080/jakarta-tx-xa/business"
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "http://localhost:8080/jakarta-tx-xa/jta?param=100"; echo
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "http://localhost:8080/jakarta-tx-xa/business"
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "http://localhost:8080/jakarta-tx-xa/jta?param=-5"; echo
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "http://localhost:8080/jakarta-tx-xa/business"

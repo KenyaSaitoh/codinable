@@ -12,21 +12,21 @@ jar=$(mktemp)
 vs() { sed -n 's/.*name="jakarta.faces.ViewState"[^>]*value="\([^"]*\)".*/\1/p'; }
 loc() { sed -n 's/^Location: *//Ip' | tr -d '\r'; }
 set -x
-viewState=$(curl -s -c "$jar" -b "$jar" "$BASE/CalcInputPage.xhtml" | vs)
-out=$(curl -s -c "$jar" -b "$jar" "$BASE/CalcInputPage.xhtml" -D - -o /dev/null \
+viewState=$(curl -sS -c "$jar" -b "$jar" "$BASE/CalcInputPage.xhtml" | vs)
+out=$(curl -sS -c "$jar" -b "$jar" "$BASE/CalcInputPage.xhtml" -D - -o /dev/null \
   --data-urlencode "calcForm=calcForm" \
   --data-urlencode "calcForm:param1=30" \
   --data-urlencode "calcForm:param2=10" \
   --data-urlencode "calcForm:addButton=x" \
   --data-urlencode "jakarta.faces.ViewState=$viewState" | loc)
 echo "Location: $out"
-page=$(curl -s -c "$jar" -b "$jar" "$out")
+page=$(curl -sS -c "$jar" -b "$jar" "$out")
 echo "$page" | grep -E '計算結果|会話ID'
 action=$(echo "$page" | sed -n 's/.*<form id="taxForm"[^>]*action="\([^"]*\)".*/\1/p' | sed 's/&amp;/\&/g')
-out2=$(curl -s -c "$jar" -b "$jar" "http://localhost:8080$action" -D - -o /dev/null \
+out2=$(curl -sS -c "$jar" -b "$jar" "http://localhost:8080$action" -D - -o /dev/null \
   --data-urlencode "taxForm=taxForm" \
   --data-urlencode "taxForm:calcTaxButton=x" \
   --data-urlencode "jakarta.faces.ViewState=$(echo "$page" | vs)" | loc)
 echo "Location: $out2"
-curl -s -c "$jar" -b "$jar" "$out2" | grep -E '税込金額'
-curl -s -o /dev/null -w '%{http_code}\n' -c "$jar" -b "$jar" "$out"
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' -c "$jar" -b "$jar" "$out2" | grep -E '税込金額'
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' -c "$jar" -b "$jar" "$out"

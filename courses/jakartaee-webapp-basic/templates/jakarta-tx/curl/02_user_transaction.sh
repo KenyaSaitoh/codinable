@@ -3,6 +3,6 @@
 # 前提: 先に ▶ アプリ実行で WAR をデプロイしておく（01 の後に流すと Qux の値はそこから増える）
 # 期待する結果: COMMITTED 2 / 3。Qux の COUNT は 10 と 20 だけが足される（-3 の 1 件だけが取り消される）
 set -x
-curl -s "http://localhost:8080/jakarta-tx/business"
-curl -s "http://localhost:8080/jakarta-tx/baz?params=10,-3,20"; echo
-curl -s "http://localhost:8080/jakarta-tx/business"
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "http://localhost:8080/jakarta-tx/business"
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "http://localhost:8080/jakarta-tx/baz?params=10,-3,20"; echo
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "http://localhost:8080/jakarta-tx/business"

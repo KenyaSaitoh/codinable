@@ -12,9 +12,9 @@ URL=http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xh
 post() {
   local jar viewState
   jar=$(mktemp)
-  viewState=$(curl -s -c "$jar" "$URL" | sed -n 's/.*name="jakarta.faces.ViewState"[^>]*value="\([^"]*\)".*/\1/p')
+  viewState=$(curl -sS -c "$jar" "$URL" | sed -n 's/.*name="jakarta.faces.ViewState"[^>]*value="\([^"]*\)".*/\1/p')
   echo "--- $1: param1=[$2] param2=[$3]"
-  curl -s -b "$jar" "$URL" \
+  curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' -b "$jar" "$URL" \
     --data-urlencode "calcForm=calcForm" \
     --data-urlencode "calcForm:param1=$2" \
     --data-urlencode "calcForm:param2=$3" \

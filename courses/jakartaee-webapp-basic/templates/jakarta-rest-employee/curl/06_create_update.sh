@@ -7,7 +7,7 @@
 #   3. PUT（同じ古い version）→ 409 と {"status":409,"message":"ほかの人が先に更新しました。読み込み直してください",…}
 U=http://localhost:8080/jakarta-rest-employee/api
 set -x
-created=$(curl -s -i -X POST $U/employees -H 'Content-Type: application/json' --data-binary @- <<'JSON'
+created=$(curl -sS -i -X POST $U/employees -H 'Content-Type: application/json' --data-binary @- <<'JSON'
 {"employeeName":"Walter","departmentId":3,"jobId":1,"salary":230000,"entranceDate":"2018-04-01"}
 JSON
 )
@@ -15,6 +15,6 @@ echo "$created"
 id=$(echo "$created" | sed -n 's/.*"employeeId":\([0-9]*\).*/\1/p')
 version=$(echo "$created" | sed -n 's/.*"version":\([0-9]*\).*/\1/p')
 body="{\"employeeName\":\"Walter\",\"departmentId\":2,\"jobId\":2,\"salary\":260000,\"entranceDate\":\"2018-04-01\",\"version\":$version}"
-curl -s -i -X PUT "$U/employees/$id" -H 'Content-Type: application/json' -d "$body"
+curl -sS -i -X PUT "$U/employees/$id" -H 'Content-Type: application/json' -d "$body"
 echo
-curl -s -i -X PUT "$U/employees/$id" -H 'Content-Type: application/json' -d "$body"
+curl -sS -i -X PUT "$U/employees/$id" -H 'Content-Type: application/json' -d "$body"

@@ -7,10 +7,10 @@
 URL=http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml
 jar=$(mktemp)
 set -x
-page=$(curl -s -c "$jar" "$URL")
+page=$(curl -sS -c "$jar" "$URL")
 viewState=$(echo "$page" | sed -n 's/.*name="jakarta.faces.ViewState"[^>]*value="\([^"]*\)".*/\1/p')
 echo "$page" | grep -o 'name="calcForm:[a-zA-Z0-9]*"'
-curl -s -b "$jar" "$URL" \
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' -b "$jar" "$URL" \
   --data-urlencode "calcForm=calcForm" \
   --data-urlencode "calcForm:param1=30" \
   --data-urlencode "calcForm:param2=10" \

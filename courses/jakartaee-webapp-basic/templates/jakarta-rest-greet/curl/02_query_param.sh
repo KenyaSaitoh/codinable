@@ -3,4 +3,4 @@
 # 前提: 先に ▶ アプリ実行で WAR をデプロイしておく
 # 期待する結果: HTTP/1.1 200 と「Good Morning Alice!」
 set -x
-curl -s -i "http://localhost:8080/jakarta-rest-greet/api/greet/morning?name=Alice"
+curl -sS -i "http://localhost:8080/jakarta-rest-greet/api/greet/morning?name=Alice"

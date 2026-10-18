@@ -11,8 +11,8 @@ vs() { sed -n 's/.*name="jakarta.faces.ViewState"[^>]*value="\([^"]*\)".*/\1/p';
 post() {
   local jar viewState
   jar=$(mktemp)
-  viewState=$(curl -s -c "$jar" "$BASE/CalcInputPage.xhtml" | vs)
-  curl -s -b "$jar" "$BASE/CalcInputPage.xhtml" -D - \
+  viewState=$(curl -sS -c "$jar" "$BASE/CalcInputPage.xhtml" | vs)
+  curl -sS -b "$jar" "$BASE/CalcInputPage.xhtml" -D - \
     --data-urlencode "calcForm=calcForm" \
     --data-urlencode "calcForm:param1=$2" \
     --data-urlencode "calcForm:param2=$3" \
@@ -21,10 +21,10 @@ post() {
 }
 set -x
 post addButton 30 10
-curl -s "$BASE/CalcOutputPage.xhtml?id=1" | grep -E '足し算|計算日時'
-curl -s "$BASE/CalcOutputPage.xhtml?id=1" | grep -E '足し算|計算日時'
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "$BASE/CalcOutputPage.xhtml?id=1" | grep -E '足し算|計算日時'
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "$BASE/CalcOutputPage.xhtml?id=1" | grep -E '足し算|計算日時'
 post multiplyButton 1000 101
-curl -s "$BASE/CalcHistoryPage.xhtml" | tr -d '\n' | sed 's#</tr>#\n#g' | grep '<td>' | sed 's/<[^>]*>/ /g; s/  */ /g'
-curl -s -L "$BASE/CalcOutputPage.xhtml?id=99" | grep -E '<h2>|見つかりません'
-curl -s "$BASE/CalcOutputPage.xhtml?id=abc" | grep -E '<li'
-curl -s "$BASE/CalcOutputPage.xhtml" | grep -E '<li'
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "$BASE/CalcHistoryPage.xhtml" | tr -d '\n' | sed 's#</tr>#\n#g' | grep '<td>' | sed 's/<[^>]*>/ /g; s/  */ /g'
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' -L "$BASE/CalcOutputPage.xhtml?id=99" | grep -E '<h2>|見つかりません'
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "$BASE/CalcOutputPage.xhtml?id=abc" | grep -E '<li'
+curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' "$BASE/CalcOutputPage.xhtml" | grep -E '<li'

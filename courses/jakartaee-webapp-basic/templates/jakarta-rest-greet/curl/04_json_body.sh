@@ -3,4 +3,4 @@
 # 前提: 先に ▶ アプリ実行で WAR をデプロイしておく
 # 期待する結果: HTTP/1.1 200 と「Good Evening Alice!」
 set -x
-curl -s -i -X POST -H 'Content-Type: application/json' -d '{"name":"Alice"}' http://localhost:8080/jakarta-rest-greet/api/greet/evening
+curl -sS -i -X POST -H 'Content-Type: application/json' -d '{"name":"Alice"}' http://localhost:8080/jakarta-rest-greet/api/greet/evening

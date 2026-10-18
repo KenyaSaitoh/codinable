@@ -20,7 +20,7 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 | `src/main/webapp/EmployeeTablePage.xhtml`、`EmployeeFormPage.xhtml` | 一覧画面と、登録・編集画面 |
 | `sql/hsqldb/` | テーブルの定義と初期データ |
 | `config/DatabaseInitializer.java` | 演習用。起動時に `sql/hsqldb` の SQL を流してテーブルを作り直す |
-| `curl/01_search.sh` 〜 `curl/04_delete.sh` | 検索・登録・更新の競合・削除を HTTP の要求で確かめるスクリプト（`curl/faces.sh` はそれらが読み込む補助の関数） |
+| `curl/01_search.sh` 〜 `curl/04_delete.sh` | 検索・登録・更新の競合・削除を HTTP の要求で確かめるスクリプト（`curl/faces.inc` はそれらが読み込む補助の関数） |
 
 ## 動かし方
 

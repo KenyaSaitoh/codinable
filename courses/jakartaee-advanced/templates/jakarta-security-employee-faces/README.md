@@ -31,6 +31,6 @@ GET で開く画面の CSRF 対策を確かめます。照合先（データベ�
 
 ## 結果のどこを見るか
 
-- 削除のリンクの URL に `jakarta.faces.Token` が付いている。同じ削除画面の URL をトークン無しで開くと表示できない（500。`ProtectedViewException`）
+- 削除のリンクの URL に `jakarta.faces.Token` が付いている。同じ削除画面の URL をトークン無しで開くと表示できない（500。`ProtectedViewException`。Webブラウザには `web.xml` の `error-page` で理由を示す画面が出る）
 - Alice には削除のリンクが表示されないが、それは表示の制御にすぎない。削除画面の URL を直接開いても、`web.xml` の制約で 403 になる
 - 社員データはメモリ内にあり、▶ アプリ実行し直すと 16 件に戻る

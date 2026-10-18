@@ -4,4 +4,4 @@
 # 期待する結果: Double.parseDouble が NumberFormatException を送出し、コンテナが 500 を返す
 #              （実行結果にも例外のスタックトレースが出る）
 set -x
-curl -s -o /dev/null -w '%{http_code}\n' -X POST http://localhost:8080/jakarta-servlet-calc/add -d param1=abc -d param2=20
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' -X POST http://localhost:8080/jakarta-servlet-calc/add -d param1=abc -d param2=20

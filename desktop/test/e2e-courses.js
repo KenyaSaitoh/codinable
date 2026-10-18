@@ -41,6 +41,20 @@ const NO_PAGE_SERVERS = new Set(['spring-kafka-employee', 'spring-amqp-employee'
 // わざとエラーにする SQL (制約違反を見せる教材)
 const SQL_EXPECTED_ERRORS = new Set(['sql-ddl:02_constraints.sql']);
 
+// わざと 5xx を見せるスクリプト (演習 ID:スクリプト)。それ以外の 5xx は問題にする
+//   jakarta-security-employee-faces … protected-views のトークンが無いと ProtectedViewException (500)
+//   jakarta-fault-tolerance-employee … バルクヘッドの上限を超えた要求は 503
+//   jakarta-servlet-calc … 数値でない入力の NumberFormatException をコンテナが 500 にする (07 の 2.1)
+//   jakarta-faces-calc-5-conversation … 終了した会話の cid は NonexistentConversationException (07 の 7.1)
+//   jakarta-servlet-file-upload … 受け付けないファイルは error-page の理由の画面を 500 で返す (07 の 8.1)
+const CURL_EXPECTED_5XX = new Set([
+  'jakarta-servlet-calc:file:curl/04_not_number.sh',
+  'jakarta-faces-calc-5-conversation:file:curl/01_conversation.sh',
+  'jakarta-servlet-file-upload:file:curl/02_invalid_file.sh',
+  'jakarta-security-employee-faces:file:curl/01_login_flow.sh',
+  'jakarta-fault-tolerance-employee:file:curl/03_bulkhead.sh',
+]);
+
 const args = process.argv.slice(2);
 const courseIds = (args.find(a => !a.startsWith('--')) || '').split(',').filter(Boolean);
 const only = new Set((args.find(a => a.startsWith('--only=')) || '').slice(7).split(',').filter(Boolean));
@@ -214,7 +228,7 @@ async function checkCurlScripts(cdp, r) {
     // curl を呼ばないスクリプト (Node の WebSocket クライアントなど) も HTTP の行を出さない。set -x の跡で見分ける
     else if (!/^\+ curl /m.test(out)) r.notes.push(`${target}: exit 0 (curl なし)`);
     else if (!/HTTP\/[\d.]+ \d{3}/.test(out)) r.problems.push(`${target}: HTTP の応答が出ていない`);
-    else if (/HTTP\/[\d.]+ 5\d\d/.test(out)) r.problems.push(`${target}: 5xx が返った`);
+    else if (/HTTP\/[\d.]+ 5\d\d/.test(out) && !CURL_EXPECTED_5XX.has(`${r.id}:${target}`)) r.problems.push(`${target}: 5xx が返った`);
     else r.notes.push(`${target}: ${[...out.matchAll(/HTTP\/[\d.]+ (\d{3})/g)].map(m => m[1]).join(',')}`);
     if (!await cdp.eval(`running`)) { r.problems.push(`${target}: スクリプトを動かしたらアプリが止まった`); return; }
   }

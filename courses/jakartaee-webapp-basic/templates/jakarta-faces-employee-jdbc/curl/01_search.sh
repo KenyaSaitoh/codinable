@@ -7,7 +7,7 @@
 #   3. 部署 SALES（3）と月給 300000 以上: Alice・Dave・Ellen の 3 件
 #   4. 月給の下限 500000 > 上限 100000: 「月給の範囲が正しくありません」（RangeException）
 #   実行結果（Payara のログ）には SQL は出ない。SQL は EmployeeRepository の中で組み立てている
-source "$(dirname "$0")/faces.sh"
+source "$(dirname "$0")/faces.inc"
 jar=$(mktemp)
 set -x
 open "$jar" EmployeeTablePage.xhtml; summary; rows

@@ -3,4 +3,4 @@
 # 前提: 先に ▶ アプリ実行で WAR をデプロイしておく
 # 期待する結果: 200 と、「計算結果 ---> 30.0」を含む HTML
 set -x
-curl -s -i -X POST http://localhost:8080/jakarta-servlet-calc/add -d param1=10 -d param2=20
+curl -sS -i -X POST http://localhost:8080/jakarta-servlet-calc/add -d param1=10 -d param2=20

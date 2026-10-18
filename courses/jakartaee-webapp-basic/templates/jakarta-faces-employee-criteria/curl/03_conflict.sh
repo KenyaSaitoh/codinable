@@ -6,7 +6,7 @@
 #   2. 後から保存した利用者 B は「ほかの人が先に更新しました。読み込み直してください」
 #      B の画面の version（0）が現在の version（1）と違うので、EmployeeService#update が ConflictException にする
 #      （比較の後に割り込まれても、@Version による UPDATE の条件で OptimisticLockException になる）
-source "$(dirname "$0")/faces.sh"
+source "$(dirname "$0")/faces.inc"
 jarA=$(mktemp); jarB=$(mktemp)
 set -x
 open "$jarA" "EmployeeFormPage.xhtml?employeeId=10001"; pageA=$page

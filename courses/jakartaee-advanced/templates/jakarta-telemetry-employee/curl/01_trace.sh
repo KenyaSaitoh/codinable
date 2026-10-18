@@ -13,5 +13,5 @@ set -x
 api=http://localhost:8080/jakarta-telemetry-employee/api
 curl -sS -i -H 'traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01' "$api/employees/10001"
 echo
-curl -sS -o /dev/null -w '%{http_code}\n' "$api/employees"
-curl -sS -o /dev/null -w '%{http_code}\n' "$api/employees/99999"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' "$api/employees"
+curl -sS -o /dev/null -w 'HTTP/%{http_version} %{http_code}\n' "$api/employees/99999"

@@ -4,8 +4,8 @@
 # 期待する結果: 1 つ目は 200 と ETag: "0"（version の値）。2 つ目は 304 Not Modified（本文なし）
 #              存在しない 99999 は 404 と {"status":404,"message":"該当する社員が見つかりません",…}
 set -x
-curl -s -i http://localhost:8080/jakarta-rest-employee/api/employees/10001
+curl -sS -i http://localhost:8080/jakarta-rest-employee/api/employees/10001
 echo
-curl -s -i -H 'If-None-Match: "0"' http://localhost:8080/jakarta-rest-employee/api/employees/10001
+curl -sS -i -H 'If-None-Match: "0"' http://localhost:8080/jakarta-rest-employee/api/employees/10001
 echo
-curl -s -i http://localhost:8080/jakarta-rest-employee/api/employees/99999
+curl -sS -i http://localhost:8080/jakarta-rest-employee/api/employees/99999

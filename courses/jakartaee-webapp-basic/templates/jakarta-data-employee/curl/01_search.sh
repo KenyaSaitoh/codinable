@@ -8,7 +8,7 @@
 #      （@Query の where status = 'active' and employeeName like :pattern and salary between …）
 #   4. 月給の下限 500000 > 上限 100000: 「月給の範囲が正しくありません」
 #   5. 社員コード E10002 で開く: Bob の編集画面（@Find の byCode）
-source "$(dirname "$0")/faces.sh"
+source "$(dirname "$0")/faces.inc"
 jar=$(mktemp)
 set -x
 open "$jar" EmployeeTablePage.xhtml; echo "$page" | grep -o '在籍中の社員: [0-9]* 人'; summary; rows

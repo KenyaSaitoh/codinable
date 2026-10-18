@@ -18,7 +18,7 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 | `web/EmployeeTableBean.java`、`web/EmployeeFormBean.java` | 一覧（検索・ページ送り・削除）と、登録・編集画面のバッキングBean |
 | `src/main/webapp/EmployeeTablePage.xhtml`、`EmployeeFormPage.xhtml` | 一覧画面と、登録・編集画面（version を `h:inputHidden` で保持） |
 | `config/DataSourceConfig.java`、`config/DatabaseInitializer.java`、`sql/hsqldb/` | データソースの定義と、起動時にテーブルを作り直す演習用の処理 |
-| `curl/01_search.sh` 〜 `curl/04_delete.sh` | 検索・登録・更新の競合・削除を HTTP の要求で確かめるスクリプト（`curl/faces.sh` はそれらが読み込む補助の関数） |
+| `curl/01_search.sh` 〜 `curl/04_delete.sh` | 検索・登録・更新の競合・削除を HTTP の要求で確かめるスクリプト（`curl/faces.inc` はそれらが読み込む補助の関数） |
 
 ## 動かし方
 

@@ -3,6 +3,6 @@
 # FileDownloadController は C:/tmp/output の下のファイルを返す（場所はコードに直接書かれている）
 # アプリを起動する前でも後でも動かせる
 set -x
-mkdir -p /c/tmp/output
-echo "download sample" > /c/tmp/output/sample.txt
-ls -l /c/tmp/output
+mkdir -p C:/tmp/output
+echo "download sample" > C:/tmp/output/sample.txt
+ls -l C:/tmp/output

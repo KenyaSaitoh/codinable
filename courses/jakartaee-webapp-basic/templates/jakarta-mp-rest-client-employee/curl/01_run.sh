@@ -4,4 +4,4 @@
 # 期待する結果: 200 と、Employee => … / Employees => … / Salary => … / Department 3 => [Alice, Dave, Ellen, Matilda, Peggy]
 #              Location => …/employee-api/api/employees/10017 / Updated => … / Deleted => 10017 / Expected error => 404 …
 set -x
-curl -s -i -X POST http://localhost:8080/jakarta-mp-rest-client-employee/api/run
+curl -sS -i -X POST http://localhost:8080/jakarta-mp-rest-client-employee/api/run

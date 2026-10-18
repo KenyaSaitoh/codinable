@@ -5,7 +5,7 @@
 # 期待する結果: CalcExceptionHandler が ViewExpiredPage へのリダイレクトに変換する
 #              （302 と Location: …/ViewExpiredPage.xhtml。-L で移動先の本文も出す）
 set -x
-curl -s -i -L http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml \
+curl -sS -i -L http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml \
   --data-urlencode "calcForm=calcForm" \
   --data-urlencode "calcForm:param1=30" \
   --data-urlencode "calcForm:param2=10" \

@@ -12,8 +12,8 @@ printf 'MZ' > "$dir/tool.exe"
 send() {
   local jar viewState
   jar=$(mktemp)
-  viewState=$(curl -s -c "$jar" "$URL" | sed -n 's/.*name="jakarta.faces.ViewState"[^>]*value="\([^"]*\)".*/\1/p')
-  curl -s -L -b "$jar" -c "$jar" "$URL" \
+  viewState=$(curl -sS -c "$jar" "$URL" | sed -n 's/.*name="jakarta.faces.ViewState"[^>]*value="\([^"]*\)".*/\1/p')
+  curl -sS -w '%{stderr}HTTP/%{http_version} %{http_code}\n' -L -b "$jar" -c "$jar" "$URL" \
     -F "uploadForm=uploadForm" -F "uploadForm:title=Memo" -F "uploadForm:file=@$1" \
     -F "uploadForm:saveButton=x" -F "jakarta.faces.ViewState=$viewState" \
     | grep -E '<dd>|color: red'
