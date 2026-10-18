@@ -331,5 +331,8 @@ npm run release:courses  # 講座を GitHub Releases の courses タグへ上書
    `node test/e2e-courses.js <講座ID>[,…] [--only=<演習ID>,…]`。画面を操作して演習を 1 つずつ
    選び、主役のボタン・ファイル単位の ▶ 実行どおりに動くか（Web は HTTP の応答、test は成功、SQL は全ファイル、
    スクリプトは全ファイル）を見る。bootRun は 8080 を取り合うので、講座は 1 つずつ順に流す
-   （`java-db-access` は 8080 を使わないので並べてよい）。Keycloak の演習だけは Docker で
-   Keycloak を起動し、`KEYCLOAK_CLIENT_SECRET` を渡してから流す
+   （`java-db-access` は 8080 を使わないので並べてよい）。Docker や外部サービスの登録が要る演習は
+   置かない（受講者に用意の説明が要るため。Keycloak・Jaeger の演習は外した）。curl のスクリプトは
+   応答のステータスを `HTTP/1.1 200` の形で出す（E2E がそれを見る。パイプに渡すときは
+   `-w '%{stderr}HTTP/%{http_version} %{http_code}
+'`）。わざと 5xx を見せるものは `CURL_EXPECTED_5XX` に足す

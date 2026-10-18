@@ -43,6 +43,11 @@ management:
       # トレースのサンプリング率（1.0=全リクエストを記録する教材用の設定
       # 本番ではコストを考慮して0.1（10%）などに下げるのが一般的）
       probability: 1.0
+    export:
+      otlp:
+        # Codinable では Jaeger などの送信先を用意しないため、OTLP での送信だけを止める
+        # （スパンは作られ、traceId／spanId はログに出る。送信先が無いときの接続エラーを出さない）
+        enabled: false
   otlp:
     tracing:
       # トレース（スパン）の送信先となるOTLP/HTTPエンドポイント

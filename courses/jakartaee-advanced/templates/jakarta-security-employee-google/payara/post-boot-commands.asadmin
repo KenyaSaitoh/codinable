@@ -1,9 +1,0 @@
-# Payara Server の起動直後、WAR のデプロイの前に流す asadmin のコマンド（Codinable の ▶ アプリ実行）
-# Payara の場合: アイデンティティストアが返したグループ名を、そのまま同じ名前のロールとして扱う
-set configs.config.server-config.security-service.activate-default-principal-to-role-mapping=true
-#
-# Google のクライアントIDとシークレット（Google Cloud のコンソールで登録した Web アプリケーションの値）
-# Codinable の実行ボタンでは環境変数を渡せないので、次の 2 行の先頭の # を外し、<...> を自分の値に書き換えてから ▶ アプリ実行する
-# この 2 行には秘密の値が入るので、他人に渡したり Git に登録したりしない
-#set-config-property --source=domain --propertyName=google.client-id --propertyValue=<クライアントID>
-#set-config-property --source=domain --propertyName=google.client-secret --propertyValue=<クライアントシークレット>

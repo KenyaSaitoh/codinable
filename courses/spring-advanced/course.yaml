@@ -33,7 +33,7 @@
 id: spring-advanced
 order: 3
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.4.0
+version: 1.5.0
 
 names:
   ja: Spring FW 高度な仕組み
@@ -45,13 +45,13 @@ descriptions:
     GraphQL、WebFlux、Kafka と RabbitMQ、リトライとサーキットブレーカー、Actuator と
     OpenTelemetry までを扱う講座の演習です。サンプルは Java 25 / Spring Boot 4.1 で動き、
     DB は HSQLDB のインメモリ、Kafka と RabbitMQ は Codinable 同梱のものを使います。
-    Keycloak・Google・Jaeger を使う部分だけは、別途用意が必要です。
+    Google のログインの演習だけは、Google 側でのクライアント登録が必要です。
   en: >-
     Exercises for the course that builds on an employee management system: WebClient and
     WebSocket, OAuth 2 / OIDC, Spring Security, GraphQL, WebFlux, Kafka and RabbitMQ,
     retry and circuit breakers, Actuator and OpenTelemetry. The samples run on Java 25 /
     Spring Boot 4.1 with an in-memory HSQLDB, and use the Kafka and RabbitMQ bundled with
-    Codinable. Only the parts that use Keycloak, Google or Jaeger need extra setup.
+    Codinable. Only the Google sign-in exercise needs a client registered on the Google side.
 
 udemy:
   url: https://github.com/KenyaSaitoh/learn_spring_aidd_advanced
@@ -129,31 +129,6 @@ exercises:
       - README.md
 
   # ── チャプター4: OAuth 2・OIDC・JWT ───────────────────────
-  - id: spring-sec-employee-keycloak
-    chapter: 4
-    lesson: '4.1 OAuth 2・OIDC・JWTによる認証連携'
-    runtime: spring
-    run: 'gradle:bootRun'
-    suggestName: spring-sec-employee-keycloak
-    names:
-      ja: KeycloakでOIDCログインする
-      en: Sign in with OIDC through Keycloak
-    descriptions:
-      ja: >-
-        Keycloak は同梱していないため、先に Docker Desktop を起動し、PC のコマンドプロンプトで
-        docker compose up -d を実行して Keycloak を起動します。続けて scripts/01_create_env.sh を開き、
-        エディタの右上の ▶ 実行で .env.example を .env にコピーします（README 参照）。
-        その後 ▶ アプリ実行でバックエンド（8085）と React の画面（5173）が一緒に起動し、プレビューに
-        画面が開きます。alice（閲覧）と bob（CRUD）でログインを比べます。
-      en: >-
-        Keycloak is not bundled: start Docker Desktop and run docker compose up -d from a
-        command prompt on your PC to start Keycloak, then open scripts/01_create_env.sh and press
-        ▶ Run at the top right of the editor to copy .env.example to .env (see README). Then ▶ Run app starts the
-        backend (port 8085) together with the React screen (port 5173), which opens in the
-        preview. Compare signing in as alice (read-only) and bob (CRUD).
-    openFiles:
-      - README.md
-
   - id: spring-sec-employee-google
     chapter: 4
     lesson: '4.1 OAuth 2・OIDC・JWTによる認証連携'
@@ -400,14 +375,12 @@ exercises:
         ▶ アプリ実行で社員 API（8080）がインメモリ DB で起動します。起動したまま、curl/ のスクリプトを順に開いて
         エディタの右上の ▶ 実行で送ってください。/employees/10001 を呼ぶと、出力のログに
         [spring-observability-employee,traceId,spanId] が付き、/actuator/metrics/employee.get に
-        タイマーが現れます。トレースを画面で見るには Jaeger（同梱なし、Docker で起動）が必要です。
-        Jaeger が無いときは送信エラーがログに出ることがありますが、メトリクスとログはそのまま確かめられます。
+        タイマーが現れます。トレースは外部へ送らず、ログの traceId／spanId で確かめます。
       en: >-
         ▶ Run app starts the employee API (port 8080) on an in-memory database. Keep it running,
         then open the scripts in curl/ in order and press ▶ Run at the top right of the editor. Calling
         /employees/10001 adds [spring-observability-employee,traceId,spanId] to the log lines in the
-        output and a timer appears at /actuator/metrics/employee.get. Viewing traces needs Jaeger
-        (not bundled; start it with Docker). Without Jaeger, export errors may appear in the log, but
-        metrics and logs can still be checked.
+        output and a timer appears at /actuator/metrics/employee.get. Traces are not exported;
+        check them through the traceId / spanId in the log.
     openFiles:
       - README.md

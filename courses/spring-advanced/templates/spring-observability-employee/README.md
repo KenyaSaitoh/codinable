@@ -18,20 +18,14 @@ Observation から生成されたタイマー（`employee.get`・`employee.get-a
 
 出力タブのログには `INFO [spring-observability-employee,<traceId>,<spanId>]` の形式で traceId／spanId が出ます。同じリクエストのログは traceId が同じで、spanId が処理単位で変わることを確かめます。
 
-## トレースを見る（Jaeger、任意）
+## トレースについて（Codinable での変更点）
 
-**Jaeger は Codinable に同梱していません。** トレースの送信先（OTLP、既定 `http://localhost:4318/v1/traces`、環境変数 `OTLP_ENDPOINT` で変更可）が無くてもアプリは起動し、メトリクスとログは確かめられます。そのときは送信時の接続エラーがログに出ることがありますが、動作確認だけなら無視して構いません。
-
-トレースを画面で見る場合は、Docker Desktop を起動してから Jaeger（OTLP 受信を内蔵）を立てます。
-
-```bash
-docker run --rm -d --name jaeger -p 4318:4318 -p 16686:16686 jaegertracing/all-in-one:latest
-```
-
-リクエストを何回か送り、`http://localhost:16686` でサービス名 `spring-observability-employee` を選ぶと、HTTP 受信 → `employee.get` → SQL 発行がスパンの階層として表示されます。送信はバッファリングされるため、すぐに表示されるとは限りません。使い終わったら `docker stop jaeger` で止めます。
+講座では、トレースを OTLP で Jaeger へ送り、Webブラウザの画面でスパンの親子関係を確かめます。
+Codinable では Jaeger を使わないため、`application.yml` の `management.tracing.export.otlp.enabled: false` で送信だけを止めています。
+スパンは作られるので、ログの traceId／spanId で同じリクエストの処理をたどれます。
 
 ## 主なファイル
 
 - `src/main/java/pro/kensait/spring/employee/rest/service/EmployeeService.java` … Observation API と `@Observed` による計装
 - `src/main/java/pro/kensait/spring/employee/rest/observation/ObservationConfig.java` … `ObservedAspect` の登録
-- `src/main/resources/application.yml` … サンプリング率、OTLP の送信先、traceId／spanId を含むログ形式
+- `src/main/resources/application.yml` … サンプリング率、OTLP の送信先（Codinable では送信を止めている）、traceId／spanId を含むログ形式

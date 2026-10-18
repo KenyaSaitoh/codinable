@@ -585,26 +585,6 @@ exercises:
     openFiles:
       - README.md
 
-  - id: jakarta-tx-xa
-    chapter: 12
-    lesson: '12.1 Jakarta Transactionsによるトランザクション管理と伝播'
-    runtime: jakarta
-    run: 'gradle:payaraRun'
-    preview: '/jakarta-tx-xa/'
-    suggestName: jakarta-tx-xa
-    names:
-      ja: '2 つの XA データソースによる分散トランザクション'
-      en: 'A distributed transaction across two XA data sources'
-    descriptions:
-      ja: >-
-        @DataSourceDefinitions で定義した XA データソース TxDS1・TxDS2 を BarBean と QuxBean が使い分け、FooBean の 1 つのトランザクションに参加します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-tx-xa/ を開き、100 と -5 を送ってから BUSINESS_XA テーブルの値を見てください。-5 では両方の更新が取り消されます。
-      en: >-
-        BarBean and QuxBean each use one of the XA data sources TxDS1 and TxDS2 defined with @DataSourceDefinitions, and both join FooBean's single transaction.
-        ▶ Run app, open http://localhost:8080/jakarta-tx-xa/, send 100 and -5, and look at the BUSINESS_XA table. With -5 both updates are rolled back.
-    openFiles:
-      - README.md
-
   # ── チャプター13: Jakarta REST ────────────────────
   - id: jakarta-rest-greet
     chapter: 13

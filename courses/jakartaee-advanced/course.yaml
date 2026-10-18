@@ -33,14 +33,13 @@ descriptions:
     Jakarta Security と OpenID Connect・MicroProfile JWT、MicroProfile GraphQL、Jakarta Concurrency と SSE、
     Jakarta Messaging と Kafka、MicroProfile Fault Tolerance、Health と Telemetry までを扱う講座の演習です。
     どれも同梱の Payara Server 7（Jakarta EE 11・MicroProfile 7.1）で動き、DB はインメモリの HSQLDB、
-    Kafka は Codinable 同梱のものを使います。Google でのログインだけは、Google 側の登録が必要です。
+    Kafka は Codinable 同梱のものを使います。
   en: >-
     Exercises for the course that builds on an employee management system: MicroProfile Config,
     asynchronous HTTP clients and WebSocket, Jakarta Security with OpenID Connect and MicroProfile JWT,
     MicroProfile GraphQL, Jakarta Concurrency and SSE, Jakarta Messaging and Kafka,
     MicroProfile Fault Tolerance, Health and Telemetry. Everything runs on the bundled Payara Server 7
     (Jakarta EE 11 / MicroProfile 7.1) with an in-memory HSQLDB and the Kafka bundled with Codinable.
-    Only the Google login needs a registration on the Google side.
 
 udemy:
   url: https://github.com/KenyaSaitoh/learn_jee_aidd_advanced
@@ -186,26 +185,6 @@ exercises:
     openFiles:
       - README.md
   # ── チャプター5: OpenID Connect・JWTによる認証連携 ─────────────
-  - id: jakarta-security-employee-google
-    chapter: 5
-    lesson: '5.1 OpenID Connect・JWTによる認証連携'
-    runtime: jakarta
-    run: 'gradle:payaraRun'
-    suggestName: jakarta-security-employee-google
-    names:
-      ja: GoogleによるOpenID Connectのログイン
-      en: OpenID Connect login with Google
-    descriptions:
-      ja: >-
-        @OpenIdAuthenticationMechanismDefinition で Google を IdP にした認可コードフローのログインを読みます。
-        ▶ アプリ実行で社員API と React の画面（5173）が起動します。ログインまで試すには、README のとおり Google 側で
-        クライアントを登録し、クライアントIDとシークレットを payara/post-boot-commands.asadmin に書きます。
-      en: >-
-        Read the authorization code flow login that uses Google as the IdP with @OpenIdAuthenticationMechanismDefinition.
-        ▶ Run app starts the employee API and the React screen (5173). To try the login itself, register a client on the
-        Google side as described in the README and write its client ID and secret in payara/post-boot-commands.asadmin.
-    openFiles:
-      - README.md
   - id: jakarta-mpjwt-employee
     chapter: 5
     lesson: '5.1 OpenID Connect・JWTによる認証連携'
