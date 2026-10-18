@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+  <title>CalcOutputPage</title>
+</h:head>
+<h:body>
+  <h2>CalcOutputPage</h2>
+  <hr />
+  <!-- add の後のリダイレクトで URL に cid が付き、同じ会話の CalcConversation を参照する -->
+  <div>パラメータ1 => #{calcConversation.param1}</div>
+  <div>パラメータ2 => #{calcConversation.param2}</div>
+  <div id="result">計算結果 => #{calcConversation.result}</div>
+  <div>会話ID（cid） => #{jakarta.enterprise.context.conversation.id}</div>
+  <h:form id="taxForm">
+    <h:commandButton id="calcTaxButton" value="税込計算" action="#{calcConversation.calcTax}" />
+  </h:form>
+</h:body>
+</html>

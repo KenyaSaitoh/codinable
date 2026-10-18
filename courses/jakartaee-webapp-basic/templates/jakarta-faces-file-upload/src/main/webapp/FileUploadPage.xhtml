@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+  <title>FileUploadPage</title>
+</h:head>
+<h:body>
+  <h2>ファイルのアップロード</h2>
+  <hr />
+  <p>保存できる形式は pdf・png・jpg・txt、1 ファイル 5MB まで</p>
+  <h:form id="uploadForm" enctype="multipart/form-data">
+    <div>
+      <h:outputLabel for="title" value="タイトル" />
+      <h:inputText id="title" value="#{fileUploadBean.title}"
+                   required="true" label="タイトル" />
+      <h:message for="title" style="color: red" />
+    </div>
+    <div>
+      <h:outputLabel for="file" value="ファイル" />
+      <h:inputFile id="file" value="#{fileUploadBean.file}"
+                   required="true" accept=".pdf,.png,.jpg,.txt" label="ファイル" />
+      <h:message for="file" style="color: red" />
+    </div>
+    <h:commandButton id="saveButton" value="保存" action="#{fileUploadBean.upload}" />
+  </h:form>
+</h:body>
+</html>

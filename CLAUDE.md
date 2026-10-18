@@ -45,7 +45,17 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
 - **Jakarta EE は `main/payara.js`**。`war` プラグインの雛形の ▶ アプリ実行は `gradle:payaraRun`
   （Gradle のタスクではない。runner.js が `gradle war` → `prepareRun` でドメインを作り直して
   Payara を起動時デプロイで起こす）。プレビューへ進むのはデプロイの完了をログで見てから
-  （ポートは先に開くので waitForPort は使わない）。版は `src/payara-config.js`
+  （ポートは先に開くので waitForPort は使わない）。版は `src/payara-config.js`。
+  呼び出し先の API や受信側のように WAR が 2 つ以上要る演習は、`codinable.services.json` の
+  `"wars": ["<サブフォルダ>"]` で同じ Payara に一緒に載せる（付き添いを先、本体を最後にデプロイし、
+  プレビューは本体の完了で開く）。データソースは雛形の `payara/post-boot-commands.asadmin` で
+  インメモリの HSQLDB に登録し、テーブルと初期データは `persistence.xml` のスキーマ生成で
+  デプロイのたびに作り直す（EclipseLink は 1 行 1 文しか流せないので、`build.gradle` の
+  `flattenSql` が `sql/hsqldb` を整えて WAR に入れる。手本は `jakartaee-webapp-practical/templates/leaf-books`）
+- **ルートの Gradle プロジェクトのソースは `src/main/java` か `src/backend/src/main/java`**
+  （`workspace.js` の `GRADLE_JAVA_SOURCE`）。後者はバックエンドとフロントエンドを
+  `src/backend`・`src/frontend` に分けたモノレポの配置で、講座原稿がその配置でパスを書いている雛形
+  （Jakarta EE の leaf-books）だけが使う。テストクラスの ▶ 実行やツリーのバッジはこの 2 つを見る
 - **Kafka / RabbitMQ は `main/messaging.js` で別管理**。必要時のみ起動し、
   通常の実行停止では落とさず、アプリ終了時に停止する。雛形ルートの
   `codinable.services.json` の `services` 配列で実行前の自動起動を宣言できる。
@@ -219,10 +229,9 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
   localStorage の `courseProgress` に控える。新規は最初の演習、再開は最後の演習を開く
 - **`setActiveCourse` 自体は開いているプロジェクトを変えない**。プロジェクトを
   開き直すのはダイアログで講座を選んだとき（とその先の `openExercise`）だけ
-- **開発時は `npm start` で読み込むコースを絞れる**（`scripts/start.js` →
-  環境変数 `CODINABLE_COURSES` → `courses.js` の `getDevCourseFilter`）。
-  全置き場に効き、パッケージ後は無視する。1 コース / 複数コースの画面の違いは
-  `test/check-course-filter.js` で押さえている
+- **`npm start` は常に全講座で起動する**（配布物が全講座入りの 1 本だけのため）。
+  読み込む講座を絞る仕組みは持たない。E2E も全講座を読み込み、検査する講座を
+  `setActiveCourse` で受講中にしてから流す
 - 手で足して確かめるときは、設定画面の「📂 講座フォルダを開く」で個人フォルダを開き、
   置いたら「↻ 読み直す」を押す（`courses-reload` がキャッシュを捨てて読み直す）
 
@@ -269,8 +278,7 @@ cd desktop && node test/check-courses.js
 powershell -ExecutionPolicy Bypass -File scripts/setup.ps1 -Only python -Force  # 一部だけ
 
 cd desktop
-npm start            # エディタバンドルをビルドして起動（読み込むコースを選ぶ。Enter で全コース）
-npm start -- all     # 全コース（統合版）で起動 / `-- <id>,<id>` で絞る（scripts/start.js）
+npm start            # エディタバンドルをビルドして全講座で起動
 npm run build:editor # エディタバンドルだけ作り直す
 npm run pack         # 署名なしの win-unpacked（動作確認用）
 npm run build        # インストーラ (.exe) と latest.yml

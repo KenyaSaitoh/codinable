@@ -1,0 +1,31 @@
+// jakarta-mp-rest-client-employee: MicroProfile Rest Client による同期 HTTP 通信（呼び出す側）
+// ▶ アプリ実行で、api/ の確認用 API（employee-api.war）と一緒に Codinable 同梱の Payara Server 7 へデプロイする
+plugins {
+    id 'war'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 仕様の API はコンパイル時だけ使う。実装は Payara Server が持つので WAR には入れない
+    compileOnly 'jakarta.platform:jakarta.jakartaee-web-api:11.0.0'
+    // MicroProfile Rest Client と Config（Payara Server が実装を持つ）
+    compileOnly 'org.eclipse.microprofile.rest.client:microprofile-rest-client-api:4.0'
+    compileOnly 'org.eclipse.microprofile.config:microprofile-config-api:3.1'
+}
+
+war {
+    // WAR のファイル名が、そのままコンテキストルート（/jakarta-mp-rest-client-employee）になる
+    archiveFileName = 'jakarta-mp-rest-client-employee.war'
+}

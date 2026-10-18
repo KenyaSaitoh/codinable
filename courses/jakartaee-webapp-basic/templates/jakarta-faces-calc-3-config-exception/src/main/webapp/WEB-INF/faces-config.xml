@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+                  https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_1.xsd"
+              version="4.1">
+    <application>
+        <!-- 業務検証と業務例外の文言（CalcBean の message で取り出す） -->
+        <resource-bundle>
+            <base-name>messages</base-name>
+            <var>msg</var>
+        </resource-bundle>
+        <!-- Faces 標準の変換エラーの文言を置き換える -->
+        <message-bundle>CalcMessages</message-bundle>
+    </application>
+    <factory>
+        <exception-handler-factory>
+            pro.kensait.jakartaee.calc.web.CalcExceptionHandlerFactory
+        </exception-handler-factory>
+    </factory>
+</faces-config>

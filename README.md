@@ -71,21 +71,8 @@ npm run pack   # dist-installer/win-unpacked (署名なし・動作確認用)
 npm run build  # dist-installer/Codinable-setup-<version>.exe
 ```
 
-`npm start` は起動前に `courses/` のコース一覧を出し、読み込むコースを選ばせる。
-受講者に配るインストーラは全講座入りの 1 本だが、講座が 1 つだけのときの画面や
-特定の講座だけを手早く確かめたいときに絞り込める。
-
-```bash
-npm start                                  # 一覧から番号で選ぶ。Enter だけなら全コース（統合版）
-npm start -- all                           # 全コース（聞かずに起動）
-npm start -- spring-advanced               # そのコースだけ
-npm start -- spring-advanced,java-db-access  # 2 つ（一覧の番号でも指定できる: npm start -- 3,7）
-```
-
-絞り込みは同梱・共有・個人のすべての置き場に効き、設定画面の「インストールされている講座」に
-「開発用の絞り込み」として出る。パッケージ後のアプリには効かない。
-「🎓 新規コース開始・再開」ダイアログの「新規」には読み込んだコースだけが並ぶ
-（`node test/check-course-filter.js` で確かめられる）。
+`npm start` は `courses/` の全講座を読み込んで起動する（配布するインストーラと同じ全講座入り）。
+講座は「🎓 新規コース開始・再開」ダイアログで切り替える。
 
 ## 構成
 
@@ -128,7 +115,7 @@ WAR のファイル名から決まるコンテキストルート（`http://local
 
 ### Kafka / RabbitMQ
 
-講座 **「Spring 高度な仕組み」** のチャプター 7 の演習（`spring-kafka-employee` /
+講座 **「Spring FW 高度な仕組み」** のチャプター 7 の演習（`spring-kafka-employee` /
 `spring-amqp-employee`）を開いて「実行」を押すと、必要なサーバーが起動して
 Spring の送信側（producer）と受信側（consumer）が一緒に動く（RabbitMQ は React の画面も）。
 初回の Gradle / ライブラリ取得にはインターネット接続が必要。
@@ -269,7 +256,7 @@ courses/<講座ID>/
 |---|---|---|
 | `webapp-archi-overview` | Webシステムアーキテクチャ概要 | 全 30 件（下記） |
 | `spring-boot-webapp-basic` | Spring Boot Webアプリ基礎 | 24 件（DI / MVC・Thymeleaf / 入力検証 / PRG・セッション / ファイル / JDBC・JPA・MyBatis / トランザクション / REST / RestClient） |
-| `spring-advanced` | Spring 高度な仕組み | 13 件（WebClient・WebSocket / OAuth2・OIDC / Security / GraphQL / WebFlux・Kafka・RabbitMQ / Resilience・Retry / Actuator・Observability） |
+| `spring-advanced` | Spring FW 高度な仕組み | 13 件（WebClient・WebSocket / OAuth2・OIDC / Security / GraphQL / WebFlux・Kafka・RabbitMQ / Resilience・Retry / Actuator・Observability） |
 | `spring-boot-cicd` | Spring Boot CICD | 9 件（JUnit・Mockito / Spring の結合テスト / Database Rider・API テスト / Playwright / Gatling / CI） |
 | `spring-cloud-aws` | Springクラウド機能 on AWS | 6 件（ECS / Spring Session・Cloud Config / Cognito） |
 | `spring-boot-webapp-practical` | Spring Boot Webアプリ応用（ECサイト） | 8 件（書店アプリ MVC 版・REST+React 版と、外部 API 役の customer-hub） |

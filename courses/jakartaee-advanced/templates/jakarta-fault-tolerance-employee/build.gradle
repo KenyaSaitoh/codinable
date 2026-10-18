@@ -1,0 +1,33 @@
+// jakarta-fault-tolerance-employee: MicroProfile Fault Tolerance による障害への対処
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// 呼び出し先の確認用の社員API（api/、8095）は Payara Server とは別のプロセスで、▶ アプリ実行で一緒に起動する
+// （codinable.services.json の processes）
+plugins {
+    id 'war'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 仕様の API はコンパイル時だけ使う。実装は Payara Server が持つので WAR には入れない
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:11.0.0'
+    compileOnly 'org.eclipse.microprofile.config:microprofile-config-api:3.1'
+    compileOnly 'org.eclipse.microprofile.rest.client:microprofile-rest-client-api:4.0'
+    compileOnly 'org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:4.1'
+}
+
+war {
+    // WAR のファイル名が、そのままコンテキストルート（/jakarta-fault-tolerance-employee）になる
+    archiveFileName = 'jakarta-fault-tolerance-employee.war'
+}

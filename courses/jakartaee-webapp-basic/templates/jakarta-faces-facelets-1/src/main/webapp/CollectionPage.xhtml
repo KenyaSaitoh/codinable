@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+<h:head>
+  <title>CollectionPage</title>
+  <h:outputStylesheet library="css" name="style.css" />
+</h:head>
+<h:body>
+  <h2>2. 一覧表示と繰り返し</h2>
+  <hr />
+  <ul>
+    <ui:repeat value="#{collectionBean.memberList}"
+               var="member" varStatus="status">
+      <li>#{status.index + 1}: #{member.memberName}</li>
+    </ui:repeat>
+  </ul>
+  <p class="label">varStatus の first・last と、record の値の参照</p>
+  <ul>
+    <ui:repeat value="#{collectionBean.memberList}"
+               var="member" varStatus="status">
+      <li>#{member.memberName}（#{member.age}歳、#{member.email}）
+        #{status.first ? '← 先頭' : ''}#{status.last ? '← 末尾' : ''}</li>
+    </ui:repeat>
+  </ul>
+  <hr />
+  <h:link outcome="IndexPage" value="目次へ戻る" />
+</h:body>
+</html>

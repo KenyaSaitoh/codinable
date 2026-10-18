@@ -121,7 +121,7 @@ function detectProject(projectDir) {
     runnableFiles,
     run: pickRunEntries({
       kinds, npmScripts, staticRoot, names,
-      hasGradleTests: [...names].some(n => n.startsWith('src/test/')),
+      hasGradleTests: [...names].some(n => n.startsWith('src/test/') || n.startsWith('src/backend/src/test/')),
     }),
     hasGradleWrapper: names.has('gradlew') || names.has('gradlew.bat'),
   };
@@ -195,7 +195,7 @@ function listFileRuns(projectDir, info = detectProject(projectDir)) {
   for (const f of info.runnableFiles) runs[f.relPath] = `${f.kind}:${f.relPath}`;
   if (info.kinds.includes('gradle')) {
     const javaFiles = walkTree(projectDir, { limit: 2500 })
-      .filter(e => !e.dir && /^src\/(main|test)\/java\/.+\.java$/.test(e.path))
+      .filter(e => !e.dir && GRADLE_JAVA_SOURCE.test(e.path))
       .slice(0, 400);
     for (const { path: relPath } of javaFiles) {
       const target = gradleFileRun(projectDir, relPath, info);
@@ -205,18 +205,24 @@ function listFileRuns(projectDir, info = detectProject(projectDir)) {
   return runs;
 }
 
+// ルートの Gradle プロジェクトのソース (src/main/java・src/test/java)
+// バックエンドとフロントエンドを src/backend・src/frontend に分けたモノレポの配置
+// (Jakarta EE の書店 leaf-books など。build.gradle の sourceSets が src/backend/src/... を指す) も同じに扱う
+const GRADLE_JAVA_SOURCE = /^(?:src\/backend\/)?src\/(main|test)\/java\/.+\.java$/;
+
 /** Gradle のプロジェクトの .java を 1 つだけ動かす実行対象 (動かせなければ null) */
 function gradleFileRun(projectDir, relPath, info) {
   if (!info.kinds.includes('gradle')) return null;
   // 入れ子の Gradle プロジェクト (client/ など) はルートのタスクでは動かせないので対象にしない
-  const m = /^src\/(main|test)\/java\/.+\.java$/.exec(relPath);
+  const m = GRADLE_JAVA_SOURCE.exec(relPath);
   if (!m) return null;
   const source = readTextSafe(path.join(projectDir, relPath.split('/').join(path.sep)));
   const pkg  = /^\s*package\s+([\w.]+)\s*;/m.exec(source)?.[1];
   const fqcn = (pkg ? `${pkg}.` : '') + path.basename(relPath, '.java');
 
   if (m[1] === 'test') {
-    const isTest = /@(Test|ParameterizedTest|RepeatedTest|TestFactory)\b/.test(source) &&
+    // @ArchTest は ArchUnit のルール (JUnit 5 のエンジンで流れる)
+    const isTest = /@(Test|ParameterizedTest|RepeatedTest|TestFactory|ArchTest)\b/.test(source) &&
                    !/\babstract\s+class\b/.test(source);
     return isTest ? `gradle:test --tests ${fqcn}` : null;
   }

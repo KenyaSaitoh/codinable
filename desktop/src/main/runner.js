@@ -27,7 +27,7 @@ const STDIO = ['ignore', 'pipe', 'pipe'];
 
 const {
   IS_WIN, resolveJavaTool, resolveNode, resolveNpm, resolveNpmCli,
-  resolvePython, resolveBash,
+  resolvePython, resolveBash, resolveBashDir,
   resolveHsqldb, resolveGradleWrapperJar, resolveRuntimeDir, getDevEnv,
   getJavaRuntimeOptions, getJavacRuntimeOptions,
 } = require('./runtimes');
@@ -366,15 +366,26 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
       // payaraRun は Gradle のタスクではなく、この 2 段をまとめた Codinable の実行対象
       // サーバーの起動コマンドは WAR ができてから組み立てる (prepareRun)
       if (words[0] === 'payaraRun') {
+        let mainApp = null;
         return {
           label: 'Payara Server',
           steps: [{
             label: 'gradle war',
             command: `"${gradlew}" war --console=plain`,
             shell: true, cwd: projectDir, env,
-          }],
-          prepareRun: () => payara.prepareRun({ projectDir, uiLang, env }),
-          createOutputFilter: payara.createOutputFilter,
+          },
+          // 同じサーバーに一緒に載せる WAR (codinable.services.json の wars) も作る
+          ...payara.extraWarDirs(projectDir).map(dir => ({
+            label: `gradle war (${dir})`,
+            command: `"${gradlew}" -p "${dir}" war --console=plain`,
+            shell: true, cwd: projectDir, env,
+          }))],
+          prepareRun: () => {
+            const run = payara.prepareRun({ projectDir, uiLang, env });
+            mainApp = run.mainApp;
+            return run;
+          },
+          createOutputFilter: () => payara.createOutputFilter({ mainApp }),
           // 前の実行が残したサーバー (別の演習の Payara や bootRun) を片付ける
           freePort: [payara.PORTS.http, payara.PORTS.admin, payara.PORTS.https],
           waitsForDeploy: true,
@@ -505,9 +516,17 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
       if (ext === '.sh' || ext === '.bash') {
         const bash = resolveBash();
         if (!bash) throw new Error('bash が見つかりません (runtime/bash が未セットアップです)');
+        // --noprofile では bash の道具 (grep・sed・mktemp …) の置き場が PATH に入らない
+        // 同梱の bash の usr/bin と mingw64/bin (curl) を先頭に足す。足さないと、Git for Windows が
+        // 無い PC では mktemp や grep が見つからず、curl は Windows の curl.exe になる。Git がある PC でも
+        // Git 側の道具と混ざって /tmp の位置がずれ、cookie jar などの一時ファイルを読めない
+        const bashDir = resolveBashDir();
+        const bashEnv = bashDir
+          ? { ...env, PATH: [path.join(bashDir, 'mingw64', 'bin'), path.join(bashDir, 'usr', 'bin'), env.PATH || ''].join(path.delimiter) }
+          : env;
         return {
           label: `bash ${relPath}`,
-          run: { exe: bash, args: ['--noprofile', '--norc', full], cwd: projectDir, env },
+          run: { exe: bash, args: ['--noprofile', '--norc', full], cwd: projectDir, env: bashEnv },
         };
       }
       throw new Error(`この拡張子は直接実行できません: ${ext || path.basename(full)}`);

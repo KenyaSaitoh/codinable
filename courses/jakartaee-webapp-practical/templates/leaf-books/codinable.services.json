@@ -1,0 +1,6 @@
+{
+  "wars": ["customer-hub"],
+  "processes": [
+    { "id": "frontend", "dir": "src/frontend", "run": "npm:dev", "port": 5173, "when": ["gradle:payaraRun"], "preview": "/" }
+  ]
+}

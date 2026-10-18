@@ -18,6 +18,12 @@
 //    - 出力の ANSI カラーを切る (出力欄はエスケープシーケンスを解釈しない)
 //  加えて、同梱の HSQLDB の JDBC ドライバーをドメインの lib に置く
 //  (asadmin で作る接続プールからも使えるようにするため)
+//
+//  呼び出し先の API (customer-hub) や受信側のアプリのように、同じサーバーに WAR を
+//  いくつも載せる演習は、雛形ルートの codinable.services.json の wars にサブフォルダを書く
+//    { "wars": ["customer-hub"] }
+//  サブフォルダは独立した war の Gradle プロジェクトで、runner.js が gradle war を流す。
+//  付き添いの WAR を先に、本体の WAR を最後にデプロイし、プレビューは本体の完了を見て開く
 // ═══════════════════════════════════════════════════════════
 
 const fs   = require('fs');
@@ -111,6 +117,27 @@ function recreateDomain(payaraHome, uiLang) {
   return domain;
 }
 
+/** codinable.services.json の wars (同じサーバーに一緒に載せる WAR のサブフォルダ)。書き方の誤りは例外にする */
+function extraWarDirs(projectDir) {
+  const file = path.join(projectDir, 'codinable.services.json');
+  if (!fs.existsSync(file)) return [];
+  const list = JSON.parse(fs.readFileSync(file, 'utf8')).wars;
+  if (list === undefined) return [];
+  if (!Array.isArray(list)) throw new Error('codinable.services.json: wars must be an array');
+  return list.map(d => {
+    const dir = String(d || '').replace(/\\/g, '/');
+    if (!dir || dir.startsWith('/') || /^[a-z]:/i.test(dir) || dir.split('/').includes('..')) {
+      throw new Error(`codinable.services.json: invalid war dir "${dir}"`);
+    }
+    return dir;
+  });
+}
+
+/** WAR のファイル名から、Payara のアプリ名 (= 既定のコンテキストルート) を決める */
+function appNameOf(war) {
+  return path.basename(war).replace(/[^\w.-]/g, '_').replace(/\.war$/i, '');
+}
+
 /** gradle war が作った WAR (build/libs の中でいちばん新しいもの) */
 function findWar(projectDir) {
   const libs = path.join(projectDir, 'build', 'libs');
@@ -134,6 +161,11 @@ function prepareRun({ projectDir, uiLang, env }) {
   if (!javaHome) throw new Error('Java が見つかりません (runtime/java が未セットアップです)');
   const war = findWar(projectDir);
   if (!war) throw new Error('WAR が見つかりません (build/libs に .war がありません)');
+  const extras = extraWarDirs(projectDir).map(dir => {
+    const found = findWar(path.join(projectDir, dir));
+    if (!found) throw new Error(`WAR が見つかりません (${dir}/build/libs に .war がありません)`);
+    return found;
+  });
 
   const domain = recreateDomain(payaraHome, uiLang);
 
@@ -141,8 +173,11 @@ function prepareRun({ projectDir, uiLang, env }) {
   // 次の gradle war が build/libs を書き換えられるようにするため
   const deployDir = path.join(domain, 'codinable-deploy');
   fs.mkdirSync(deployDir, { recursive: true });
-  const deployed = path.join(deployDir, path.basename(war).replace(/[^\w.-]/g, '_'));
-  fs.copyFileSync(war, deployed);
+  const deployed = [...extras, war].map(file => {
+    const copy = path.join(deployDir, appNameOf(file) + '.war');
+    fs.copyFileSync(file, copy);
+    return copy;
+  });
 
   const commands = [];
   const own = path.join(projectDir, TEMPLATE_COMMANDS);
@@ -151,7 +186,7 @@ function prepareRun({ projectDir, uiLang, env }) {
       .map(l => l.trim()).filter(l => l && !l.startsWith('#')));
   }
   // 相対パスは config/ から解決されるので絶対パスで渡す。ユーザー名の空白や日本語に備えて引用符で囲む
-  commands.push(`deploy --force=true "${deployed.split(path.sep).join('/')}"`);
+  for (const file of deployed) commands.push(`deploy --force=true "${file.split(path.sep).join('/')}"`);
   const commandFile = path.join(domain, 'config', 'codinable-post-boot.asadmin');
   fs.writeFileSync(commandFile, commands.join('\n') + '\n', 'utf8');
 
@@ -170,6 +205,8 @@ function prepareRun({ projectDir, uiLang, env }) {
            '--postbootcommandfile', commandFile, DOMAIN],
     cwd:  domain,
     env:  runEnv,
+    // 出力のどのデプロイの完了でプレビューへ進むか (createOutputFilter)
+    mainApp: appNameOf(war),
   };
 }
 
@@ -193,12 +230,13 @@ function formatRecord(raw) {
 /**
  * 出力を受け取り、整形した文字列とデプロイの結果を返す
  *   feed(text) → { text, contextRoot?, deployed?, failed? }
+ * mainApp を渡すと、そのアプリのデプロイの完了だけを deployed にする (付き添いの WAR では進まない)
  */
-function createOutputFilter() {
+function createOutputFilter({ mainApp } = {}) {
   let pending   = '';      // 行や 1 件のログの途中で切れた残り
   let record    = null;    // [#| から |#] までの途中
   let launcher  = 0;       // ランチャーの JVM のコマンドラインを読み飛ばしている行数
-  let contextRoot = null;
+  const contextRoots = new Map();   // アプリ名 → コンテキストルート
 
   const take = (line, out, state) => {
     if (record !== null) {
@@ -223,11 +261,12 @@ function createOutputFilter() {
   };
 
   const inspect = (text, state) => {
-    const ctx = /Loading application \[[^\]]*\] at \[([^\]]*)\]/.exec(text);
-    if (ctx) contextRoot = ctx[1];
-    if (/ was successfully deployed in /.test(text)) {
+    const ctx = /Loading application \[([^\]]*)\] at \[([^\]]*)\]/.exec(text);
+    if (ctx) contextRoots.set(ctx[1], ctx[2]);
+    const done = /(\S+) was successfully deployed in /.exec(text);
+    if (done && (!mainApp || done[1] === mainApp)) {
       state.deployed = true;
-      state.contextRoot = contextRoot ?? '';
+      state.contextRoot = contextRoots.get(done[1]) ?? [...contextRoots.values()].pop() ?? '';
     }
     if (/Boot Command deploy (failed|returned with result FAILURE)|Exception while deploying the app/.test(text)) {
       state.failed = true;
@@ -247,7 +286,7 @@ function createOutputFilter() {
 }
 
 module.exports = {
-  resolvePayaraHome, prepareRun, createOutputFilter,
+  resolvePayaraHome, prepareRun, createOutputFilter, extraWarDirs,
   PORTS,
   // テスト用
   patchDomainXml, formatRecord, findWar,

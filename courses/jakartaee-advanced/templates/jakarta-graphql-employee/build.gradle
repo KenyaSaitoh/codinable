@@ -1,0 +1,60 @@
+// jakarta-graphql-employee: MicroProfile GraphQL のスキーマとデータ取得
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// Payara Server 7 は MicroProfile GraphQL の実装を同梱しないので、実装の SmallRye GraphQL を WAR に含める
+// React の画面（frontend/）は Vite の開発サーバー（5173）で動き、/graphql を 8080 へ転送する（codinable.services.json の processes）
+plugins {
+    id 'war'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 仕様の API はコンパイル時だけ使う。実装は Payara Server が持つので WAR には入れない
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:11.0.0'
+    compileOnly 'org.eclipse.microprofile.config:microprofile-config-api:3.1'
+
+    // MicroProfile GraphQL の API と実装（SmallRye GraphQL）は WAR に含める
+    implementation 'org.eclipse.microprofile.graphql:microprofile-graphql-api:2.0'
+    implementation 'io.smallrye:smallrye-graphql-servlet:2.18.5'
+    // SmallRye GraphQL が使うログの API（Payara Server からはアプリケーションに見えないので WAR に含める）
+    implementation 'org.jboss.logging:jboss-logging:3.6.1.Final'
+}
+
+war {
+    // WAR のファイル名が、そのままコンテキストルート（/jakarta-graphql-employee）になる
+    archiveFileName = 'jakarta-graphql-employee.war'
+}
+
+// sql/hsqldb のテーブル定義と初期データを、1 行に 1 文の形に整えて WAR の META-INF/sql へ入れる
+// persistence.xml のスキーマ生成（drop-and-create）が、デプロイのたびにこれを流して DB を初期状態に戻す
+// （EclipseLink はスクリプトを 1 行ずつ 1 文として流すため、読みやすい元の SQL をそのまま入れられない）
+def flattenSql = tasks.register('flattenSql') {
+    def source = file('sql/hsqldb')
+    def output = layout.buildDirectory.dir('generated/sql')
+    inputs.dir source
+    outputs.dir output
+    doLast {
+        def dir = new File(output.get().asFile, 'META-INF/sql')
+        dir.mkdirs()
+        source.eachFileMatch(~/.*\.sql/) { sql ->
+            def text = sql.getText('UTF-8').readLines().collect { it.replaceFirst(/--.*$/, '') }.join(' ')
+            def statements = text.split(';').collect { it.trim().replaceAll(/\s+/, ' ') }.findAll { it }
+            new File(dir, sql.name).setText(statements.join('\n') + '\n', 'UTF-8')
+        }
+    }
+}
+
+processResources {
+    from(flattenSql)
+}

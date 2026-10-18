@@ -1,0 +1,6 @@
+# Payara Server の起動直後、WAR のデプロイの前に流す asadmin のコマンド（Codinable の ▶ アプリ実行）
+# 書店と Customer Hub の persistence.xml が使うデータソース jdbc/HsqldbDS を登録する
+# 接続先は同梱の HSQLDB のインメモリ DB で、サーバーの起動のたびに空から始まる
+# （テーブルと初期データは、デプロイのときに各 WAR の persistence.xml が META-INF/sql から流す）
+create-jdbc-connection-pool --datasourceclassname org.hsqldb.jdbc.JDBCDataSource --restype javax.sql.DataSource --property user=SA:url=jdbc\:hsqldb\:mem\:testdb HsqldbPool
+create-jdbc-resource --connectionpoolid HsqldbPool jdbc/HsqldbDS

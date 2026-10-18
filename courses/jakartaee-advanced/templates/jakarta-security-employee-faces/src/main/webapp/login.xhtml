@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+    <title>ログイン</title>
+    <h:outputStylesheet name="style.css"/>
+</h:head>
+<h:body>
+    <main>
+        <h1>社員管理（Faces）ログイン</h1>
+        <h:messages styleClass="messages"/>
+        <h:form id="login">
+            <label>ユーザー名 <h:inputText id="username" value="#{loginBean.username}"/></label>
+            <label>パスワード <h:inputSecret id="password" value="#{loginBean.password}"/></label>
+            <h:commandButton id="submit" value="ログイン" action="#{loginBean.login}"/>
+        </h:form>
+        <p class="hint">Alice / 1111（BASIC）、Bob / 2222（ADMIN）</p>
+    </main>
+</h:body>
+</html>

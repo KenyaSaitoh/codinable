@@ -1,0 +1,4 @@
+# Payara Server の起動直後、WAR のデプロイの前に流す asadmin のコマンド（Codinable の ▶ アプリ実行）
+# Payara の場合: アイデンティティストアが返したグループ名を、そのまま同じ名前のロールとして扱う
+# （既定のグループとロールの対応付け。これが無いと、BASIC・ADMIN のグループがロールにならず 403 になる）
+set configs.config.server-config.security-service.activate-default-principal-to-role-mapping=true

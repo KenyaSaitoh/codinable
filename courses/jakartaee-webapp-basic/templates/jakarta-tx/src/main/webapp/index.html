@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>TxPage</title>
+</head>
+<body>
+<h2>TxPage</h2>
+<hr />
+<form action="fuga" method="get">
+  PARAMETER <input type="text" name="param" value="100" />
+  <input type="submit" value="SEND（/fuga）" />
+</form>
+<form action="baz" method="get">
+  PARAMS <input type="text" name="params" value="10,-3,20" />
+  <input type="submit" value="SEND（/baz。UserTransaction で 1 件ずつ）" />
+</form>
+<p><a href="business">BUSINESS テーブルの今の値（/business）</a></p>
+</body>
+</html>

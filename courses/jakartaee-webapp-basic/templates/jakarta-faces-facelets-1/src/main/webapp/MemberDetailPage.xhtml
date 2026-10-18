@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<f:metadata>
+  <f:viewParam name="memberId" value="#{memberDetailBean.memberId}" />
+</f:metadata>
+<h:head>
+  <title>MemberDetailPage</title>
+  <h:outputStylesheet library="css" name="style.css" />
+</h:head>
+<h:body>
+  <h2>会員詳細</h2>
+  <hr />
+  <h:panelGroup rendered="#{not empty memberDetailBean.member}">
+    <p>会員ID: #{memberDetailBean.member.memberId}</p>
+    <p>名前: #{memberDetailBean.member.memberName}</p>
+    <p>年齢: #{memberDetailBean.member.age}</p>
+    <p>メール: #{memberDetailBean.member.email}</p>
+  </h:panelGroup>
+  <h:outputText value="会員が見つかりません" rendered="#{empty memberDetailBean.member}" />
+  <hr />
+  <h:link outcome="LinkPage" value="戻る" />
+</h:body>
+</html>

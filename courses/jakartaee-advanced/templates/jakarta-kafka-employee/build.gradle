@@ -1,0 +1,38 @@
+// jakarta-kafka-employee: Kafka の公式のクライアントライブラリ（kafka-clients）による送受信（送信側 producer）
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// 受信側（consumer/）も同じ Payara Server に一緒にデプロイする（codinable.services.json の wars）
+// Codinable 同梱の Kafka（127.0.0.1:9092）は、▶ アプリ実行の前に自動で起動する（codinable.services.json の services）
+plugins {
+    id 'war'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 仕様の API はコンパイル時だけ使う。実装は Payara Server が持つので WAR には入れない
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:11.0.0'
+    compileOnly 'org.eclipse.microprofile.config:microprofile-config-api:3.1'
+
+    // Kafka の公式のクライアントライブラリ。Payara Server に含まれないので WAR に含める
+    implementation 'org.apache.kafka:kafka-clients:4.3.1'
+    // kafka-clients のログ（SLF4J）は出さない（出力欄が Kafka の設定の一覧で埋まらないように。無いと「重大」の警告が出る）
+    // SLF4J は 2.x にそろえる（1.7 のままだと、Payara Server がデプロイ時に SLF4J のキャッシュを消せずに警告を出す）
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+    runtimeOnly 'org.slf4j:slf4j-nop:2.0.17'
+}
+
+war {
+    // WAR のファイル名が、そのままコンテキストルート（/jakarta-kafka-employee）になる
+    archiveFileName = 'jakarta-kafka-employee.war'
+}

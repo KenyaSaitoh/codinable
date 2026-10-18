@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+  <title>TaxOutputPage</title>
+</h:head>
+<h:body>
+  <h2>TaxOutputPage</h2>
+  <hr />
+  <!-- 会話は calcTax の中で終了したので、税込金額は Flash で受け取る -->
+  <div id="afterTaxAmount">税込金額 => <h:outputText value="#{flash.afterTaxAmount}" /></div>
+  <hr />
+  <h:link outcome="CalcInputPage" value="入力画面に戻る" />
+</h:body>
+</html>

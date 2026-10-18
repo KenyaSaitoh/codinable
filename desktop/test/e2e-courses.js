@@ -71,7 +71,7 @@ async function runCourse(courseId) {
   const port = await freePort();
   const electron = path.resolve(__dirname, '../node_modules/electron/dist/electron.exe');
   const child = spawn(electron, [path.resolve(__dirname, '..'), `--remote-debugging-port=${port}`, `--user-data-dir=${userData}`],
-                      { stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, CODINABLE_COURSES: courseId } });
+                      { stdio: ['ignore', 'pipe', 'pipe'] });
   const appLog = [];
   child.stdout.on('data', d => appLog.push(String(d)));
   child.stderr.on('data', d => appLog.push(String(d)));
@@ -83,6 +83,9 @@ async function runCourse(courseId) {
   try {
     cdp = await connect(port);
     await waitFor(cdp, `document.querySelectorAll('.exercise-item').length > 0`, 30000, '演習一覧が出ない');
+    // 全講座が読み込まれるので、検査する講座を受講中にして演習一覧を入れ替える
+    await cdp.eval(`setActiveCourse(${JSON.stringify(courseId)})`);
+    await waitFor(cdp, `currentCourse()?.id === ${JSON.stringify(courseId)}`, 5000, `講座 ${courseId} が読み込まれていない`);
     // 画面の出来事を拾う (実行の終了・URL・テスト結果)
     await cdp.eval(`(() => {
       globalThis.__e2e = { exit: null, url: null, tests: null, side: null };
@@ -208,6 +211,8 @@ async function checkCurlScripts(cdp, r) {
     const code = await cdp.eval(`__e2e.side.code`);
     if (code !== 0) r.problems.push(`${target}: 終了コード ${code}`);
     else if (target.includes('client/')) r.notes.push(`${target}: exit 0`);   // クライアントのコンソールは HTTP の行を出さない
+    // curl を呼ばないスクリプト (Node の WebSocket クライアントなど) も HTTP の行を出さない。set -x の跡で見分ける
+    else if (!/^\+ curl /m.test(out)) r.notes.push(`${target}: exit 0 (curl なし)`);
     else if (!/HTTP\/[\d.]+ \d{3}/.test(out)) r.problems.push(`${target}: HTTP の応答が出ていない`);
     else if (/HTTP\/[\d.]+ 5\d\d/.test(out)) r.problems.push(`${target}: 5xx が返った`);
     else r.notes.push(`${target}: ${[...out.matchAll(/HTTP\/[\d.]+ (\d{3})/g)].map(m => m[1]).join(',')}`);

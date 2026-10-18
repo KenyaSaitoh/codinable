@@ -1,0 +1,26 @@
+// issuer/: 教材用の簡易なトークンの発行者（jakarta-mpjwt-issuer）。Keycloak の代わりに、JWKS と RS256 の JWT を返す
+// ルートの jakarta-mpjwt-employee と一緒に同じ Payara Server へデプロイされる（codinable.services.json の wars。こちらが先）
+plugins {
+    id 'war'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:11.0.0'
+}
+
+war {
+    archiveFileName = 'jakarta-mpjwt-issuer.war'
+}

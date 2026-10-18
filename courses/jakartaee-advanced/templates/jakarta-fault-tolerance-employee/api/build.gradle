@@ -1,0 +1,31 @@
+// api/: 確認用の社員API（http://localhost:8095）。Payara Server とは別のプロセスとして動く Java SE のプログラム
+// ルートの ▶ アプリ実行で一緒に起動する（codinable.services.json の processes）
+// 出力欄の右の「api」の停止・起動で、社員APIの障害と復旧を作れる
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // JSON への変換に JSON Binding（実装は Yasson）を使う。HTTP サーバーは JDK の com.sun.net.httpserver
+    implementation 'jakarta.json.bind:jakarta.json.bind-api:3.0.1'
+    implementation 'org.eclipse:yasson:3.0.4'
+}
+
+application {
+    mainClass = 'pro.kensait.jakartaee.employee.api.EmployeeApiServer'
+    applicationDefaultJvmArgs = ['-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8']
+}

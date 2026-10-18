@@ -739,7 +739,7 @@ const RUNTIME_ICONS = {
 async function reloadExercises({ reload = false } = {}) {
   courses = reload ? await window.api.coursesReload(getLang())
                    : await window.api.loadCourses(getLang());
-  // 前回の講座が無くなっていたら (アンインストール・絞り込み) 先頭の講座にする
+  // 前回の講座が無くなっていたら (アンインストールなど) 先頭の講座にする
   if (!courses.some(c => c.id === activeCourseId)) activeCourseId = courses[0]?.id || '';
   renderCurrentCourse();
   renderExercises();
@@ -1902,6 +1902,9 @@ function withExercisePreviewPath(url) {
     // preview がコンテキストルートから書いてあれば、そのまま開く
     const root = u.pathname.replace(/\/$/, '');
     if (root && path.startsWith(root + '/')) return u.origin + path;
+    // Jakarta EE は Payara が本体の WAR のコンテキストルートしか知らせないので、preview を優先する
+    // (一緒にデプロイした受信側の WAR や、サーバー全体の /health を開く演習がある)
+    if (exerciseForProject()?.runtime === 'jakarta') return u.origin + path;
     if (u.pathname !== '/') return url;   // アプリ自身が場所を示したときはそちらを使う
     return u.origin + path;
   } catch { return url; }
@@ -2667,10 +2670,6 @@ async function renderCoursesInfo() {
     rows.push(`<div class="runtime-info-row" title="${escapeHtml(root.dir)}">` +
       `<span>${escapeHtml(t(`courseSource_${root.source}`))}</span>` +
       `<span>${escapeHtml(root.exists ? root.dir : t('coursesRootMissing'))}</span></div>`);
-  }
-  if (info.devFilter) {
-    rows.push(`<div class="runtime-info-row"><span>${escapeHtml(t('coursesDevFilter'))}</span>` +
-      `<span>${escapeHtml(info.devFilter.join(', '))}</span></div>`);
   }
   wrap.innerHTML = rows.join('') ||
     `<div class="runtime-info-row"><span>${escapeHtml(t('coursesEmpty'))}</span><span></span></div>`;

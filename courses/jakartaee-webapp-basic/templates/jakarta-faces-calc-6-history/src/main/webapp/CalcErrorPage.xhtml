@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+  <title>CalcErrorPage</title>
+</h:head>
+<h:body>
+  <h2>CalcErrorPage</h2>
+  <hr />
+  <div>計算エラーが発生しました</div>
+  <div>詳細情報：#{calcBean.errorMessage}</div>
+  <hr />
+  <h:link outcome="CalcInputPage" value="入力画面へ戻る" />
+</h:body>
+</html>

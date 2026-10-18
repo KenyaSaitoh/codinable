@@ -1,0 +1,5 @@
+{
+  "processes": [
+    { "id": "api", "dir": "api", "run": "gradle:run", "port": 8095, "when": ["gradle:payaraRun"] }
+  ]
+}

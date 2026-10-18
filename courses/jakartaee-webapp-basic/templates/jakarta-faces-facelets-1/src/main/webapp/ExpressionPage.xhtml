@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+  <title>ExpressionPage</title>
+  <h:outputStylesheet library="css" name="style.css" />
+</h:head>
+<h:body>
+  <h2>1. 式とテキスト出力</h2>
+  <hr />
+  <p class="label">h:outputText で値を出す</p>
+  <h:outputText value="#{expressionBean.memberName}" />
+  <p class="label">タグの外に書いた式</p>
+  <p>Hello, #{expressionBean.memberName}!</p>
+  <p class="label">empty と条件演算子（ニックネームは未設定）</p>
+  <h:outputText value="#{empty expressionBean.nickname
+          ? '(ニックネーム未設定)' : expressionBean.nickname}" />
+  <p class="label">エスケープあり（既定）</p>
+  <h:outputText value="#{expressionBean.htmlText}" />
+  <p class="label">escape="false"（タグとして解釈される）</p>
+  <h:outputText value="#{expressionBean.htmlText}" escape="false" />
+  <p class="label">演算子</p>
+  <p>税込価格: #{expressionBean.price * 1.1}／管理者: #{expressionBean.admin ? 'はい' : 'いいえ'}</p>
+  <hr />
+  <h:link outcome="IndexPage" value="目次へ戻る" />
+</h:body>
+</html>

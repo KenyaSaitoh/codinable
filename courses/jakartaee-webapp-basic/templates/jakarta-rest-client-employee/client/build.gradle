@@ -1,0 +1,36 @@
+// コンソールの HTTP クライアント（Jakarta REST のクライアント API）。処理が終わると終了し、待ち受けポートは開かない
+// ルートの確認用 API とは別の、独立した Gradle プロジェクト（ルートの settings.gradle には含めない）
+// client/run.sh を開いて、エディタの右上の ▶ 実行で動かす（ルートの gradlew.bat を使う）
+plugins {
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Java SE のコンソールなので、クライアント API の実装（Jersey）と JSON Binding の実装（Yasson）を含める
+    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:4.0.0'
+    implementation 'org.glassfish.jersey.core:jersey-client:4.0.0'
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:4.0.0'
+    implementation 'org.glassfish.jersey.media:jersey-media-json-binding:4.0.0'
+}
+
+application {
+    mainClass = 'pro.kensait.jakartaee.employee.client.Main_Employee'
+}
+
+// 接続先は第 1 引数 → 環境変数 EMPLOYEE_API_URL → 既定値の順で決まる
+tasks.withType(JavaExec).configureEach {
+    jvmArgs '-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8'
+}

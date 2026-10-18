@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+  <title>EmployeeInputPage</title>
+</h:head>
+<h:body>
+  <h2>#{empty employeeEditBean.employeeId ? '社員の新規登録' : '社員の編集'}（入力）</h2>
+  <hr />
+  <h:form id="inputForm">
+    <div>社員ID: #{empty employeeEditBean.employeeId ? '（登録時に採番）' : employeeEditBean.employeeId}</div>
+    <div>
+      <h:outputLabel for="employeeName" value="氏名" />
+      <h:inputText id="employeeName" value="#{employeeEditBean.employeeName}" label="氏名" />
+      <h:message for="employeeName" style="color: red" />
+    </div>
+    <div>
+      <h:outputLabel for="departmentName" value="部署名" />
+      <h:inputText id="departmentName" value="#{employeeEditBean.departmentName}" label="部署名" />
+      <h:message for="departmentName" style="color: red" />
+    </div>
+    <div>
+      <h:outputLabel for="salary" value="月給" />
+      <h:inputText id="salary" value="#{employeeEditBean.salary}" label="月給" />
+      <h:message for="salary" style="color: red" />
+    </div>
+    <h:commandButton id="confirmButton" value="確認" action="#{employeeEditBean.toConfirm}" />
+  </h:form>
+  <hr />
+  <h:link outcome="EmployeeTablePage" value="一覧へ戻る（入力を破棄）" />
+</h:body>
+</html>

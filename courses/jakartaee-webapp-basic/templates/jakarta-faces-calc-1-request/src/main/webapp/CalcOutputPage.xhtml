@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+  <title>CalcOutputPage</title>
+</h:head>
+<h:body>
+  <h2>CalcOutputPage</h2>
+  <hr />
+  <div>パラメータ1 => #{calcBean.param1}</div>
+  <div>パラメータ2 => #{calcBean.param2}</div>
+  <div id="result">計算結果 ---&gt; <h:outputText value="#{calcBean.result}" /></div>
+  <hr />
+  <h:link outcome="CalcInputPage" value="入力画面へ戻る" />
+</h:body>
+</html>

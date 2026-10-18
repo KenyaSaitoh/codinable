@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+<h:head>
+  <title>LinkPage</title>
+  <h:outputStylesheet library="css" name="style.css" />
+</h:head>
+<h:body>
+  <h2>3. 条件・リンク・表示形式</h2>
+  <hr />
+  <p class="label">h:link と f:param（名前を押すと詳細へ移動する）。管理者だけ rendered で印を出す</p>
+  <ul>
+    <ui:repeat value="#{collectionBean.memberList}" var="member">
+      <li>
+        <h:link outcome="MemberDetailPage" value="#{member.memberName}">
+          <f:param name="memberId" value="#{member.memberId}" />
+        </h:link>
+        <h:outputText value="（管理者）" rendered="#{member.admin}" />
+      </li>
+    </ui:repeat>
+  </ul>
+  <p class="label">f:convertNumber</p>
+  <h:outputText value="#{utilityBean.bigNumber}">
+    <f:convertNumber pattern="#,###" />
+  </h:outputText>
+  <p class="label">f:convertDateTime</p>
+  <h:outputText value="#{utilityBean.now}">
+    <f:convertDateTime type="localDateTime" pattern="yyyy/MM/dd HH:mm:ss" />
+  </h:outputText>
+  <hr />
+  <h:link outcome="IndexPage" value="目次へ戻る" />
+</h:body>
+</html>

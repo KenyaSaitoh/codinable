@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+  <title>CalcOutputPage</title>
+</h:head>
+<h:body>
+  <h2>CalcOutputPage</h2>
+  <hr />
+  <p>計算結果：<h:outputText value="#{flash.result}" /></p>
+  <h:messages globalOnly="true" />
+  <h:link outcome="CalcInputPage" value="入力画面に戻る" />
+</h:body>
+</html>

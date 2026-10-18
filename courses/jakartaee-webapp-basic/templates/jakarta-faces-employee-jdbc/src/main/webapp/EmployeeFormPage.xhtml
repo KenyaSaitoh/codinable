@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<f:metadata>
+  <f:viewParam name="employeeId" value="#{employeeFormBean.employeeId}" />
+  <f:viewAction action="#{employeeFormBean.load}" />
+</f:metadata>
+<h:head>
+  <title>EmployeeFormPage</title>
+</h:head>
+<h:body>
+  <h2>#{empty employeeFormBean.employeeId ? '社員の登録' : '社員の編集'}</h2>
+  <hr />
+  <h:messages globalOnly="true" style="color: red" />
+  <h:form id="employeeForm">
+    <div>社員ID: #{empty employeeFormBean.employeeId ? '（登録時に採番）' : employeeFormBean.employeeId}
+      #{employeeFormBean.employeeCode}
+      #{empty employeeFormBean.version ? '' : '（version ' += employeeFormBean.version += '）'}</div>
+    <div>
+      <h:outputLabel for="employeeName" value="氏名" />
+      <h:inputText id="employeeName" value="#{employeeFormBean.employeeName}" label="氏名" />
+      <h:message for="employeeName" style="color: red" />
+    </div>
+    <div>
+      <h:outputLabel for="departmentId" value="部署" />
+      <h:selectOneMenu id="departmentId" value="#{employeeFormBean.departmentId}">
+        <f:selectItem itemLabel="（所属なし）" noSelectionOption="true" />
+        <f:selectItems value="#{employeeFormBean.departments}" var="d"
+                       itemValue="#{d.departmentId}" itemLabel="#{d.departmentName}" />
+      </h:selectOneMenu>
+    </div>
+    <div>
+      <h:outputLabel for="jobId" value="役職" />
+      <h:selectOneMenu id="jobId" value="#{employeeFormBean.jobId}" label="役職">
+        <f:selectItem itemLabel="（選択してください）" noSelectionOption="true" />
+        <f:selectItems value="#{employeeFormBean.jobs}" var="j"
+                       itemValue="#{j.jobId}" itemLabel="#{j.jobName}" />
+      </h:selectOneMenu>
+      <h:message for="jobId" style="color: red" />
+    </div>
+    <div>
+      <h:outputLabel for="salary" value="月給" />
+      <h:inputText id="salary" value="#{employeeFormBean.salary}" label="月給" />
+      <h:message for="salary" style="color: red" />
+    </div>
+    <div>
+      <h:outputLabel for="entranceDate" value="入社日（yyyy-MM-dd）" />
+      <h:inputText id="entranceDate" value="#{employeeFormBean.entranceDate}" label="入社日">
+        <f:convertDateTime type="localDate" pattern="yyyy-MM-dd" />
+      </h:inputText>
+      <h:message for="entranceDate" style="color: red" />
+    </div>
+    <!-- 編集を始めたときの version を隠し項目として保持し、更新のときに Service へ渡す -->
+    <h:inputHidden id="version" value="#{employeeFormBean.version}" />
+    <h:commandButton id="saveButton" value="保存" action="#{employeeFormBean.save}" />
+  </h:form>
+  <hr />
+  <h:link outcome="EmployeeTablePage" value="一覧へ戻る" />
+</h:body>
+</html>

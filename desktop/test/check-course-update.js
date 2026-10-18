@@ -110,7 +110,6 @@ async function main() {
 
   const port = await freePort();
   const env  = { ...process.env, CODINABLE_UPDATE_URL: baseUrl };
-  delete env.CODINABLE_COURSES;
   const child = spawn(path.resolve(__dirname, '../node_modules/electron/dist/electron.exe'), [
     path.resolve(__dirname, '..'), `--remote-debugging-port=${port}`, `--user-data-dir=${userData}`,
   ], { stdio: 'ignore', env });

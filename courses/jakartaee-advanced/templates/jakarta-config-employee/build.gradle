@@ -1,0 +1,42 @@
+// jakarta-config-employee: MicroProfile Config による設定値と、JSON Binding の変換
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+plugins {
+    id 'war' // WAR のファイル名が、そのままコンテキストルートになる
+}
+
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 仕様の API はコンパイル時だけ使う。実装は Payara Server が持つので WAR には入れない
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:11.0.0'
+    compileOnly 'org.eclipse.microprofile.config:microprofile-config-api:3.1'
+
+    // テストでは JSON-B の変換を、Payara Server と同じ実装（Yasson）で確かめる
+    // compileOnly はテストのクラスパスに入らないので、API をテスト用にも指定する
+    testImplementation 'jakarta.platform:jakarta.jakartaee-api:11.0.0'
+    testRuntimeOnly 'org.eclipse:yasson:3.0.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+war {
+    archiveFileName = 'jakarta-config-employee.war'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}

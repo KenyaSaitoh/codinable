@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+        https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
+    version="3.2">
+  <persistence-unit name="EmployeePU" transaction-type="JTA">
+    <jta-data-source>java:app/jdbc/EmployeeDS</jta-data-source>
+    <properties>
+      <!-- テーブルは sql/hsqldb の DDL で用意したもの（演習では config/DatabaseInitializer が起動時に流す）を使う -->
+      <property
+          name="jakarta.persistence.schema-generation.database.action"
+          value="none"/>
+      <!-- 演習用: 接続先が HSQLDB であることを EclipseLink に教える（SQL の方言。CONCAT などの書き方が変わる） -->
+      <property name="eclipselink.target-database"
+          value="org.eclipse.persistence.platform.database.HSQLPlatform"/>
+      <!-- 演習用: EclipseLink が発行する SQL を実行結果（Payara のログ）に出す -->
+      <property name="eclipselink.logging.level.sql" value="FINE"/>
+      <property name="eclipselink.logging.parameters" value="true"/>
+    </properties>
+  </persistence-unit>
+</persistence>

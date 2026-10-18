@@ -1,0 +1,188 @@
+# ═══════════════════════════════════════════════════════════
+#  Udemy「Jakarta EE Webアプリ応用（ECサイト）」の演習
+#
+#  講義そのものは動画側にあり、ここには講座のサンプル（learn_jee_aidd_practical の
+#  projects/master）を Codinable 単独で動く形にしたものを置く
+#  問題を出して解かせることはしない
+#
+#  サンプルは 2 つのアプリで、チャプターごとに同じアプリを別の観点で読む
+#    leaf-books    REST API（Jakarta REST。WAR は leaf-books-api）+ React の書店（Vite 5173）
+#    customer-hub  書店が呼ぶ外部 API（WAR は customer-hub-api）
+#  どちらも ▶ アプリ実行（gradle:payaraRun）で同梱の Payara Server 7 にデプロイする
+#  書店の雛形には customer-hub/ を同梱し、codinable.services.json の wars で同じ Payara に
+#  一緒にデプロイする（コンテキストルートは /leaf-books-api と /customer-hub-api）
+#  React の画面（src/frontend）は processes に書き、▶ アプリ実行で一緒に起動する
+#  データソース jdbc/HsqldbDS は payara/post-boot-commands.asadmin でインメモリの HSQLDB に登録し、
+#  テーブルと初期データはデプロイのたびに persistence.xml が META-INF/sql から流す
+#  同じアプリを使う演習は dir で同じ雛形を指す（作業用プロジェクトは演習ごとに別に作られる）
+#
+#  exercises[] の項目は spring-boot-webapp-practical/course.yaml と同じ
+#  （runtime は jakarta、run は gradle:payaraRun。テストが主役の演習は gradle:test）
+# ═══════════════════════════════════════════════════════════
+id: jakartaee-webapp-practical
+order: 13
+# 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
+version: 1.0.0
+names:
+  ja: Jakarta EE Webアプリ応用（ECサイト）
+  en: 'Jakarta EE Web Apps: Advanced (E-commerce Site)'
+descriptions:
+  ja: >-
+    書籍の検索・カート・ログイン・注文・在庫更新を持つ書店アプリ Leaf Books を、
+    Jakarta REST の API と React の画面からなる SPA として読み解く講座の演習です。
+    外部 API 役の Customer Hub も含みます。WAR は同梱の Payara Server 7 へデプロイし、
+    DB はインメモリの HSQLDB で動くように調整してあります。
+  en: >-
+    Exercises for the course that reads Leaf Books - a bookstore with search, cart, login,
+    orders and stock updates - as an SPA made of a Jakarta REST API and a React screen,
+    together with Customer Hub, the external API it calls. WARs are deployed to the bundled
+    Payara Server 7, and the database is adjusted to run on in-memory HSQLDB.
+udemy:
+  url: https://github.com/KenyaSaitoh/learn_jee_aidd_practical
+# チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
+chapters:
+  2:
+    ja: '業務処理のレイヤー設計とデータ契約'
+    en: 'Layered Design of Business Logic and Data Contracts'
+  3:
+    ja: '永続化とトランザクション、外部連携の境界'
+    en: 'Persistence, Transactions and the Boundary of External Integration'
+  4:
+    ja: 'Reactの画面構成とREST APIの契約'
+    en: 'React Screen Structure and the REST API Contract'
+  5:
+    ja: 'JWT認証と非同期処理の状態管理'
+    en: 'JWT Authentication and State Management in Async Processing'
+exercises:
+  # ── チャプター2: 業務処理のレイヤー設計とデータ契約 ─────────────
+  - id: leaf-books-layers
+    dir: leaf-books
+    chapter: 2
+    lesson: '2.1 業務処理のレイヤー設計とデータ契約'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    suggestName: leaf-books-layers
+    names:
+      ja: 書店APIをレイヤーで読む
+      en: Read the bookstore API layer by layer
+    descriptions:
+      ja: >-
+        Leaf Books の書店 API です。api / service / dao / entity / external のパッケージが、
+        HTTP の入出力・業務処理・DB・外部 API のどれを受け持つかを対応付けて読みます。
+        ▶ アプリ実行で書店 API と Customer Hub が Payara Server 7 にデプロイされ、React の画面（5173）も起動します。
+        alice@example.com / password でログインし、カートから注文すると、送料と注文履歴が確かめられます。
+      en: >-
+        The Leaf Books bookstore API. Map the api / service / dao / entity / external packages
+        to what each handles: HTTP I/O, business logic, the DB and the external API.
+        ▶ Run app deploys the bookstore API and Customer Hub to Payara Server 7 and starts the React screen (5173).
+        Log in as alice@example.com / password and order from the cart to see the delivery fee and the order history.
+    openFiles:
+      - README.md
+  - id: leaf-books-architecture-test
+    dir: leaf-books
+    chapter: 2
+    lesson: '2.1 業務処理のレイヤー設計とデータ契約'
+    runtime: jakarta
+    run: 'gradle:test'
+    suggestName: leaf-books-architecture-test
+    names:
+      ja: レイヤーの依存方向と業務ルールをテストで確かめる
+      en: Check layer dependencies and business rules with tests
+    descriptions:
+      ja: >-
+        LayeredArchitectureTest は、レイヤー間の依存方向（api → service → dao → entity）を ArchUnit で検査します。
+        DeliveryFeeServiceTest は送料の分岐、OrderServiceTest は注文の業務処理をモックで確かめます。
+        テストクラスを開いて、エディタの右上の ▶ 実行で流してください。結果はテスト結果タブに出ます。
+      en: >-
+        LayeredArchitectureTest checks the dependency direction between layers (api → service → dao → entity) with ArchUnit.
+        DeliveryFeeServiceTest checks the delivery fee rules, and OrderServiceTest checks the ordering logic with mocks.
+        Open a test class and press ▶ Run at the top right of the editor. The results appear in the test tab.
+    openFiles:
+      - README.md
+  # ── チャプター3: 永続化とトランザクション、外部連携の境界 ─────────
+  - id: leaf-books-persistence
+    dir: leaf-books
+    chapter: 3
+    lesson: '3.1 永続化とトランザクション、外部連携の境界'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    suggestName: leaf-books-persistence
+    names:
+      ja: JPQL・Criteria・楽観的ロックをAPIで動かす
+      en: Run JPQL, Criteria and optimistic locking through the API
+    descriptions:
+      ja: >-
+        BookDao の JPQL と Criteria API の検索、StockResource の version を照合する在庫の更新、
+        OrderService のトランザクション境界を読みます。▶ アプリ実行のあと、curl/ のスクリプトを開いて
+        エディタの右上の ▶ 実行で順に流すと、検索結果と、古い version で更新したときの 409 が確かめられます。
+      en: >-
+        Read the JPQL and Criteria API queries in BookDao, the version-checked stock update in StockResource
+        and the transaction boundary of OrderService. After ▶ Run app, open the scripts in curl/ and press
+        ▶ Run at the top right of the editor in order to see the search results and the 409 returned for a stale version.
+    openFiles:
+      - README.md
+  - id: customer-hub
+    chapter: 3
+    lesson: '3.1 永続化とトランザクション、外部連携の境界'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/customer-hub-api/customers/1'
+    suggestName: customer-hub
+    names:
+      ja: 外部APIのCustomer Hubを動かす
+      en: Run Customer Hub, the external API
+    descriptions:
+      ja: >-
+        書店から呼ばれる側（プロバイダー）の顧客 API です。▶ アプリ実行で Payara Server 7 にデプロイすると、
+        プレビューに http://localhost:8080/customer-hub-api/customers/1 の JSON が出ます。
+        curl/ のスクリプトで、メールアドレスでの照会と、登録済みのメールアドレスで登録したときの 409 が確かめられます。
+      en: >-
+        The customer API on the called (provider) side. ▶ Run app deploys it to Payara Server 7, and the
+        preview shows the JSON at http://localhost:8080/customer-hub-api/customers/1.
+        The scripts in curl/ show the lookup by email address and the 409 returned when registering an existing email address.
+    openFiles:
+      - README.md
+  # ── チャプター4: Reactの画面構成とREST APIの契約 ───────────────
+  - id: leaf-books-react
+    dir: leaf-books
+    chapter: 4
+    lesson: '4.1 Reactの画面構成とREST APIの契約'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    suggestName: leaf-books-react
+    names:
+      ja: Reactの画面とAPIの契約を確かめる
+      en: Check the React screen and the API contract
+    descriptions:
+      ja: >-
+        src/frontend の React の画面（ページ・コンテキスト・サービス）と、それが呼ぶ OrderResource などの入出力を読みます。
+        ▶ アプリ実行で書店 API と React の画面（5173）が起動し、Webブラウザが React の画面に切り替わります。
+        vite.config.ts の proxy により、/api への要求は Payara Server の /leaf-books-api へ中継されます。
+      en: >-
+        Read the React screen in src/frontend (pages, contexts and services) and the input and output of
+        OrderResource and the other resources it calls. ▶ Run app starts the bookstore API and the React screen (5173),
+        and the Web browser switches to the React screen. The proxy in vite.config.ts forwards /api to /leaf-books-api on Payara Server.
+    openFiles:
+      - README.md
+  # ── チャプター5: JWT認証と非同期処理の状態管理 ─────────────────
+  - id: leaf-books-jwt
+    dir: leaf-books
+    chapter: 5
+    lesson: '5.1 JWT認証と非同期処理の状態管理'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    suggestName: leaf-books-jwt
+    names:
+      ja: JWT CookieとCSRFトークンを確かめる
+      en: Check the JWT cookie and the CSRF token
+    descriptions:
+      ja: >-
+        AuthResource が発行する JWT の Cookie と CSRF トークン、JwtAuthFilter と CsrfTokenFilter の照合を読みます。
+        ▶ アプリ実行のあと、curl/ のスクリプトを開いてエディタの右上の ▶ 実行で順に流すと、
+        ログイン前の 401、ログインで届く 2 つの Cookie、CSRF トークンの無い注文の 403 が確かめられます。
+      en: >-
+        Read the JWT cookie and the CSRF token issued by AuthResource, and how JwtAuthFilter and CsrfTokenFilter check them.
+        After ▶ Run app, open the scripts in curl/ and press ▶ Run at the top right of the editor in order to see
+        the 401 before login, the two cookies set at login, and the 403 for an order without the CSRF token.
+    openFiles:
+      - README.md

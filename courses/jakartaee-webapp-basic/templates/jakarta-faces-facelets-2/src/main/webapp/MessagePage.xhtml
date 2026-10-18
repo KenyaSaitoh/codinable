@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<f:view locale="#{localeBean.locale}">
+<h:head>
+  <title>MessagePage</title>
+  <h:outputStylesheet library="css" name="style.css" />
+</h:head>
+<h:body>
+  <h2>4. #{msg['title.message']}</h2>
+  <hr />
+  <p><h:outputText value="#{msg['greeting']}" /></p>
+  <p>
+    <h:outputFormat value="#{msg['welcome.message']}">
+      <f:param value="#{messageBean.memberName}" />
+    </h:outputFormat>
+  </p>
+  <h:form>
+    <h:commandLink value="English" action="#{localeBean.change('en')}" />
+    ｜
+    <h:commandLink value="日本語" action="#{localeBean.change('ja')}" />
+  </h:form>
+  <hr />
+  <h:link outcome="IndexPage" value="目次へ戻る" />
+</h:body>
+</f:view>
+</html>

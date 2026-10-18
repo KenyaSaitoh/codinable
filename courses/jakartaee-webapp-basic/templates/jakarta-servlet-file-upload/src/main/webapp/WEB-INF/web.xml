@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+             https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd"
+         version="6.1">
+    <request-character-encoding>UTF-8</request-character-encoding>
+    <response-character-encoding>UTF-8</response-character-encoding>
+    <welcome-file-list>
+        <welcome-file>FileUploadPage.html</welcome-file>
+    </welcome-file-list>
+    <!-- FileStorageService が受け付けないと判断したファイルは、理由を示す画面にする -->
+    <error-page>
+        <exception-type>pro.kensait.jakartaee.upload.InvalidFileException</exception-type>
+        <location>/WEB-INF/views/uploadError.jsp</location>
+    </error-page>
+</web-app>

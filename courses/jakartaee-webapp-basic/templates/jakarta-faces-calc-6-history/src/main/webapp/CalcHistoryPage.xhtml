@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+  <title>CalcHistoryPage</title>
+</h:head>
+<h:body>
+  <h2>計算履歴</h2>
+  <hr />
+  <!-- 履歴は CalcDAO（@ApplicationScoped）の Map にあり、すべての利用者で共有される -->
+  <h:dataTable value="#{calcResultBean.calcResults}" var="calc" border="1"
+               rendered="#{not empty calcResultBean.calcResults}">
+    <h:column>
+      <f:facet name="header">ID</f:facet>
+      <h:link outcome="CalcOutputPage" value="#{calc.id}">
+        <f:param name="id" value="#{calc.id}" />
+      </h:link>
+    </h:column>
+    <h:column>
+      <f:facet name="header">計算</f:facet>
+      #{calc.param1} と #{calc.param2} の#{calc.calcType.toString()}
+    </h:column>
+    <h:column>
+      <f:facet name="header">結果</f:facet>
+      #{calc.result}
+    </h:column>
+    <h:column>
+      <f:facet name="header">日時</f:facet>
+      #{calc.dateTimeStr}
+    </h:column>
+  </h:dataTable>
+  <h:outputText value="履歴はまだありません" rendered="#{empty calcResultBean.calcResults}" />
+  <hr />
+  <h:link outcome="CalcInputPage" value="入力画面に戻る" />
+</h:body>
+</html>

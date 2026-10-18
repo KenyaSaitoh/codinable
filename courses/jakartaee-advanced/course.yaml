@@ -1,0 +1,380 @@
+# ═══════════════════════════════════════════════════════════
+#  Udemy「Jakarta EE 高度な仕組み」の演習
+#
+#  講座原稿（01_master）のコードを、Codinable 単独で動く Gradle の war プロジェクトにしたもの
+#  問題を出して解かせることはしない
+#
+#  題材は社員管理システム（社員 16 件・部署 4 件。Spring 高度な仕組みと同じデータ）
+#  どれも ▶ アプリ実行（gradle:payaraRun）で同梱の Payara Server 7 にデプロイする
+#  2 つ以上のプロセスが要るものは、ルート = ▶ アプリ実行で動かす WAR、サブフォルダ = もう片方
+#    client/    起動して終わる Java コンソール（client/run.sh をエディタの右上の ▶ 実行で動かす）
+#    frontend/  React の画面（Vite、5173。codinable.services.json の processes で一緒に起動）
+#    api/       Payara Server とは別のプロセスの確認用 API（processes で一緒に起動）
+#    consumer/ issuer/  同じ Payara Server に一緒にデプロイする WAR（codinable.services.json の wars）
+#  Kafka の演習は codinable.services.json の services で同梱の Kafka を起動する
+#  Docker が要るもの（Keycloak・Jaeger）は使わない。MicroProfile JWT の演習は教材用の発行者（issuer/）で、
+#  Telemetry の演習はスパンを Payara Server のログへ書き出して確かめる
+#
+#  exercises[] の項目は spring-advanced/course.yaml と同じ
+#  （runtime は jakarta、run は gradle:payaraRun）
+# ═══════════════════════════════════════════════════════════
+id: jakartaee-advanced
+order: 12
+# 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
+version: 1.0.0
+
+names:
+  ja: Jakarta EE 高度な仕組み
+  en: 'Jakarta EE: Advanced Mechanisms'
+
+descriptions:
+  ja: >-
+    社員管理システムを題材に、MicroProfile Config、非同期 HTTP クライアントと WebSocket、
+    Jakarta Security と OpenID Connect・MicroProfile JWT、MicroProfile GraphQL、Jakarta Concurrency と SSE、
+    Jakarta Messaging と Kafka、MicroProfile Fault Tolerance、Health と Telemetry までを扱う講座の演習です。
+    どれも同梱の Payara Server 7（Jakarta EE 11・MicroProfile 7.1）で動き、DB はインメモリの HSQLDB、
+    Kafka は Codinable 同梱のものを使います。Google でのログインだけは、Google 側の登録が必要です。
+  en: >-
+    Exercises for the course that builds on an employee management system: MicroProfile Config,
+    asynchronous HTTP clients and WebSocket, Jakarta Security with OpenID Connect and MicroProfile JWT,
+    MicroProfile GraphQL, Jakarta Concurrency and SSE, Jakarta Messaging and Kafka,
+    MicroProfile Fault Tolerance, Health and Telemetry. Everything runs on the bundled Payara Server 7
+    (Jakarta EE 11 / MicroProfile 7.1) with an in-memory HSQLDB and the Kafka bundled with Codinable.
+    Only the Google login needs a registration on the Google side.
+
+udemy:
+  url: https://github.com/KenyaSaitoh/learn_jee_aidd_advanced
+
+# チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
+chapters:
+  2:
+    ja: 'Jakarta EEアプリケーションの構成・設定・互換性'
+    en: 'Structure, Configuration and Compatibility of Jakarta EE Applications'
+  3:
+    ja: 'HTTPクライアントとWebSocketによる通信'
+    en: 'Communication with HTTP Clients and WebSocket'
+  4:
+    ja: 'Jakarta Securityの認証・認可とリクエスト保護'
+    en: 'Authentication, Authorization and Request Protection with Jakarta Security'
+  5:
+    ja: 'OpenID Connect・JWTによる認証連携'
+    en: 'Federated Authentication with OpenID Connect and JWT'
+  6:
+    ja: 'MicroProfile GraphQLのスキーマとデータ取得'
+    en: 'Schemas and Data Fetching with MicroProfile GraphQL'
+  7:
+    ja: '非同期処理とサーバー送信イベント'
+    en: 'Asynchronous Processing and Server-Sent Events'
+  8:
+    ja: 'Jakarta Messagingによる非同期メッセージング'
+    en: 'Asynchronous Messaging with Jakarta Messaging'
+  9:
+    ja: 'MicroProfile Fault Toleranceによる障害への対処'
+    en: 'Handling Failures with MicroProfile Fault Tolerance'
+  10:
+    ja: '観測・監視機能'
+    en: 'Observability and Monitoring'
+
+exercises:
+  # ── チャプター2: Jakarta EEアプリケーションの構成・設定・互換性 ──────
+  - id: jakarta-config-employee
+    chapter: 2
+    lesson: '2.1 Jakarta EEアプリケーションの構成・設定・互換性'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/jakarta-config-employee/api/settings'
+    suggestName: jakarta-config-employee
+    names:
+      ja: MicroProfile ConfigとJSON Bindingを確かめる
+      en: Check MicroProfile Config and JSON Binding
+    descriptions:
+      ja: >-
+        社員APIの接続先とタイムアウトを MicroProfile Config の設定値として持ち、決まった値と設定ソースを
+        GET /api/settings で返します。社員の JSON では、JSON Binding の null・項目の順序・日付の変換を確かめます。
+        ▶ アプリ実行のあと curl/ のスクリプトをエディタの右上の ▶ 実行で流し、JsonbConfigResolverTest も開いて ▶ 実行します。
+      en: >-
+        Holds the employee API URL and timeouts as MicroProfile Config values and returns the resolved values
+        and their config source at GET /api/settings. The employee JSON shows how JSON Binding handles nulls,
+        property order and dates. After ▶ Run app, run the scripts in curl/ with ▶ Run at the top right of the editor,
+        and open JsonbConfigResolverTest and press ▶ Run.
+    openFiles:
+      - README.md
+  # ── チャプター3: HTTPクライアントとWebSocketによる通信 ──────────
+  - id: jakarta-async-client-employee
+    chapter: 3
+    lesson: '3.1 HTTPクライアントとWebSocketによる通信'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/jakarta-async-client-employee/api/employees'
+    suggestName: jakarta-async-client-employee
+    names:
+      ja: 非同期HTTPクライアントで社員APIを呼ぶ
+      en: Call the employee API with asynchronous HTTP clients
+    descriptions:
+      ja: >-
+        ▶ アプリ実行で確認用の社員APIを Payara Server 7 にデプロイし、client/run.sh を開いてエディタの右上の ▶ 実行で
+        Java コンソールのクライアントを動かします。Jakarta REST のクライアントAPI の rx() と CompletionStage の
+        thenCombine・thenCompose、MicroProfile Rest Client の非同期メソッド、404 の扱いが順に表示されます。
+      en: >-
+        ▶ Run app deploys the employee API to Payara Server 7. Then open client/run.sh and press ▶ Run at the top right
+        of the editor to run the Java console client. It shows rx() of the Jakarta REST client API with thenCombine and
+        thenCompose, the asynchronous methods of MicroProfile Rest Client, and how a 404 is handled.
+    openFiles:
+      - README.md
+  - id: jakarta-websocket-employee
+    chapter: 3
+    lesson: '3.1 HTTPクライアントとWebSocketによる通信'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/jakarta-websocket-employee/'
+    suggestName: jakarta-websocket-employee
+    names:
+      ja: Jakarta WebSocketで社員通知を配信する
+      en: Broadcast employee notices with Jakarta WebSocket
+    descriptions:
+      ja: >-
+        @ServerEndpoint のエンドポイント、エンコーダー・デコーダー、接続の一覧による配信を読みます。
+        ▶ アプリ実行でプレビューに通知の画面が開き、送った通知が接続中の全員に届きます。
+        curl/01_websocket.sh を ▶ 実行すると、2 本の接続での配信、入力エラーの返却、Origin の拒否をまとめて確かめられます。
+      en: >-
+        Read the @ServerEndpoint endpoint, its encoders and decoders, and the broadcast over the session list.
+        ▶ Run app opens the notice screen in the preview, and a notice you send reaches every connected client.
+        Run curl/01_websocket.sh with ▶ Run to check broadcasting over two connections, error replies and Origin rejection.
+    openFiles:
+      - README.md
+  # ── チャプター4: Jakarta Securityの認証・認可とリクエスト保護 ────
+  - id: jakarta-security-employee
+    chapter: 4
+    lesson: '4.1 Jakarta Securityの認証・認可とリクエスト保護'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    suggestName: jakarta-security-employee
+    names:
+      ja: フォーム認証・認可・CSRF対策を確かめる
+      en: Check form login, authorization and CSRF protection
+    descriptions:
+      ja: >-
+        独自の認証メカニズムとデータベースのアイデンティティストア（PBKDF2）によるログイン、web.xml の制約による認可、
+        CSRF トークンを読みます。▶ アプリ実行で社員API と React の画面（5173）が起動します。
+        Bob / 2222（ADMIN）と Alice / 1111（BASIC）でログインし、curl/ のスクリプトで 401・403・201 の違いを確かめます。
+      en: >-
+        Read the login with a custom authentication mechanism and a database identity store (PBKDF2),
+        authorization by web.xml constraints, and the CSRF token. ▶ Run app starts the employee API and the React screen (5173).
+        Log in as Bob / 2222 (ADMIN) and Alice / 1111 (BASIC), and use the scripts in curl/ to see 401, 403 and 201.
+    openFiles:
+      - README.md
+  - id: jakarta-security-employee-faces
+    chapter: 4
+    lesson: '4.1 Jakarta Securityの認証・認可とリクエスト保護'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/jakarta-security-employee-faces/employees/list.xhtml'
+    suggestName: jakarta-security-employee-faces
+    names:
+      ja: Facesのフォーム認証とprotected-viewsを確かめる
+      en: Check Faces form login and protected views
+    descriptions:
+      ja: >-
+        @CustomFormAuthenticationMechanismDefinition によるログイン画面と、faces-config.xml の protected-views による
+        削除画面の保護を読みます。▶ アプリ実行でプレビューがログイン画面へ移り、Bob / 2222 でログインすると社員一覧へ戻ります。
+        curl/01_login_flow.sh を ▶ 実行すると、トークンの無い URL の拒否と Alice の 403 も確かめられます。
+      en: >-
+        Read the login page with @CustomFormAuthenticationMechanismDefinition and the delete page protected by
+        protected-views in faces-config.xml. ▶ Run app sends the preview to the login page, and logging in as Bob / 2222
+        returns you to the employee list. Run curl/01_login_flow.sh with ▶ Run to also see URLs without the token rejected
+        and the 403 for Alice.
+    openFiles:
+      - README.md
+  # ── チャプター5: OpenID Connect・JWTによる認証連携 ─────────────
+  - id: jakarta-security-employee-google
+    chapter: 5
+    lesson: '5.1 OpenID Connect・JWTによる認証連携'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    suggestName: jakarta-security-employee-google
+    names:
+      ja: GoogleによるOpenID Connectのログイン
+      en: OpenID Connect login with Google
+    descriptions:
+      ja: >-
+        @OpenIdAuthenticationMechanismDefinition で Google を IdP にした認可コードフローのログインを読みます。
+        ▶ アプリ実行で社員API と React の画面（5173）が起動します。ログインまで試すには、README のとおり Google 側で
+        クライアントを登録し、クライアントIDとシークレットを payara/post-boot-commands.asadmin に書きます。
+      en: >-
+        Read the authorization code flow login that uses Google as the IdP with @OpenIdAuthenticationMechanismDefinition.
+        ▶ Run app starts the employee API and the React screen (5173). To try the login itself, register a client on the
+        Google side as described in the README and write its client ID and secret in payara/post-boot-commands.asadmin.
+    openFiles:
+      - README.md
+  - id: jakarta-mpjwt-employee
+    chapter: 5
+    lesson: '5.1 OpenID Connect・JWTによる認証連携'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/jakarta-mpjwt-employee/api/employees'
+    suggestName: jakarta-mpjwt-employee
+    names:
+      ja: MicroProfile JWTでREST APIを保護する
+      en: Protect a REST API with MicroProfile JWT
+    descriptions:
+      ja: >-
+        Bearer のアクセストークンを MicroProfile JWT で検証し、groups クレームのロールで @RolesAllowed を判定する社員API です。
+        ▶ アプリ実行で、トークンを発行する教材用の発行者（issuer/）も同じ Payara Server にデプロイされます。
+        curl/ のスクリプトを ▶ 実行すると、トークンなし・ロール不足・ID トークン・署名の改ざんがそれぞれ拒否されることを確かめられます。
+      en: >-
+        An employee API that verifies Bearer access tokens with MicroProfile JWT and checks @RolesAllowed against the groups claim.
+        ▶ Run app also deploys a teaching token issuer (issuer/) to the same Payara Server. Run the scripts in curl/ with ▶ Run
+        to see requests without a token, with too few roles, with an ID token and with a tampered signature rejected.
+    openFiles:
+      - README.md
+  # ── チャプター6: MicroProfile GraphQLのスキーマとデータ取得 ───────
+  - id: jakarta-graphql-employee
+    chapter: 6
+    lesson: '6.1 MicroProfile GraphQLのスキーマとデータ取得'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    suggestName: jakarta-graphql-employee
+    names:
+      ja: GraphQLで社員と部署を問い合わせる
+      en: Query employees and departments with GraphQL
+    descriptions:
+      ja: >-
+        コードファーストの MicroProfile GraphQL（実装は WAR に含めた SmallRye GraphQL）で、@Query・@Mutation・@Source を読みます。
+        ▶ アプリ実行で GraphQL API と React の画面（5173）が起動します。curl/ のスクリプトで errors の返り方、
+        部署と所属社員のバッチ取得（SQL が 2 回で済むこと）、生成されたスキーマを確かめます。
+      en: >-
+        Read @Query, @Mutation and @Source in code-first MicroProfile GraphQL (SmallRye GraphQL is bundled in the WAR).
+        ▶ Run app starts the GraphQL API and the React screen (5173). Use the scripts in curl/ to see how errors are returned,
+        how departments and their employees are fetched in a batch (only two SQL queries), and the generated schema.
+    openFiles:
+      - README.md
+  # ── チャプター7: 非同期処理とサーバー送信イベント ─────────────
+  - id: jakarta-async-employee
+    chapter: 7
+    lesson: '7.1 非同期処理とサーバー送信イベント'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/jakarta-async-employee/'
+    suggestName: jakarta-async-employee
+    names:
+      ja: Concurrency・非同期CDIイベント・SSEを動かす
+      en: Run Concurrency, async CDI events and SSE
+    descriptions:
+      ja: >-
+        ManagedExecutorService（仮想スレッド）による部署ごとの並行集計、コミット後に非同期 CDI イベントへ中継する異動の通知、
+        Jakarta REST の非同期応答と SSE の配信を読みます。▶ アプリ実行でプレビューに確認用の画面が開きます。
+        curl/ のスクリプトと client/run.sh を ▶ 実行すると、非同期応答・SSE の受信・異動の一斉配信を確かめられます。
+      en: >-
+        Read the parallel per-department summary on a ManagedExecutorService (virtual threads), the transfer notification relayed
+        to async CDI events after commit, and asynchronous Jakarta REST responses and SSE. ▶ Run app opens a test screen in the preview.
+        Run the scripts in curl/ and client/run.sh with ▶ Run to check async responses, SSE reception and transfer broadcasts.
+    openFiles:
+      - README.md
+  # ── チャプター8: Jakarta Messagingによる非同期メッセージング ───────
+  - id: jakarta-messaging-employee
+    chapter: 8
+    lesson: '8.1 Jakarta Messagingによる非同期メッセージング'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/jakarta-messaging-employee-consumer/api/events'
+    suggestName: jakarta-messaging-employee
+    names:
+      ja: JMSContextとメッセージ駆動Beanで送受信する
+      en: Send and receive with JMSContext and a message-driven bean
+    descriptions:
+      ja: >-
+        送信側（producer）と受信側（consumer/）が、Payara Server に内蔵のブローカーのキューを介して連携します。
+        ▶ アプリ実行で 2 つの WAR がデプロイされ、プレビューに受信履歴が開きます。curl/ のスクリプトを ▶ 実行すると、
+        登録と送信のトランザクション、eventId による重複の排除、ポイズンメッセージの再配送を確かめられます。
+      en: >-
+        The sender (producer) and the receiver (consumer/) work together through a queue on the broker built into Payara Server.
+        ▶ Run app deploys both WARs and opens the receive history in the preview. Run the scripts in curl/ with ▶ Run to check the
+        transaction around registration and sending, duplicate removal by eventId, and redelivery of a poison message.
+    openFiles:
+      - README.md
+  - id: jakarta-kafka-employee
+    chapter: 8
+    lesson: '8.1 Jakarta Messagingによる非同期メッセージング'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/jakarta-kafka-employee-consumer/api/events'
+    suggestName: jakarta-kafka-employee
+    names:
+      ja: Kafkaのクライアントライブラリで送受信する
+      en: Send and receive with the Kafka client library
+    descriptions:
+      ja: >-
+        kafka-clients を WAR に含め、KafkaProducer による送信と、ManagedExecutorService で動かす KafkaConsumer の受信ループ
+        （手動のオフセットコミットと eventId によるべき等性）を読みます。▶ アプリ実行で同梱の Kafka が起動し、2 つの WAR がデプロイされます。
+        curl/01_send_event.sh を ▶ 実行すると、同じイベントを 2 回送っても受信履歴が 1 件になることを確かめられます。
+      en: >-
+        Bundles kafka-clients in the WAR. Read sending with KafkaProducer and the KafkaConsumer receive loop running on a
+        ManagedExecutorService (manual offset commits and idempotency by eventId). ▶ Run app starts the bundled Kafka and deploys
+        both WARs. Run curl/01_send_event.sh with ▶ Run to see that sending the same event twice leaves one entry in the history.
+    openFiles:
+      - README.md
+  # ── チャプター9: MicroProfile Fault Toleranceによる障害への対処 ────
+  - id: jakarta-fault-tolerance-employee
+    chapter: 9
+    lesson: '9.1 MicroProfile Fault Toleranceによる障害への対処'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/jakarta-fault-tolerance-employee/api/resilience-demo'
+    suggestName: jakarta-fault-tolerance-employee
+    names:
+      ja: 遮断・再試行・代替応答を確かめる
+      en: Check circuit breaking, retries and fallbacks
+    descriptions:
+      ja: >-
+        別プロセスの社員API（api/、8095）を Rest Client で呼び、@CircuitBreaker・@Bulkhead・@Timeout・@Retry・@Fallback で
+        制御します。▶ アプリ実行で社員API も一緒に起動します。出力欄の右の「api」で社員API を止めてから curl/ のスクリプトを
+        ▶ 実行すると、代替応答・回路の遮断・再試行の回数を確かめられます。
+      en: >-
+        Calls a separate employee API process (api/, 8095) with Rest Client and controls it with @CircuitBreaker, @Bulkhead,
+        @Timeout, @Retry and @Fallback. ▶ Run app also starts the employee API. Stop it with the "api" control to the right of the
+        output pane, then run the scripts in curl/ with ▶ Run to see fallbacks, the open circuit and the number of retries.
+    openFiles:
+      - README.md
+  # ── チャプター10: 観測・監視機能 ──────────────────────────
+  - id: jakarta-health-employee
+    chapter: 10
+    lesson: '10.1 観測・監視機能'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/health'
+    suggestName: jakarta-health-employee
+    names:
+      ja: MicroProfile Healthとメトリクスを確かめる
+      en: Check MicroProfile Health and metrics
+    descriptions:
+      ja: >-
+        @Liveness・@Readiness・@Startup のヘルスチェックと、OpenTelemetry の Meter によるカウンターを読みます。
+        ▶ アプリ実行でプレビューに /health の JSON が開きます。curl/ のスクリプトで 3 種類のエンドポイントと、
+        社員の取得で増えるカウンター（実行結果に 60 秒ごとに書き出される）を確かめます。
+      en: >-
+        Read the @Liveness, @Readiness and @Startup health checks and a counter built with the OpenTelemetry Meter.
+        ▶ Run app opens the /health JSON in the preview. Use the scripts in curl/ to check the three endpoints and the counter
+        that grows with each employee lookup (written to the run output every 60 seconds).
+    openFiles:
+      - README.md
+  - id: jakarta-telemetry-employee
+    chapter: 10
+    lesson: '10.1 観測・監視機能'
+    runtime: jakarta
+    run: 'gradle:payaraRun'
+    preview: '/jakarta-telemetry-employee/api/employees/10001'
+    suggestName: jakarta-telemetry-employee
+    names:
+      ja: MicroProfile Telemetryでトレースを記録する
+      en: Record traces with MicroProfile Telemetry
+    descriptions:
+      ja: >-
+        自動計装、@WithSpan、Tracer による社員取得のトレースと、トレースIDを含むログを読みます。
+        ▶ アプリ実行のあと curl/01_trace.sh を ▶ 実行すると、親子のスパンと traceparent で引き継いだトレースIDが、
+        実行結果（Payara Server のログ）に書き出されます。
+      en: >-
+        Read the employee lookup traced by automatic instrumentation, @WithSpan and Tracer, and logs that include the trace ID.
+        After ▶ Run app, run curl/01_trace.sh with ▶ Run to see the parent and child spans, and the trace ID carried over by
+        traceparent, written to the run output (the Payara Server log).
+    openFiles:
+      - README.md

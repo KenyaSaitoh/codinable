@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+  <title>CalcInputPage</title>
+</h:head>
+<h:body>
+  <h2>CalcInputPage</h2>
+  <hr />
+  <h:form id="calcForm">
+    <div>
+      <h:outputLabel for="param1" value="パラメータ1" />
+      <h:inputText id="param1" value="#{calcBean.param1}" />
+    </div>
+    <div>
+      <h:outputLabel for="param2" value="パラメータ2" />
+      <h:inputText id="param2" value="#{calcBean.param2}" />
+    </div>
+    <h:commandButton id="addButton" value="足し算"
+                     action="#{calcBean.add}" />
+  </h:form>
+  <hr />
+  <p>
+    GET のクエリで計算する画面:
+    <h:link outcome="CalcAddByGetPage" value="CalcAddByGetPage.xhtml?param1=30&amp;param2=10">
+      <f:param name="param1" value="30" />
+      <f:param name="param2" value="10" />
+    </h:link>
+  </p>
+</h:body>
+</html>

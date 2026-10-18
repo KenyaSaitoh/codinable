@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════
-#  Udemy「Spring 高度な仕組み」の演習
+#  Udemy「Spring FW 高度な仕組み」の演習
 #
 #  講義そのものは動画側にあるため、ここには講座リポジトリ（learn_spring_aidd_advanced）の
 #  projects/master のサンプルを「開いてすぐ動く」形にしたものだけを置く
@@ -36,7 +36,7 @@ order: 3
 version: 1.4.0
 
 names:
-  ja: Spring 高度な仕組み
+  ja: Spring FW 高度な仕組み
   en: 'Spring: Advanced Mechanisms'
 
 descriptions:

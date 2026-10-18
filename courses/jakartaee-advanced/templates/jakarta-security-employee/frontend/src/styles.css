@@ -1,0 +1,12 @@
+body { font-family: system-ui, sans-serif; margin: 0; background: #f6f7f9; color: #222; }
+main { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+h1 { font-size: 22px; }
+.message { padding: 8px 12px; background: #eef3f8; border-radius: 6px; }
+form, .session { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin: 12px 0; }
+label { display: flex; flex-direction: column; font-size: 13px; gap: 4px; }
+input { padding: 6px 8px; font-size: 14px; width: 140px; }
+button { padding: 6px 14px; font-size: 14px; cursor: pointer; }
+.hint { color: #666; font-size: 12px; }
+table { border-collapse: collapse; width: 100%; background: #fff; }
+th, td { border: 1px solid #ddd; padding: 6px 8px; font-size: 14px; text-align: left; }
+th { background: #eef0f3; }

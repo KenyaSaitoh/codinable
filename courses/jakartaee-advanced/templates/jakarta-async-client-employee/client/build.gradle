@@ -1,0 +1,55 @@
+// jakarta-async-client-employee の Java コンソールのクライアント
+// Jakarta REST のクライアントAPI（rx()）と MicroProfile Rest Client で、ルートの社員API を非同期に呼ぶ
+// Payara Server と同じ Jakarta REST の実装（Jersey）をライブラリとして使い、Java SE のプログラムとして動く
+// ルートの社員API を ▶ アプリ実行でデプロイしてから、client/run.sh を開いてエディタの右上の ▶ 実行で動かす
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Jakarta REST のクライアントAPI と、その実装の Jersey（JSON は JSON-B の Yasson で変換する）
+    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:4.0.0'
+    implementation 'org.glassfish.jersey.core:jersey-client:4.0.0'
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:4.0.0'
+    implementation 'org.glassfish.jersey.media:jersey-media-json-binding:4.0.0'
+    // MicroProfile Rest Client の API と、Jersey による実装（実装は MicroProfile Config を読むので、その実装も入れる）
+    implementation 'org.eclipse.microprofile.rest.client:microprofile-rest-client-api:4.0'
+    implementation 'org.glassfish.jersey.ext.microprofile:jersey-mp-rest-client:4.0.0'
+    implementation 'io.smallrye.config:smallrye-config:3.13.4'
+    // Jersey の MicroProfile Rest Client は、CDI とインターセプタの API も読み込む（コンテナは起動しない）
+    implementation 'jakarta.enterprise:jakarta.enterprise.cdi-api:4.1.0'
+    implementation 'jakarta.interceptor:jakarta.interceptor-api:2.2.0'
+
+    testImplementation platform('org.junit:junit-bom:5.13.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// 接続先は、第 1 引数、環境変数 EMPLOYEE_API_URL、
+// 既定 URL http://localhost:8080/jakarta-async-client-employee/api の順で決まる
+application {
+    mainClass = 'pro.kensait.jakartaee.employee.client.Main_Employee'
+    applicationDefaultJvmArgs = ['-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8']
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}

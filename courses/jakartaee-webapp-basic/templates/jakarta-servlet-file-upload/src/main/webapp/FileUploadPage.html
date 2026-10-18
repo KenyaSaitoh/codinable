@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>FileUploadPage</title>
+</head>
+<body>
+<h2>ファイルのアップロード</h2>
+<hr />
+<p>保存できる形式は pdf・png・jpg・txt、1 ファイル 5MB まで</p>
+<form action="files" method="post" enctype="multipart/form-data">
+  <label>
+    タイトル
+    <input type="text" name="title" required>
+  </label>
+  <label>
+    ファイル
+    <input type="file" name="file" required>
+  </label>
+  <button type="submit">保存</button>
+</form>
+</body>
+</html>

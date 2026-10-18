@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>CalcInputPage</title>
+</head>
+<body>
+<h2>CalcInputPage</h2>
+<hr />
+<form method="post" action="add">
+  <div>
+    <span>パラメータ1</span>
+    <input type="text" name="param1" />
+  </div>
+  <div>
+    <span>パラメータ2</span>
+    <input type="text" name="param2" />
+  </div>
+  <button type="submit" formmethod="post" formaction="add">足し算(POST)</button>
+  <button type="submit" formmethod="get" formaction="addByGet">足し算(GET)</button>
+</form>
+</body>
+</html>

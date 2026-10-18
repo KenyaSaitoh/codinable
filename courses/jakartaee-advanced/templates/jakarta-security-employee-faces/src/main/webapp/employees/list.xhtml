@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+    <title>社員一覧</title>
+    <h:outputStylesheet name="style.css"/>
+</h:head>
+<h:body>
+    <main>
+        <h1>社員一覧</h1>
+        <h:form id="header">
+            ログイン中: #{employeeListBean.caller}
+            （#{request.isUserInRole('ADMIN') ? 'ADMIN' : 'BASIC'}）
+            <h:commandButton id="logout" value="ログアウト" action="#{employeeListBean.logout}"/>
+        </h:form>
+        <h:dataTable id="employees" value="#{employeeListBean.employees}" var="e">
+            <h:column><f:facet name="header">社員ID</f:facet>#{e.employeeId}</h:column>
+            <h:column><f:facet name="header">社員名</f:facet>#{e.employeeName}</h:column>
+            <h:column><f:facet name="header">部署</f:facet>#{empty e.departmentName ? '（なし）' : e.departmentName}</h:column>
+            <h:column><f:facet name="header">職種</f:facet>#{e.jobName}</h:column>
+            <h:column><f:facet name="header">給与</f:facet>#{e.salary}</h:column>
+            <h:column>
+                <!-- 表示の切り替えだけ。削除の認可は web.xml の制約（ADMIN）で判定する -->
+                <!-- h:link が作るリンクには、protected-views のための jakarta.faces.Token が付く -->
+                <h:link id="delete" value="削除" outcome="/employees/delete.xhtml"
+                        rendered="#{request.isUserInRole('ADMIN')}">
+                    <f:param name="id" value="#{e.employeeId}"/>
+                </h:link>
+            </h:column>
+        </h:dataTable>
+    </main>
+</h:body>
+</html>

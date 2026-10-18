@@ -1,0 +1,52 @@
+// jakarta-tx-xa: 2 つの XA データソースによる分散トランザクション
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// データソースは @DataSourceDefinition で同梱の HSQLDB のインメモリ DB に定義し、
+// テーブルと初期データ（sql/hsqldb）は、デプロイのたびに DatabaseInitializer が流す
+plugins {
+    id 'war'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 仕様の API はコンパイル時だけ使う。実装は Payara Server が持つので WAR には入れない
+    compileOnly 'jakarta.platform:jakarta.jakartaee-web-api:11.0.0'
+}
+
+war {
+    // WAR のファイル名が、そのままコンテキストルート（/jakarta-tx-xa）になる
+    archiveFileName = 'jakarta-tx-xa.war'
+}
+
+// sql/hsqldb のテーブル定義と初期データを、1 行に 1 文の形に整えて WAR の META-INF/sql へ入れる
+// （DatabaseInitializer が 1 行ずつ 1 文として流す。読みやすい元の SQL はそのまま sql/hsqldb に置いておく）
+def flattenSql = tasks.register('flattenSql') {
+    def source = file('sql/hsqldb')
+    def output = layout.buildDirectory.dir('generated/sql')
+    inputs.dir source
+    outputs.dir output
+    doLast {
+        def dir = new File(output.get().asFile, 'META-INF/sql')
+        dir.mkdirs()
+        source.eachFileMatch(~/.*\.sql/) { sql ->
+            def text = sql.getText('UTF-8').readLines().collect { it.replaceFirst(/--.*$/, '') }.join(' ')
+            def statements = text.split(';').collect { it.trim().replaceAll(/\s+/, ' ') }.findAll { it }
+            new File(dir, sql.name).setText(statements.join('\n') + '\n', 'UTF-8')
+        }
+    }
+}
+
+processResources {
+    from(flattenSql)
+}

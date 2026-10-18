@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+  <title>EmployeeTablePage</title>
+</h:head>
+<h:body>
+  <h2>社員一覧</h2>
+  <hr />
+  <h:form id="tableForm">
+    <h:dataTable value="#{employeeTableBean.employeeList}"
+                 var="employee" border="1">
+      <h:column>
+        <f:facet name="header">ID</f:facet>
+        #{employee.employeeId}
+      </h:column>
+      <h:column>
+        <f:facet name="header">氏名</f:facet>
+        #{employee.employeeName}
+      </h:column>
+      <h:column>
+        <f:facet name="header">部署名</f:facet>
+        #{empty employee.departmentName ? '（所属なし）' : employee.departmentName}
+      </h:column>
+      <h:column>
+        <f:facet name="header">月給</f:facet>
+        <h:outputText value="#{employee.salary}">
+          <f:convertNumber pattern="#,##0" />
+        </h:outputText>
+      </h:column>
+      <h:column>
+        <f:facet name="header">操作</f:facet>
+        <h:commandButton value="編集"
+            action="#{employeeEditBean.edit(employee.employeeId)}" />
+        <h:commandButton value="削除"
+            action="#{employeeTableBean.remove(employee.employeeId)}" />
+      </h:column>
+    </h:dataTable>
+    <h:commandButton id="createButton" value="新規登録" action="#{employeeEditBean.toCreate}" />
+  </h:form>
+</h:body>
+</html>

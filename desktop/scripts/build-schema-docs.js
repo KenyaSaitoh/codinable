@@ -31,6 +31,10 @@ const TARGETS = {
                                    'spring-mvc-employee-mybatis', 'spring-mvc-tx', 'spring-mvc-tx-jta'],
   'spring-boot-webapp-practical': ['leaf-books-mvc-jpa'],
   'spring-boot-cicd':             ['database-rider-employee'],
+  'jakartaee-webapp-basic':       ['jakarta-faces-employee-jdbc', 'jakarta-faces-employee-jpa',
+                                   'jakarta-faces-employee-criteria', 'jakarta-data-employee',
+                                   'jakarta-tx', 'jakarta-tx-xa', 'jakarta-rest-employee'],
+  'jakartaee-webapp-practical':   ['leaf-books-persistence', 'customer-hub'],
 };
 
 // テーブルをエンティティから作る (DDL が無い) ので、README.md のテーブルの節を手で書いている雛形
@@ -45,8 +49,9 @@ function readText(file) {
 
 function sourcesOf(dir) {
   const rel = p => path.relative(dir, p).split(path.sep).join('/');
-  const hsqldb = path.join(dir, 'sql', 'hsqldb');
-  if (fs.existsSync(hsqldb)) {
+  // バックエンドを src/backend に置いたモノレポの配置 (Jakarta EE の leaf-books など) も見る
+  const hsqldb = [path.join(dir, 'sql', 'hsqldb'), path.join(dir, 'src', 'backend', 'sql', 'hsqldb')].find(d => fs.existsSync(d));
+  if (hsqldb) {
     const files = fs.readdirSync(hsqldb).filter(f => f.endsWith('.sql')).sort().map(f => path.join(hsqldb, f));
     const ddl = files.filter(f => /DDL/i.test(path.basename(f))).map(f => '`' + rel(f) + '`');
     const dml = files.filter(f => /DML/i.test(path.basename(f))).map(f => '`' + rel(f) + '`');

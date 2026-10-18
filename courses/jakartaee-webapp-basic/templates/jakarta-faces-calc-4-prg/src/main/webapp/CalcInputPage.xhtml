@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+  <title>CalcInputPage</title>
+</h:head>
+<h:body>
+  <h2>CalcInputPage</h2>
+  <hr />
+  <h:form id="calcForm">
+    <div>
+      <h:outputLabel for="param1" value="パラメータ1" />
+      <h:inputText id="param1" value="#{calcBean.param1}"
+                   label="パラメータ1" />
+      <h:message for="param1" style="color: red" />
+    </div>
+    <div>
+      <h:outputLabel for="param2" value="パラメータ2" />
+      <h:inputText id="param2" value="#{calcBean.param2}"
+                   label="パラメータ2" />
+      <h:message for="param2" style="color: red" />
+    </div>
+    <h:commandButton id="addButton" value="足し算" action="#{calcBean.add}" />
+    <h:commandButton id="subtractButton" value="引き算" action="#{calcBean.subtract}" />
+    <h:messages globalOnly="true" style="color: red" />
+  </h:form>
+</h:body>
+</html>

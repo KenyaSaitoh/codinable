@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+  <title>FormPage</title>
+  <h:outputStylesheet library="css" name="style.css" />
+</h:head>
+<h:body>
+  <h2>1. 選択肢を持つ入力部品</h2>
+  <hr />
+  <h:form id="memberForm">
+    <div>
+      <h:outputLabel for="memberName" value="#{msg['label.member.name']}" />
+      <h:inputText id="memberName" value="#{memberFormBean.memberName}" />
+    </div>
+    <div>
+      <h:outputLabel for="age" value="#{msg['label.member.age']}" />
+      <h:inputText id="age" value="#{memberFormBean.age}" />
+    </div>
+    <div>
+      <h:outputLabel for="email" value="#{msg['label.member.email']}" />
+      <h:inputText id="email" value="#{memberFormBean.email}" />
+    </div>
+    <div>
+      <h:outputLabel for="gender" value="#{msg['label.member.gender']}" />
+      <h:selectOneRadio id="gender" value="#{memberFormBean.gender}">
+        <f:selectItems value="#{memberFormBean.genderMap}" />
+      </h:selectOneRadio>
+    </div>
+    <div>
+      <h:outputLabel for="prefecture" value="#{msg['label.member.prefecture']}" />
+      <h:selectOneMenu id="prefecture" value="#{memberFormBean.prefecture}">
+        <f:selectItems value="#{memberFormBean.prefectureMap}" />
+      </h:selectOneMenu>
+    </div>
+    <div>
+      <h:outputLabel for="hobbyList" value="#{msg['label.member.hobby']}" />
+      <h:selectManyCheckbox id="hobbyList" value="#{memberFormBean.hobbyList}">
+        <f:selectItems value="#{memberFormBean.hobbyMap}" />
+      </h:selectManyCheckbox>
+    </div>
+    <div>
+      <h:outputLabel for="remarks" value="#{msg['label.member.remarks']}" />
+      <h:inputTextarea id="remarks" value="#{memberFormBean.remarks}" />
+    </div>
+    <h:commandButton id="registerButton" value="#{msg['button.register']}"
+                     action="#{memberFormBean.register}" />
+    <h:messages style="color: red" />
+  </h:form>
+  <hr />
+  <h:link outcome="IndexPage" value="目次へ戻る" />
+</h:body>
+</html>

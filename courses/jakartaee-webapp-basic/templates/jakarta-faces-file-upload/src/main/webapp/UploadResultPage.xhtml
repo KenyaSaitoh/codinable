@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<f:metadata>
+  <f:viewParam name="id" value="#{uploadResultBean.id}" required="true" />
+  <f:viewAction action="#{uploadResultBean.load}" />
+</f:metadata>
+<h:head>
+  <title>アップロード結果</title>
+</h:head>
+<h:body>
+  <h2>アップロード結果</h2>
+  <hr />
+  <h:messages style="color: red" />
+  <h:panelGroup rendered="#{uploadResultBean.storedFile ne null}">
+    <dl>
+      <dt>ID</dt><dd>#{uploadResultBean.storedFile.id}</dd>
+      <dt>タイトル</dt><dd>#{uploadResultBean.storedFile.title}</dd>
+      <dt>ファイル名</dt><dd>#{uploadResultBean.storedFile.originalName}</dd>
+      <dt>サイズ（バイト）</dt><dd>#{uploadResultBean.storedFile.size}</dd>
+    </dl>
+  </h:panelGroup>
+  <h:outputText value="アップロード結果が見つかりません"
+                rendered="#{uploadResultBean.storedFile eq null}" />
+  <hr />
+  <h:link outcome="FileUploadPage" value="続けてアップロードする" />
+</h:body>
+</html>

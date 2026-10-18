@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>社員の非同期処理とSSE</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #f6f7f9; color: #222; }
+    main { max-width: 860px; margin: 24px auto; padding: 0 16px; }
+    h1 { font-size: 22px; } h2 { font-size: 17px; margin-top: 24px; }
+    .status { padding: 8px 12px; background: #eef3f8; border-radius: 6px; }
+    form { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+    label { display: flex; flex-direction: column; font-size: 13px; gap: 4px; }
+    input { padding: 6px 8px; font-size: 14px; width: 120px; }
+    button { padding: 6px 14px; font-size: 14px; cursor: pointer; }
+    ul { padding-left: 18px; } li { font-size: 14px; margin: 2px 0; }
+    pre { background: #fff; border: 1px solid #ddd; padding: 8px 12px; font-size: 13px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>社員の非同期処理とSSE</h1>
+
+  <h2>部署ごとの集計（非同期応答）</h2>
+  <button id="summary">GET /api/departments/summary</button>
+  <pre id="summary-result"></pre>
+
+  <h2>社員一覧の逐次配信（GET /api/employees/stream）</h2>
+  <button id="stream">受信を始める</button>
+  <p id="stream-status" class="status">未接続</p>
+  <ul id="stream-list"></ul>
+
+  <h2>異動の登録と一斉配信（GET /api/employees/events）</h2>
+  <p class="status" id="events-status">接続しています…</p>
+  <form id="transfer">
+    <label>社員ID <input id="employeeId" type="number" value="10001"></label>
+    <label>異動後の部署ID <input id="toDepartmentId" type="number" value="1"></label>
+    <button type="submit">異動を登録</button>
+  </form>
+  <ul id="events-list"></ul>
+</main>
+<script>
+  const api = '/jakarta-async-employee/api';
+
+  document.getElementById('summary').addEventListener('click', async () => {
+    const res = await fetch(`${api}/departments/summary`);
+    document.getElementById('summary-result').textContent = JSON.stringify(await res.json(), null, 2);
+  });
+
+  // 有限の配信。complete を受け取ったら close して、EventSource の自動再接続を止める
+  document.getElementById('stream').addEventListener('click', () => {
+    const list = document.getElementById('stream-list');
+    const status = document.getElementById('stream-status');
+    list.replaceChildren();
+    status.textContent = '受信中…';
+    const source = new EventSource(`${api}/employees/stream`);
+    source.onmessage = (event) => {
+      const e = JSON.parse(event.data);
+      const li = document.createElement('li');
+      li.textContent = `${e.employeeId} ${e.employeeName}（${e.departmentName ?? '部署なし'}）`;
+      list.append(li);
+    };
+    source.addEventListener('complete', () => {
+      status.textContent = `complete を受け取りました（${list.children.length} 件）`;
+      source.close();
+    });
+  });
+
+  // 異動の一斉配信。別の Webブラウザでも開くと、同じ transferred が届く
+  const events = new EventSource(`${api}/employees/events`);
+  events.onopen = () => { document.getElementById('events-status').textContent = '接続しました'; };
+  events.addEventListener('transferred', (event) => {
+    const t = JSON.parse(event.data);
+    const li = document.createElement('li');
+    li.textContent = `${t.occurredAt} ${t.employeeName}: 部署 ${t.fromDepartmentId ?? 'なし'} → ${t.toDepartmentId}`;
+    document.getElementById('events-list').prepend(li);
+  });
+
+  document.getElementById('transfer').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const body = {
+      employeeId: Number(document.getElementById('employeeId').value),
+      toDepartmentId: Number(document.getElementById('toDepartmentId').value),
+    };
+    const res = await fetch(`${api}/transfers`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    });
+    document.getElementById('events-status').textContent = `POST /api/transfers → ${res.status}`;
+  });
+</script>
+</body>
+</html>

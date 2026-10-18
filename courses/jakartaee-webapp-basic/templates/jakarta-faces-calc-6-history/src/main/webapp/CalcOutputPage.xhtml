@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<f:metadata>
+  <f:viewParam name="id" value="#{calcResultBean.id}"
+               required="true" />
+  <f:viewAction action="#{calcResultBean.load}" />
+</f:metadata>
+<h:head>
+  <title>CalcOutputPage</title>
+</h:head>
+<h:body>
+  <h2>CalcOutputPage</h2>
+  <hr />
+  <h:messages style="color: red" />
+  <h:panelGroup rendered="#{calcResultBean.calcResult ne null}">
+    <p>#{calcResultBean.calcResult.param1} と #{calcResultBean.calcResult.param2} の
+       #{calcResultBean.calcResult.calcType.toString()}：
+       #{calcResultBean.calcResult.result}</p>
+    <p>計算日時：#{calcResultBean.calcResult.dateTimeStr}</p>
+  </h:panelGroup>
+  <hr />
+  <h:link outcome="CalcInputPage" value="入力画面に戻る" /> ｜
+  <h:link outcome="CalcHistoryPage" value="計算履歴" />
+</h:body>
+</html>

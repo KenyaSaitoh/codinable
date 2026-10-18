@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+  <title>EmployeeTablePage</title>
+</h:head>
+<h:body>
+  <h2>社員一覧</h2>
+  <hr />
+  <h:messages globalOnly="true" infoStyle="color: green" errorStyle="color: red" />
+  <p>在籍中の社員: #{employeeTableBean.activeCount} 人（countByStatus）</p>
+  <h:form id="codeForm">
+    <h:outputLabel for="employeeCode" value="社員コードで開く" />
+    <h:inputText id="employeeCode" value="#{employeeTableBean.employeeCode}" size="8" />
+    <h:commandButton id="openButton" value="開く" action="#{employeeTableBean.openByCode}" />
+  </h:form>
+  <h:form id="searchForm">
+    <div>
+      <h:outputLabel for="keyword" value="氏名" />
+      <h:inputText id="keyword" value="#{employeeTableBean.keyword}" />
+      <h:outputLabel for="salaryFrom" value="月給" />
+      <h:inputText id="salaryFrom" value="#{employeeTableBean.salaryFrom}" size="8" label="月給の下限" />
+      〜
+      <h:inputText id="salaryTo" value="#{employeeTableBean.salaryTo}" size="8" label="月給の上限" />
+      <h:commandButton id="searchButton" value="検索" action="#{employeeTableBean.search}" />
+      <h:message for="salaryFrom" style="color: red" />
+      <h:message for="salaryTo" style="color: red" />
+    </div>
+
+    <p>#{employeeTableBean.totalCount} 件（#{employeeTableBean.page} / #{employeeTableBean.totalPages} ページ）</p>
+    <h:dataTable id="employeeTable" value="#{employeeTableBean.rows}" var="row" border="1"
+                 rendered="#{not empty employeeTableBean.rows}">
+      <h:column>
+        <f:facet name="header">ID</f:facet>
+        #{row.employeeId}
+      </h:column>
+      <h:column>
+        <f:facet name="header">社員コード</f:facet>
+        #{row.employeeCode}
+      </h:column>
+      <h:column>
+        <f:facet name="header">氏名</f:facet>
+        #{row.employeeName}
+      </h:column>
+      <h:column>
+        <f:facet name="header">部署</f:facet>
+        #{empty row.departmentName ? '（所属なし）' : row.departmentName}
+      </h:column>
+      <h:column>
+        <f:facet name="header">役職</f:facet>
+        #{row.jobName}
+      </h:column>
+      <h:column>
+        <f:facet name="header">月給</f:facet>
+        <h:outputText value="#{row.salary}">
+          <f:convertNumber pattern="#,##0円" />
+        </h:outputText>
+      </h:column>
+      <h:column>
+        <f:facet name="header">入社日</f:facet>
+        <h:outputText value="#{row.entranceDate}">
+          <f:convertDateTime type="localDate" pattern="yyyy-MM-dd" />
+        </h:outputText>
+      </h:column>
+      <h:column>
+        <f:facet name="header">操作</f:facet>
+        <h:link outcome="EmployeeFormPage" value="編集">
+          <f:param name="employeeId" value="#{row.employeeId}" />
+        </h:link>
+        <h:commandButton id="deleteButton" value="削除" action="#{employeeTableBean.delete(row.employeeId)}"
+                         onclick="return confirm('削除しますか？')" />
+      </h:column>
+    </h:dataTable>
+    <div>
+      <h:commandButton id="prevButton" value="前へ" action="#{employeeTableBean.prev}"
+                       disabled="#{not employeeTableBean.hasPrev}" />
+      <h:commandButton id="nextButton" value="次へ" action="#{employeeTableBean.next}"
+                       disabled="#{not employeeTableBean.hasNext}" />
+    </div>
+  </h:form>
+  <hr />
+  <h:link outcome="EmployeeFormPage" value="新規登録" />
+</h:body>
+</html>

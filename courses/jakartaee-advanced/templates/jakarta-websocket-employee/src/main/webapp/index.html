@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>社員通知</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>社員通知</h1>
+    <p class="hint">2 つ目の Webブラウザ（またはタブ）でも同じ画面を開くと、一方から送った通知が両方に届きます。</p>
+    <p id="status" class="status">接続しています…</p>
+    <form id="notice-form">
+      <label>社員ID <input id="employeeId" type="number" value="10001"></label>
+      <label>社員名 <input id="employeeName" type="text" value="Alice"></label>
+      <label class="wide">通知内容 <input id="message" type="text" value="SALES から PLANNING へ異動します"></label>
+      <div class="buttons">
+        <button type="submit">送信</button>
+        <button type="button" id="disconnect">切断</button>
+      </div>
+    </form>
+    <h2>受信した通知</h2>
+    <ul id="notices"></ul>
+  </main>
+  <script src="notification.js"></script>
+</body>
+</html>

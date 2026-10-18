@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- すべてのクラスを CDI の Bean として扱う
+     Payara の場合、MicroProfile JWT の認証は @LoginConfig を付けたクラスが CDI の Bean として見つかったときだけ有効になる。
+     JaxrsActivator にはスコープのアノテーションが無いので、bean-discovery-mode="all" で Bean にする -->
+<beans xmlns="https://jakarta.ee/xml/ns/jakartaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/beans_4_1.xsd"
+       version="4.1" bean-discovery-mode="all">
+</beans>

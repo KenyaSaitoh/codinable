@@ -1,0 +1,119 @@
+// leaf-books: Leaf Books の書店 API（Jakarta REST）。▶ アプリ実行で WAR を作り、同梱の Payara Server 7 へデプロイする
+// 元のサンプル（learn_jee_aidd_practical）は親 build.gradle の subprojects{} で設定していたが、
+// Codinable では単独で動く必要があるため 1 ファイルに畳んでいる
+// SpotBugs / Checkstyle / PIT / OWASP Dependency-Check の設定は講座本編で使わないので入れていない
+//
+// 同じ Payara Server に、呼び出し先の customer-hub/ の WAR も一緒にデプロイする（codinable.services.json の wars）
+// React の画面（src/frontend）は Vite の開発サーバーで動かす（codinable.services.json の processes）
+plugins {
+    id 'war'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 仕様の API はコンパイル時だけ使う。実装は Payara Server が持つので WAR には入れない
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:11.0.0'
+    compileOnly 'org.eclipse.microprofile.config:microprofile-config-api:3.1'
+    compileOnly 'org.eclipse.microprofile.rest.client:microprofile-rest-client-api:4.0'
+
+    implementation 'org.slf4j:slf4j-api:2.0.12'
+    implementation 'org.slf4j:slf4j-simple:2.0.12'
+    // JWT の発行・検証とパスワードの照合
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    implementation 'org.mindrot:jbcrypt:0.4'
+
+    testImplementation 'jakarta.platform:jakarta.jakartaee-api:11.0.0'
+    // テストの中で Jakarta REST の例外（NotFoundException など）を作るには、Jakarta REST の実装が要る
+    testRuntimeOnly 'org.glassfish.jersey.core:jersey-common:4.0.0'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.mockito:mockito-core:5.23.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.23.0'
+    // レイヤーの依存方向などをテストで検査する（architecture パッケージ。Java 25 のクラスファイルを読めるのは 1.4.1 から）
+    testImplementation 'com.tngtech.archunit:archunit-junit5:1.4.1'
+}
+
+// ソースは元のサンプル（モノレポ）と同じく src/backend に置く（React の画面は src/frontend）
+sourceSets {
+    main {
+        java.srcDirs = ['src/backend/src/main/java']
+        resources.srcDirs = ['src/backend/src/main/resources']
+    }
+    test {
+        java.srcDirs = ['src/backend/src/test/java']
+        resources.srcDirs = ['src/backend/src/test/resources']
+    }
+}
+
+war {
+    // WAR のファイル名が、そのままコンテキストルート（/leaf-books-api）になる
+    // React の画面（src/frontend/vite.config.ts）は /api をここへ中継する
+    archiveFileName = 'leaf-books-api.war'
+    webAppDirectory = file('src/backend/src/main/webapp')
+    // 表紙画像は WAR の resources/images/covers に入れ、ImageResource が配信する
+    from('src/backend/images') {
+        into 'resources/images'
+    }
+}
+
+// src/backend/sql/hsqldb のテーブル定義と初期データを、1 行に 1 文の形に整えて WAR の META-INF/sql へ入れる
+// persistence.xml のスキーマ生成（drop-and-create）が、デプロイのたびにこれを流して DB を初期状態に戻す
+// （EclipseLink はスクリプトを 1 行ずつ 1 文として流すため、読みやすい元の SQL をそのまま入れられない）
+def flattenSql = tasks.register('flattenSql') {
+    def source = file('src/backend/sql/hsqldb')
+    def output = layout.buildDirectory.dir('generated/sql')
+    inputs.dir source
+    outputs.dir output
+    doLast {
+        def dir = new File(output.get().asFile, 'META-INF/sql')
+        dir.mkdirs()
+        source.eachFileMatch(~/.*\.sql/) { sql ->
+            def text = sql.getText('UTF-8').readLines().collect { it.replaceFirst(/--.*$/, '') }.join(' ')
+            def statements = text.split(';').collect { it.trim().replaceAll(/\s+/, ' ') }.findAll { it }
+            new File(dir, sql.name).setText(statements.join('\n') + '\n', 'UTF-8')
+        }
+    }
+}
+
+processResources {
+    from(flattenSql)
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}
+
+// JDK 21 以降は実行中のエージェント読み込みが制限され、JDK 25 では Mockito が
+// 自分自身をアタッチできずにモックの生成に失敗する。mockito-core を -javaagent で渡しておく
+configurations {
+    mockitoAgent
+}
+
+dependencies {
+    mockitoAgent('org.mockito:mockito-core:5.23.0') {
+        transitive = false
+    }
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgumentProviders.add({ ["-javaagent:${configurations.mockitoAgent.singleFile}"] } as CommandLineArgumentProvider)
+}

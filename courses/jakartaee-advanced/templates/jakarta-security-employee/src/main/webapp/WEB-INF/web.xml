@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd"
+         version="6.1">
+
+    <!-- 社員の参照（GET）は認証済みの利用者なら誰でも、登録・更新・削除は ADMIN だけ -->
+    <!-- /api/login・/api/logout・/api/csrf には制約を書かない（ログイン前の要求を受け付ける入口） -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>employee-read</web-resource-name>
+            <url-pattern>/api/employees/*</url-pattern> <!-- 【1】 -->
+            <url-pattern>/api/session</url-pattern>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>**</role-name> <!-- 【2】 -->
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>employee-write</web-resource-name>
+            <url-pattern>/api/employees/*</url-pattern>
+            <http-method>POST</http-method> <!-- 【3】 -->
+            <http-method>PUT</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>ADMIN</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <deny-uncovered-http-methods/> <!-- 【4】 -->
+    <security-role>
+        <role-name>BASIC</role-name> <!-- 【5】 -->
+    </security-role>
+    <security-role>
+        <role-name>ADMIN</role-name>
+    </security-role>
+
+    <session-config>
+        <session-timeout>30</session-timeout> <!-- 【1】 -->
+        <cookie-config>
+            <name>SECURITY_SESSION</name> <!-- 【2】 -->
+            <http-only>true</http-only> <!-- 【3】 -->
+            <attribute>
+                <attribute-name>SameSite</attribute-name> <!-- 【4】 -->
+                <attribute-value>Lax</attribute-value>
+            </attribute>
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode> <!-- 【5】 -->
+    </session-config>
+</web-app>

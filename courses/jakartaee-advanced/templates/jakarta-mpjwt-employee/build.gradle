@@ -1,0 +1,31 @@
+// jakarta-mpjwt-employee: MicroProfile JWT による REST API の保護（リソースサーバー）
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アクセストークンの発行と公開鍵（JWKS）は、issuer/ の教材用の発行者（Keycloak の代わり）が受け持つ
+// issuer/ の WAR は codinable.services.json の wars で同じ Payara Server に先にデプロイされる
+plugins {
+    id 'war'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 仕様の API はコンパイル時だけ使う。実装は Payara Server が持つので WAR には入れない
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:11.0.0'
+    compileOnly 'org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:2.1'
+}
+
+war {
+    // WAR のファイル名が、そのままコンテキストルート（/jakarta-mpjwt-employee）になる
+    archiveFileName = 'jakarta-mpjwt-employee.war'
+}

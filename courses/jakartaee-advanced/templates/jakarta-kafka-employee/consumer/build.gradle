@@ -1,0 +1,59 @@
+// consumer/: 受信側（jakarta-kafka-employee-consumer）。KafkaConsumer の受信ループでトピック employee-events を読む
+// ルートの producer と一緒に同じ Payara Server へデプロイされる（codinable.services.json の wars。こちらが先）
+plugins {
+    id 'war'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 仕様の API はコンパイル時だけ使う。実装は Payara Server が持つので WAR には入れない
+    compileOnly 'jakarta.platform:jakarta.jakartaee-api:11.0.0'
+    compileOnly 'org.eclipse.microprofile.config:microprofile-config-api:3.1'
+
+    // Kafka の公式のクライアントライブラリ。Payara Server に含まれないので WAR に含める
+    implementation 'org.apache.kafka:kafka-clients:4.3.1'
+    // kafka-clients のログ（SLF4J）は出さない（出力欄が Kafka の設定の一覧で埋まらないように。無いと「重大」の警告が出る）
+    // SLF4J は 2.x にそろえる（1.7 のままだと、Payara Server がデプロイ時に SLF4J のキャッシュを消せずに警告を出す）
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+    runtimeOnly 'org.slf4j:slf4j-nop:2.0.17'
+}
+
+war {
+    // WAR のファイル名が、そのままコンテキストルート（/jakarta-kafka-employee-consumer）になる
+    archiveFileName = 'jakarta-kafka-employee-consumer.war'
+}
+
+// sql/hsqldb のテーブル定義と初期データを、1 行に 1 文の形に整えて WAR の META-INF/sql へ入れる
+// persistence.xml のスキーマ生成（drop-and-create）が、デプロイのたびにこれを流して DB を初期状態に戻す
+// （EclipseLink はスクリプトを 1 行ずつ 1 文として流すため、読みやすい元の SQL をそのまま入れられない）
+def flattenSql = tasks.register('flattenSql') {
+    def source = file('sql/hsqldb')
+    def output = layout.buildDirectory.dir('generated/sql')
+    inputs.dir source
+    outputs.dir output
+    doLast {
+        def dir = new File(output.get().asFile, 'META-INF/sql')
+        dir.mkdirs()
+        source.eachFileMatch(~/.*\.sql/) { sql ->
+            def text = sql.getText('UTF-8').readLines().collect { it.replaceFirst(/--.*$/, '') }.join(' ')
+            def statements = text.split(';').collect { it.trim().replaceAll(/\s+/, ' ') }.findAll { it }
+            new File(dir, sql.name).setText(statements.join('\n') + '\n', 'UTF-8')
+        }
+    }
+}
+
+processResources {
+    from(flattenSql)
+}

@@ -1,0 +1,14 @@
+/* h:outputStylesheet library="css" name="style.css" で読み込まれるリソース */
+body {
+    font-family: sans-serif;
+    margin: 24px;
+}
+
+h2 {
+    color: #2c5f8a;
+}
+
+.label {
+    color: #888;
+    font-size: 0.85em;
+}

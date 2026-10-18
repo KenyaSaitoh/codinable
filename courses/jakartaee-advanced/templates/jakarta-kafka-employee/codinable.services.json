@@ -1,0 +1,4 @@
+{
+  "services": ["kafka"],
+  "wars": ["consumer"]
+}

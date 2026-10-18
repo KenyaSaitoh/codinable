@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+  <title>EmployeeConfirmPage</title>
+</h:head>
+<h:body>
+  <h2>#{empty employeeEditBean.employeeId ? '社員の新規登録' : '社員の編集'}（確認）</h2>
+  <hr />
+  <div>社員ID: #{empty employeeEditBean.employeeId ? '（登録時に採番）' : employeeEditBean.employeeId}</div>
+  <div>氏名: #{employeeEditBean.employeeName}</div>
+  <div>部署名: #{employeeEditBean.departmentName}</div>
+  <div>月給:
+    <h:outputText value="#{employeeEditBean.salary}">
+      <f:convertNumber pattern="#,##0" />
+    </h:outputText>
+  </div>
+  <h:form id="confirmForm">
+    <h:commandButton id="backButton" value="戻る" action="#{employeeEditBean.back}" />
+    <h:commandButton id="updateButton" value="確定" action="#{employeeEditBean.update}" />
+  </h:form>
+</h:body>
+</html>

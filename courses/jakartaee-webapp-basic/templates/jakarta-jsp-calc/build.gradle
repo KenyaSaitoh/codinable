@@ -1,0 +1,28 @@
+// jakarta-jsp-calc: JSP によるフォワードとセッションのスコープ（計算アプリケーション）
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+plugins {
+    id 'war'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 仕様の API はコンパイル時だけ使う。実装は Payara Server が持つので WAR には入れない
+    compileOnly 'jakarta.platform:jakarta.jakartaee-web-api:11.0.0'
+}
+
+war {
+    // WAR のファイル名が、そのままコンテキストルート（/jakarta-jsp-calc）になる
+    archiveFileName = 'jakarta-jsp-calc.war'
+}

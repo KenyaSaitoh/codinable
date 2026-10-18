@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+  <title>SystemErrorPage</title>
+</h:head>
+<h:body>
+  <h2>SystemErrorPage</h2>
+  <hr />
+  <!-- 例外の内容やスタックトレースは出さない。調査に必要な情報はログにある -->
+  <div>システムエラーが発生しました。時間をおいてもう一度お試しください。</div>
+  <hr />
+  <h:link outcome="CalcInputPage" value="入力画面へ戻る" />
+</h:body>
+</html>
