@@ -1,6 +1,6 @@
 {
   "name": "codinable",
-  "version": "202609.1.0",
+  "version": "202610.1.0",
   "description": "Codinable - Desktop development environment for Udemy courses (Java / Spring Boot / JUnit / SQL / Python / Node.js / static web)",
   "main": "src/main.js",
   "scripts": {
