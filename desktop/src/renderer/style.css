@@ -3988,7 +3988,7 @@ body.theme-dark .exercise-item.active {
 
 .gradle-task-group .btn-run, .toolbar .btn-stop { height: 30px; }
 
-/* ── ▶ アプリ実行 / 🧪 テスト実行 ──
+/* ── アプリ実行 / 🧪 テスト実行 ──
    演習の主役のほう (course.yaml の run) を塗りつぶして、どちらを押せばよいかを示す
    押せないほうは .btn:disabled で薄くなる。文言が長いので幅は中身に合わせる */
 .gradle-task-group .btn-run { width: auto; min-width: 86px; padding: 4px 12px; }
@@ -4001,7 +4001,7 @@ body.theme-dark .exercise-item.active {
 .gradle-task-group .btn-run.primary:not(:disabled):hover,
 .btn-run-file.primary:not(:disabled):hover { background: var(--btn-action-hover); }
 
-/* ── エディタのタブの右端の ▶ 実行 (開いているファイルだけを動かす) ──
+/* ── エディタのタブの右端の ファイル実行 (開いているファイルだけを動かす) ──
    タブは横にスクロールし、ボタンは縮めない (タブが増えてもボタンが隠れない) */
 .editor-tabs-row {
   display: flex;
@@ -4680,7 +4680,7 @@ body.theme-dark .exercise-item.active {
 
 
 /* ── ファイルツリー: 単独で動かせるファイルの ▶ バッジと、演習を選んだ直後のハイライト ──
-   バッジはエディタの右上の ▶ 実行と同じ色。ハイライトは 3 秒ほどで消える (renderer.js の flashExerciseFiles) */
+   バッジはエディタの右上の ファイル実行と同じ色。ハイライトは 3 秒ほどで消える (renderer.js の flashExerciseFiles) */
 .tree-file .tree-name { overflow: hidden; text-overflow: ellipsis; }
 .tree-run-badge {
   flex-shrink: 0;

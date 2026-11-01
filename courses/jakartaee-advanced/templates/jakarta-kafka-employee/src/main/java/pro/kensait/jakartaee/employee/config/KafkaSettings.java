@@ -11,7 +11,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /*
  * Kafka のクライアントの設定（接続先は MicroProfile Config の kafka.bootstrap.servers）
- * Codinable 同梱の Kafka（127.0.0.1:9092）は、▶ アプリ実行のときに自動で起動する
+ * Codinable 同梱の Kafka（127.0.0.1:9092）は、アプリ実行のときに自動で起動する
  */
 @ApplicationScoped
 public class KafkaSettings {

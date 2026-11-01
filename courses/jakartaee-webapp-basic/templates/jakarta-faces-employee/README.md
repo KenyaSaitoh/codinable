@@ -23,10 +23,10 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-employee/EmployeeTablePage.xhtml` が開く
+1. ツールバーの アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-employee/EmployeeTablePage.xhtml` が開く
 2. 一覧の「新規登録」「編集」「削除」を操作する。入力画面では空欄や範囲外の月給も試す
-3. `EmployeeServiceTest.java` を開いて、エディタの右上の ▶ 実行で流す
-4. `curl/01_create_flow.sh` を開いて、エディタの右上の ▶ 実行で流す
+3. `EmployeeServiceTest.java` を開いて、エディタの右上の ファイル実行で流す
+4. `curl/01_create_flow.sh` を開いて、エディタの右上の ファイル実行で流す
 
 ## 結果のどこを見るか
 
@@ -34,5 +34,5 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 - 「新規登録」「編集」で入力画面に移ると、アドレスに `?cid=1` のような会話ID が付く。確認画面から「戻る」と、入力した値が残っている
 - 「確定」で一覧へリダイレクトし、会話は終了する。新規登録した社員には 10017 から ID が採番される
 - 氏名・部署名を空欄にすると「空要素は許可されていません」（`@NotEmpty`）、月給に `-1` や `10000000` を入れると範囲のエラーが出る
-- データはメモリー上にあるので、▶ アプリ実行でデプロイし直すと初期の 16 人に戻る
+- データはメモリー上にあるので、アプリ実行でデプロイし直すと初期の 16 人に戻る
 - テストは、コンテナの外で `EmployeeDAO` と `EmployeeService` を `new` して組み立てている（DI がテストのしやすさにつながる例）

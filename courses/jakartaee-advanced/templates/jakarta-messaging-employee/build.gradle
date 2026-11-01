@@ -1,5 +1,5 @@
 // jakarta-messaging-employee: Jakarta Messaging による非同期メッセージング（送信側 producer）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // 受信側（consumer/。メッセージ駆動Bean）も同じ Payara Server に一緒にデプロイする（codinable.services.json の wars）
 // ブローカーは Payara Server に内蔵の OpenMQ で、Payara Server と一緒に起動する
 plugins {

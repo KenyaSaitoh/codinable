@@ -1,6 +1,6 @@
 // WebClient の Java コンソール（rest-client-employee-webclient）
 // Spring Boot アプリとしては起動せず、main を実行して終了する（待受ポートは開かない）
-// ルートの API を ▶ アプリ実行で起動してから、client/run.sh を開いてエディタの右上の ▶ 実行で動かす
+// ルートの API を アプリ実行で起動してから、client/run.sh を開いてエディタの右上の ファイル実行で動かす
 plugins {
     id 'java'
     id 'application'

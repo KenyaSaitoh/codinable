@@ -33,16 +33,16 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
   （`curl/01_get.sh` など）で、アプリが動いているあいだはアプリを止めずに脇で 1 本だけ動かす
   （`startSide`。API を叩く相手を落とさないため）。本体を止めると一緒に止まる
 - **実行の口は 2 つ**（`renderer.js` の `runEntries` / `updateFileRunButton`）。
-  ツールバーの「▶ アプリ実行」はアプリ全体（`workspace.js` の `pickRunEntries` が
+  ツールバーの「アプリ実行」はアプリ全体（`workspace.js` の `pickRunEntries` が
   プロジェクトの中身から 1 つに決める。Gradle のタスクや npm のスクリプトを並べて
-  選ばせることはしない）。テスト全体を流すボタンは置かない（ファイル単位の ▶ 実行と
+  選ばせることはしない）。テスト全体を流すボタンは置かない（ファイル単位の ファイル実行と
   意味がかぶるため。テストはテストクラスを開いて流す）。
-  エディタのタブの右端の「▶ 実行」は開いているファイルだけ（`fileRunTarget`。
+  エディタのタブの右端の「ファイル実行」は開いているファイルだけ（`fileRunTarget`。
   テストクラスは `test --tests`、main は `run -PmainClass` か init script の `codinableMain`、
   `.sql` / `.sh` / `.py` / 単体の `.js`）。単独で動かせるファイルはツリーに ▶ のバッジが付き
   （`listFileRuns` → `projectInfo.fileRuns`）、演習を選んだ直後は 3 秒ほど目立たせる
   （`flashExerciseFiles`）。Mentral Code IDE の「1 ファイル実行」と同じ考え方
-- **Jakarta EE は `main/payara.js`**。`war` プラグインの雛形の ▶ アプリ実行は `gradle:payaraRun`
+- **Jakarta EE は `main/payara.js`**。`war` プラグインの雛形の アプリ実行は `gradle:payaraRun`
   （Gradle のタスクではない。runner.js が `gradle war` → `prepareRun` でドメインを作り直して
   Payara を起動時デプロイで起こす）。プレビューへ進むのはデプロイの完了をログで見てから
   （ポートは先に開くので waitForPort は使わない）。版は `src/payara-config.js`。
@@ -55,7 +55,7 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
 - **ルートの Gradle プロジェクトのソースは `src/main/java` か `src/backend/src/main/java`**
   （`workspace.js` の `GRADLE_JAVA_SOURCE`）。後者はバックエンドとフロントエンドを
   `src/backend`・`src/frontend` に分けたモノレポの配置で、講座原稿がその配置でパスを書いている雛形
-  （Jakarta EE の leaf-books）だけが使う。テストクラスの ▶ 実行やツリーのバッジはこの 2 つを見る
+  （Jakarta EE の leaf-books）だけが使う。テストクラスの ファイル実行やツリーのバッジはこの 2 つを見る
 - **Kafka / RabbitMQ は `main/messaging.js` で別管理**。必要時のみ起動し、
   通常の実行停止では落とさず、アプリ終了時に停止する。雛形ルートの
   `codinable.services.json` の `services` 配列で実行前の自動起動を宣言できる。
@@ -141,14 +141,14 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
   `renderer.js` の `RUNTIME_ICONS` と `i18n.js` の `runtime_*` を両方足す
 - **`run` はどのボタンを主役にするか**（書式は `file:<パス>` / `sql:<パス>` /
   `gradle:<タスク>` / `npm:<スクリプト>` / `static:<ルート>`。Jakarta EE は `gradle:payaraRun`）。`gradle:test` なら
-  ▶ アプリ実行は塗りつぶさず、テストクラスをツリーで光らせる（テストはテストクラスを
-  開いて ▶ 実行で流す）。`gradle:build` のように ▶ アプリ実行と同じ種類のものは
-  ▶ アプリ実行が動かすものを差し替える。`sql:` / `file:` はファイル単位で動かす演習の
-  最初のファイル（ツリーで目立たせる。▶ アプリ実行は押せない）。
+  アプリ実行は塗りつぶさず、テストクラスをツリーで光らせる（テストはテストクラスを
+  開いて ファイル実行で流す）。`gradle:build` のように アプリ実行と同じ種類のものは
+  アプリ実行が動かすものを差し替える。`sql:` / `file:` はファイル単位で動かす演習の
+  最初のファイル（ツリーで目立たせる。アプリ実行は押せない）。
   当たるボタンがあるかは `workspace.js` が雛形の構成（`build.gradle` の有無、
   `package.json` の `scripts`、`index.html`）から決めるので、食い違わせない。
   `npx electron test/check-run-entries.js` で全講座を確かめる。説明文はボタンの名前
-  （▶ アプリ実行 / エディタの右上の ▶ 実行）で案内する。
+  （アプリ実行 / エディタの右上の ファイル実行）で案内する。
   API を叩く curl は `curl/NN_*.sh` に置き、ファイル単位で動かしてもらう。
   `sql:` のファイルは選ぶときには開かず、
   実行したときに開く（SQL の演習は最初に `README.md` のテーブル構成を読んでもらうため）
@@ -161,14 +161,14 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
 - **`openFiles`（演習を選んだときに開くファイル）はすべての演習で雛形直下の `README.md` 1 つ**。
   コードではなく、その演習の概要を最初に見せる。説明のファイルを分けない（`SCHEMA.md` は置かない）
   - 中身は タイトル / 何を学ぶ演習か / 見るファイル（主役のクラス・Controller・テストクラス・
-    スクリプトを相対パスで）/ ボタンでの動かし方（▶ アプリ実行、「〇〇 を開いてエディタの右上の
-    ▶ 実行」、curl などのスクリプト）/ 結果のどこを見るか。
+    スクリプトを相対パスで）/ ボタンでの動かし方（アプリ実行、「〇〇 を開いてエディタの右上の
+    ファイル実行」、curl などのスクリプト）/ 結果のどこを見るか。
   - DB・SQL を題材にする演習は、末尾に「この演習で使うテーブル」の節（テーブル構成・初期データ。
     SQL の演習は流す順番も）を `<!-- schema:begin -->` 〜 `<!-- schema:end -->` で囲んで置く
     20〜50 行程度に収め、コードに無い動きは書かない。同じ雛形を複数の演習で使うときは
     1 つの README.md でそれらをまとめて説明する
   - README.md には画面に無い操作（ターミナル、実行対象のセレクト、🧪 テスト実行）を書かない。
-    テストは「〇〇Test.java を開いて ▶ 実行」、コマンドを打つ手順はスクリプト（`.sh`）にする
+    テストは「〇〇Test.java を開いて ファイル実行」、コマンドを打つ手順はスクリプト（`.sh`）にする
   - Markdown は最初からビューアで開く（「編集」で切り替え）
   - このルールは `node test/check-courses.js` で確かめる
 - **DB の演習の README.md のテーブルの節は手で書かない**。`node scripts/build-schema-docs.js` が雛形の
@@ -199,7 +199,7 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
 
 - **ツールバーのボタンはプロジェクトの中身だけで決まる**（`pickRunEntries`）。
   エディタで選んでいるファイルには依存させない。README を開いた瞬間に
-  アプリが動かせなくなる、という状態を作らないため。ファイル単位の「▶ 実行」だけが
+  アプリが動かせなくなる、という状態を作らないため。ファイル単位の「ファイル実行」だけが
   開いているファイルに従い、動かせないファイルではボタン自体を出さない
 - **動かないものを実行の対象にしない**。`package.json` があるプロジェクトの `.js` は
   npm スクリプトが入口なので単体では動かさず、`index.html` の隣の `.js` は
@@ -249,16 +249,16 @@ Bash / HSQLDB と Java の言語サーバーを同梱している。講座ごと
 - **2 プロセス要る演習**（API とクライアント、Spring と React の画面など）は、主役を雛形直下に置き、
   もう片方はサブフォルダ（`api/` `consumer/` `frontend/` など）の独立プロジェクトにする。
   待ち受けるサーバー（呼び出し先の API・受信側・React の画面）は `codinable.services.json` の
-  `processes` に書き、「▶ アプリ実行」で一緒に起動する。
+  `processes` に書き、「アプリ実行」で一緒に起動する。
   受講者が見る画面を持つものには `preview` を付け、動き出したらプレビューがそこへ移るようにする。
   起動して処理を流したら終わるクライアント（`client/` の Java コンソール）は、
   `client/run.sh`（ルートの `gradlew.bat` で `client/` の `run` を流す）を置き、受講者が開いて
-  エディタの右上の ▶ 実行で動かす（アプリを動かしたまま脇で走る）。サブフォルダの `package.json` 配下は実行対象に出さない
+  エディタの右上の ファイル実行で動かす（アプリを動かしたまま脇で走る）。サブフォルダの `package.json` 配下は実行対象に出さない
   （`workspace.js` の `inNestedPackage`）
 - **受講者はコマンドを打てない**（ターミナルは無い）。curl で API を叩く・Gatling を流す・
   ファイルを用意するといった手順は、雛形にシェルスクリプト（UTF-8 BOM なし・LF・
-  `#!/usr/bin/env bash`・先頭に日本語で「何をするか / 前提（先に ▶ アプリ実行）」・コマンドの前に `set -x`）
-  を置き、▶ 実行で動かしてもらう。同梱の bash で、作業ディレクトリはプロジェクト直下・
+  `#!/usr/bin/env bash`・先頭に日本語で「何をするか / 前提（先に アプリ実行）」・コマンドの前に `set -x`）
+  を置き、ファイル実行で動かしてもらう。同梱の bash で、作業ディレクトリはプロジェクト直下・
   curl / java / node が PATH に入った状態で動く
 - Mockito を使う雛形は `mockito-core` を `-javaagent` で渡す（jlink 版 JDK に
   `jdk.attach` が入る前に作った runtime でもモックを作れるようにするため）
@@ -329,7 +329,7 @@ npm run release:courses  # 講座を GitHub Releases の courses タグへ上書
    `node test/check-app-update.js`（パッケージ後のアプリでだけ動く）
 7. 講座の E2E（雛形・`course.yaml`・実行まわりを触ったとき）:
    `node test/e2e-courses.js <講座ID>[,…] [--only=<演習ID>,…]`。画面を操作して演習を 1 つずつ
-   選び、主役のボタン・ファイル単位の ▶ 実行どおりに動くか（Web は HTTP の応答、test は成功、SQL は全ファイル、
+   選び、主役のボタン・ファイル単位の ファイル実行どおりに動くか（Web は HTTP の応答、test は成功、SQL は全ファイル、
    スクリプトは全ファイル）を見る。bootRun は 8080 を取り合うので、講座は 1 つずつ順に流す
    （`java-db-access` は 8080 を使わないので並べてよい）。Docker や外部サービスの登録が要る演習は
    置かない（受講者に用意の説明が要るため。Keycloak・Jaeger の演習は外した）。curl のスクリプトは

@@ -3,7 +3,7 @@
 # 結果は出力とレポート build/reports/tests/integrationTest/index.html で確かめる
 cd "$(dirname "$0")/.." || exit 1
 if [ ! -f gradlew.bat ]; then
-  echo 'gradlew.bat がありません。先に ▶ アプリ実行か、テストクラスの ▶ 実行で一度 Gradle を動かしてください' >&2
+  echo 'gradlew.bat がありません。先に アプリ実行か、テストクラスの ファイル実行で一度 Gradle を動かしてください' >&2
   exit 1
 fi
 set -x

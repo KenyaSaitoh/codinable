@@ -1,5 +1,5 @@
 // jakarta-async-client-employee: 確認用の社員API（このフォルダ直下）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // 呼び出し側の Java コンソールは client/ にある別の Gradle プロジェクト（client/run.sh で動かす）
 plugins {
     id 'war'

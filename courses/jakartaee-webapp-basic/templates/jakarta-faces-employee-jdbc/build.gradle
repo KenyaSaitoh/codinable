@@ -1,5 +1,5 @@
 // jakarta-faces-employee-jdbc: DataSource と JDBC によるデータベースアクセス（社員管理）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // データソースは @DataSourceDefinition（config/DataSourceConfig）で同梱の HSQLDB のインメモリ DB に定義し、
 // テーブルと初期データ（sql/hsqldb）は、デプロイのたびに config/DatabaseInitializer が流す
 plugins {

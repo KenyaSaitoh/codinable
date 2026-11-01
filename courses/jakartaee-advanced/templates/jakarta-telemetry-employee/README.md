@@ -17,8 +17,8 @@
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。プレビューに `http://localhost:8080/jakarta-telemetry-employee/api/employees/10001` の JSON が開く
-2. `curl/01_trace.sh` を開いて、エディタの右上の ▶ 実行を押す。`traceparent` ヘッダーを付けた社員取得、全件取得、存在しない社員の取得を送る
+1. ツールバーの アプリ実行を押す。プレビューに `http://localhost:8080/jakarta-telemetry-employee/api/employees/10001` の JSON が開く
+2. `curl/01_trace.sh` を開いて、エディタの右上の ファイル実行を押す。`traceparent` ヘッダーを付けた社員取得、全件取得、存在しない社員の取得を送る
 
 ## 結果のどこを見るか
 

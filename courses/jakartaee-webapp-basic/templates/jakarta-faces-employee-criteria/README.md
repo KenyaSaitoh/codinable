@@ -22,10 +22,10 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-employee-criteria/EmployeeTablePage.xhtml` が開く
+1. ツールバーの アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-employee-criteria/EmployeeTablePage.xhtml` が開く
 2. 検索・ページ送り・新規登録・編集・削除を操作する
-3. `curl/01_search.sh` 〜 `curl/04_delete.sh` を開いて、エディタの右上の ▶ 実行で 1 つずつ流す
-   （登録・更新・削除でデータが変わる。▶ アプリ実行でデプロイし直すと初期データに戻る）
+3. `curl/01_search.sh` 〜 `curl/04_delete.sh` を開いて、エディタの右上の ファイル実行で 1 つずつ流す
+   （登録・更新・削除でデータが変わる。アプリ実行でデプロイし直すと初期データに戻る）
 
 ## 結果のどこを見るか
 

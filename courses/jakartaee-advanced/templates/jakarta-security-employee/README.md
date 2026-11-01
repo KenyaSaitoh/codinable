@@ -6,8 +6,8 @@ PBKDF2 によるパスワードのハッシュ化、CSRF トークンとセッ�
 
 | 場所 | 中身 | 動かし方 |
 |---|---|---|
-| このフォルダ直下 | 社員API（`http://localhost:8080/jakarta-security-employee/api`） | ▶ アプリ実行（Payara Server 7 にデプロイ） |
-| `frontend/` | React の画面（Vite、5173）。`/api` を 8080 の `/jakarta-security-employee/api` へ転送する | ▶ アプリ実行で一緒に起動 |
+| このフォルダ直下 | 社員API（`http://localhost:8080/jakarta-security-employee/api`） | アプリ実行（Payara Server 7 にデプロイ） |
+| `frontend/` | React の画面（Vite、5173）。`/api` を 8080 の `/jakarta-security-employee/api` へ転送する | アプリ実行で一緒に起動 |
 
 ## ログインのアカウント
 
@@ -35,10 +35,10 @@ PBKDF2 によるパスワードのハッシュ化、CSRF トークンとセッ�
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。社員API が Payara Server 7 にデプロイされ、React の画面（5173）が開く
+1. ツールバーの アプリ実行を押す。社員API が Payara Server 7 にデプロイされ、React の画面（5173）が開く
 2. Bob / 2222 でログインすると、社員一覧と登録フォームが出る。登録・削除ができる
 3. ログアウトして Alice / 1111 でログインし、「登録」を押すと 403 になる（画面はボタンを隠していない。許可はサーバーが判定する）
-4. `curl/` のスクリプトを開いて、エディタの右上の ▶ 実行で順に流す
+4. `curl/` のスクリプトを開いて、エディタの右上の ファイル実行で順に流す
    - `01_unauthenticated.sh` … 未ログインの GET・POST は 401、`/api/csrf` は 200
    - `02_login_alice.sh` … 誤ったパスワードは 401、Alice の参照は 200、登録は 403（ロール不足）
    - `03_login_bob.sh` … Bob の CSRF トークンなしの登録は 403、トークン付きは 201、PATCH は 403、ログアウト後は 401

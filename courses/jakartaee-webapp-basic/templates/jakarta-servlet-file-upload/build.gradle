@@ -1,5 +1,5 @@
 // jakarta-servlet-file-upload: マルチパートと @MultipartConfig・Part（サーブレットによるアップロード）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

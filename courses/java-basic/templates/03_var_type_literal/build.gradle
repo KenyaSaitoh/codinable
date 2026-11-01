@@ -1,0 +1,31 @@
+// ═══════════════════════════════════════════════════════════
+//  03_var_type_literal
+//  Udemy「Java Basic」の演習（Eclipse 形式の素の Java を、単独で動く Gradle プロジェクトにしたもの）
+//    - アプリ実行 は演習ごとの main を動かす（course.yaml の run）
+//    - .java を開いてエディタの右上の ファイル実行 で、その main だけを動かせる（run -PmainClass=完全修飾クラス名）
+// ═══════════════════════════════════════════════════════════
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+application {
+    mainClass = 'Main_3_1'
+}
+
+tasks.named('run', JavaExec) {
+    // 例外で終わる main は教材の一部なので、Gradle の失敗表示を重ねずスタックトレースだけを見せる
+    ignoreExitValue = true
+    // -PmainClass=完全修飾クラス名 を付けたときは、その main だけを動かす
+    if (project.hasProperty('mainClass')) {
+        mainClass = project.property('mainClass')
+    }
+}

@@ -259,11 +259,11 @@
             </div>
           </div>
 
-          <!-- 開いているファイルのタブ。右端の「▶ 実行」は開いているファイルだけを動かす
+          <!-- 開いているファイルのタブ。右端の「ファイル実行」は開いているファイルだけを動かす
                (単独で動かせるファイル: テストクラス・main・SQL・シェルなど を開いているときだけ出る) -->
           <div class="editor-tabs-row" id="editor-tabs-row">
             <div class="editor-tabs" id="editor-tabs"></div>
-            <button class="btn btn-run btn-run-file primary hidden" id="btn-run-file" data-i18n="btnRunFile">▶ 実行</button>
+            <button class="btn btn-run btn-run-file primary hidden" id="btn-run-file" data-i18n="btnRunFile">ファイル実行</button>
           </div>
 
           <!-- CodeMirror のインスタンスを開いたファイルごとに置く (表示は 1 つだけ) -->
@@ -278,9 +278,9 @@
         <!-- ツールバー (実行系) -->
         <div class="toolbar" id="toolbar">
           <div class="gradle-task-group">
-            <!-- プロジェクト全体を動かすのは ▶ アプリ実行だけ。テストクラス・main・SQL・シェルなど
-                 ファイル 1 つは、開いてエディタのタブの右端の ▶ 実行で動かす -->
-            <button class="btn btn-run" id="btn-run" data-i18n="btnRun" disabled>▶ アプリ実行</button>
+            <!-- プロジェクト全体を動かすのは アプリ実行だけ。テストクラス・main・SQL・シェルなど
+                 ファイル 1 つは、開いてエディタのタブの右端の ファイル実行で動かす -->
+            <button class="btn btn-run" id="btn-run" data-i18n="btnRun" disabled>アプリ実行</button>
           </div>
           <button class="btn btn-stop" id="btn-run-stop" data-i18n="btnStop" disabled>停止</button>
           <!-- プレビューの口は下のタブだけにする。実行すると待ち受けを検知して自動で開く -->
@@ -344,7 +344,7 @@
               </div>
             </div>
             <!-- 演習が使うサーバー (HSQLDB / Kafka / RabbitMQ / 付き添いのプロセス) の起動・停止。
-                 「▶ アプリ実行」で自動起動するので、ここは手で止めたい・先に起こしておきたいときの口。
+                 「アプリ実行」で自動起動するので、ここは手で止めたい・先に起こしておきたいときの口。
                  出力欄の右に縦に並べる。中身は renderServiceControls が作る -->
             <div class="service-controls" id="service-controls"></div>
           </div>

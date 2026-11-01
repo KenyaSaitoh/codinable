@@ -1,0 +1,64 @@
+// 61_restassured: RestAssured による REST API のテスト（チャプター6.1）
+// テスト対象の spring-rest-calc / spring-rest-person はサブフォルダーの独立したプロジェクトで、ポートは 8080 と 8082
+// アプリ実行で 2 つとも起動する（codinable.services.json の processes）
+plugins {
+    id "java"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform("org.junit:junit-bom:6.1.3")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    testImplementation "io.rest-assured:rest-assured:6.3.0"
+    // レスポンスのボディと Person の変換に使う
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.20.0"
+}
+
+test {
+    useJUnitPlatform {
+        // 特定のタグが付いたテストクラスをビルドテストの対象外にする
+        excludeTags "excludeFromBuild"
+    }
+    testLogging {
+        showStandardStreams = true
+        events "passed", "failed", "skipped"
+        exceptionFormat = "full"
+    }
+}
+
+// アプリ実行で動くタスク。codinable.services.json の processes が
+// テスト対象の Spring Boot アプリを起動するので、ここではポートが開くまで待って案内を出す
+def waitForPorts = { Map<String, Integer> apps ->
+    long limit = System.currentTimeMillis() + 10 * 60 * 1000
+    apps.each { name, port ->
+        boolean ready = false
+        while (!ready) {
+            try {
+                new Socket("localhost", port).close()
+                ready = true
+            } catch (IOException ignored) {
+                if (System.currentTimeMillis() > limit) {
+                    throw new GradleException("${name} が起動しません（ポート ${port}）。実行結果の [${name}] の行を確かめてください")
+                }
+                sleep(1000)
+            }
+        }
+        println "${name} が起動しました（ポート ${port}）"
+    }
+    println "起動したまま、テストクラスを開いてエディタの右上の ファイル実行を押してください"
+}
+
+tasks.register("waitForApps") {
+    doLast { waitForPorts(["spring-rest-calc": 8080, "spring-rest-person": 8082]) }
+}

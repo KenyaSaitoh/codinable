@@ -128,15 +128,15 @@ function detectProject(projectDir) {
 }
 
 /**
- * ツールバーの「▶ アプリ実行」と「🧪 テスト実行」が何を動かすかを決める
+ * ツールバーの「アプリ実行」と「🧪 テスト実行」が何を動かすかを決める
  *
  * Gradle のタスクや npm のスクリプトを並べて選ばせると、受講者は何を選べば
  * よいかで迷う。プロジェクト全体として意味があるのは「アプリを動かす」と
  * 「テストする」の 2 つだけなので、それぞれの入口をプロジェクトの中身から 1 つに決める
- * ファイル 1 つを動かすのはエディタのタブの右上の「▶ 実行」(fileRunTarget)
+ * ファイル 1 つを動かすのはエディタのタブの右上の「ファイル実行」(fileRunTarget)
  * 値は実行対象の書式 ('gradle:bootRun' / 'npm:dev' / 'static:' …)
  *
- *   app:   ▶ アプリ実行で動かすもの。SQL やスクリプトのようにファイル単位で動かす
+ *   app:   アプリ実行で動かすもの。SQL やスクリプトのようにファイル単位で動かす
  *          プロジェクトでは null (ボタンは押せない)
  *   test:  🧪 テスト実行で動かすもの。テストが無ければ null (ボタンは押せない)
  */
@@ -169,14 +169,14 @@ function pickRunEntries({ kinds, npmScripts, staticRoot, names, hasGradleTests }
 }
 
 /**
- * エディタのタブの右上の「▶ 実行」で、そのファイルだけを動かすときの実行対象
+ * エディタのタブの右上の「ファイル実行」で、そのファイルだけを動かすときの実行対象
  * 単独で意味のある結果が出ないファイルは null (ボタンを出さない)
  *
  *   .sql / .sh / .py / 単体の .js・.ts / Gradle を使わない .java の main
  *       → collectRunnableFiles が拾ったもの ('sql:…' / 'file:…')
  *   Gradle の src/test/java のテストクラス → そのクラスのテストだけ ('gradle:test --tests …')
  *   Gradle の src/main/java の main        → その main だけ (下の gradleMainTarget)
- *   @SpringBootApplication のクラス        → アプリそのもの (▶ アプリ実行と同じ)
+ *   @SpringBootApplication のクラス        → アプリそのもの (アプリ実行と同じ)
  */
 function fileRunTarget(projectDir, relPath) {
   if (!projectDir || !relPath) return null;
@@ -241,7 +241,7 @@ function gradleFileRun(projectDir, relPath, info) {
 function gradleMainTarget(projectDir, fqcn, info) {
   const gradleFile = ['build.gradle', 'build.gradle.kts'].map(f => path.join(projectDir, f)).find(f => fs.existsSync(f));
   const build = gradleFile ? readTextSafe(gradleFile) : '';
-  // application { mainClass = … } そのもの (SampleLauncher など) は ▶ アプリ実行と同じ
+  // application { mainClass = … } そのもの (SampleLauncher など) は アプリ実行と同じ
   const appMain = /mainClass\s*=\s*['"]([\w.]+)['"]/.exec(build)?.[1];
   if (appMain === fqcn) return info.run.app;
   return /hasProperty\(\s*['"]mainClass['"]\s*\)/.test(build)

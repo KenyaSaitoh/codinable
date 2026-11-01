@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════
-//  Payara Server (Jakarta EE の講座の「▶ アプリ実行」)
+//  Payara Server (Jakarta EE の講座の「アプリ実行」)
 //
 //  Gradle が作った WAR を、同梱の Payara Server 7 に起動時デプロイして動かす
 //  (runner.js の gradle:payaraRun)。サーバーは実行枠の 1 本として扱い、

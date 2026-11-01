@@ -1,0 +1,75 @@
+// 72_playwright: Playwright による Web ブラウザの UI テスト（チャプター7.2）
+// テスト対象は 71_selenide と同じ spring-bookstore-mvc（8080）と spring-bookstore-rest（8081）
+// アプリ実行で 2 つを起動してから、BookStoreTest を開いて ファイル実行する
+// 初回の実行時に Playwright がテスト用の Web ブラウザ（Chromium、Firefox、WebKit）をダウンロードする
+plugins {
+    id "java"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform("org.junit:junit-bom:6.1.3")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    testImplementation "com.microsoft.playwright:playwright:1.64.0"
+}
+
+test {
+    useJUnitPlatform()
+    // 画面の操作に時間がかかるので、1 操作ごとの結果が見えるようにする
+    testLogging {
+        showStandardStreams = true
+        events "passed", "failed", "skipped"
+        exceptionFormat = "full"
+    }
+}
+
+// アプリ実行で動くタスク。codinable.services.json の processes が
+// テスト対象の Spring Boot アプリを起動するので、ここではポートが開くまで待って案内を出す
+def waitForPorts = { Map<String, Integer> apps ->
+    long limit = System.currentTimeMillis() + 10 * 60 * 1000
+    apps.each { name, port ->
+        boolean ready = false
+        while (!ready) {
+            try {
+                new Socket("localhost", port).close()
+                ready = true
+            } catch (IOException ignored) {
+                if (System.currentTimeMillis() > limit) {
+                    throw new GradleException("${name} が起動しません（ポート ${port}）。実行結果の [${name}] の行を確かめてください")
+                }
+                sleep(1000)
+            }
+        }
+        println "${name} が起動しました（ポート ${port}）"
+    }
+    println "起動したまま、テストクラスを開いてエディタの右上の ファイル実行を押してください"
+}
+
+tasks.register("waitForApps") {
+    doLast { waitForPorts(["spring-bookstore-rest": 8081, "spring-bookstore-mvc": 8080]) }
+}
+
+// Playwright のコマンドライン（com.microsoft.playwright.CLI）を動かすタスク
+// scripts/01_codegen.sh と scripts/02_show_trace.sh から呼ぶ
+tasks.register("codegen", JavaExec) {
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = "com.microsoft.playwright.CLI"
+    args "codegen", "http://localhost:8080"
+}
+
+tasks.register("showTrace", JavaExec) {
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = "com.microsoft.playwright.CLI"
+    args "show-trace", "trace/BookStoreTest.zip"
+}

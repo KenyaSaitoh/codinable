@@ -1,0 +1,20 @@
+// ═══════════════════════════════════════════════════════════
+//  02_jar_module（Java Advanced の演習）
+//  fooモジュール（ライブラリ）と hogeモジュール（アプリケーション）の 2 つをサブプロジェクトにしている
+//  アプリ実行（gradle run）は hoge の run を流す。Gradle は module-info.java を見てモジュールパスで動かす
+// ═══════════════════════════════════════════════════════════
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
+    }
+
+    tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+    repositories {
+        mavenCentral()
+    }
+}

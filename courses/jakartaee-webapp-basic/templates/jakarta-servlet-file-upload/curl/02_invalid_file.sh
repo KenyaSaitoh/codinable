@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 何をするか: 受け付けない形式（.exe）と、空のファイルを送る
-# 前提: 先に ▶ アプリ実行で WAR をデプロイしておく
+# 前提: 先に アプリ実行で WAR をデプロイしておく
 # 期待する結果: FileStorageService が InvalidFileException を送出し、web.xml の error-page が理由を示す画面を返す
 #              「この形式のファイルは保存できません」「空のファイルは保存できません」（ステータスは 500）
 dir=$(mktemp -d)

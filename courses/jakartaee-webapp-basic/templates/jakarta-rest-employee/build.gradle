@@ -1,5 +1,5 @@
 // jakarta-rest-employee: Jakarta REST による社員管理 API（JSON Binding・検証・ExceptionMapper・ETag）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // データソースは @DataSourceDefinition（config/DataSourceConfig）で同梱の HSQLDB のインメモリ DB に定義し、
 // テーブルと初期データ（sql/hsqldb）は、デプロイのたびに config/DatabaseInitializer が流す
 plugins {

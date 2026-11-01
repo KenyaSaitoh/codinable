@@ -1,0 +1,38 @@
+// ═══════════════════════════════════════════════════════════
+//  クライアントの ファイル実行で一緒に起動するサーバー（../codinable.services.json の processes）
+//  サーバーのクラスは ../src/main/java のものをそのまま使う。タスクごとに起動するクラスが決まる
+// ═══════════════════════════════════════════════════════════
+
+plugins {
+    id 'java'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', '../src/main/java']
+            exclude 'module-info.java'
+        }
+    }
+}
+
+[
+    tcpServer:    'pro.kensait.java.advanced.lsn_6_1_3.server.Main',
+    selectServer: 'pro.kensait.java.advanced.lsn_6_1_4.server.Main',
+    udpServer:    'pro.kensait.java.advanced.lsn_6_1_5.server.Main',
+    httpServer:   'pro.kensait.java.advanced.lsn_6_2_3.httpserver.Main',
+    slowServer:   'pro.kensait.java.advanced.lsn_6_2_4.httpserver.Main',
+].each { taskName, serverClass ->
+    tasks.register(taskName, JavaExec) {
+        classpath = sourceSets.main.runtimeClasspath
+        mainClass = 'ServerLauncher'
+        args serverClass
+    }
+}

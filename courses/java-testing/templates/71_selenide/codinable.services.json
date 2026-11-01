@@ -1,0 +1,6 @@
+{
+  "processes": [
+    { "id": "spring-bookstore-rest", "dir": "spring-bookstore-rest", "run": "gradle:bootRun", "port": 8081, "when": ["gradle:waitForApps"] },
+    { "id": "spring-bookstore-mvc", "dir": "spring-bookstore-mvc", "run": "gradle:bootRun", "port": 8080, "when": ["gradle:waitForApps"], "preview": "/" }
+  ]
+}

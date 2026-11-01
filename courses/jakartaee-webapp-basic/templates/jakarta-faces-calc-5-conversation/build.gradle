@@ -1,5 +1,5 @@
 // jakarta-faces-calc-5-conversation: 会話スコープと Flash（計算アプリケーション 5）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

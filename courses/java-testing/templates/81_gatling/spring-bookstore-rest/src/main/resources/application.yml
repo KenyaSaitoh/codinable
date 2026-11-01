@@ -1,0 +1,33 @@
+server:
+  port: 8081
+
+spring:
+  session:
+    timeout: 3600
+  datasource:
+    # 講座本編は外部の DB サーバーを使う。Codinable ではインメモリの HSQLDB で動かす
+    # （プロセスごとに別の DB。起動し直すと初期データに戻る）
+    url: jdbc:hsqldb:mem:testdb
+    username: SA
+    password:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+  # 起動時に sql/hsqldb/ の DDL と DML を流す（build.gradle で classpath の db/ に入れている）
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+      schema-locations: classpath:db/2_BOOKSTORE_DDL.sql
+      data-locations: classpath:db/3_BOOKSTORE_DML.sql
+  jpa:
+    # インメモリ DB だと Hibernate が既定でテーブルを作り直すため、SQL で作ったものを使うよう止める
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        # テーブル名・カラム名を大文字のまま使う
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+logging:
+  level:
+    root: INFO

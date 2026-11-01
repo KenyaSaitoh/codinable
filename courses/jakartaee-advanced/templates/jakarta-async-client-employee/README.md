@@ -6,8 +6,8 @@ Jakarta REST のクライアントAPI の `rx()` と MicroProfile Rest Client �
 
 | 場所 | 中身 | 動かし方 |
 |---|---|---|
-| このフォルダ直下 | 確認用の社員API（`http://localhost:8080/jakarta-async-client-employee/api/employees`） | ▶ アプリ実行（Payara Server 7 にデプロイ） |
-| `client/` | Java コンソールのクライアント（Payara と同じ Jersey をライブラリとして使う Java SE のプログラム） | `client/run.sh` を開いてエディタの右上の ▶ 実行 |
+| このフォルダ直下 | 確認用の社員API（`http://localhost:8080/jakarta-async-client-employee/api/employees`） | アプリ実行（Payara Server 7 にデプロイ） |
+| `client/` | Java コンソールのクライアント（Payara と同じ Jersey をライブラリとして使う Java SE のプログラム） | `client/run.sh` を開いてエディタの右上の ファイル実行 |
 
 ## 見るファイル
 
@@ -21,10 +21,10 @@ Jakarta REST のクライアントAPI の `rx()` と MicroProfile Rest Client �
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。社員APIがデプロイされ、プレビューに社員一覧の JSON が開く
-2. 社員APIを動かしたまま、`client/run.sh` を開いてエディタの右上の ▶ 実行を押す。アプリは止まらず、その脇でクライアントが動いて終わる
-3. `curl/01_employees.sh` を開いて ▶ 実行すると、クライアントが呼ぶ API を curl で直接確かめられる
-4. `client/test.sh` を開いて ▶ 実行すると、`ClientOptionsTest`（接続先の決め方のテスト）が流れる
+1. ツールバーの アプリ実行を押す。社員APIがデプロイされ、プレビューに社員一覧の JSON が開く
+2. 社員APIを動かしたまま、`client/run.sh` を開いてエディタの右上の ファイル実行を押す。アプリは止まらず、その脇でクライアントが動いて終わる
+3. `curl/01_employees.sh` を開いて ファイル実行すると、クライアントが呼ぶ API を curl で直接確かめられる
+4. `client/test.sh` を開いて ファイル実行すると、`ClientOptionsTest`（接続先の決め方のテスト）が流れる
 
 ## 結果のどこを見るか
 
@@ -37,4 +37,4 @@ Jakarta REST のクライアントAPI の `rx()` と MicroProfile Rest Client �
 - `Expected error => 404` … 削除済みの社員の 404 だけを `exceptionally` で `Optional.empty()` に変えた結果
 
 社員APIを止めてから `client/run.sh` を流すと、接続の失敗が `main` まで伝わり、0 以外の終了コードで終わります。
-データはメモリ内にあり、▶ アプリ実行し直すと初期状態（16 件、次の採番は 10017）に戻ります。
+データはメモリ内にあり、アプリ実行し直すと初期状態（16 件、次の採番は 10017）に戻ります。

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 異動を登録し、SSE の一斉配信と、非同期のオブザーバーによる履歴の記録を確かめる
-# 前提: 先に ▶ アプリ実行で jakarta-async-employee をデプロイしておく
+# 前提: 先に アプリ実行で jakarta-async-employee をデプロイしておく
 # 期待する結果:
 #   1つ目 異動の購読（GET /api/employees/events）を裏で 5 秒だけ開いておく
 #   2つ目 POST /api/transfers（Alice を部署 1 へ）は 200 と異動後の社員。メール通知や履歴の記録は待たずに返る

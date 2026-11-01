@@ -3,7 +3,7 @@
 チャプター 14.1「クライアントAPIによる同期HTTP通信」のうち、Jakarta REST のクライアント API の演習です。
 2 つのプログラムからなります。
 
-- ルート: 呼び出し先の確認用の社員 API（`employee-api.war`）。メモリー内に社員 16 件を持ち、▶ アプリ実行で Payara Server にデプロイする
+- ルート: 呼び出し先の確認用の社員 API（`employee-api.war`）。メモリー内に社員 16 件を持ち、アプリ実行で Payara Server にデプロイする
 - `client/`: 確認用 API を呼び出す Java のコンソール `Main_Employee`。`client/run.sh` で動かす
 
 ## 見るファイル
@@ -18,9 +18,9 @@
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。確認用 API が `http://localhost:8080/employee-api/api` にデプロイされ、
+1. ツールバーの アプリ実行を押す。確認用 API が `http://localhost:8080/employee-api/api` にデプロイされ、
    プレビューに `http://localhost:8080/employee-api/api/employees` の JSON が開く
-2. `client/run.sh` を開いて、エディタの右上の ▶ 実行で流す（API を動かしたまま、脇でコンソールが動いて終わる）
+2. `client/run.sh` を開いて、エディタの右上の ファイル実行で流す（API を動かしたまま、脇でコンソールが動いて終わる）
 
 ## 結果のどこを見るか
 

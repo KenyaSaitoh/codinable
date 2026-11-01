@@ -1,5 +1,5 @@
 // customer-hub: 書店から呼ばれる外部 API（Jakarta REST + Jakarta Persistence）
-// ▶ アプリ実行で WAR を作り、同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

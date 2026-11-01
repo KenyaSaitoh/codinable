@@ -1,5 +1,5 @@
 // jakarta-faces-calc-3-config-exception: CDI・インターセプタ・設定値・業務例外（計算アプリケーション 3）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

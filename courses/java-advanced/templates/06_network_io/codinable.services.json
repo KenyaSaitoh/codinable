@@ -1,0 +1,25 @@
+{
+  "processes": [
+    { "id": "server", "dir": "server", "run": "gradle:tcpServer", "port": 55556, "when": [
+      "gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_1_3.client.Main",
+      "gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_1_3.client.Main_Multi"
+    ] },
+    { "id": "server", "dir": "server", "run": "gradle:selectServer", "port": 55556, "when": [
+      "gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_1_4.client.Main"
+    ] },
+    { "id": "server", "dir": "server", "run": "gradle:udpServer", "port": 55556, "when": [
+      "gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_1_5.client.Main",
+      "gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_1_5.client.Main_Multi"
+    ] },
+    { "id": "server", "dir": "server", "run": "gradle:httpServer", "port": 55556, "when": [
+      "gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_2_3.httpclient.Main_GET_Sync",
+      "gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_2_3.httpclient.Main_GET_Sync_Encoded",
+      "gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_2_3.httpclient.Main_POST_Sync"
+    ] },
+    { "id": "server", "dir": "server", "run": "gradle:slowServer", "port": 55556, "when": [
+      "gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_2_4.httpclient.Main_GET_Async_1",
+      "gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_2_4.httpclient.Main_GET_Async_2",
+      "gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_2_4.httpclient.Main_GET_Async_3"
+    ] }
+  ]
+}

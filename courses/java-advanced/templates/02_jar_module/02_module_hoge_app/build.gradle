@@ -1,0 +1,11 @@
+// hogeモジュール（アプリケーション）。fooモジュールを依存に持ち、モジュールパスで起動する
+apply plugin: 'application'
+
+dependencies {
+    implementation project(':02_module_foo_library')
+}
+
+application {
+    mainModule = 'pro.kensait.hoge'
+    mainClass = 'pro.kensait.hoge.Application'
+}

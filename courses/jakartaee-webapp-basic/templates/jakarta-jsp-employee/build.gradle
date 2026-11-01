@@ -1,5 +1,5 @@
 // jakarta-jsp-employee: サーブレット・JSP・業務処理のクラスによる MVC とフィルタ（社員一覧）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

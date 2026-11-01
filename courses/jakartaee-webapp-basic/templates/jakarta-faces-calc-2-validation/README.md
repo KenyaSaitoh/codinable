@@ -17,9 +17,9 @@
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-calc-2-validation/CalcInputPage.xhtml` が開く
+1. ツールバーの アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-calc-2-validation/CalcInputPage.xhtml` が開く
 2. 空欄、`abc`、`1001`、`-1000` と `1000`、`30` と `10` などを入れて「足し算」「引き算」を押す
-3. `curl/01_inputs.sh` を開いて、エディタの右上の ▶ 実行で流す
+3. `curl/01_inputs.sh` を開いて、エディタの右上の ファイル実行で流す
 
 ## 結果のどこを見るか
 

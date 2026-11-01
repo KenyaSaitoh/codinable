@@ -21,10 +21,10 @@
 #    lesson       対応するレッスン番号と名前。一覧の副題に出る
 #    runtime      実行環境（java / spring / node / react / python / static / sql / shell）
 #                 一覧のアイコンとタグになる
-#    run          主役の動かし方。gradle:bootRun / npm:… / static: は ▶ アプリ実行で動かすもの
-#                 gradle:test はテストが主役の演習（テストクラスを開いてエディタの右上の ▶ 実行で流す。
+#    run          主役の動かし方。gradle:bootRun / npm:… / static: は アプリ実行で動かすもの
+#                 gradle:test はテストが主役の演習（テストクラスを開いてエディタの右上の ファイル実行で流す。
 #                 アプリはファイルツリーでテストクラスを目立たせる）
-#                 ファイル単位で動かす演習では最初に動かすファイル（sql: / file:。エディタの右上の ▶ 実行で動かす）
+#                 ファイル単位で動かす演習では最初に動かすファイル（sql: / file:。エディタの右上の ファイル実行で動かす）
 #                 書式: file:<相対パス> / sql:<相対パス> / gradle:<タスク> / npm:<スクリプト> /
 #                   static:<配信ルート・空文字はプロジェクト直下> / java
 #    suggestName  作業用プロジェクト名の既定値
@@ -46,7 +46,7 @@
 id: webapp-archi-overview
 order: 1
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.6.0
+version: 1.6.1
 
 names:
   ja: Webシステムアーキテクチャ概要
@@ -406,15 +406,15 @@ exercises:
     descriptions:
       ja: >-
         リクエストライン・ヘッダー・ステータスコードを curl で確かめるスクリプトです。
-        3 本あるので、順に開いてエディタの右上の ▶ 実行で動かしてください。
+        3 本あるので、順に開いてエディタの右上の ファイル実行で動かしてください。
       en: >-
         Scripts that use curl to inspect request lines, headers and status codes.
-        There are three; open each in turn and press ▶ Run at the top right of the editor.
+        There are three; open each in turn and press Run file at the top right of the editor.
     openFiles:
       - README.md
 
   # ── チャプター6: SQL ────────────────────────────────
-  # sql: は「指定した .sql を HSQLDB へ流す」対象ファイル（開いてエディタの右上の ▶ 実行で流す）
+  # sql: は「指定した .sql を HSQLDB へ流す」対象ファイル（開いてエディタの右上の ファイル実行で流す）
   # DB が止まっていれば実行時に起こすので、先に起動しておく必要はない
   # 結果は最後の 1 文だけが出る。1 文だけ流したいときは、その範囲を選択して実行する
   #
@@ -435,14 +435,14 @@ exercises:
         講義と同じ EMPLOYEE テーブル（講義の 4 件を含む 16 件）を作り、SELECT で取り出します。
         主キー検索・射影・比較演算子と、AND / OR / IN / BETWEEN / LIKE / IS NULL の
         条件の書き方が入っています。どのファイルも実行のたびに初期データから始まります。
-        番号順に .sql を開き、エディタの右上の ▶ 実行で流してください。
+        番号順に .sql を開き、エディタの右上の ファイル実行で流してください。
       en: >-
         Creates the EMPLOYEE table from the lectures (16 rows, including the 4 from the lecture) and queries it with SELECT.
         Covers primary-key lookups, projection, comparison operators and the
         AND / OR / IN / BETWEEN / LIKE / IS NULL conditions.
         Every file starts from the initial data each time you run it.
-        Open the .sql files in numbered order and run each with ▶ Run at the top right of the editor.
-    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ▶ 実行で流す
+        Open the .sql files in numbered order and run each with Run file at the top right of the editor.
+    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ファイル実行で流す
     openFiles:
       - README.md
 
@@ -460,14 +460,14 @@ exercises:
         登録・更新・削除を実際に実行して、SELECT で結果を確かめます。
         主キー指定と条件指定の違い、WHERE を書き忘れたときに何が起きるかも扱います。
         実行のたびに元の 16 件から始まるので、何度でも試せます。
-        番号順に .sql を開き、エディタの右上の ▶ 実行で流してください。
+        番号順に .sql を開き、エディタの右上の ファイル実行で流してください。
       en: >-
         Actually inserts, updates and deletes rows, checking the result with SELECT.
         Covers the difference between targeting by primary key and by condition, and
         what happens when you forget the WHERE clause.
         Every run starts again from the original 16 rows, so you can try as often as you like.
-        Open the .sql files in numbered order and run each with ▶ Run at the top right of the editor.
-    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ▶ 実行で流す
+        Open the .sql files in numbered order and run each with Run file at the top right of the editor.
+    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ファイル実行で流す
     openFiles:
       - README.md
 
@@ -485,13 +485,13 @@ exercises:
         COUNT / SUM / AVG / MAX / MIN と GROUP BY・HAVING、
         ORDER BY・DISTINCT・LIMIT です。部署ごとの人数や平均月給を出します。
         NULL が集計からどう扱われるか、AVG が整数で返る理由も確かめられます。
-        番号順に .sql を開き、エディタの右上の ▶ 実行で流してください。
+        番号順に .sql を開き、エディタの右上の ファイル実行で流してください。
       en: >-
         COUNT / SUM / AVG / MAX / MIN together with GROUP BY, HAVING, ORDER BY,
         DISTINCT and LIMIT - head counts and average salary per department.
         Also shows how NULL is treated and why AVG comes back as an integer.
-        Open the .sql files in numbered order and run each with ▶ Run at the top right of the editor.
-    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ▶ 実行で流す
+        Open the .sql files in numbered order and run each with Run file at the top right of the editor.
+    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ファイル実行で流す
     openFiles:
       - README.md
 
@@ -509,14 +509,14 @@ exercises:
         CREATE TABLE でデータ型と制約（NOT NULL / UNIQUE / PRIMARY KEY / CHECK /
         DEFAULT）を指定し、ALTER TABLE と DROP TABLE で変更・削除します。
         02_constraints.sql はすべてエラーになる SQL で、制約が働くことを失敗で確かめます。
-        番号順に .sql を開き、エディタの右上の ▶ 実行で流してください。
+        番号順に .sql を開き、エディタの右上の ファイル実行で流してください。
       en: >-
         Specifies data types and constraints (NOT NULL / UNIQUE / PRIMARY KEY / CHECK /
         DEFAULT) with CREATE TABLE, then changes and drops it with ALTER and DROP TABLE.
         Every statement in 02_constraints.sql fails on purpose - that is how you see
         the constraints working.
-        Open the .sql files in numbered order and run each with ▶ Run at the top right of the editor.
-    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ▶ 実行で流す
+        Open the .sql files in numbered order and run each with Run file at the top right of the editor.
+    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ファイル実行で流す
     openFiles:
       - README.md
 
@@ -534,14 +534,14 @@ exercises:
         部署を別テーブルに分け、外部キーで参照する形にします。
         INNER JOIN と LEFT JOIN の違い（部署未設定の社員、社員のいない部署）、
         サブクエリ、ビュー、ON DELETE CASCADE を実際に動かして確かめます。
-        番号順に .sql を開き、エディタの右上の ▶ 実行で流してください。
+        番号順に .sql を開き、エディタの右上の ファイル実行で流してください。
       en: >-
         Moves departments into their own table, referenced by a foreign key.
         Shows the difference between INNER JOIN and LEFT JOIN (an employee with no
         department, a department with no employees), plus subqueries, views and
         ON DELETE CASCADE.
-        Open the .sql files in numbered order and run each with ▶ Run at the top right of the editor.
-    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ▶ 実行で流す
+        Open the .sql files in numbered order and run each with Run file at the top right of the editor.
+    # テーブル構成を先に読んでもらう。SQL はファイルを開いてエディタの右上の ファイル実行で流す
     openFiles:
       - README.md
 
@@ -556,10 +556,10 @@ exercises:
       en: Run JavaScript and TypeScript
     descriptions:
       ja: >-
-        Node.js で直接動かせるスクリプトです。基本・非同期処理・TypeScript の 3 本あり、開いてエディタの右上の ▶ 実行で動かします。
+        Node.js で直接動かせるスクリプトです。基本・非同期処理・TypeScript の 3 本あり、開いてエディタの右上の ファイル実行で動かします。
         .ts も型を書いたままそのまま実行できます（Node.js のtype stripping）。
       en: >-
-        Scripts you can run directly with Node.js: basics, async, and TypeScript. Open one and press ▶ Run at the top right of the editor.
+        Scripts you can run directly with Node.js: basics, async, and TypeScript. Open one and press Run file at the top right of the editor.
         The .ts file runs as-is, types included (Node.js type stripping).
     openFiles:
       - README.md
@@ -577,13 +577,13 @@ exercises:
     descriptions:
       ja: >-
         原稿の名簿管理アプリケーションを jQuery で書いたものです。登録は POST、更新は PUT、
-        削除は DELETE を $.ajax で送ります。▶ アプリ実行を押すと、初回だけ依存パッケージを
+        削除は DELETE を $.ajax で送ります。アプリ実行を押すと、初回だけ依存パッケージを
         自動で入れてから REST API サーバー（原稿の JAX-RS 版と同じ URL と JSON）を起動し、
         プレビュータブが開きます。「編集」で、行の td のテキストを DOM をたどって取り出す
         様子を確かめ、チャプター10.1 の React 版と見比べてください。
       en: >-
         The roster application from the course, written with jQuery. Registering sends POST,
-        updating sends PUT and deleting sends DELETE via $.ajax. Press ▶ Run app to install the
+        updating sends PUT and deleting sends DELETE via $.ajax. Press Run app to install the
         dependencies on the first launch and start the REST API server (same URLs and JSON
         as the JAX-RS version in the course); the preview tab opens. See how "Edit" walks the
         DOM to read the td text of a row, and compare it with the React version in chapter 10.1.
@@ -601,12 +601,12 @@ exercises:
       en: Run a Spring MVC application
     descriptions:
       ja: >-
-        Controller + Thymeleaf の計算アプリケーションです。▶ アプリ実行でサーバーが起動し、
+        Controller + Thymeleaf の計算アプリケーションです。アプリ実行でサーバーが起動し、
         プレビュータブが自動で開きます（初回は Gradle の取得に数分かかります）。
         入力値検証や 0 除算のエラーも試せます。計算は POST、「計算履歴を見る」は GET
         （/history?limit=5 のように件数も指定できる）で、HTTP メソッドの使い分けを確かめられます。
       en: >-
-        A Controller + Thymeleaf calculator. Press ▶ Run app and the server starts, opening the
+        A Controller + Thymeleaf calculator. Press Run app and the server starts, opening the
         preview tab automatically (the first run downloads Gradle and takes a few minutes).
         Validation errors and division by zero are worth trying too. Calculations use POST and
         the history page uses GET (/history?limit=5), showing how HTTP methods are chosen.
@@ -625,17 +625,17 @@ exercises:
     descriptions:
       ja: >-
         Spring MVC 版と同じ計算アプリケーション（四則演算・入力値検証・0 除算のエラー・計算履歴）を
-        Django で書いたものです。▶ アプリ実行を押すと、初回だけ依存パッケージを自動で準備して
+        Django で書いたものです。アプリ実行を押すと、初回だけ依存パッケージを自動で準備して
         開発サーバーを起動し、プレビュータブが開きます。URLconf・View・Form・Template・
         services の役割を、Spring MVC 版の Controller・CalcParam・Thymeleaf・CalcService と
-        見比べてください。テストは run_tests.sh を開いて、エディタの右上の ▶ 実行で流せます。
+        見比べてください。テストは run_tests.sh を開いて、エディタの右上の ファイル実行で流せます。
       en: >-
         The same calculator as the Spring MVC version (four operations, input validation,
-        the division-by-zero error and the calculation history), written with Django. Press ▶ Run app to install dependencies on the
+        the division-by-zero error and the calculation history), written with Django. Press Run app to install dependencies on the
         first launch and start the development server; the preview tab opens. Compare the
         URLconf, View, Form, Template and services with the Spring MVC Controller, CalcParam,
         Thymeleaf template and CalcService. To run the tests, open run_tests.sh and press
-        ▶ Run at the top right of the editor.
+        Run file at the top right of the editor.
     openFiles:
       - README.md
 
@@ -652,11 +652,11 @@ exercises:
     descriptions:
       ja: >-
         Spring MVC 版と同じ計算アプリケーション（四則演算・入力値検証・0 除算のエラー・計算履歴）を
-        Express + EJS で書いたものです。▶ アプリ実行を押すと、初回だけ依存パッケージを自動で
+        Express + EJS で書いたものです。アプリ実行を押すと、初回だけ依存パッケージを自動で
         入れてからサーバーを起動し、プレビュータブが開きます。
       en: >-
         The same calculator as the Spring MVC version (four operations, input validation,
-        the division-by-zero error and the calculation history), written with Express + EJS. Press ▶ Run app to install the
+        the division-by-zero error and the calculation history), written with Express + EJS. Press Run app to install the
         dependencies on the first launch and start the server; the preview tab opens.
     openFiles:
       - README.md
@@ -665,7 +665,7 @@ exercises:
     chapter: 9
     lesson: '9.1 WebAPIによるアプリケーション連携'
     runtime: spring
-    # テストが主役。テストクラスを開いてエディタの右上の ▶ 実行で流すと、テスト結果タブでメソッド単位の成否とカバレッジが見える
+    # テストが主役。テストクラスを開いてエディタの右上の ファイル実行で流すと、テスト結果タブでメソッド単位の成否とカバレッジが見える
     run: 'gradle:test'
     preview: '/api/users'
     suggestName: spring-rest-users
@@ -675,13 +675,13 @@ exercises:
     descriptions:
       ja: >-
         /api/users の CRUD を返す REST API です。まず src/test/java の UserServiceTest.java と
-        UserControllerTest.java を開いて、エディタの右上の ▶ 実行で流し、テスト結果タブを確かめてください。
-        次に ▶ アプリ実行で起動したまま、curl/ のスクリプトを順に開いてエディタの右上の ▶ 実行で送ってください。
+        UserControllerTest.java を開いて、エディタの右上の ファイル実行で流し、テスト結果タブを確かめてください。
+        次に アプリ実行で起動したまま、curl/ のスクリプトを順に開いてエディタの右上の ファイル実行で送ってください。
       en: >-
         A REST API serving CRUD on /api/users. First open UserServiceTest.java and
-        UserControllerTest.java under src/test/java, press ▶ Run at the top right of the editor
-        and look at the Tests tab. Then keep the app running with ▶ Run app, open the scripts
-        in curl/ in order and press ▶ Run at the top right of the editor.
+        UserControllerTest.java under src/test/java, press Run file at the top right of the editor
+        and look at the Tests tab. Then keep the app running with Run app, open the scripts
+        in curl/ in order and press Run file at the top right of the editor.
     openFiles:
       - README.md
 
@@ -775,11 +775,11 @@ exercises:
       en: Run a React SPA
     descriptions:
       ja: >-
-        Vite + React + TypeScript の名簿管理です。▶ アプリ実行を押すと、初回だけ依存パッケージを
+        Vite + React + TypeScript の名簿管理です。アプリ実行を押すと、初回だけ依存パッケージを
         自動で準備してから起動し、プレビュータブが開きます（初回は数分かかることがあります）。
         チャプター3の静的ページと同じ題材なので、作り方の違いを見比べてください。
       en: >-
-        A Vite + React + TypeScript roster. Press ▶ Run app to install dependencies automatically
+        A Vite + React + TypeScript roster. Press Run app to install dependencies automatically
         on the first launch, start Vite, and open the Preview tab (the first run may take a few minutes).
         It is the same subject as the static page in chapter 3, so compare the approaches.
     openFiles:

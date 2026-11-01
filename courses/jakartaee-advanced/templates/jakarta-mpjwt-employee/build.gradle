@@ -1,5 +1,5 @@
 // jakarta-mpjwt-employee: MicroProfile JWT による REST API の保護（リソースサーバー）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // アクセストークンの発行と公開鍵（JWKS）は、issuer/ の教材用の発行者（Keycloak の代わり）が受け持つ
 // issuer/ の WAR は codinable.services.json の wars で同じ Payara Server に先にデプロイされる
 plugins {

@@ -18,9 +18,9 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/calc/` の下にあり
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-calc-5-conversation/CalcInputPage.xhtml` が開く
+1. ツールバーの アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-calc-5-conversation/CalcInputPage.xhtml` が開く
 2. 2 つの数値を入れて「足し算」を押し、結果画面で「税込計算」を押す
-3. `curl/01_conversation.sh` を開いて、エディタの右上の ▶ 実行で流す
+3. `curl/01_conversation.sh` を開いて、エディタの右上の ファイル実行で流す
 
 ## 結果のどこを見るか
 

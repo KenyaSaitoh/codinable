@@ -19,9 +19,9 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/upload/` の下にあ�
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-file-upload/FileUploadPage.xhtml` が開く
+1. ツールバーの アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-file-upload/FileUploadPage.xhtml` が開く
 2. タイトルを入れ、ファイルを選んで「保存」を押す。何も選ばずに押す、空のファイルを選ぶ、なども試す
-3. `curl/01_upload.sh` を開いて、エディタの右上の ▶ 実行で流す
+3. `curl/01_upload.sh` を開いて、エディタの右上の ファイル実行で流す
 
 ## 結果のどこを見るか
 

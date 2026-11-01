@@ -4,7 +4,7 @@
 #  講義そのものは動画側にあり、ここには講座原稿（01_master）のコードを
 #  Codinable 単独で動く形にしたものを置く。問題を出して解かせることはしない
 #
-#  雛形は war プラグインの Gradle プロジェクトで、▶ アプリ実行（gradle:payaraRun）が
+#  雛形は war プラグインの Gradle プロジェクトで、アプリ実行（gradle:payaraRun）が
 #  WAR を作って同梱の Payara Server 7 へデプロイする（desktop/src/main/payara.js）
 #  WAR のファイル名がコンテキストルートになるので、preview はコンテキストルートから書く
 #
@@ -20,7 +20,7 @@
 id: jakartaee-webapp-basic
 order: 11
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.0.0
+version: 1.0.1
 
 names:
   ja: Jakarta EE Webアプリ基礎
@@ -95,12 +95,12 @@ exercises:
     descriptions:
       ja: >-
         /hello に対応付けた HelloServlet を Payara Server 7 へデプロイします。
-        ▶ アプリ実行で WAR を作ってデプロイすると、プレビューに
+        アプリ実行で WAR を作ってデプロイすると、プレビューに
         http://localhost:8080/jakarta-servlet-hello/hello が開きます。
         実行結果で、デプロイの時点で HelloServlet#init が出ていることと、WAR のファイル名がコンテキストルートになっていることを確かめてください。
       en: >-
         Deploys HelloServlet, mapped to /hello, to Payara Server 7.
-        ▶ Run app builds the WAR and deploys it, then the preview opens
+        Run app builds the WAR and deploys it, then the preview opens
         http://localhost:8080/jakarta-servlet-hello/hello.
         In the run output, check that HelloServlet#init appears at deployment and that the WAR file name became the context root.
     openFiles:
@@ -119,12 +119,12 @@ exercises:
     descriptions:
       ja: >-
         CalcServlet が /add（POST）と /addByGet（GET）を受け、getParameter で受け取った値を足して HTML を書き出します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-servlet-calc/ の入力画面が開きます。
-        curl/ のスクリプトをエディタの右上の ▶ 実行で流すと、パラメータが欠けたときの 400 と、数値でないときの 500 が確かめられます。
+        アプリ実行で http://localhost:8080/jakarta-servlet-calc/ の入力画面が開きます。
+        curl/ のスクリプトをエディタの右上の ファイル実行で流すと、パラメータが欠けたときの 400 と、数値でないときの 500 が確かめられます。
       en: >-
         CalcServlet handles /add (POST) and /addByGet (GET), adds the values read with getParameter and writes the HTML.
-        ▶ Run app opens the input page at http://localhost:8080/jakarta-servlet-calc/.
-        Run the scripts in curl/ with ▶ Run at the top right of the editor to see the 400 for a missing parameter and the 500 for a non-number.
+        Run app opens the input page at http://localhost:8080/jakarta-servlet-calc/.
+        Run the scripts in curl/ with Run file at the top right of the editor to see the 400 for a missing parameter and the 500 for a non-number.
     openFiles:
       - README.md
 
@@ -142,11 +142,11 @@ exercises:
     descriptions:
       ja: >-
         CalcServlet が計算結果をリクエストとセッションの属性に置き、WEB-INF/views の JSP へフォワードします。
-        ▶ アプリ実行で http://localhost:8080/jakarta-jsp-calc/calc が開きます。計算してから入力画面へ戻ると、前回の計算結果が出ます。
+        アプリ実行で http://localhost:8080/jakarta-jsp-calc/calc が開きます。計算してから入力画面へ戻ると、前回の計算結果が出ます。
         curl/ のスクリプトで、Cookie の有無による違いと、WEB-INF の JSP を直接開けないことを確かめてください。
       en: >-
         CalcServlet puts the result in request and session attributes and forwards to a JSP under WEB-INF/views.
-        ▶ Run app opens http://localhost:8080/jakarta-jsp-calc/calc. After a calculation, going back to the input page shows the previous result.
+        Run app opens http://localhost:8080/jakarta-jsp-calc/calc. After a calculation, going back to the input page shows the previous result.
         Use the scripts in curl/ to compare requests with and without the cookie, and to see that a JSP under WEB-INF cannot be opened directly.
     openFiles:
       - README.md
@@ -164,11 +164,11 @@ exercises:
     descriptions:
       ja: >-
         社員一覧をサーブレット（Controller）・JSP（View）・業務処理のクラス（Model）に分け、AccessLogFilter が全リクエストを包みます。
-        ▶ アプリ実行で http://localhost:8080/jakarta-jsp-employee/employees が開きます。削除すると 303 で一覧へリダイレクトします（PRG）。
+        アプリ実行で http://localhost:8080/jakarta-jsp-employee/employees が開きます。削除すると 303 で一覧へリダイレクトします（PRG）。
         実行結果に、リクエストごとのアクセスログが出ます。
       en: >-
         The employee list is split into a servlet (Controller), a JSP (View) and business classes (Model), and AccessLogFilter wraps every request.
-        ▶ Run app opens http://localhost:8080/jakarta-jsp-employee/employees. Deleting redirects to the list with 303 (PRG).
+        Run app opens http://localhost:8080/jakarta-jsp-employee/employees. Deleting redirects to the list with 303 (PRG).
         The run output shows an access log line for each request.
     openFiles:
       - README.md
@@ -188,11 +188,11 @@ exercises:
     descriptions:
       ja: >-
         計算アプリケーションの CalcBean は CalcService と Logger を @Inject で受け取り、CalcService には @Logged のインターセプタが働きます。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml が開きます。
+        アプリ実行で http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml が開きます。
         計算のたびに、実行結果に LoggingInterceptor の start・end のログが出ることを確かめてください（チャプター6.1でも同じアプリケーションを使います）。
       en: >-
         CalcBean in the calculator receives CalcService and a Logger through @Inject, and the @Logged interceptor applies to CalcService.
-        ▶ Run app opens http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml.
+        Run app opens http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml.
         Check that each calculation prints the start and end log lines of LoggingInterceptor (the same application is used again in chapter 6.1).
     openFiles:
       - README.md
@@ -210,12 +210,12 @@ exercises:
     descriptions:
       ja: >-
         EmployeeTableBean → EmployeeService → EmployeeDAO が @Inject で接続された社員管理です。保存先は EmployeeDAO の中の Map です。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-employee/EmployeeTablePage.xhtml を開き、一覧・登録・編集・削除を操作してください。
-        登録と編集は会話スコープの EmployeeEditBean が入力・確認・確定の値を保持します。EmployeeServiceTest.java を開いてエディタの右上の ▶ 実行で流すと、コンテナなしのテストが走ります。
+        アプリ実行で http://localhost:8080/jakarta-faces-employee/EmployeeTablePage.xhtml を開き、一覧・登録・編集・削除を操作してください。
+        登録と編集は会話スコープの EmployeeEditBean が入力・確認・確定の値を保持します。EmployeeServiceTest.java を開いてエディタの右上の ファイル実行で流すと、コンテナなしのテストが走ります。
       en: >-
         An employee app where EmployeeTableBean -> EmployeeService -> EmployeeDAO are wired with @Inject. Data lives in a Map inside EmployeeDAO.
-        ▶ Run app, open http://localhost:8080/jakarta-faces-employee/EmployeeTablePage.xhtml and list, create, edit and delete employees.
-        The conversation-scoped EmployeeEditBean keeps the values through input, confirm and commit. Open EmployeeServiceTest.java and press ▶ Run at the top right of the editor to run the tests without a container.
+        Run app, open http://localhost:8080/jakarta-faces-employee/EmployeeTablePage.xhtml and list, create, edit and delete employees.
+        The conversation-scoped EmployeeEditBean keeps the values through input, confirm and commit. Open EmployeeServiceTest.java and press Run file at the top right of the editor to run the tests without a container.
     openFiles:
       - README.md
 
@@ -233,10 +233,10 @@ exercises:
     descriptions:
       ja: >-
         web.xml で *.xhtml を FacesServlet に対応付け、HelloPage.xhtml の #{helloBean.message} がバッキングBean の値を表示します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-hello/HelloPage.xhtml が開き、「Hello, Alice!」が表示されます。
+        アプリ実行で http://localhost:8080/jakarta-faces-hello/HelloPage.xhtml が開き、「Hello, Alice!」が表示されます。
       en: >-
         web.xml maps *.xhtml to FacesServlet, and #{helloBean.message} in HelloPage.xhtml shows the value of the backing bean.
-        ▶ Run app opens http://localhost:8080/jakarta-faces-hello/HelloPage.xhtml and shows "Hello, Alice!".
+        Run app opens http://localhost:8080/jakarta-faces-hello/HelloPage.xhtml and shows "Hello, Alice!".
     openFiles:
       - README.md
 
@@ -253,10 +253,10 @@ exercises:
     descriptions:
       ja: >-
         値式とエスケープ、ui:repeat による繰り返し、rendered による条件、h:link と f:param、f:convertNumber・f:convertDateTime を確かめます。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-facelets-1/IndexPage.xhtml の目次が開きます。各画面を開いて、出力された HTML を確かめてください。
+        アプリ実行で http://localhost:8080/jakarta-faces-facelets-1/IndexPage.xhtml の目次が開きます。各画面を開いて、出力された HTML を確かめてください。
       en: >-
         Try value expressions and escaping, iteration with ui:repeat, conditions with rendered, h:link with f:param, and f:convertNumber and f:convertDateTime.
-        ▶ Run app opens the index at http://localhost:8080/jakarta-faces-facelets-1/IndexPage.xhtml. Open each page and look at the generated HTML.
+        Run app opens the index at http://localhost:8080/jakarta-faces-facelets-1/IndexPage.xhtml. Open each page and look at the generated HTML.
     openFiles:
       - README.md
 
@@ -273,10 +273,10 @@ exercises:
     descriptions:
       ja: >-
         選択肢を持つ入力部品、ui:composition と ui:insert によるテンプレート、リソースの CSS・JavaScript、メッセージバンドルとロケールの切り替えを確かめます。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-facelets-2/IndexPage.xhtml の目次が開きます。
+        アプリ実行で http://localhost:8080/jakarta-faces-facelets-2/IndexPage.xhtml の目次が開きます。
       en: >-
         Try input components with choices, templates with ui:composition and ui:insert, CSS and JavaScript resources, and message bundles with locale switching.
-        ▶ Run app opens the index at http://localhost:8080/jakarta-faces-facelets-2/IndexPage.xhtml.
+        Run app opens the index at http://localhost:8080/jakarta-faces-facelets-2/IndexPage.xhtml.
     openFiles:
       - README.md
 
@@ -293,10 +293,10 @@ exercises:
     descriptions:
       ja: >-
         h:inputText の値が CalcBean の Double のプロパティに設定され、h:commandButton の add が計算します。CalcAddByGetPage.xhtml は f:viewParam で GET のクエリを受け取ります。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml が開きます。curl/ のスクリプトでポストバックとビューパラメータを確かめてください（チャプター6.1でも使います）。
+        アプリ実行で http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml が開きます。curl/ のスクリプトでポストバックとビューパラメータを確かめてください（チャプター6.1でも使います）。
       en: >-
         Values of h:inputText are set to the Double properties of CalcBean, and add on h:commandButton calculates. CalcAddByGetPage.xhtml receives the GET query with f:viewParam.
-        ▶ Run app opens http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml. Use the scripts in curl/ to see the postback and the view parameters (also used in chapter 6.1).
+        Run app opens http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml. Use the scripts in curl/ to see the postback and the view parameters (also used in chapter 6.1).
     openFiles:
       - README.md
 
@@ -314,12 +314,12 @@ exercises:
     descriptions:
       ja: >-
         CalcBean の BigDecimal のプロパティに @NotNull・@Min・@Max を付け、エラーを h:message で項目ごとに再表示します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-calc-2-validation/CalcInputPage.xhtml を開き、空欄・abc・1001・-1000 と 1000・30 と 10 を送ってください。
-        curl/01_inputs.sh をエディタの右上の ▶ 実行で流すと、同じ入力をまとめて確かめられます。
+        アプリ実行で http://localhost:8080/jakarta-faces-calc-2-validation/CalcInputPage.xhtml を開き、空欄・abc・1001・-1000 と 1000・30 と 10 を送ってください。
+        curl/01_inputs.sh をエディタの右上の ファイル実行で流すと、同じ入力をまとめて確かめられます。
       en: >-
         @NotNull, @Min and @Max are put on the BigDecimal properties of CalcBean, and h:message shows the errors again per field.
-        ▶ Run app, open http://localhost:8080/jakarta-faces-calc-2-validation/CalcInputPage.xhtml and submit blank, abc, 1001, -1000 and 1000, and 30 and 10.
-        Run curl/01_inputs.sh with ▶ Run at the top right of the editor to try the same inputs at once.
+        Run app, open http://localhost:8080/jakarta-faces-calc-2-validation/CalcInputPage.xhtml and submit blank, abc, 1001, -1000 and 1000, and 30 and 10.
+        Run curl/01_inputs.sh with Run file at the top right of the editor to try the same inputs at once.
     openFiles:
       - README.md
 
@@ -336,11 +336,11 @@ exercises:
     descriptions:
       ja: >-
         足し算のゼロと引き算の同値を FacesMessage で知らせ、桁数と上限を MicroProfile Config から注入し、上限超過とゼロ除算の業務例外を CalcErrorPage へ変換します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml が開きます。
+        アプリ実行で http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml が開きます。
         curl/ のスクリプトで、業務検証・業務例外と、ViewExpiredException の ViewExpiredPage への変換を確かめてください。
       en: >-
         A zero in addition and equal values in subtraction are reported with FacesMessage, the scale and the limit are injected from MicroProfile Config, and the limit-over and divide-by-zero business exceptions turn into CalcErrorPage.
-        ▶ Run app opens http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml.
+        Run app opens http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml.
         Use the scripts in curl/ to see the business checks and exceptions, and ViewExpiredException turned into ViewExpiredPage.
     openFiles:
       - README.md
@@ -359,11 +359,11 @@ exercises:
     descriptions:
       ja: >-
         計算結果を Flash に入れて CalcOutputPage へリダイレクトします。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-calc-4-prg/CalcInputPage.xhtml を開き、計算した後に結果画面を再読み込みしてください。
+        アプリ実行で http://localhost:8080/jakarta-faces-calc-4-prg/CalcInputPage.xhtml を開き、計算した後に結果画面を再読み込みしてください。
         POST は再送されず、Flash の値は 1 回の表示で消えます。curl/01_prg.sh で 302 と 2 回の GET を確かめられます。
       en: >-
         The result is put into Flash and the app redirects to CalcOutputPage.
-        ▶ Run app, open http://localhost:8080/jakarta-faces-calc-4-prg/CalcInputPage.xhtml, calculate, and reload the result page.
+        Run app, open http://localhost:8080/jakarta-faces-calc-4-prg/CalcInputPage.xhtml, calculate, and reload the result page.
         The POST is not sent again and the Flash value is gone after one display. curl/01_prg.sh shows the 302 and the two GETs.
     openFiles:
       - README.md
@@ -381,11 +381,11 @@ exercises:
     descriptions:
       ja: >-
         計算結果を @ConversationScoped の CalcConversation に保持し、次の画面で税込金額を求めて会話を終了します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-calc-5-conversation/CalcInputPage.xhtml を開き、足し算 → 税込計算と進めて、アドレスの cid を見てください。
+        アプリ実行で http://localhost:8080/jakarta-faces-calc-5-conversation/CalcInputPage.xhtml を開き、足し算 → 税込計算と進めて、アドレスの cid を見てください。
         curl/01_conversation.sh で、終了した会話の cid が使えなくなることも確かめられます。
       en: >-
         The result is kept in the @ConversationScoped CalcConversation, the next page calculates the amount with tax, and the conversation ends.
-        ▶ Run app, open http://localhost:8080/jakarta-faces-calc-5-conversation/CalcInputPage.xhtml, go from addition to the tax calculation, and watch cid in the address.
+        Run app, open http://localhost:8080/jakarta-faces-calc-5-conversation/CalcInputPage.xhtml, go from addition to the tax calculation, and watch cid in the address.
         curl/01_conversation.sh also shows that the cid of an ended conversation can no longer be used.
     openFiles:
       - README.md
@@ -403,10 +403,10 @@ exercises:
     descriptions:
       ja: >-
         計算のたびに履歴を保存し、結果画面へは履歴の ID だけを付けてリダイレクトします。結果画面は f:viewParam と f:viewAction で履歴を取り直します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-calc-6-history/CalcInputPage.xhtml を開き、計算後に結果画面を再読み込みしたり、計算履歴から開いたりしてください。
+        アプリ実行で http://localhost:8080/jakarta-faces-calc-6-history/CalcInputPage.xhtml を開き、計算後に結果画面を再読み込みしたり、計算履歴から開いたりしてください。
       en: >-
         Each calculation is saved as history, and the app redirects to the result page with only the history ID. The result page reloads the history with f:viewParam and f:viewAction.
-        ▶ Run app, open http://localhost:8080/jakarta-faces-calc-6-history/CalcInputPage.xhtml, reload the result page after a calculation, and open past results from the history.
+        Run app, open http://localhost:8080/jakarta-faces-calc-6-history/CalcInputPage.xhtml, reload the result page after a calculation, and open past results from the history.
     openFiles:
       - README.md
 
@@ -424,11 +424,11 @@ exercises:
     descriptions:
       ja: >-
         @MultipartConfig を付けた FileUploadServlet が Part を受け取り、FileStorageService が検証して保存します。結果は /files/result?id=… の GET で表示します（PRG）。
-        ▶ アプリ実行で http://localhost:8080/jakarta-servlet-file-upload/ のアップロード画面が開きます。
+        アプリ実行で http://localhost:8080/jakarta-servlet-file-upload/ のアップロード画面が開きます。
         curl/ のスクリプトで、受け付けない形式・空のファイル・5MB を超えるファイル（413）を確かめてください。
       en: >-
         FileUploadServlet with @MultipartConfig receives the Part, and FileStorageService validates and stores it. The result is shown by a GET to /files/result?id=... (PRG).
-        ▶ Run app opens the upload page at http://localhost:8080/jakarta-servlet-file-upload/.
+        Run app opens the upload page at http://localhost:8080/jakarta-servlet-file-upload/.
         Use the scripts in curl/ to try a rejected format, an empty file and a file over 5 MB (413).
     openFiles:
       - README.md
@@ -446,10 +446,10 @@ exercises:
     descriptions:
       ja: >-
         h:inputFile の値が Part として FileUploadBean に設定され、FileStorageService が受け付けないと判断した理由は入力欄のメッセージになります。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-file-upload/FileUploadPage.xhtml が開きます。curl/01_upload.sh で、accept をすり抜けた .exe が拒否されることを確かめてください。
+        アプリ実行で http://localhost:8080/jakarta-faces-file-upload/FileUploadPage.xhtml が開きます。curl/01_upload.sh で、accept をすり抜けた .exe が拒否されることを確かめてください。
       en: >-
         The value of h:inputFile is set to FileUploadBean as a Part, and the reason FileStorageService rejects a file becomes the message of the input field.
-        ▶ Run app opens http://localhost:8080/jakarta-faces-file-upload/FileUploadPage.xhtml. Use curl/01_upload.sh to see that an .exe sent past accept is rejected.
+        Run app opens http://localhost:8080/jakarta-faces-file-upload/FileUploadPage.xhtml. Use curl/01_upload.sh to see that an .exe sent past accept is rejected.
     openFiles:
       - README.md
 
@@ -466,11 +466,11 @@ exercises:
     descriptions:
       ja: >-
         FileDownloadServlet が C:/tmp/output の下のファイルを、Content-Type・Content-Length・Content-Disposition を付けて返します。
-        先に curl/01_prepare_sample.sh をエディタの右上の ▶ 実行で流してファイルを用意し、▶ アプリ実行で http://localhost:8080/jakarta-servlet-file-download/ を開いてください。
+        先に curl/01_prepare_sample.sh をエディタの右上の ファイル実行で流してファイルを用意し、アプリ実行で http://localhost:8080/jakarta-servlet-file-download/ を開いてください。
         curl/02_download.sh・curl/03_not_found.sh で応答ヘッダーと 404 を確かめられます。
       en: >-
         FileDownloadServlet returns files under C:/tmp/output with Content-Type, Content-Length and Content-Disposition.
-        First run curl/01_prepare_sample.sh with ▶ Run at the top right of the editor to create the files, then ▶ Run app and open http://localhost:8080/jakarta-servlet-file-download/.
+        First run curl/01_prepare_sample.sh with Run file at the top right of the editor to create the files, then Run app and open http://localhost:8080/jakarta-servlet-file-download/.
         curl/02_download.sh and curl/03_not_found.sh show the response headers and the 404.
     openFiles:
       - README.md
@@ -489,11 +489,11 @@ exercises:
     descriptions:
       ja: >-
         @DataSourceDefinition で定義した DataSource を @Resource で受け取り、EmployeeRepository が PreparedStatement で検索・登録・更新・論理削除します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-employee-jdbc/EmployeeTablePage.xhtml が開きます。検索・ページ送り・登録・編集・削除を操作してください。
+        アプリ実行で http://localhost:8080/jakarta-faces-employee-jdbc/EmployeeTablePage.xhtml が開きます。検索・ページ送り・登録・編集・削除を操作してください。
         curl/ のスクリプトで、更新の競合（version）も確かめられます。DB はデプロイのたびに初期データへ戻ります。
       en: >-
         The DataSource defined with @DataSourceDefinition is injected with @Resource, and EmployeeRepository searches, inserts, updates and logically deletes with PreparedStatement.
-        ▶ Run app opens http://localhost:8080/jakarta-faces-employee-jdbc/EmployeeTablePage.xhtml. Search, page, create, edit and delete.
+        Run app opens http://localhost:8080/jakarta-faces-employee-jdbc/EmployeeTablePage.xhtml. Search, page, create, edit and delete.
         The scripts in curl/ also show the update conflict (version). The DB returns to the initial data on every deployment.
     openFiles:
       - README.md
@@ -512,11 +512,11 @@ exercises:
     descriptions:
       ja: >-
         同じ画面とテーブルを、@Entity のマッピングと EntityManager で読み書きします。更新の競合は @Version、更新と論理削除は永続化コンテキストの変更の検出で反映します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-employee-jpa/EmployeeTablePage.xhtml が開きます。
+        アプリ実行で http://localhost:8080/jakarta-faces-employee-jpa/EmployeeTablePage.xhtml が開きます。
         操作のたびに、実行結果に EclipseLink が発行した SQL が出ます。
       en: >-
         The same pages and tables are read and written with @Entity mappings and EntityManager. Conflicts are detected with @Version, and updates and logical deletes are applied by change detection in the persistence context.
-        ▶ Run app opens http://localhost:8080/jakarta-faces-employee-jpa/EmployeeTablePage.xhtml.
+        Run app opens http://localhost:8080/jakarta-faces-employee-jpa/EmployeeTablePage.xhtml.
         Each operation prints the SQL issued by EclipseLink in the run output.
     openFiles:
       - README.md
@@ -535,10 +535,10 @@ exercises:
     descriptions:
       ja: >-
         EmployeeRepository の検索を、指定された条件だけを組み立てる Criteria API に書き換えています。属性はアノテーションプロセッサが生成する Employee_ などで参照します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-employee-criteria/EmployeeTablePage.xhtml を開き、条件を変えて検索し、実行結果の SQL を見比べてください。
+        アプリ実行で http://localhost:8080/jakarta-faces-employee-criteria/EmployeeTablePage.xhtml を開き、条件を変えて検索し、実行結果の SQL を見比べてください。
       en: >-
         The search in EmployeeRepository is rewritten with the Criteria API, which builds only the given conditions. Attributes are referenced through Employee_ and the like, generated by an annotation processor.
-        ▶ Run app, open http://localhost:8080/jakarta-faces-employee-criteria/EmployeeTablePage.xhtml, search with different conditions and compare the SQL in the run output.
+        Run app, open http://localhost:8080/jakarta-faces-employee-criteria/EmployeeTablePage.xhtml, search with different conditions and compare the SQL in the run output.
     openFiles:
       - README.md
 
@@ -555,10 +555,10 @@ exercises:
     descriptions:
       ja: >-
         EmployeeRepository をインタフェースの宣言だけで書き、メソッド名による問い合わせ・@Find・@Query と PageRequest で検索します。実装クラスは Payara Server のプロバイダーが生成します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-data-employee/EmployeeTablePage.xhtml が開きます。氏名と月給の範囲で検索し、社員コードで編集画面を開いてください。
+        アプリ実行で http://localhost:8080/jakarta-data-employee/EmployeeTablePage.xhtml が開きます。氏名と月給の範囲で検索し、社員コードで編集画面を開いてください。
       en: >-
         EmployeeRepository is only an interface declaration, and searches use query by method name, @Find, @Query and PageRequest. The provider in Payara Server generates the implementation.
-        ▶ Run app opens http://localhost:8080/jakarta-data-employee/EmployeeTablePage.xhtml. Search by name and salary range, and open the edit page by employee code.
+        Run app opens http://localhost:8080/jakarta-data-employee/EmployeeTablePage.xhtml. Search by name and salary range, and open the edit page by employee code.
     openFiles:
       - README.md
 
@@ -576,11 +576,11 @@ exercises:
     descriptions:
       ja: >-
         FooBean（REQUIRED）が BarBean（REQUIRES_NEW）と QuxBean（REQUIRED）を呼び、QuxBean は引数が負なら更新した後に例外を送出します。
-        ▶ アプリ実行で http://localhost:8080/jakarta-tx/ を開き、100 と -5 を送ってから BUSINESS テーブルの値を見てください。
+        アプリ実行で http://localhost:8080/jakarta-tx/ を開き、100 と -5 を送ってから BUSINESS テーブルの値を見てください。
         curl/02_user_transaction.sh では、UserTransaction で 1 件ずつ確定・取り消しする BazBean を確かめられます。
       en: >-
         FooBean (REQUIRED) calls BarBean (REQUIRES_NEW) and QuxBean (REQUIRED); QuxBean throws after its update when the argument is negative.
-        ▶ Run app, open http://localhost:8080/jakarta-tx/, send 100 and -5, and look at the BUSINESS table.
+        Run app, open http://localhost:8080/jakarta-tx/, send 100 and -5, and look at the BUSINESS table.
         curl/02_user_transaction.sh shows BazBean, which commits or rolls back one item at a time with UserTransaction.
     openFiles:
       - README.md
@@ -599,10 +599,10 @@ exercises:
     descriptions:
       ja: >-
         GreetResource が、同じ名前の値をパス・クエリ・フォーム・JSON の本文・ヘッダーから受け取ります。
-        ▶ アプリ実行でデプロイし、curl/ のスクリプトをエディタの右上の ▶ 実行で 1 つずつ流してください。
+        アプリ実行でデプロイし、curl/ のスクリプトをエディタの右上の ファイル実行で 1 つずつ流してください。
       en: >-
         GreetResource reads the same name from the path, the query, a form, a JSON body and a header.
-        Deploy with ▶ Run app, then run the scripts in curl/ one by one with ▶ Run at the top right of the editor.
+        Deploy with Run app, then run the scripts in curl/ one by one with Run file at the top right of the editor.
     openFiles:
       - README.md
 
@@ -619,10 +619,10 @@ exercises:
     descriptions:
       ja: >-
         EmployeeResource が一覧・取得・登録・更新・削除を公開し、入力の DTO を @Valid で検証し、例外を ExceptionMapper で 400・404・409 に変換し、version を ETag にします。
-        ▶ アプリ実行でデプロイし、curl/ のスクリプトをエディタの右上の ▶ 実行で順に流してください。DB はデプロイのたびに初期データへ戻ります。
+        アプリ実行でデプロイし、curl/ のスクリプトをエディタの右上の ファイル実行で順に流してください。DB はデプロイのたびに初期データへ戻ります。
       en: >-
         EmployeeResource exposes list, get, create, update and delete, validates the input DTO with @Valid, turns exceptions into 400, 404 and 409 with ExceptionMapper, and uses version as the ETag.
-        Deploy with ▶ Run app and run the scripts in curl/ in order with ▶ Run at the top right of the editor. The DB returns to the initial data on every deployment.
+        Deploy with Run app and run the scripts in curl/ in order with Run file at the top right of the editor. The DB returns to the initial data on every deployment.
     openFiles:
       - README.md
 
@@ -639,12 +639,12 @@ exercises:
       en: 'The Jakarta REST client API'
     descriptions:
       ja: >-
-        ▶ アプリ実行で、呼び出し先の確認用の社員 API（/employee-api/api）がデプロイされます。
-        呼び出す側の Java コンソールは client/ にあり、client/run.sh を開いてエディタの右上の ▶ 実行で動かします。
+        アプリ実行で、呼び出し先の確認用の社員 API（/employee-api/api）がデプロイされます。
+        呼び出す側の Java コンソールは client/ にあり、client/run.sh を開いてエディタの右上の ファイル実行で動かします。
         取得・検索・登録・更新・削除と、削除後の 404 が順に出力されます。
       en: >-
-        ▶ Run app deploys the employee API to be called (/employee-api/api).
-        The calling Java console is in client/; open client/run.sh and press ▶ Run at the top right of the editor.
+        Run app deploys the employee API to be called (/employee-api/api).
+        The calling Java console is in client/; open client/run.sh and press Run file at the top right of the editor.
         It prints get, search, create, update, delete and the 404 after the delete, in order.
     openFiles:
       - README.md
@@ -662,11 +662,11 @@ exercises:
     descriptions:
       ja: >-
         インタフェース EmployeeApiClient の宣言だけで確認用の社員 API を呼び出す、Payara Server 上のアプリケーションです。
-        ▶ アプリ実行で、このアプリケーションと api/ の確認用 API が一緒にデプロイされ、http://localhost:8080/jakarta-mp-rest-client-employee/ が開きます。
-        「実行」を押すか、curl/01_run.sh をエディタの右上の ▶ 実行で流すと、呼び出しの記録が出ます。
+        アプリ実行で、このアプリケーションと api/ の確認用 API が一緒にデプロイされ、http://localhost:8080/jakarta-mp-rest-client-employee/ が開きます。
+        「実行」を押すか、curl/01_run.sh をエディタの右上の ファイル実行で流すと、呼び出しの記録が出ます。
       en: >-
         An application on Payara Server that calls the employee API only through the EmployeeApiClient interface declaration.
-        ▶ Run app deploys it together with the API in api/ and opens http://localhost:8080/jakarta-mp-rest-client-employee/.
-        Press the run button or run curl/01_run.sh with ▶ Run at the top right of the editor to see the call log.
+        Run app deploys it together with the API in api/ and opens http://localhost:8080/jakarta-mp-rest-client-employee/.
+        Press the run button or run curl/01_run.sh with Run file at the top right of the editor to see the call log.
     openFiles:
       - README.md

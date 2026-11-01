@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 教材用の発行者（issuer/。Keycloak と同じ形のパス）からアクセストークンを取り、社員API を Bearer トークンで呼ぶ
 # トークンの取得には、パスワードグラント（検証用の近道）を使う
-# 前提: 先に ▶ アプリ実行で jakarta-mpjwt-employee と教材用の発行者（issuer/）をデプロイしておく
+# 前提: 先に アプリ実行で jakarta-mpjwt-employee と教材用の発行者（issuer/）をデプロイしておく
 # 期待する結果:
 #   1つ目 トークンなしの GET /api/employees は 401
 #   2つ目 alice（groups: BASIC）のトークンで GET は 200

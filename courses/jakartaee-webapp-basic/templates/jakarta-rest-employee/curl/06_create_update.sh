@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 何をするか: 社員を登録し（POST）、応答の version を使って更新する（PUT）。もう一度古い version で更新する
-# 前提: 先に ▶ アプリ実行で WAR をデプロイしておく（デプロイし直すと初期データに戻る）
+# 前提: 先に アプリ実行で WAR をデプロイしておく（デプロイし直すと初期データに戻る）
 # 期待する結果:
 #   1. POST → 201、Location: …/api/employees/10017、ETag と version（登録の後に社員コードを UPDATE するので 0 とは限らない）
 #   2. PUT（応答の version）→ 200 と、version が 1 増えた社員

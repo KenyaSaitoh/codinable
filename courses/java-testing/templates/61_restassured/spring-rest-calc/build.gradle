@@ -1,0 +1,24 @@
+// spring-rest-calc: テスト対象の Spring Boot アプリケーション（ポート 8080）
+// テストのプロジェクト（1 つ上のフォルダー）の codinable.services.json から、アプリ実行のときに一緒に起動する
+plugins {
+    id "java"
+    id "org.springframework.boot" version "4.1.2"
+    id "io.spring.dependency-management" version "1.1.7"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation "org.springframework.boot:spring-boot-starter-webmvc"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+}

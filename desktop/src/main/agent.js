@@ -200,7 +200,7 @@ function buildAgentSystemPrompt({ uiLang, project, kinds, runTargets, courseName
     '## できないこと',
     '- 演習のディレクトリの外を読むこと・書くことはできません (道具の側で弾かれます)。',
     '- プログラムを動かすことはできません。実行は受講者がボタンで行います。',
-    '  動かして確かめてほしいときは、どのボタンを押すか (ファイル単位なら、どのファイルを開いてエディタの ▶ 実行を押すか) を伝えてください。',
+    '  動かして確かめてほしいときは、どのボタンを押すか (ファイル単位なら、どのファイルを開いてエディタの ファイル実行を押すか) を伝えてください。',
     '',
     '## 進め方',
     '- まず何をするつもりかを 1〜2 行で書いてから道具を使ってください。',
@@ -224,8 +224,8 @@ function buildAgentSystemPrompt({ uiLang, project, kinds, runTargets, courseName
 function describeRunTargets(info) {
   const run = info.run || {};
   const targets = [];
-  if (run.app) targets.push(`ツールバーの「▶ アプリ実行」= ${run.app}`);
-  targets.push('エディタのタブの右上の「▶ 実行」= 開いているファイルだけ (テストクラス・main・SQL・シェルなど、単独で動かせるファイルのとき。テストはテストクラスを開いてこれで流す)');
+  if (run.app) targets.push(`ツールバーの「アプリ実行」= ${run.app}`);
+  targets.push('エディタのタブの右上の「ファイル実行」= 開いているファイルだけ (テストクラス・main・SQL・シェルなど、単独で動かせるファイルのとき。テストはテストクラスを開いてこれで流す)');
   return targets;
 }
 

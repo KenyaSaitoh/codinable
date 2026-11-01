@@ -1,5 +1,5 @@
 // jakarta-faces-calc-1-request: Faces のフォームとビューパラメータ（計算アプリケーション 1）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

@@ -1,0 +1,5 @@
+regionCode,amount,expectedFee
+"R01",3000,0
+"R01",2999,500
+"R99",5000,500
+"R99",4999,1000

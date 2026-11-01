@@ -23,10 +23,10 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/tx/` の下にあり�
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-tx/` が開く
+1. ツールバーの アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-tx/` が開く
 2. 画面から `param` に `100`、続けて `-5` を送り、そのたびに「BUSINESS テーブルの今の値」を開く
-3. `curl/01_propagation.sh`、`curl/02_user_transaction.sh` を開いて、エディタの右上の ▶ 実行で流す
-   （値は足し込まれていく。▶ アプリ実行でデプロイし直すと 0 に戻る）
+3. `curl/01_propagation.sh`、`curl/02_user_transaction.sh` を開いて、エディタの右上の ファイル実行で流す
+   （値は足し込まれていく。アプリ実行でデプロイし直すと 0 に戻る）
 
 ## 結果のどこを見るか
 

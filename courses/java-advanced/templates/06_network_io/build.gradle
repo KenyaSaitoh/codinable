@@ -1,0 +1,55 @@
+// ═══════════════════════════════════════════════════════════
+//  06_network_io（Java Advanced の演習）
+//  ファイル実行は run -PmainClass=完全修飾クラス名 を流す。実行は同時に 1 本だけなので、
+//  クライアントを ファイル実行するとサーバーは止まる。そこで、クライアントの相手のサーバーは
+//  codinable.services.json の processes で server/ から一緒に起動する（出力は [server] 付き）
+//    - クライアントの run は、そのサーバーの待ち受けが始まるまで待ってから動く
+//    - サーバーを ファイル実行するときは、同じポートを持つ [server] を先に止める
+// ═══════════════════════════════════════════════════════════
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClass = project.hasProperty('mainClass') ? project.property('mainClass') : 'pro.kensait.java.advanced.lsn_6_1_2.Main'
+}
+
+// server/ の ServerLauncher が開く確認用のポート
+def launcherPort = 55556
+
+tasks.named('run', JavaExec) {
+    workingDir = projectDir
+    doFirst {
+        def cls = application.mainClass.get()
+        if (cls =~ /\.(client|httpclient)\./) {
+            // 一緒に起動した [server] の待ち受けを待つ（初回はコンパイルがあるので少しかかる）
+            logger.lifecycle('[server] の起動を待っています...')
+            def until = System.currentTimeMillis() + 180_000
+            while (System.currentTimeMillis() < until) {
+                try { new Socket('localhost', launcherPort).close(); break }
+                catch (IOException ignored) { sleep(500) }
+            }
+        } else if (cls =~ /\.(server|nonblockingserver|httpserver)\./) {
+            // 前のクライアントと一緒に起動した [server] が同じポートを持っていれば止める
+            try {
+                def socket = new Socket('localhost', launcherPort)
+                socket.outputStream.write('S'.bytes)
+                socket.close()
+                sleep(1000)
+            } catch (IOException ignored) { /* 動いていない */ }
+        }
+    }
+}

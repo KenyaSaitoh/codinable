@@ -2,7 +2,7 @@
 # 何をするか: 入力画面を GET で開き、その画面自身へフォームを POST で送る（ポストバック）
 #             Faces のフォームは、入力欄の名前が calcForm:param1 のようなクライアントIDになり、
 #             画面の状態を表す jakarta.faces.ViewState も一緒に送る
-# 前提: 先に ▶ アプリ実行で WAR をデプロイしておく
+# 前提: 先に アプリ実行で WAR をデプロイしておく
 # 期待する結果: 「計算結果 ---> 40.0」を含む CalcOutputPage の HTML（URL は CalcInputPage.xhtml のまま）
 URL=http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml
 jar=$(mktemp)

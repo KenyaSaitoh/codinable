@@ -2,7 +2,7 @@
 
 Leaf Books の画面です。データは親フォルダの REST API（`http://localhost:8080`）から取得します。
 
-親フォルダで ▶ アプリ実行を押すと、REST API と Customer Hub と一緒にこの画面の開発サーバー
+親フォルダで アプリ実行を押すと、REST API と Customer Hub と一緒にこの画面の開発サーバー
 （`npm run dev`、`http://localhost:5173`）も起動し、待ち受けを始めるとプレビューがこの画面に移ります
 （親フォルダの `codinable.services.json`。出力には `[frontend]` が付きます）。
 依存（`node_modules`）が無いときは、起動の前に `npm install` が自動で走ります。

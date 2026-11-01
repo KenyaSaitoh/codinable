@@ -1,0 +1,35 @@
+// 42_database_rider: Database Rider による宣言的なデータベーステスト（チャプター4.2）
+// DB はインメモリの HSQLDB。テーブルはテスト開始時に src/test/resources/schema.sql から作る（SchemaInitializer）
+plugins {
+    id "java"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform("org.junit:junit-bom:6.1.3")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    // SchemaInitializer をコンパイルするためだけに使う
+    testCompileOnly "org.junit.platform:junit-platform-launcher"
+    testImplementation "com.github.database-rider:rider-junit5:1.44.0"
+    runtimeOnly "org.hsqldb:hsqldb:2.7.4"
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        showStandardStreams = true
+        events "passed", "failed", "skipped"
+        exceptionFormat = "full"
+    }
+}

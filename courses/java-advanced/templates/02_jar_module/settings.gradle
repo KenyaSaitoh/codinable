@@ -1,0 +1,4 @@
+rootProject.name = '02_jar_module'
+
+include '02_module_foo_library'
+include '02_module_hoge_app'

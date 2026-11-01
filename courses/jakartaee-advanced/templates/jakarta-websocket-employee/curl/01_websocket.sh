@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # WebSocket のエンドポイントへ 2 本の接続を張り、配信と入力エラーの戻り先を確かめる
 # （curl は WebSocket を話せないので、同梱の Node.js の WebSocket で接続する）
-# 前提: 先に ▶ アプリ実行で jakarta-websocket-employee をデプロイしておく
+# 前提: 先に アプリ実行で jakarta-websocket-employee をデプロイしておく
 # 期待する結果:
 #   [A] と [B] の両方に、A が送った Alice の通知（occurredAt はサーバーの時刻）が届く
 #   社員名が空の通知と、JSON として読めないメッセージには、A だけに {"error":"..."} が返る（B には届かない）

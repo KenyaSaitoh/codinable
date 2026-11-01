@@ -314,7 +314,7 @@ function pipInstallStep(projectDir, env) {
 
 // ── 実行仕様の組み立て ─────────────────────────────────────
 
-// エディタの「▶ 実行」で Gradle のプロジェクトの main を 1 つだけ動かすタスク
+// エディタの「ファイル実行」で Gradle のプロジェクトの main を 1 つだけ動かすタスク
 // (-PmainClass を受け取らない build.gradle 向け。workspace.js の gradleMainTarget)
 // run タスクがあれば、その JVM 引数・システムプロパティ・作業ディレクトリを引き継ぐ
 const MAIN_INIT_SCRIPT = `
@@ -351,7 +351,7 @@ function buildSpec({ kind, projectDir, relPath, task, uiLang }) {
       const wrapper = ensureGradleWrapper(projectDir);
       if (!wrapper.ok) throw new Error(wrapper.error);
 
-      // '=' は「▶ 実行」で main を 1 つ選ぶ -PmainClass=… / -PcodinableMain=… のため
+      // '=' は「ファイル実行」で main を 1 つ選ぶ -PmainClass=… / -PcodinableMain=… のため
       const safeTask = /^[\w:.= -]+$/.test(String(task || '').trim())
         ? String(task).trim() : 'build';
       const words = safeTask.split(/\s+/);
@@ -740,7 +740,7 @@ function isRunning() {
 
 // ── 脇で動かすシェル ─────────────────────────────────────
 //
-// API を叩く curl のスクリプト (curl/01_get.sh など) は、▶ アプリ実行で起動した
+// API を叩く curl のスクリプト (curl/01_get.sh など) は、アプリ実行で起動した
 // アプリに向けて送るものなので、実行中のアプリを止めずに脇で動かす
 // 動かし続けるスクリプト (client/serve.sh の静的サーバーなど) もあるので、
 // 脇のスクリプトは同時にいくつでも動かせる。同じスクリプトをもう一度動かしたときだけ

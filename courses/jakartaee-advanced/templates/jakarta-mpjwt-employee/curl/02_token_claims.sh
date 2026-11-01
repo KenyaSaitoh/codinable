@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # bob のアクセストークンのヘッダーとペイロードを Base64URL から戻して表示する
 # （署名付き JWT の中身は誰でも読める。署名は改ざんの検出のためで、秘匿のためではない）
-# 前提: 先に ▶ アプリ実行で jakarta-mpjwt-employee と教材用の発行者（issuer/）をデプロイしておく
+# 前提: 先に アプリ実行で jakarta-mpjwt-employee と教材用の発行者（issuer/）をデプロイしておく
 # 期待する結果: ヘッダーの alg（RS256）・kid と、ペイロードの iss・aud（employee-api を含む）・exp・iat・
 #               preferred_username（bob）・groups（["ADMIN"]）・employee_roles が表示される
 set -x

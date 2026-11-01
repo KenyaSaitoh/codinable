@@ -14,8 +14,8 @@
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行で起動する
-2. 起動したまま、`curl/` のスクリプトを順に開いて、エディタの右上の ▶ 実行で送る
+1. ツールバーの アプリ実行で起動する
+2. 起動したまま、`curl/` のスクリプトを順に開いて、エディタの右上の ファイル実行で送る
    - `01_api_root.sh` … `http://localhost:8080/api` で 3 つの Repository へのリンク
    - `02_paging.sh`・`03_masters.sh` … HAL の `_embedded`・`_links`・`page`
    - `04_search.sh`・`05_projection.sh` … `/search` 配下の検索メソッドと Projection
@@ -31,20 +31,20 @@
 API は `http://localhost:5500` と `http://127.0.0.1:5500` からのアクセスだけを CORS で許可しているので、
 5500 番で配信します。
 
-1. ▶ アプリ実行で API を起動したまま、`client/serve.sh` を開いてエディタの右上の ▶ 実行で配信を始める
+1. アプリ実行で API を起動したまま、`client/serve.sh` を開いてエディタの右上の ファイル実行で配信を始める
    （`python -m http.server 5500 --bind 127.0.0.1 --directory client/src` がアプリの脇で動き続ける）
 2. プレビューの URL に `http://127.0.0.1:5500` を入れて開く
 
-配信は「停止」で止まります。別のスクリプト（`curl/` など）を ▶ 実行したときも止まるので、
+配信は「停止」で止まります。別のスクリプト（`curl/` など）を ファイル実行したときも止まるので、
 画面を使うときは curl のスクリプトと交互に使わず、必要になったら `client/serve.sh` を動かし直してください。
 
 ## テスト
 
-`src/test/java/pro/kensait/spring/employee/EmployeeDataRestTest.java` を開いてエディタの右上の ▶ 実行で流すと、
+`src/test/java/pro/kensait/spring/employee/EmployeeDataRestTest.java` を開いてエディタの右上の ファイル実行で流すと、
 生成された HTTP API を実 DB 込みで確かめます。
 
 ## DB について
 
 サンプルは起動時に `--spring.profiles.active=demo` を付けて、インメモリの HSQLDB を使っていました。
-Codinable の ▶ アプリ実行は引数を渡さないので、`application.yml` に `spring.profiles.default: demo` を書き、
+Codinable の アプリ実行は引数を渡さないので、`application.yml` に `spring.profiles.default: demo` を書き、
 何も指定しなければ demo（起動のたびに初期データへ戻るインメモリ DB）になるようにしてあります。

@@ -1,0 +1,54 @@
+// 81_gatling: Gatling による負荷テスト（チャプター8.1）
+// 負荷をかける対象の spring-bookstore-mvc（8080）と spring-bookstore-rest（8081）はサブフォルダーの独立したプロジェクト
+// アプリ実行で 2 つを起動してから、scripts/01_gatling_run.sh を開いて ファイル実行する（gatlingRun）
+plugins {
+    id "java"
+    id "io.gatling.gradle" version "3.16.0"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
+
+repositories {
+    mavenCentral()
+}
+
+gatling {
+    gatlingVersion = "3.16.0"
+    // JDK 25 で Gatling を動かすための起動オプション
+    jvmArgs = [
+        "-Dfile.encoding=UTF-8",
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--enable-native-access=ALL-UNNAMED"
+    ]
+}
+
+// アプリ実行で動くタスク。codinable.services.json の processes が
+// テスト対象の Spring Boot アプリを起動するので、ここではポートが開くまで待って案内を出す
+def waitForPorts = { Map<String, Integer> apps ->
+    long limit = System.currentTimeMillis() + 10 * 60 * 1000
+    apps.each { name, port ->
+        boolean ready = false
+        while (!ready) {
+            try {
+                new Socket("localhost", port).close()
+                ready = true
+            } catch (IOException ignored) {
+                if (System.currentTimeMillis() > limit) {
+                    throw new GradleException("${name} が起動しません（ポート ${port}）。実行結果の [${name}] の行を確かめてください")
+                }
+                sleep(1000)
+            }
+        }
+        println "${name} が起動しました（ポート ${port}）"
+    }
+    println "起動したまま、scripts/01_gatling_run.sh を開いてエディタの右上の ファイル実行を押してください"
+}
+
+tasks.register("waitForApps") {
+    doLast { waitForPorts(["spring-bookstore-rest": 8081, "spring-bookstore-mvc": 8080]) }
+}

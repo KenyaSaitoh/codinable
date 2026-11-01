@@ -6,9 +6,9 @@ Kafka の公式のクライアントライブラリ（`kafka-clients`）を WAR 
 
 | 場所 | 中身 | 動かし方 |
 |---|---|---|
-| このフォルダ直下 | 送信側（`http://localhost:8080/jakarta-kafka-employee/api/events`） | ▶ アプリ実行 |
-| `consumer/` | 受信側（`http://localhost:8080/jakarta-kafka-employee-consumer/api/events` が受信履歴） | ▶ アプリ実行で同じ Payara Server に一緒にデプロイ |
-| Codinable 同梱の Kafka | ブローカー（127.0.0.1:9092） | ▶ アプリ実行の前に自動で起動（出力欄の右に「Kafka」が出る） |
+| このフォルダ直下 | 送信側（`http://localhost:8080/jakarta-kafka-employee/api/events`） | アプリ実行 |
+| `consumer/` | 受信側（`http://localhost:8080/jakarta-kafka-employee-consumer/api/events` が受信履歴） | アプリ実行で同じ Payara Server に一緒にデプロイ |
+| Codinable 同梱の Kafka | ブローカー（127.0.0.1:9092） | アプリ実行の前に自動で起動（出力欄の右に「Kafka」が出る） |
 
 ## 見るファイル
 
@@ -21,8 +21,8 @@ Kafka の公式のクライアントライブラリ（`kafka-clients`）を WAR 
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。Kafka が起動し、受信側・送信側の順にデプロイされる。プレビューに受信履歴が開く
-2. `curl/01_send_event.sh` を開いて、エディタの右上の ▶ 実行を押す。同じ `eventId` のイベントを 2 回送り、受信履歴を確かめる
+1. ツールバーの アプリ実行を押す。Kafka が起動し、受信側・送信側の順にデプロイされる。プレビューに受信履歴が開く
+2. `curl/01_send_event.sh` を開いて、エディタの右上の ファイル実行を押す。同じ `eventId` のイベントを 2 回送り、受信履歴を確かめる
 
 ## 結果のどこを見るか
 

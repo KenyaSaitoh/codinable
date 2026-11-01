@@ -1,5 +1,5 @@
 // jakarta-async-employee: Jakarta Concurrency・非同期 CDI イベント・Jakarta REST の非同期応答と SSE
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // SSE の受信クライアント（EmployeeStreamClient）は client/ にある別の Gradle プロジェクト（client/run.sh で動かす）
 plugins {
     id 'war'

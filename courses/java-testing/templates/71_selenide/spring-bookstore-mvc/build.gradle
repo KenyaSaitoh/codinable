@@ -1,0 +1,38 @@
+// spring-bookstore-mvc: テスト対象の Spring Boot アプリケーション（ポート 8080）
+// テストのプロジェクト（1 つ上のフォルダー）の codinable.services.json から、アプリ実行のときに一緒に起動する
+// テックブックストアの画面。顧客情報は spring-bookstore-rest（ポート 8081）から取得する
+plugins {
+    id "java"
+    id "org.springframework.boot" version "4.1.2"
+    id "io.spring.dependency-management" version "1.1.7"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation "org.springframework.boot:spring-boot-starter-webmvc"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE"
+    runtimeOnly "org.hsqldb:hsqldb:2.7.4"
+}
+
+processResources {
+    from("sql/hsqldb") {
+        include "2_*.sql", "3_*.sql"
+        into "db"
+    }
+}

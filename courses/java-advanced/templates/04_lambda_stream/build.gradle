@@ -1,0 +1,30 @@
+// ═══════════════════════════════════════════════════════════
+//  04_lambda_stream（Java Advanced の演習）
+//  main を持つクラスを 1 つずつ動かす Java のコンソールプログラム
+//  ファイル実行は run -PmainClass=完全修飾クラス名 を流す
+// ═══════════════════════════════════════════════════════════
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClass = project.hasProperty('mainClass') ? project.property('mainClass') : 'pro.kensait.java.advanced.lsn_4_1_2.comparator.Main_3'
+}
+
+tasks.named('run', JavaExec) {
+    // 相対パスのファイルは、プロジェクト直下を起点に読み書きする
+    workingDir = projectDir
+}

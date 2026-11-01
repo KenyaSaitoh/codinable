@@ -9,7 +9,7 @@
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行で起動する
+1. ツールバーの アプリ実行で起動する
 2. `http://localhost:8080/fuga?param=100` を開くと `NORMAL END`
 3. `http://localhost:8080/fuga?param=-5` を開くと `ERROR OCCURED!!!`
 4. 実行ログで `[ BarBean#doBusiness ]` と `[ QuxBean#doBusiness ]` の Start / End の順を確かめる

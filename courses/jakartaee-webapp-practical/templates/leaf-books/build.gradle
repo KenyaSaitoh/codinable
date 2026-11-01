@@ -1,4 +1,4 @@
-// leaf-books: Leaf Books の書店 API（Jakarta REST）。▶ アプリ実行で WAR を作り、同梱の Payara Server 7 へデプロイする
+// leaf-books: Leaf Books の書店 API（Jakarta REST）。アプリ実行で WAR を作り、同梱の Payara Server 7 へデプロイする
 // 元のサンプル（learn_jee_aidd_practical）は親 build.gradle の subprojects{} で設定していたが、
 // Codinable では単独で動く必要があるため 1 ファイルに畳んでいる
 // SpotBugs / Checkstyle / PIT / OWASP Dependency-Check の設定は講座本編で使わないので入れていない

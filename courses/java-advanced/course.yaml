@@ -1,0 +1,894 @@
+# ═══════════════════════════════════════════════════════════
+#  Udemy「Java Advanced」の演習
+#
+#  講座の原稿の出典行（03_thread_concurrent: pro.kensait...Main）のフォルダーを、そのまま 1 つずつの
+#  Gradle プロジェクトにして templates/ に置いている。1 つのプロジェクトを複数のレッスンの演習で使う
+#  run の -PmainClass がレッスンごとに最初に動かす main。ほかの main はファイルを開いて ファイル実行で動かす
+#  06_network_io はサーバーを codinable.services.json の processes で一緒に起動する
+# ═══════════════════════════════════════════════════════════
+id: java-advanced
+order: 22
+# 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
+version: 1.0.0
+
+names:
+  ja: Java Advanced
+  en: Java Advanced
+
+descriptions:
+  ja: >-
+    モジュール、スレッドと並行処理、ラムダ式とストリーム、入出力、総称型、リフレクション、アノテーション、レコードの仕組みを、
+    短いコードを動かして確かめる講座の演習です。どの演習も Java のコンソールプログラムで、main を持つクラスを開いて
+    エディタの右上の ファイル実行で動かします。サーバーとクライアントの演習は、クライアントの ファイル実行でサーバーも一緒に起動します。
+  en: >-
+    Exercises for the course that checks, by running short programs, how modules, threads and concurrency, lambdas and
+    streams, I/O, generics, reflection, annotations and records work. Every exercise is a Java console program: open a class
+    with a main method and press Run file at the top right of the editor. In the server and client exercises, running a client
+    also starts its server.
+
+# チャプター名（演習一覧の見出し。原稿 1.1 の構成表のチャプターを並べている）
+chapters:
+  '2.1':
+    ja: 'モジュールシステムの構造'
+    en: 'The Structure of the Module System'
+  '3.1':
+    ja: 'スレッドの仕組みとスレッドセーフ'
+    en: 'Threads and Thread Safety'
+  '3.2':
+    ja: 'Executorフレームワークと非同期タスク'
+    en: 'The Executor Framework and Asynchronous Tasks'
+  '3.3':
+    ja: '同期化支援と並行コレクション'
+    en: 'Synchronizers and Concurrent Collections'
+  '4.1':
+    ja: 'ラムダ式と関数型インタフェースの仕組み'
+    en: 'Lambdas and Functional Interfaces'
+  '4.2':
+    ja: 'ストリームのパイプラインの構造'
+    en: 'The Structure of Stream Pipelines'
+  '5.1':
+    ja: 'ファイル入出力の仕組み'
+    en: 'File I/O'
+  '5.2':
+    ja: 'バイト配列ストリームとシリアライズ'
+    en: 'Byte Array Streams and Serialization'
+  '6.1':
+    ja: 'TCPとUDPによるネットワーク'
+    en: 'Networking with TCP and UDP'
+  '6.2':
+    ja: 'HTTPによるアプリケーション連携'
+    en: 'Application Integration over HTTP'
+  '7.1':
+    ja: '総称型の仕組み'
+    en: 'How Generics Work'
+  '8.1':
+    ja: 'クラスローダーの仕組みとClassクラス'
+    en: 'Class Loaders and the Class Class'
+  '8.2':
+    ja: 'リフレクションの仕組みとAPI'
+    en: 'Reflection'
+  '8.3':
+    ja: 'アノテーションの仕組みとAPI'
+    en: 'Annotations'
+  '9.1':
+    ja: 'レコードによる不変のデータの設計'
+    en: 'Designing Immutable Data with Records'
+
+exercises:
+  # ── チャプター2 ─────────────────────────────
+  - id: module-access
+    dir: 02_jar_module
+    chapter: '2.1'
+    lesson: '2.1.2 依存・公開・読み取り可能性'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: module-access
+    names:
+      ja: 'requires・exports とモジュール間のアクセス'
+      en: 'requires, exports and access between modules'
+    descriptions:
+      ja: >-
+        2 つの module-info.java と Application を読み、アプリ実行で hoge モジュールを動かして 13 が表示されることを見ます。Application のコメントを外すと、Common が exports されていないためコンパイルエラーになります。
+      en: >-
+        Read the two module-info.java files and Application, then press Run app to run the hoge module and see 13. Uncommenting the Common call gives a compile error because its package is not exported.
+    openFiles:
+      - README.md
+
+  # ── チャプター3 ─────────────────────────────
+  - id: thread-memory
+    dir: 03_thread_concurrent
+    chapter: '3.1'
+    lesson: '3.1.1 スレッドとメモリーの関係'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_1_1.runnable.Main_Lambda'
+    suggestName: thread-memory
+    names:
+      ja: 'スレッドの作成と start()'
+      en: 'Creating threads and start()'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_1_1.runnable.Main_Lambda を動かし、[ Main ] finish が先に表示された後でタスクの合計値が表示されることを見ます。thread.Main も同じように動かせます。
+      en: >-
+        Press Run app to run lsn_3_1_1.runnable.Main_Lambda: [ Main ] finish appears first and the task total later. thread.Main works the same way.
+    openFiles:
+      - README.md
+
+  - id: thread-join
+    dir: 03_thread_concurrent
+    chapter: '3.1'
+    lesson: '3.1.2 スレッドの状態と待ち合わせ・割り込み'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_1_1.join.Main'
+    suggestName: thread-join
+    names:
+      ja: 'join() による待ち合わせ'
+      en: 'Waiting with join()'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_1_1.join.Main を動かし、t2（5 秒）と t1（8 秒）が終わってからメインスレッド終了が表示されることを見ます。
+      en: >-
+        Press Run app to run lsn_3_1_1.join.Main: the main thread finishes only after t2 (5 s) and t1 (8 s).
+    openFiles:
+      - README.md
+
+  - id: thread-race
+    dir: 03_thread_concurrent
+    chapter: '3.1'
+    lesson: '3.1.3 競合状態・可視性と同期化'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_1_2.unsafe.Main'
+    suggestName: thread-race
+    names:
+      ja: '競合状態と synchronized'
+      en: 'Race conditions and synchronized'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_1_2.unsafe.Main を何度か動かし、最終的な値が 30 にならず毎回変わることを見ます。safe.Main を開いてファイル実行すると常に 30 になります。
+      en: >-
+        Press Run app a few times to run lsn_3_1_2.unsafe.Main: the final value changes and misses 30. Open safe.Main and press Run file: it is always 30.
+    openFiles:
+      - README.md
+
+  - id: thread-deadlock-lock
+    dir: 03_thread_concurrent
+    chapter: '3.1'
+    lesson: '3.1.4 デッドロックと明示的なロック'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_1_2.readwritelock.Main'
+    suggestName: thread-deadlock-lock
+    names:
+      ja: 'デッドロックと ReentrantReadWriteLock'
+      en: 'Deadlock and ReentrantReadWriteLock'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_1_2.readwritelock.Main を動かし、最終的な値が 30 になることを見ます。deadlock.Main は開いてファイル実行し、出力が止まったら出力欄の「停止」で終わらせます。
+      en: >-
+        Press Run app to run lsn_3_1_2.readwritelock.Main and see 30. Open deadlock.Main, press Run file, and press Stop in the output pane once the output freezes.
+    openFiles:
+      - README.md
+
+  - id: thread-wait-notify
+    dir: 03_thread_concurrent
+    chapter: '3.1'
+    lesson: '3.1.5 wait()とnotify()によるスレッド間通信'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_1_3.Main'
+    suggestName: thread-wait-notify
+    names:
+      ja: 'wait() と notify()'
+      en: 'wait() and notify()'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_1_3.Main を動かし、BarThread の 5 秒の計算の後で FooThread が 12345 を受け取ることを見ます。
+      en: >-
+        Press Run app to run lsn_3_1_3.Main: FooThread receives 12345 after the 5-second calculation in BarThread.
+    openFiles:
+      - README.md
+
+  - id: thread-immutable-local
+    dir: 03_thread_concurrent
+    chapter: '3.1'
+    lesson: '3.1.6 共有しない設計：イミュータブルとスレッドローカル'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_1_4.Main'
+    suggestName: thread-immutable-local
+    names:
+      ja: 'イミュータブルとスレッドローカル'
+      en: 'Immutability and thread-local values'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_1_4.Main を動かし、引数で渡していない "Alice" を Foo#process() が取り出すことを見ます。lsn_3_1_2.immutable.Main を開いてファイル実行すると、両方のスレッドが foo!!!!!!!!!! になります。
+      en: >-
+        Press Run app to run lsn_3_1_4.Main: Foo#process() gets "Alice" without an argument. Open lsn_3_1_2.immutable.Main and press Run file: both threads end with foo!!!!!!!!!!.
+    openFiles:
+      - README.md
+
+  - id: executor-pool
+    dir: 03_thread_concurrent
+    chapter: '3.2'
+    lesson: '3.2.2 スレッドプールの種類と選び方'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_2_2.Main_Cached'
+    suggestName: executor-pool
+    names:
+      ja: 'スレッドプールの種類'
+      en: 'Kinds of thread pools'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_2_2.Main_Cached を動かし、3 つのタスクが並列に動くことを見ます。Main_Single と Main_Fixed は開いてファイル実行します。shutdown しないのでプログラムは終わらず、出力欄の「停止」で終わらせます。
+      en: >-
+        Press Run app to run lsn_3_2_2.Main_Cached and see three tasks in parallel. Open Main_Single and Main_Fixed and press Run file; they never shut down, so press Stop in the output pane.
+    openFiles:
+      - README.md
+
+  - id: executor-shutdown
+    dir: 03_thread_concurrent
+    chapter: '3.2'
+    lesson: '3.2.3 ExecutorServiceのシャットダウン'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_2_2.Main_Await'
+    suggestName: executor-shutdown
+    names:
+      ja: 'shutdown と awaitTermination'
+      en: 'shutdown and awaitTermination'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_2_2.Main_Await を動かし、12 秒待っても終わらないタスクが shutdownNow() で割り込まれる流れを出力で見ます。
+      en: >-
+        Press Run app to run lsn_3_2_2.Main_Await and follow in the output how a task still running after 12 seconds is interrupted by shutdownNow().
+    openFiles:
+      - README.md
+
+  - id: executor-schedule
+    dir: 03_thread_concurrent
+    chapter: '3.2'
+    lesson: '3.2.4 ScheduledExecutorServiceによる定期実行'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_2_3.Main_Schedule'
+    suggestName: executor-schedule
+    names:
+      ja: '遅延実行と定期実行'
+      en: 'Delayed and periodic execution'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_2_3.Main_Schedule を動かします。Main_FixedRate と Main_FixedDelay は開いてファイル実行し、繰り返しの間隔を見比べてから出力欄の「停止」で終わらせます。
+      en: >-
+        Press Run app to run lsn_3_2_3.Main_Schedule. Open Main_FixedRate and Main_FixedDelay, press Run file, compare the intervals, then press Stop in the output pane.
+    openFiles:
+      - README.md
+
+  - id: executor-future
+    dir: 03_thread_concurrent
+    chapter: '3.2'
+    lesson: '3.2.5 FutureとCallableによる結果と例外の受け取り'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_2_4.callable.Main_Get_3'
+    suggestName: executor-future
+    names:
+      ja: 'Future と Callable'
+      en: 'Future and Callable'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_2_4.callable.Main_Get_3 を動かし、get() で結果を受け取る時点を見ます。Main_Timeout と exception.Main は開いてファイル実行します。
+      en: >-
+        Press Run app to run lsn_3_2_4.callable.Main_Get_3 and see when get() returns. Open Main_Timeout and exception.Main and press Run file.
+    openFiles:
+      - README.md
+
+  - id: executor-invokeall
+    dir: 03_thread_concurrent
+    chapter: '3.2'
+    lesson: '3.2.6 複数タスクの一括実行と分割処理'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_2_5.invokeall.Main'
+    suggestName: executor-invokeall
+    names:
+      ja: 'invokeAll と分割処理'
+      en: 'invokeAll and splitting work'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_2_5.invokeall.Main を動かし、約 15 秒後に結果がまとめて表示されることを見ます。collection.Main を開いてファイル実行すると合計値 5000050000 が表示されます。
+      en: >-
+        Press Run app to run lsn_3_2_5.invokeall.Main: all results appear together after about 15 seconds. Open collection.Main and press Run file to see the total 5000050000.
+    openFiles:
+      - README.md
+
+  - id: sync-latch-barrier
+    dir: 03_thread_concurrent
+    chapter: '3.3'
+    lesson: '3.3.1 同期化支援のCountDownLatchとCyclicBarrier'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_3_3_1.countdownlatch.Main'
+    suggestName: sync-latch-barrier
+    names:
+      ja: 'CountDownLatch と CyclicBarrier'
+      en: 'CountDownLatch and CyclicBarrier'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_3_3_1.countdownlatch.Main を動かし、Worker が開始の合図を待ち、メインスレッドが全員の終了を待つ流れを見ます。cyclicbarrier.Main は開いてファイル実行します。
+      en: >-
+        Press Run app to run lsn_3_3_1.countdownlatch.Main: the Workers wait for the start signal and main waits for them all. Open cyclicbarrier.Main and press Run file.
+    openFiles:
+      - README.md
+
+  # ── チャプター4 ─────────────────────────────
+  - id: lambda-target-type
+    dir: 04_lambda_stream
+    chapter: '4.1'
+    lesson: '4.1.1 ラムダ式が成り立つ仕組み'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_4_1_2.comparator.Main_3'
+    suggestName: lambda-target-type
+    names:
+      ja: 'ラムダ式と関数型インタフェース'
+      en: 'Lambdas and functional interfaces'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_4_1_2.comparator.Main_3 を動かし、[USA, Japan, France] の順に並ぶことを見ます。匿名クラスの Main_2 も開いてファイル実行し、結果を比べます。
+      en: >-
+        Press Run app to run lsn_4_1_2.comparator.Main_3 and see [USA, Japan, France]. Open the anonymous-class version Main_2, press Run file and compare.
+    openFiles:
+      - README.md
+
+  - id: lambda-pass-behavior
+    dir: 04_lambda_stream
+    chapter: '4.1'
+    lesson: '4.1.2 処理を引数で渡す設計'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_4_1_3.reuse.Main_Function'
+    suggestName: lambda-pass-behavior
+    names:
+      ja: '処理を引数で渡す'
+      en: 'Passing behavior as an argument'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_4_1_3.reuse.Main_Function を動かし、同じメソッドにラムダ式で別の計算を渡した結果を見ます。
+      en: >-
+        Press Run app to run lsn_4_1_3.reuse.Main_Function and see one method used with different calculations passed as lambdas.
+    openFiles:
+      - README.md
+
+  - id: lambda-closure
+    dir: 04_lambda_stream
+    chapter: '4.1'
+    lesson: '4.1.3 遅延実行とクロージャ'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_4_1_4.closure.Main'
+    suggestName: lambda-closure
+    names:
+      ja: '遅延実行とクロージャ'
+      en: 'Deferred execution and closures'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_4_1_4.closure.Main を動かし、main の変数 base を使った 140 が Processor の中から表示されることを見ます。lsn_4_1_5.supplier.Main も開いてファイル実行します。
+      en: >-
+        Press Run app to run lsn_4_1_4.closure.Main: 140, computed with the base variable of main, is printed from inside Processor. Also open lsn_4_1_5.supplier.Main and press Run file.
+    openFiles:
+      - README.md
+
+  - id: lambda-method-ref
+    dir: 04_lambda_stream
+    chapter: '4.1'
+    lesson: '4.1.4 メソッド参照'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_4_1_6.Main_5'
+    suggestName: lambda-method-ref
+    names:
+      ja: 'メソッド参照'
+      en: 'Method references'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_4_1_6.Main_5 を動かし、ラムダ式とメソッド参照のどちらも message => Hello, World! と表示されることを見ます。
+      en: >-
+        Press Run app to run lsn_4_1_6.Main_5: both the lambda and the method reference print message => Hello, World!.
+    openFiles:
+      - README.md
+
+  - id: stream-pipeline
+    dir: 04_lambda_stream
+    chapter: '4.2'
+    lesson: '4.2.1 パイプラインの3つの段階と遅延評価'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_4_2_1.Main'
+    suggestName: stream-pipeline
+    names:
+      ja: 'ストリームのパイプライン'
+      en: 'Stream pipelines'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_4_2_1.Main を動かし、生成・中間操作・終端操作を通った結果を見ます。
+      en: >-
+        Press Run app to run lsn_4_2_1.Main and see the result of the source, intermediate and terminal steps.
+    openFiles:
+      - README.md
+
+  - id: stream-terminal
+    dir: 04_lambda_stream
+    chapter: '4.2'
+    lesson: '4.2.2 中間操作と終端操作'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_4_2_4.Main_Aggregate'
+    suggestName: stream-terminal
+    names:
+      ja: '中間操作と終端操作'
+      en: 'Intermediate and terminal operations'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_4_2_4.Main_Aggregate を動かし、集計の結果と、空のときの値の決め方を見ます。
+      en: >-
+        Press Run app to run lsn_4_2_4.Main_Aggregate and see the aggregates and how the empty case is handled.
+    openFiles:
+      - README.md
+
+  - id: stream-collector
+    dir: 04_lambda_stream
+    chapter: '4.2'
+    lesson: '4.2.3 コレクタによる集約'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_4_2_5.Main_Sales'
+    suggestName: stream-collector
+    names:
+      ja: 'コレクタによる集約'
+      en: 'Aggregating with collectors'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_4_2_5.Main_Sales を動かし、SALES.csv の売上個数が商品名ごとに A01 => 236 の形で表示されることを見ます。
+      en: >-
+        Press Run app to run lsn_4_2_5.Main_Sales: units from SALES.csv are summed per product, shown as A01 => 236.
+    openFiles:
+      - README.md
+
+  # ── チャプター5 ─────────────────────────────
+  - id: file-charset
+    dir: 05_file_io
+    chapter: '5.1'
+    lesson: '5.1.3 文字コードと文字化け'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_5_1_3.Main_BufferedReader'
+    suggestName: file-charset
+    names:
+      ja: '文字コードと読み込み'
+      en: 'Character encodings and reading'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_5_1_3.Main_BufferedReader を動かし、UTF-8 の foo.txt と Shift_JIS の bar.txt が正しく読めることを見ます。
+      en: >-
+        Press Run app to run lsn_5_1_3.Main_BufferedReader: foo.txt in UTF-8 and bar.txt in Shift_JIS are both read correctly.
+    openFiles:
+      - README.md
+
+  - id: file-close
+    dir: 05_file_io
+    chapter: '5.1'
+    lesson: '5.1.4 リソースのクローズと読み込み方の選択'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_5_1_4.Main_BufferedOutputStream'
+    suggestName: file-close
+    names:
+      ja: 'リソースのクローズとバイナリのコピー'
+      en: 'Closing resources and copying binaries'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_5_1_4.Main_BufferedOutputStream を動かし、java_logo1.jpg のコピー java_logo2.jpg ができることをツリーで見ます。Main_BufferedWriter も開いてファイル実行します。
+      en: >-
+        Press Run app to run lsn_5_1_4.Main_BufferedOutputStream and find the copy java_logo2.jpg in the tree. Also open Main_BufferedWriter and press Run file.
+    openFiles:
+      - README.md
+
+  - id: bytes-memory
+    dir: 05_file_io
+    chapter: '5.2'
+    lesson: '5.2.1 メモリー上のバイト配列とストリーム'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_5_2_1.Main'
+    suggestName: bytes-memory
+    names:
+      ja: 'バイト配列ストリーム'
+      en: 'Byte array streams'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_5_2_1.Main を動かし、画像をいったんメモリーに書き込んでから java_logo2.jpg へ書き出します。
+      en: >-
+        Press Run app to run lsn_5_2_1.Main: the image is written to memory first and then to java_logo2.jpg.
+    openFiles:
+      - README.md
+
+  - id: serialization
+    dir: 05_file_io
+    chapter: '5.2'
+    lesson: '5.2.2 シリアライズの仕組み'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_5_2_2.Main_Ser_1'
+    suggestName: serialization
+    names:
+      ja: 'シリアライズ'
+      en: 'Serialization'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_5_2_2.Main_Ser_1 を動かして alice.ser を書き、Main_Ser_2 を開いてファイル実行して復元した Person を見ます。
+      en: >-
+        Press Run app to run lsn_5_2_2.Main_Ser_1, which writes alice.ser, then open Main_Ser_2 and press Run file to see the restored Person.
+    openFiles:
+      - README.md
+
+  # ── チャプター6 ─────────────────────────────
+  - id: net-bytebuffer
+    dir: 06_network_io
+    chapter: '6.1'
+    lesson: '6.1.2 ByteBufferの位置とリミット'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_1_2.Main'
+    suggestName: net-bytebuffer
+    names:
+      ja: 'ByteBuffer の位置とリミット'
+      en: 'ByteBuffer position and limit'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_6_1_2.Main を動かし、flip() の前後と取り出しごとの残りバイトを見ます。
+      en: >-
+        Press Run app to run lsn_6_1_2.Main and see the remaining bytes around flip() and after each read.
+    openFiles:
+      - README.md
+
+  - id: net-tcp
+    dir: 06_network_io
+    chapter: '6.1'
+    lesson: '6.1.3 TCPのサーバーとクライアント'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_1_3.client.Main'
+    suggestName: net-tcp
+    names:
+      ja: 'TCP のサーバーとクライアント'
+      en: 'TCP server and client'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_6_1_3.client.Main を動かします。相手の server.Main は一緒に起動します。response => Hello! 私はAliceです を見たら、サーバーは出力欄の右の列の「停止」で止めます。
+      en: >-
+        Press Run app to run lsn_6_1_3.client.Main; its server.Main starts with it. After response => Hello! 私はAliceです, stop the server with Stop in the column to the right of the output.
+    openFiles:
+      - README.md
+
+  - id: net-selector
+    dir: 06_network_io
+    chapter: '6.1'
+    lesson: '6.1.4 ブロッキングとノンブロッキング'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_1_4.client.Main'
+    suggestName: net-selector
+    names:
+      ja: 'ブロッキングとセレクタ'
+      en: 'Blocking I/O and selectors'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_6_1_4.client.Main を動かします。セレクタのサーバーが一緒に起動し、[server] の行に select count が出ます。lsn_6_1_3.client.Main_Multi を開いてファイル実行すると、1 件ずつ約 2 秒おきに処理されます。
+      en: >-
+        Press Run app to run lsn_6_1_4.client.Main; the selector server starts with it and logs select count on [server] lines. Open lsn_6_1_3.client.Main_Multi and press Run file to see one request handled about every 2 seconds.
+    openFiles:
+      - README.md
+
+  - id: net-udp
+    dir: 06_network_io
+    chapter: '6.1'
+    lesson: '6.1.5 UDPによる送受信'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_1_5.client.Main'
+    suggestName: net-udp
+    names:
+      ja: 'UDP の送受信'
+      en: 'Sending and receiving with UDP'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_6_1_5.client.Main を動かします。受信側の server.Main が一緒に起動し、[server] Hello! 私はAliceです が出ます。Main_Multi を開いてファイル実行すると、clear() が無いため 3 行とも最初の名前が表示され、2 件目以降は捨てられます。
+      en: >-
+        Press Run app to run lsn_6_1_5.client.Main; server.Main starts with it and prints [server] Hello! 私はAliceです. Open Main_Multi and press Run file: without clear(), all three lines show the first name and the later datagrams are discarded.
+    openFiles:
+      - README.md
+
+  - id: http-sync
+    dir: 06_network_io
+    chapter: '6.2'
+    lesson: '6.2.2 HTTPクライアントAPIと同期呼び出し'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_2_3.httpclient.Main_GET_Sync'
+    suggestName: http-sync
+    names:
+      ja: 'HTTP クライアントの同期呼び出し'
+      en: 'Synchronous calls with the HTTP client'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_6_2_3.httpclient.Main_GET_Sync を動かします。ポート 8080 のサーバーが一緒に起動し、ステータス 200 とボディ Hello! 私はAliceです が表示されます。
+      en: >-
+        Press Run app to run lsn_6_2_3.httpclient.Main_GET_Sync; the server on port 8080 starts with it. You get status 200 and the body Hello! 私はAliceです.
+    openFiles:
+      - README.md
+
+  - id: http-async
+    dir: 06_network_io
+    chapter: '6.2'
+    lesson: '6.2.3 非同期呼び出しとCompletableFuture'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_6_2_4.httpclient.Main_GET_Async_3'
+    suggestName: http-async
+    names:
+      ja: 'HTTP クライアントの非同期呼び出し'
+      en: 'Asynchronous calls with the HTTP client'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_6_2_4.httpclient.Main_GET_Async_3 を動かします。応答まで 10 秒待つサーバーが一緒に起動し、先に send request の行が、10 秒後に ### で囲んだ応答が表示されます。
+      en: >-
+        Press Run app to run lsn_6_2_4.httpclient.Main_GET_Async_3; a server that waits 10 seconds starts with it. send request appears first and the response wrapped in ### 10 seconds later.
+    openFiles:
+      - README.md
+
+  # ── チャプター7 ─────────────────────────────
+  - id: generics-safety
+    dir: 07_generics
+    chapter: '7.1'
+    lesson: '7.1.1 総称型が保証するもの'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_7_1_2.interfaces.Main_1'
+    suggestName: generics-safety
+    names:
+      ja: '総称型が保証するもの'
+      en: 'What generics guarantee'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_7_1_2.interfaces.Main_1 を動かします。Main_2 を開いてファイル実行すると、原型の StrLengthComparator1 で ClassCastException が発生します。
+      en: >-
+        Press Run app to run lsn_7_1_2.interfaces.Main_1. Open Main_2 and press Run file: the raw-typed StrLengthComparator1 throws ClassCastException.
+    openFiles:
+      - README.md
+
+  - id: generics-erasure
+    dir: 07_generics
+    chapter: '7.1'
+    lesson: '7.1.2 型消去の仕組みと制約'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_7_1_2.generictype.Main'
+    suggestName: generics-erasure
+    names:
+      ja: '総称型のクラスと型消去'
+      en: 'Generic classes and erasure'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_7_1_2.generictype.Main を動かし、MyContainer に入れた値を取り出す結果を見ます。
+      en: >-
+        Press Run app to run lsn_7_1_2.generictype.Main and see values stored in and read from MyContainer.
+    openFiles:
+      - README.md
+
+  - id: generics-method
+    dir: 07_generics
+    chapter: '7.1'
+    lesson: '7.1.3 ジェネリックなメソッドと境界型パラメータ'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_7_1_4.genericmethod.Main'
+    suggestName: generics-method
+    names:
+      ja: 'ジェネリックなメソッドと境界'
+      en: 'Generic methods and bounds'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_7_1_4.genericmethod.Main を動かします。extend.Main も開いてファイル実行し、上限を付けたときの違いを見ます。
+      en: >-
+        Press Run app to run lsn_7_1_4.genericmethod.Main. Also open extend.Main and press Run file to see what an upper bound changes.
+    openFiles:
+      - README.md
+
+  - id: generics-wildcard
+    dir: 07_generics
+    chapter: '7.1'
+    lesson: '7.1.4 型パラメータの互換性とワイルドカード'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_7_1_3.Main_Invariant'
+    suggestName: generics-wildcard
+    names:
+      ja: '非変とワイルドカード'
+      en: 'Invariance and wildcards'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_7_1_3.Main_Invariant を動かします。lsn_7_1_5.unknown.Main_1 も開いてファイル実行し、ワイルドカードで受け取る例を見ます。
+      en: >-
+        Press Run app to run lsn_7_1_3.Main_Invariant. Also open lsn_7_1_5.unknown.Main_1 and press Run file for an example that accepts a wildcard.
+    openFiles:
+      - README.md
+
+  - id: generics-pecs
+    dir: 07_generics
+    chapter: '7.1'
+    lesson: '7.1.5 PECSによるAPI設計'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_7_1_6.boundary_1.Main_2'
+    suggestName: generics-pecs
+    names:
+      ja: 'PECS による API 設計'
+      en: 'API design with PECS'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_7_1_6.boundary_1.Main_2 を動かします。boundary_3.Main_2 も開いてファイル実行し、List<Bar> から List<Foo> へのコピーを見ます。
+      en: >-
+        Press Run app to run lsn_7_1_6.boundary_1.Main_2. Also open boundary_3.Main_2 and press Run file to see a copy from List<Bar> to List<Foo>.
+    openFiles:
+      - README.md
+
+  # ── チャプター8 ─────────────────────────────
+  - id: classload-init
+    dir: 08_reflection_annotation
+    chapter: '8.1'
+    lesson: '8.1.1 クラスのロードとライフサイクル'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_8_1_2.Main'
+    suggestName: classload-init
+    names:
+      ja: 'クラスのロードと初期化'
+      en: 'Class loading and initialization'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_8_1_2.Main を動かし、Greeting の時刻が snippet_2 で初めて表示されることを見ます。
+      en: >-
+        Press Run app to run lsn_8_1_2.Main: the time in Greeting is printed for the first time in snippet_2.
+    openFiles:
+      - README.md
+
+  - id: classload-hierarchy
+    dir: 08_reflection_annotation
+    chapter: '8.1'
+    lesson: '8.1.2 クラスローダーの階層と親への委譲'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_8_1_1.Main_1'
+    suggestName: classload-hierarchy
+    names:
+      ja: 'クラスローダーの階層'
+      en: 'The class loader hierarchy'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_8_1_1.Main_1 を動かし、1 行目と 4 行目の @ の後ろの値が一致することを見ます。
+      en: >-
+        Press Run app to run lsn_8_1_1.Main_1 and check that the values after @ on lines 1 and 4 match.
+    openFiles:
+      - README.md
+
+  - id: classload-resource
+    dir: 08_reflection_annotation
+    chapter: '8.1'
+    lesson: '8.1.3 リソースの読み込みとコンテキスト・クラスローダー'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_8_1_1.Main_2'
+    suggestName: classload-resource
+    names:
+      ja: 'リソースの読み込み'
+      en: 'Loading resources'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_8_1_1.Main_2 を動かし、src/main/resources の config/MyResource.properties を読んだ結果を見ます。
+      en: >-
+        Press Run app to run lsn_8_1_1.Main_2 and see what it reads from config/MyResource.properties in src/main/resources.
+    openFiles:
+      - README.md
+
+  - id: reflect-invoke
+    dir: 08_reflection_annotation
+    chapter: '8.2'
+    lesson: '8.2.2 動的な生成と呼び出し'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_8_2_2.Main_MethodInvocation_1'
+    suggestName: reflect-invoke
+    names:
+      ja: '動的な生成と呼び出し'
+      en: 'Creating objects and calling methods dynamically'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_8_2_2.Main_MethodInvocation_1 を動かします。Main_MethodInvocation_2 を開いてファイル実行すると、private メソッドの呼び出しも見られます。
+      en: >-
+        Press Run app to run lsn_8_2_2.Main_MethodInvocation_1. Open Main_MethodInvocation_2 and press Run file to see a private method called as well.
+    openFiles:
+      - README.md
+
+  - id: reflect-copy
+    dir: 08_reflection_annotation
+    chapter: '8.2'
+    lesson: '8.2.3 リフレクションの使いどころと代償'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_8_2_2.Main_InstanceCopy'
+    suggestName: reflect-copy
+    names:
+      ja: 'リフレクションによる詰め替え'
+      en: 'Copying values with reflection'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_8_2_2.Main_InstanceCopy を動かし、Person の値が Customer に詰め替えられた結果を見ます。
+      en: >-
+        Press Run app to run lsn_8_2_2.Main_InstanceCopy and see the values of Person copied into Customer.
+    openFiles:
+      - README.md
+
+  - id: anno-javase
+    dir: 08_reflection_annotation
+    chapter: '8.3'
+    lesson: '8.3.2 Java SEのアノテーションとコンパイラの警告'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_8_3_2.javase.Main_JavaSE_Annotation'
+    suggestName: anno-javase
+    names:
+      ja: 'Java SE のアノテーション'
+      en: 'Java SE annotations'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_8_3_2.javase.Main_JavaSE_Annotation を動かします。Calculator の @Deprecated と Main_CalcClient の警告も確かめます。
+      en: >-
+        Press Run app to run lsn_8_3_2.javase.Main_JavaSE_Annotation. Also look at @Deprecated on Calculator and the warning in Main_CalcClient.
+    openFiles:
+      - README.md
+
+  - id: anno-custom
+    dir: 08_reflection_annotation
+    chapter: '8.3'
+    lesson: '8.3.3 カスタムアノテーションとフレームワークの仕組み'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_8_3_2.metainfo.Main_Custom_1'
+    suggestName: anno-custom
+    names:
+      ja: 'カスタムアノテーション'
+      en: 'Custom annotations'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_8_3_2.metainfo.Main_Custom_1 を動かします。maxlength.Main を開いてファイル実行すると、11 文字の値で「文字列長が指定された長さを超えています」の例外が発生します。
+      en: >-
+        Press Run app to run lsn_8_3_2.metainfo.Main_Custom_1. Open maxlength.Main and press Run file: the 11-character value raises the exception for exceeding the length.
+    openFiles:
+      - README.md
+
+  # ── チャプター9 ─────────────────────────────
+  - id: record-equality
+    dir: 09_record
+    chapter: '9.1'
+    lesson: '9.1.1 レコードの構造と値に基づく等価性'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_9_1_1.Main_HashSet'
+    suggestName: record-equality
+    names:
+      ja: 'レコードの構造と等価性'
+      en: 'Record structure and equality'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_9_1_1.Main_HashSet を動かし、値が等しい alice2 の追加が false になることを見ます。
+      en: >-
+        Press Run app to run lsn_9_1_1.Main_HashSet: adding alice2, which has equal values, returns false.
+    openFiles:
+      - README.md
+
+  - id: record-invariant
+    dir: 09_record
+    chapter: '9.1'
+    lesson: '9.1.2 不変条件とコンパクトコンストラクタ'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_9_1_2.Main'
+    suggestName: record-invariant
+    names:
+      ja: 'コンパクトコンストラクタ'
+      en: 'Compact constructors'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_9_1_2.Main を動かし、コンパクトコンストラクタの検証を通って生成された Person を見ます。
+      en: >-
+        Press Run app to run lsn_9_1_2.Main and see a Person that passed validation in the compact constructor.
+    openFiles:
+      - README.md
+
+  - id: record-pattern
+    dir: 09_record
+    chapter: '9.1'
+    lesson: '9.1.3 レコードパターンによるデータの種類の振り分け'
+    runtime: java
+    run: 'gradle:run -PmainClass=pro.kensait.java.advanced.lsn_9_1_3.Main'
+    suggestName: record-pattern
+    names:
+      ja: 'レコードパターンと sealed'
+      en: 'Record patterns and sealed types'
+    descriptions:
+      ja: >-
+        アプリ実行で lsn_9_1_3.Main を動かし、describe() の switch が上から順に分岐して Bobさんは未成年です などを返すことを見ます。sealed の Shape を使う area() はすべての型を扱うので default がありません。
+      en: >-
+        Press Run app to run lsn_9_1_3.Main: the switch in describe() tries cases from the top and returns Bobさんは未成年です and so on. area() on the sealed Shape handles every type, so it needs no default.
+    openFiles:
+      - README.md

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 社員の取得を 3 回（うち 1 回は存在しない社員）呼び、カウンター employee.get.count を増やす
-# 前提: 先に ▶ アプリ実行で jakarta-health-employee をデプロイしておく
+# 前提: 先に アプリ実行で jakarta-health-employee をデプロイしておく
 # 期待する結果:
 #   10001 と 10002 は HTTP 200、99999 は 404
 #   最大 60 秒後、実行結果（Payara Server のログ）に書き出されるメトリクスに、

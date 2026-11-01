@@ -1,5 +1,5 @@
 // customer-hub: 書店から呼ばれる外部 API（Jakarta REST + Jakarta Persistence）
-// 書店（leaf-books）の ▶ アプリ実行で WAR を作り、同じ Payara Server 7 へ先にデプロイする
+// 書店（leaf-books）の アプリ実行で WAR を作り、同じ Payara Server 7 へ先にデプロイする
 plugins {
     id 'war'
 }

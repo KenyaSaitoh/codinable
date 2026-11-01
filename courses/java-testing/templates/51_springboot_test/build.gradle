@@ -1,0 +1,55 @@
+// 51_springboot_test: Spring Boot Test による単体テスト（チャプター5.1）
+// テストクラスを開いて、エディタの右上の ファイル実行で流す（アプリ実行で人物管理の画面も動かせる）
+plugins {
+    id "java"
+    id "org.springframework.boot" version "4.1.2"
+    id "io.spring.dependency-management" version "1.1.7"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
+    implementation "org.springframework.boot:spring-boot-starter-webmvc"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    // Spring Boot 4 ではテストスライスがモジュールごとに分かれた。@WebMvcTest は spring-boot-webmvc-test
+    testImplementation "org.springframework.boot:spring-boot-webmvc-test"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        showStandardStreams = true
+        events "passed", "failed", "skipped"
+        exceptionFormat = "full"
+    }
+}
+
+// JDK 24 以降は Mockito が実行中に自分自身をエージェントとして読み込めない
+// mockito-core を -javaagent で渡す（Codinable の同梱ランタイムでもモックを作れるようにするため）
+configurations {
+    mockitoAgent
+}
+
+dependencies {
+    mockitoAgent("org.mockito:mockito-core") {
+        transitive = false
+    }
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgumentProviders.add({ ["-javaagent:${configurations.mockitoAgent.singleFile}"] } as CommandLineArgumentProvider)
+}

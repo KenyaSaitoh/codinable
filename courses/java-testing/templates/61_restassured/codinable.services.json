@@ -1,0 +1,6 @@
+{
+  "processes": [
+    { "id": "spring-rest-calc", "dir": "spring-rest-calc", "run": "gradle:bootRun", "port": 8080, "when": ["gradle:waitForApps"] },
+    { "id": "spring-rest-person", "dir": "spring-rest-person", "run": "gradle:bootRun", "port": 8082, "when": ["gradle:waitForApps"] }
+  ]
+}

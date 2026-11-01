@@ -10,7 +10,7 @@ import java.util.TreeMap;
 
 /*
  * メモリ内に社員を持つ教材用のデータ（初期データは16件。Victor は部署なし）
- * WAR を配置し直す（▶ アプリ実行し直す）と初期状態に戻る。新しい社員には 10017 から番号を振る
+ * WAR を配置し直す（アプリ実行し直す）と初期状態に戻る。新しい社員には 10017 から番号を振る
  */
 @ApplicationScoped
 public class EmployeeStore {

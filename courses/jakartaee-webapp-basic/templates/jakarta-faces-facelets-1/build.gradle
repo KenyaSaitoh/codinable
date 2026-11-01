@@ -1,5 +1,5 @@
 // jakarta-faces-facelets-1: Facelets の式・繰り返し・条件・リンク・表示形式
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

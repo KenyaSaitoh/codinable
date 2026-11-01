@@ -14,7 +14,7 @@ React の画面（`frontend/`）と、JSON を返す Spring Boot の REST API
 
 ## Codinable での動かし方
 
-動かすプロセスは 3 つで、ツールバーの **▶ アプリ実行** を押すとまとめて起動します
+動かすプロセスは 3 つで、ツールバーの **アプリ実行** を押すとまとめて起動します
 （`codinable.services.json` に書いてあります）。
 
 | プロセス | ポート | 出力の目印 |
@@ -23,7 +23,7 @@ React の画面（`frontend/`）と、JSON を返す Spring Boot の REST API
 | Customer Hub（`customer-hub/`、ログイン・顧客登録で呼ぶ外部 API） | 8081 | `[customer-hub]` |
 | React の開発サーバー（`frontend/`、`npm run dev`） | 5173 | `[frontend]` |
 
-1. **▶ アプリ実行** を押す。初回は `frontend/` の `npm install` が自動で走るので少し時間がかかる
+1. **アプリ実行** を押す。初回は `frontend/` の `npm install` が自動で走るので少し時間がかかる
 2. React の画面が待ち受けを始めると、プレビューが `http://localhost:5173` に移る。
    `/api` への要求は Vite が `http://localhost:8080` へ中継する（`frontend/vite.config.ts`）
 3. ログイン画面でメールアドレス `alice@example.com`、パスワード `password` を入れ、
@@ -38,7 +38,7 @@ REST API は `/api/auth/login` 以外は認証が必要です。
 ## テスト
 
 `src/test/java/pro/kensait/leafbooks/` のテストクラス（Service の Mockito テスト、Repository の `@DataJpaTest`、
-`external/CustomerApiClientTest.java` など）を開いて、エディタの右上の ▶ 実行で流してください。
+`external/CustomerApiClientTest.java` など）を開いて、エディタの右上の ファイル実行で流してください。
 例: `repository/StockRepositoryTest.java`、`service/order/OrderServiceTest.java`。
 
 ## curl で API を確かめる
@@ -46,7 +46,7 @@ REST API は `/api/auth/login` 以外は認証が必要です。
 JWT は HttpOnly Cookie（`token`）で、更新系の要求には CSRF トークン
 （Cookie `XSRF-TOKEN` の値をヘッダー `X-XSRF-TOKEN` に）が要ります。
 
-▶ アプリ実行で起動したまま、`curl/` のスクリプトを開いて、エディタの右上の ▶ 実行で送ります。
+アプリ実行で起動したまま、`curl/` のスクリプトを開いて、エディタの右上の ファイル実行で送ります。
 
 | スクリプト | 確かめること |
 |---|---|

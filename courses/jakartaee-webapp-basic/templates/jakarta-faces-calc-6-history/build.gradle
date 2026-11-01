@@ -1,5 +1,5 @@
 // jakarta-faces-calc-6-history: ビューパラメータによる保存済みデータの再取得（計算アプリケーション 6）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

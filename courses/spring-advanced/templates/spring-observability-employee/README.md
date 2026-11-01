@@ -11,7 +11,7 @@
 
 ## 動かし方
 
-▶ アプリ実行で起動したまま（ポート 8080）、`curl/` のスクリプトを順に開いて、エディタの右上の ▶ 実行で送ります。
+アプリ実行で起動したまま（ポート 8080）、`curl/` のスクリプトを順に開いて、エディタの右上の ファイル実行で送ります。
 `01_get_employee.sh`・`02_get_employees.sh` で計装された API を呼び、`03_metrics.sh` 〜 `05_http_server_requests.sh` で
 Observation から生成されたタイマー（`employee.get`・`employee.get-all`）と HTTP リクエストの統計を見ます。
 各スクリプトの先頭のコメントに、期待する結果を書いてあります。

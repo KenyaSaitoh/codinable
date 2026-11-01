@@ -1,5 +1,5 @@
 // jakarta-tx: @Transactional の伝播（REQUIRED と REQUIRES_NEW）と UserTransaction
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // データソースは @DataSourceDefinition で同梱の HSQLDB のインメモリ DB に定義し、
 // テーブルと初期データ（sql/hsqldb）は、デプロイのたびに DatabaseInitializer が流す
 plugins {

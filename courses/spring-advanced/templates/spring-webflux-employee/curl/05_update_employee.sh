@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # updateEmployee（更新は200。更新対象が存在しない場合は404）
-# 先に ▶ アプリ実行でアプリを起動しておく（ポート 8089）
+# 先に アプリ実行でアプリを起動しておく（ポート 8089）
 # 期待する結果:
 #   1つ目 HTTP/1.1 200
 #     {"employeeId":10002,"employeeName":"Bob","departmentId":1,"departmentName":"PLANNING","jobName":"MANAGER","salary":460000,"entranceDate":"2012-04-01"}

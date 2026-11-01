@@ -1,5 +1,5 @@
 // jakarta-servlet-calc: HttpServletRequest と HttpServletResponse（計算アプリケーション）
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

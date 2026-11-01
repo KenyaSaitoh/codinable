@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Mutation で社員を登録・更新・削除する
-# 前提: 先に ▶ アプリ実行で jakarta-graphql-employee をデプロイしておく
+# 前提: 先に アプリ実行で jakarta-graphql-employee をデプロイしておく
 # 期待する結果:
 #   1つ目 createEmployee は採番された id（初期社員の次は "10017"）の Walter を返す
 #   2つ目 存在しない部署 9 での登録は errors に「部署が存在しません => 9」

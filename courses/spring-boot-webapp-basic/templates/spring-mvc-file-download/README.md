@@ -6,10 +6,10 @@
 
 ## 動かし方
 
-1. `scripts/01_prepare_sample.sh` を開き、エディタの右上の ▶ 実行で
+1. `scripts/01_prepare_sample.sh` を開き、エディタの右上の ファイル実行で
    ダウンロードするファイル `C:/tmp/output/sample.txt` を用意する
-2. ツールバーの ▶ アプリ実行で起動する
-3. `scripts/02_download.sh` を開いて ▶ 実行し、`HTTP/1.1 200` と
+2. ツールバーの アプリ実行で起動する
+3. `scripts/02_download.sh` を開いて ファイル実行し、`HTTP/1.1 200` と
    `Content-Disposition: attachment; filename="sample.txt"`、本文 `download sample` を確かめる
 4. Web ブラウザで `http://localhost:8080/download/sample.txt` を開くと、ファイルとして保存される
    （存在しない名前を指定すると例外になる）

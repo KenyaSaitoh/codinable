@@ -15,8 +15,8 @@
 
 ## 動かし方
 
-1. ツールバーの ▶ アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-rest-greet/api/greet/hello/Alice` が開く
-2. `curl/` のスクリプトを開いて、エディタの右上の ▶ 実行で 1 つずつ流す
+1. ツールバーの アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-rest-greet/api/greet/hello/Alice` が開く
+2. `curl/` のスクリプトを開いて、エディタの右上の ファイル実行で 1 つずつ流す
 
 ## 結果のどこを見るか
 

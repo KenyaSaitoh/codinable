@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Java のクラスから生成されたスキーマを取得する（仕様で定められた /graphql/schema.graphql）
-# 前提: 先に ▶ アプリ実行で jakarta-graphql-employee をデプロイしておく
+# 前提: 先に アプリ実行で jakarta-graphql-employee をデプロイしておく
 # 期待する結果: type Employee（id: ID!・employeeName: String! など）、type Department（employees: [Employee]）、
 #               type Query、input EmployeeInput、type Mutation を含むスキーマの全文
 set -x

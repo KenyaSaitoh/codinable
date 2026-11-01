@@ -1,5 +1,5 @@
 // jakarta-faces-facelets-2: Facelets のフォーム部品・テンプレート・リソース・メッセージバンドル
-// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }
