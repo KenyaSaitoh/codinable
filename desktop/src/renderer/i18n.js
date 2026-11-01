@@ -178,10 +178,8 @@ const UI_STRINGS = {
     runSideExitOk:       '\n✅ スクリプトが終わりました（アプリは動いたままです）\n',
     runSideExitNg:       '\n❌ スクリプトが異常終了しました (exit code {code})。アプリは動いたままです\n',
     treeRunBadgeTitle:   '単独で実行できるファイル（開くとエディタの右上に ▶ 実行が出ます）',
-    runFileTitle:        '開いているファイル（{name}）だけを実行します。結果は「実行結果」に出ます。
-アプリ全体を起動するときは、ツールバーの「▶ アプリ実行」を使います。',
-    runAppTitle:         'アプリ全体を起動します（{target}）。どのファイルを開いていても、動くものは同じです。
-開いているファイルだけを動かすときは、エディタの右上の「▶ 実行」を使います。',
+    runFileTitle:        '開いているファイル（{name}）だけを実行します。結果は「実行結果」に出ます。\nアプリ全体を起動するときは、ツールバーの「▶ アプリ実行」を使います。',
+    runAppTitle:         'アプリ全体を起動します（{target}）。どのファイルを開いていても、動くものは同じです。\n開いているファイルだけを動かすときは、エディタの右上の「▶ 実行」を使います。',
     runNoApp:            'この演習はファイル単位で動かします。ファイルを開いて、エディタの右上の ▶ 実行を押してください',
     btnStop:             '停止',
     runNoProject:        '先にプロジェクトを選択してください。',
@@ -458,10 +456,8 @@ const UI_STRINGS = {
     runSideExitOk:       '\n✅ The script finished (the app is still running)\n',
     runSideExitNg:       '\n❌ The script failed (exit code {code}). The app is still running\n',
     treeRunBadgeTitle:   'Runs on its own (open it and press ▶ Run at the top right of the editor)',
-    runFileTitle:        'Runs only the open file ({name}). Output goes to the Output tab.
-To start the whole app, use ▶ Run app in the toolbar.',
-    runAppTitle:         'Starts the whole app ({target}). It runs the same thing whichever file is open.
-To run only the open file, use ▶ Run at the top right of the editor.',
+    runFileTitle:        'Runs only the open file ({name}). Output goes to the Output tab.\nTo start the whole app, use ▶ Run app in the toolbar.',
+    runAppTitle:         'Starts the whole app ({target}). It runs the same thing whichever file is open.\nTo run only the open file, use ▶ Run at the top right of the editor.',
     runNoApp:            'This exercise runs file by file. Open a file and press ▶ Run at the top right of the editor',
     btnStop:             'Stop',
     runNoProject:        'Select a project first.',
