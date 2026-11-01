@@ -6,9 +6,9 @@
 
 ## 見るファイルと動かし方
 
-ツールバーの **アプリ実行** で、演習一覧で選んだレッスンの main が動きます。ほかの main は、その `.java` を開いてエディタの右上の **ファイル実行** で動かします。実行結果は出力欄の「実行結果」に出ます。
+ツールバーの **▶ アプリ実行** で、演習一覧で選んだレッスンの main が動きます。ほかの main は、その `.java` を開いてエディタの右上の **▶ 実行** で動かします。実行結果は出力欄の「実行結果」に出ます。
 
-| レッスン | 見るファイル | アプリ実行 | 結果のどこを見るか |
+| レッスン | 見るファイル | ▶ アプリ実行 | 結果のどこを見るか |
 |:--|:--|:--|:--|
 | 16.1.1 Stringの不変性と文字列プール | `…/lsn_16_1_1/Main.java`<br>`…/lsn_16_1_1/Main_Reference.java` | `lsn_16_1_1.Main` | snippet_3 の true と snippet_4 の false |
 | 16.1.2 StringのAPIの仕組み | `…/lsn_16_1_2/Main_Conversion.java`<br>`…/lsn_16_1_2/Main_Substring.java`<br>`…/lsn_16_1_3/Main.java` | `lsn_16_1_2.Main_Conversion` | snippet_1 の `Foo_Bar_Foobar` と snippet_2 の `FOO_BAR_FOOBAR` |

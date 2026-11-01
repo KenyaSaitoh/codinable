@@ -19,11 +19,11 @@ assertions は「全60件・各リクエスト20件」「失敗0件」「全体 
 
 ## Codinable での動かし方
 
-アプリ実行が動かすのは `bootRun` なので、負荷を受けるアプリと Gatling を分けて動かします。
+▶ アプリ実行が動かすのは `bootRun` なので、負荷を受けるアプリと Gatling を分けて動かします。
 
-1. ツールバーの **アプリ実行** を押し、アプリを <http://localhost:8080> で起動する
+1. ツールバーの **▶ アプリ実行** を押し、アプリを <http://localhost:8080> で起動する
    （プレビューで `/employees` が開けば準備完了）
-2. アプリを起動したまま `scripts/01_gatling_run.sh` を開き、エディタの右上の **ファイル実行** を押す。
+2. アプリを起動したまま `scripts/01_gatling_run.sh` を開き、エディタの右上の **▶ 実行** を押す。
    health を確かめてから `./gradlew.bat gatlingRun` が走ります（アプリは止まりません）
 
 接続先の既定は `http://localhost:8080` です（環境変数 `GATLING_BASE_URL` で変えられます）。
@@ -36,10 +36,10 @@ HTML レポートができます。assertions を満たさないと Gradle も�
 ## テスト
 
 負荷をかける前の確認として、`src/test/java/pro/kensait/spring/employee/EmployeeApplicationSmokeTest.java` を開いて、
-エディタの右上の ファイル実行で流してください。
+エディタの右上の ▶ 実行で流してください。
 アプリと H2 をテストが自動で起動し、一覧 HTML・health と、CSV の3行が初期データと対応していることを確かめます。
 元のサンプルではこのテスト（`@Tag("it")`）を `integrationTest` で流していました。
-テストクラスの ファイル実行（test タスク）で走るよう、除外タグを外しています（`build.gradle` のコメント参照）。
+テストクラスの ▶ 実行（test タスク）で走るよう、除外タグを外しています（`build.gradle` のコメント参照）。
 
 JDK 25 で Gatling を動かすため、`build.gradle` の `gatling.jvmArgs` に
 `--add-opens=java.base/java.lang=ALL-UNNAMED` などを指定しています。

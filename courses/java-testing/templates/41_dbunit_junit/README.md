@@ -12,7 +12,7 @@
 
 ## ボタンでの動かし方
 
-`ShippingServiceDBTest.java` を開いて、エディタの右上の ファイル実行を押します。DB はインメモリの HSQLDB で、テーブルはテストの開始時に `src/test/resources/schema.sql` から作られます。
+`ShippingServiceDBTest.java` を開いて、エディタの右上の ▶ 実行を押します。DB はインメモリの HSQLDB で、テーブルはテストの開始時に `src/test/resources/schema.sql` から作られます。
 
 ## 結果のどこを見るか
 

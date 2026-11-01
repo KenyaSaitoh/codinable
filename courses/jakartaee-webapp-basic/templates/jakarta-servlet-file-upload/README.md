@@ -20,9 +20,9 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/upload/` の下にあ�
 
 ## 動かし方
 
-1. ツールバーの アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-servlet-file-upload/` のアップロード画面が開く
+1. ツールバーの ▶ アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-servlet-file-upload/` のアップロード画面が開く
 2. タイトルを入れ、ファイルを選んで「保存」を押す
-3. `curl/` のスクリプトを開いて、エディタの右上の ファイル実行で 1 つずつ流す
+3. `curl/` のスクリプトを開いて、エディタの右上の ▶ 実行で 1 つずつ流す
 
 ## 結果のどこを見るか
 
@@ -32,4 +32,4 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/upload/` の下にあ�
 - `01_upload.sh` はファイル名を `fakepath/memo.txt` としてフォルダー付きで送るが、結果画面のファイル名は `memo.txt` になる
 - `02_invalid_file.sh`: `.exe` や空のファイルは保存されず、理由が表示される
 - `03_too_large.sh`: 5MB を超えるファイルは 413 になる
-- メタデータはメモリー上にあるので、アプリ実行でデプロイし直すと ID は 1 から振り直される
+- メタデータはメモリー上にあるので、▶ アプリ実行でデプロイし直すと ID は 1 から振り直される

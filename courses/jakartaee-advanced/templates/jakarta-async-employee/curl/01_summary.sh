@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 部署ごとの集計を、3 通りの非同期の書き方で取得する
-# 前提: 先に アプリ実行で jakarta-async-employee をデプロイしておく
+# 前提: 先に ▶ アプリ実行で jakarta-async-employee をデプロイしておく
 # 期待する結果:
 #   1つ目 /departments/summary（AsyncResponse）は 200 と 4 部署の集計
 #         （PLANNING 3 人・HR 2 人・SALES 5 人・PRODUCT 5 人。部署なしの Victor はどこにも入らない）

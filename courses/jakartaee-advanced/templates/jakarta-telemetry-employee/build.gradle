@@ -1,5 +1,5 @@
 // jakarta-telemetry-employee: MicroProfile Telemetry によるトレース（@WithSpan・Tracer・トレースIDのログ）
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // スパンは、Codinable では実行結果（Payara Server のログ）へ書き出す（microprofile-config.properties の otel.traces.exporter=console）
 plugins {
     id 'war'

@@ -2,8 +2,8 @@
 //
 // 演習ごとに確かめること
 //   1. 一覧から選ぶと、作業用プロジェクトが雛形から作られる
-//   2. openFiles がエディタに開き、run が主役のボタン (アプリ実行 / 🧪 テスト実行) か
-//      単独で動かせるファイル (エディタの ファイル実行) に当たる
+//   2. openFiles がエディタに開き、run が主役のボタン (▶ アプリ実行 / 🧪 テスト実行) か
+//      単独で動かせるファイル (エディタの ▶ 実行) に当たる
 //   3. 主役のボタンで動かした結果が種類どおりになる
 //      - Web サーバー (bootRun / npm dev / Django …) … URL を検知し、HTTP で 5xx 以外が返る
 //      - gradle test … BUILD SUCCESSFUL で、テスト結果が 1 件以上・失敗 0 件
@@ -12,8 +12,8 @@
 //      - SQL … 並んでいる .sql をすべて流し、エラーにならない (わざと失敗させる教材は除く)
 //      - スクリプトの演習は、単独で動かせるファイルをすべて動かす
 //   4. 付き添いのプロセス (customer-hub) やメッセージングを使う演習は、それが起動する
-//   5. ファイル単位の ファイル実行 (受講者と同じく、ファイルを開いてエディタの右上のボタンを押す)
-//      - curl/*.sh … アプリ実行で起動したアプリに向けて順に送り、アプリを止めずに終了コード 0・HTTP の応答が出る
+//   5. ファイル単位の ▶ 実行 (受講者と同じく、ファイルを開いてエディタの右上のボタンを押す)
+//      - curl/*.sh … ▶ アプリ実行で起動したアプリに向けて順に送り、アプリを止めずに終了コード 0・HTTP の応答が出る
 //      - テストクラス … 1 つ選んで動かし、そのクラスのテストが成功する
 //      - main を持つクラス … 1 つ選んで動かし、終了コード 0
 //
@@ -160,7 +160,7 @@ async function checkExercise(cdp, courseId, ex, r) {
   // 実行対象の反映と openFiles を待つ
   await sleep(1500);
   if (ex.run) {
-    // ツールバーの主役のボタン (アプリ実行 / 🧪 テスト実行) か、単独で動かせるファイル (エディタの ファイル実行) に当たること
+    // ツールバーの主役のボタン (▶ アプリ実行 / 🧪 テスト実行) か、単独で動かせるファイル (エディタの ▶ 実行) に当たること
     const ok = await waitFor(cdp, `${RUN_REACHABLE(ex.run)}`, 15000, null);
     if (!ok) {
       const state = await cdp.eval(`JSON.stringify({ primary: document.getElementById('toolbar').dataset.primaryTarget, files: projectInfo?.fileRuns })`);
@@ -183,7 +183,7 @@ async function checkExercise(cdp, courseId, ex, r) {
 
   // スクリプトの演習は並んでいるファイルをすべて動かす (01_… 02_… の連番)
   let targets = [ex.run];
-  // テストが主役の演習は、受講者と同じくテストクラスを 1 つずつ開いて ファイル実行で流す
+  // テストが主役の演習は、受講者と同じくテストクラスを 1 つずつ開いて ▶ 実行で流す
   if (ex.run === await cdp.eval(`projectInfo?.run?.test`)) {
     targets = await cdp.eval(`Object.values(projectInfo.fileRuns || {}).filter(v => v.startsWith('gradle:test --tests ')).sort()`);
   }
@@ -200,7 +200,7 @@ async function checkExercise(cdp, courseId, ex, r) {
 }
 
 /**
- * curl/*.sh をエディタの ファイル実行で順に送る。アプリ実行で起動したアプリに向けるので、
+ * curl/*.sh をエディタの ▶ 実行で順に送る。▶ アプリ実行で起動したアプリに向けるので、
  * 動いていなければ先に起動する。スクリプトはアプリを止めずに脇で動くこと
  */
 async function checkCurlScripts(cdp, r) {
@@ -209,7 +209,7 @@ async function checkCurlScripts(cdp, r) {
   if (!await cdp.eval(`running && !!__e2e.url`)) {
     await stopRun(cdp);
     const app = await cdp.eval(`runEntries().app`);
-    if (!app) { r.problems.push('curl のスクリプトがあるのに アプリ実行が無い'); return; }
+    if (!app) { r.problems.push('curl のスクリプトがあるのに ▶ アプリ実行が無い'); return; }
     await runTarget(cdp, app, { id: '' }, r);
     if (!await cdp.eval(`running && !!__e2e.url`)) { r.problems.push('curl を送る前にアプリが起動しない'); return; }
   }
@@ -218,7 +218,7 @@ async function checkCurlScripts(cdp, r) {
   for (const target of scripts) {
     const before = await cdp.eval(`runLog.length`);
     await cdp.eval(`(() => { __e2e.side = null; return true; })()`);
-    if (!await cdp.eval(CLICK_RUN(target))) { r.problems.push(`${target}: エディタの ファイル実行が出ない`); continue; }
+    if (!await cdp.eval(CLICK_RUN(target))) { r.problems.push(`${target}: エディタの ▶ 実行が出ない`); continue; }
     const done = await waitFor(cdp, `!!__e2e.side`, 10 * 60_000, null);   // client/ は初回に Gradle の依存を取る
     if (!done) { r.problems.push(`${target}: 10 分たっても終わらない`); continue; }
     const out = await cdp.eval(`runLog.slice(${before})`);
@@ -235,7 +235,7 @@ async function checkCurlScripts(cdp, r) {
 }
 
 /**
- * ファイル単位の ファイル実行を確かめる: テストクラスと main を 1 つずつ
+ * ファイル単位の ▶ 実行を確かめる: テストクラスと main を 1 つずつ
  * (全部を動かすと Gradle の起動が演習の数だけ重なるので、仕組みの確認として 1 つずつにする)
  */
 async function checkFileRuns(cdp, ex, r) {
@@ -255,7 +255,7 @@ async function runTarget(cdp, target, ex, r) {
   await cdp.eval(`(() => { __e2e.exit = null; __e2e.url = null; __e2e.tests = null; return true; })()`);
   if (!await cdp.eval(CLICK_RUN(target))) r.problems.push(`${target} を動かすボタンが無い`);
   const isGradle = target.startsWith('gradle:');
-  // アプリ実行のときはプレビューのパスも演習のもの (ex.id が空なら NO_PAGE の扱いを問わない)
+  // ▶ アプリ実行のときはプレビューのパスも演習のもの (ex.id が空なら NO_PAGE の扱いを問わない)
   const limit = isGradle ? 15 * 60_000 : 5 * 60_000;
   const until = Date.now() + limit;
   let state = null;
@@ -375,7 +375,7 @@ async function checkStatic(cdp, r) {
 
 // 実行対象を画面のボタンで動かす式
 //   ツールバーの主役のボタンが動かすものならそれを押す。単独で動かせるファイルなら、
-//   そのファイルを開いてエディタの右上の ファイル実行を押す (受講者と同じ操作)
+//   そのファイルを開いてエディタの右上の ▶ 実行を押す (受講者と同じ操作)
 //   run が gradle:test の演習は、テストクラスがあれば当たっているとみなす (テストはクラスごとに流す)
 const RUN_REACHABLE = target => `(document.getElementById('toolbar').dataset.primaryTarget === ${JSON.stringify(target)} ||
   Object.values(projectInfo?.fileRuns || {}).includes(${JSON.stringify(target)}) ||

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Alice（BASIC）でログインし、社員の参照と登録を試す
 # Cookie（SECURITY_SESSION）は一時ファイル（cookie jar）に保存して、次の要求へ持ち回る
-# 前提: 先に アプリ実行で jakarta-security-employee をデプロイしておく
+# 前提: 先に ▶ アプリ実行で jakarta-security-employee をデプロイしておく
 # 期待する結果:
 #   ログインの前に GET /api/csrf でトークンを取得する（ログインの POST も CsrfFilter が照合する）
 #   ログインの誤ったパスワードは 401、正しいパスワード（1111）は 204 と Set-Cookie: SECURITY_SESSION=...

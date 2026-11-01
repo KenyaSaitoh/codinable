@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 書籍を検索する（認証は要らない）
 # BookDao の JPQL による検索と Criteria API による検索に、同じ条件を渡して結果を比べる
-# 先に アプリ実行で書店 API（/leaf-books-api）と Customer Hub をデプロイしておく
+# 先に ▶ アプリ実行で書店 API（/leaf-books-api）と Customer Hub をデプロイしておく
 # 期待する結果:
 #   1つ目 HTTP/1.1 200 と書籍 1 件（bookId 1）
 #   2つ目 JPQL の検索（カテゴリ 1 = Java、キーワード「Java」）

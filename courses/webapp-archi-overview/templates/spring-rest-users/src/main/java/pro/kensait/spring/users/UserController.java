@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @RestController は @Controller + @ResponseBody に相当し、
  * 戻り値のオブジェクトを Jackson が JSON に変換して本文にする
  *
- * アプリ実行で動かしたまま、curl/ のスクリプトを順に開いて
- * エディタの右上の ファイル実行で送ると確かめられる:
+ * ▶ アプリ実行で動かしたまま、curl/ のスクリプトを順に開いて
+ * エディタの右上の ▶ 実行で送ると確かめられる:
  *   curl/01_list_users.sh   一覧取得 (GET /api/users)
  *   curl/02_get_user.sh     1 件取得 (GET /api/users/1)
  *   curl/03_create_user.sh  登録 (POST /api/users、201 と Location)

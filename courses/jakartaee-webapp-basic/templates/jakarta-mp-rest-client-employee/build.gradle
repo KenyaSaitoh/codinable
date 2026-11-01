@@ -1,5 +1,5 @@
 // jakarta-mp-rest-client-employee: MicroProfile Rest Client による同期 HTTP 通信（呼び出す側）
-// アプリ実行で、api/ の確認用 API（employee-api.war）と一緒に Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で、api/ の確認用 API（employee-api.war）と一緒に Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

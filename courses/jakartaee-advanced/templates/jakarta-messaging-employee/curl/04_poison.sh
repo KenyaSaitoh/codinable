@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # JSON として読めない本文（ポイズンメッセージ）を送り、再配送とデッドレターキューへの移動を確かめる
-# 前提: 先に アプリ実行で送信側と受信側をデプロイしておく
+# 前提: 先に ▶ アプリ実行で送信側と受信側をデプロイしておく
 # 期待する結果:
 #   POST /api/events/raw は HTTP/1.1 202
 #   実行結果に [ EmployeeEventListener#onMessage ] が JMSXDeliveryCount=1、続けて JMSXDeliveryCount=2 で出る

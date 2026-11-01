@@ -2,7 +2,7 @@
 # 在庫数を、読み取ったときの version を付けて更新する（楽観的ロック）
 # StockService#updateStock は、送られた version が現在の version と違えば
 # OptimisticLockException を送出し、OptimisticLockExceptionMapper が 409 に変換する
-# 先に アプリ実行で書店 API と Customer Hub をデプロイしておく
+# 先に ▶ アプリ実行で書店 API と Customer Hub をデプロイしておく
 # 期待する結果:
 #   1つ目 ログイン（HTTP 200）
 #   2つ目 HTTP/1.1 200 と在庫（bookId 1 の quantity と version）

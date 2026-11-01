@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # サーキットブレーカーを OPEN にする（社員APIの停止中に 6 回呼ぶ）
-# 前提: アプリ実行のあと、出力欄の右の「api」の停止で社員API（8095）だけを止めておく（Payara Server は動かしたまま）
+# 前提: ▶ アプリ実行のあと、出力欄の右の「api」の停止で社員API（8095）だけを止めておく（Payara Server は動かしたまま）
 # 期待する結果（社員APIの停止中）:
 #   6 回とも HTTP/1.1 200 と {"employees":[],"fallback":true,"message":"社員APIを利用できないため代替応答を返しました"}
 #   実行結果のログ: 最初の 4 回は [ EmployeeClientService#getEmployees ] のあとに fallbackEmployees が出る（実際に通信して失敗）

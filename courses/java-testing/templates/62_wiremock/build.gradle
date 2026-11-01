@@ -1,5 +1,5 @@
 // 62_wiremock: WireMock によるモックサーバーの構築（チャプター6.2）
-// モックサーバーの WireMockApp は main を持つので、開いてエディタの右上の ファイル実行で動かす
+// モックサーバーの WireMockApp は main を持つので、開いてエディタの右上の ▶ 実行で動かす
 plugins {
     id "java"
     id "application"
@@ -31,7 +31,7 @@ dependencies {
     personApiTestImplementation "com.fasterxml.jackson.core:jackson-databind:2.20.0"
 }
 
-// ファイル実行は run -PmainClass=<開いている WireMockApp> で動かす
+// ▶ 実行は run -PmainClass=<開いている WireMockApp> で動かす
 application {
     mainClass = project.hasProperty("mainClass") ? project.property("mainClass") : "pro.kensait.spring.calc.rest.test1.WireMockApp"
 }

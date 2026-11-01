@@ -1,5 +1,5 @@
 // spring-rest-person: テスト対象の Spring Boot アプリケーション（ポート 8082）
-// テストのプロジェクト（1 つ上のフォルダー）の codinable.services.json から、アプリ実行のときに一緒に起動する
+// テストのプロジェクト（1 つ上のフォルダー）の codinable.services.json から、▶ アプリ実行のときに一緒に起動する
 // データはサーバーのメモリー上にあり、起動し直すと初期データ（5 件）に戻る
 plugins {
     id "java"

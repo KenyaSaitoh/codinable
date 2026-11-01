@@ -1,5 +1,5 @@
 // jakarta-rest-client-employee: 確認用の社員 API（client/ のコンソールから呼び出される側）
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

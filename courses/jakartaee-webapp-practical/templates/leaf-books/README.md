@@ -6,17 +6,17 @@ Jakarta REST の書店 API と React の画面で動かします。顧客情報�
 
 | 場所 | 中身 | 起動方法 |
 |---|---|---|
-| `src/backend/` | 書店 API（WAR `leaf-books-api`、`http://localhost:8080/leaf-books-api/api/...`） | アプリ実行 |
-| `customer-hub/src/backend/` | 外部 API の Customer Hub（WAR `customer-hub-api`） | アプリ実行で同じ Payara Server に一緒にデプロイ |
-| `src/frontend/` | React の画面（Vite、5173。`/api` を書店 API へ中継） | アプリ実行で一緒に起動 |
+| `src/backend/` | 書店 API（WAR `leaf-books-api`、`http://localhost:8080/leaf-books-api/api/...`） | ▶ アプリ実行 |
+| `customer-hub/src/backend/` | 外部 API の Customer Hub（WAR `customer-hub-api`） | ▶ アプリ実行で同じ Payara Server に一緒にデプロイ |
+| `src/frontend/` | React の画面（Vite、5173。`/api` を書店 API へ中継） | ▶ アプリ実行で一緒に起動 |
 
 ## 動かし方
 
-1. アプリ実行を押します。Gradle が 2 つの WAR を作り、同梱の Payara Server 7 に Customer Hub → 書店 API の順にデプロイします。React の画面も一緒に起動します（`npm install` も必要なときに自動で走ります）
+1. ▶ アプリ実行を押します。Gradle が 2 つの WAR を作り、同梱の Payara Server 7 に Customer Hub → 書店 API の順にデプロイします。React の画面も一緒に起動します（`npm install` も必要なときに自動で走ります）
 2. 画面の用意ができると、プレビューに `http://localhost:5173/` が開きます。`alice@example.com` / `password` でログインし、カートに入れて注文すると、送料と注文履歴が確かめられます
-3. API を直接呼ぶときは、アプリ実行で起動したまま `curl/` のスクリプトを開き、エディタの右上の ファイル実行で送ります。各スクリプトの先頭のコメントに、期待する結果を書いてあります
+3. API を直接呼ぶときは、▶ アプリ実行で起動したまま `curl/` のスクリプトを開き、エディタの右上の ▶ 実行で送ります。各スクリプトの先頭のコメントに、期待する結果を書いてあります
 
-アプリ実行のたびにサーバーを起動し直し、テーブルと初期データも作り直します。注文や在庫の更新は次の実行には残りません。
+▶ アプリ実行のたびにサーバーを起動し直し、テーブルと初期データも作り直します。注文や在庫の更新は次の実行には残りません。
 
 ## チャプターごとに見るところ
 
@@ -30,7 +30,7 @@ Jakarta REST の書店 API と React の画面で動かします。顧客情報�
 | `src/backend/src/main/java/pro/kensait/leafbooks/service/delivery/DeliveryFeeService.java` | 送料の決定（800 円・沖縄県 1700 円・5000 円以上は無料） |
 | `src/backend/src/test/java/pro/kensait/leafbooks/architecture/LayeredArchitectureTest.java` | ArchUnit によるレイヤーの依存方向の検査 |
 
-テストクラスを開いて、エディタの右上の ファイル実行で流します。`DeliveryFeeServiceTest` は送料の分岐を、
+テストクラスを開いて、エディタの右上の ▶ 実行で流します。`DeliveryFeeServiceTest` は送料の分岐を、
 `OrderServiceTest` は注文の業務処理をモックで確かめます。結果はテスト結果タブに出ます。
 
 ### チャプター3 永続化とトランザクション、外部連携の境界

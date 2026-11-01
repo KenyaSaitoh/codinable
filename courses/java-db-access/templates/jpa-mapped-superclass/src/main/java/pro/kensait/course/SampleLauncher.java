@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 /*
- * Codinable の アプリ実行から教材の main を動かすための起動クラス
+ * Codinable の ▶ アプリ実行から教材の main を動かすための起動クラス
  *
  * 元の教材は HSQLDB サーバーの testdb を setupHsqldb で初期化してから、
  * main を 1 つずつ -PmainClass で選んで実行する。Codinable はサーバーも引数も使えないので、

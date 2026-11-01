@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 何をするか: テキストファイルを 1 つ作り、フォームと同じ multipart/form-data で POST /files へ送る
-# 前提: 先に アプリ実行で WAR をデプロイしておく
+# 前提: 先に ▶ アプリ実行で WAR をデプロイしておく
 # 期待する結果: 302 で /files/result?id=1 へリダイレクトし（PRG）、結果画面に ID・タイトル・ファイル名・サイズが出る
 #              ファイル名は「fakepath/memo.txt」のようにフォルダーを含めて送っても、memo.txt だけが残る
 dir=$(mktemp -d)

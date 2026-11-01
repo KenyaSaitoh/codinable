@@ -23,9 +23,9 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/client/` の�
 
 ## 動かし方
 
-1. ツールバーの アプリ実行を押す。確認用 API（`/employee-api`）とこのアプリケーション（`/jakarta-mp-rest-client-employee`）が一緒にデプロイされ、
+1. ツールバーの ▶ アプリ実行を押す。確認用 API（`/employee-api`）とこのアプリケーション（`/jakarta-mp-rest-client-employee`）が一緒にデプロイされ、
    プレビューに `http://localhost:8080/jakarta-mp-rest-client-employee/` が開く。「実行」を押すと記録が表示される
-2. `curl/01_run.sh` を開いて、エディタの右上の ファイル実行で流す
+2. `curl/01_run.sh` を開いて、エディタの右上の ▶ 実行で流す
 3. `curl/02_api_direct.sh` で、呼び出し先の API に同じ要求を直接送ってみる
 
 ## 結果のどこを見るか

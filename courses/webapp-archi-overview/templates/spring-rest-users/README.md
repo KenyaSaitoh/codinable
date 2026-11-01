@@ -17,10 +17,10 @@
 
 ## 動かし方
 
-1. テスト: `UserServiceTest.java` と `UserControllerTest.java` を開いて、エディタの右上の ファイル実行で流す。
+1. テスト: `UserServiceTest.java` と `UserControllerTest.java` を開いて、エディタの右上の ▶ 実行で流す。
    テスト結果タブにメソッド単位の成否が出る
-2. アプリ: アプリ実行で `http://localhost:8080` に起動する（プレビューは `/api/users` の JSON）
-3. アプリを起動したまま、`curl/01_list_users.sh` から順に開いて ファイル実行で送る。
+2. アプリ: ▶ アプリ実行で `http://localhost:8080` に起動する（プレビューは `/api/users` の JSON）
+3. アプリを起動したまま、`curl/01_list_users.sh` から順に開いて ▶ 実行で送る。
    実行中のアプリは止まらない
 4. 終わったら「停止」で止める。起動し直すとデータは初期状態に戻る
 

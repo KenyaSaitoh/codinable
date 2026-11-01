@@ -1,5 +1,5 @@
 // jakarta-rest-greet: Jakarta REST のリソースクラスと入力の受け取り（挨拶 API）
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

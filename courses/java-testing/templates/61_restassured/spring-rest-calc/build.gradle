@@ -1,5 +1,5 @@
 // spring-rest-calc: テスト対象の Spring Boot アプリケーション（ポート 8080）
-// テストのプロジェクト（1 つ上のフォルダー）の codinable.services.json から、アプリ実行のときに一緒に起動する
+// テストのプロジェクト（1 つ上のフォルダー）の codinable.services.json から、▶ アプリ実行のときに一緒に起動する
 plugins {
     id "java"
     id "org.springframework.boot" version "4.1.2"

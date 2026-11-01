@@ -1,5 +1,5 @@
 // api/: 確認用の社員API（http://localhost:8095）。Payara Server とは別のプロセスとして動く Java SE のプログラム
-// ルートの アプリ実行で一緒に起動する（codinable.services.json の processes）
+// ルートの ▶ アプリ実行で一緒に起動する（codinable.services.json の processes）
 // 出力欄の右の「api」の停止・起動で、社員APIの障害と復旧を作れる
 plugins {
     id 'java'

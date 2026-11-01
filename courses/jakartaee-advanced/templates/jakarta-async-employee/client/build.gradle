@@ -1,6 +1,6 @@
 // jakarta-async-employee の SSE の受信クライアント（EmployeeStreamClient）
 // Jakarta REST のクライアントAPI の SseEventSource で、ルートの GET /api/employees/stream を受信する
-// ルートを アプリ実行でデプロイしてから、client/run.sh を開いてエディタの右上の ファイル実行で動かす
+// ルートを ▶ アプリ実行でデプロイしてから、client/run.sh を開いてエディタの右上の ▶ 実行で動かす
 plugins {
     id 'java'
     id 'application'

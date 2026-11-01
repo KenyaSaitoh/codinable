@@ -22,9 +22,9 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 
 ## 動かし方
 
-1. ツールバーの アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-rest-employee/api/employees` の JSON が開く
-2. `curl/` のスクリプトを開いて、エディタの右上の ファイル実行で 1 つずつ流す
-   （06〜08 はデータを変える。アプリ実行でデプロイし直すと初期データに戻る）
+1. ツールバーの ▶ アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-rest-employee/api/employees` の JSON が開く
+2. `curl/` のスクリプトを開いて、エディタの右上の ▶ 実行で 1 つずつ流す
+   （06〜08 はデータを変える。▶ アプリ実行でデプロイし直すと初期データに戻る）
 
 ## 結果のどこを見るか
 

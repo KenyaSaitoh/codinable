@@ -18,10 +18,10 @@ JUnit 6 のテストメソッドの構造、アサーション、ライフサイ
 
 ## ボタンでの動かし方
 
-- テストクラスを開いて、エディタの右上の ファイル実行を押します。
-- `scripts/01_build_test.sh` を開いて ファイル実行を押すと、ビルドテストが動きます。`ITCalculator` と `TimeoutTest` は除外されます。
-- `scripts/02_integration_test.sh` を開いて ファイル実行を押すと、`ITCalculator` だけが動きます。
-- `ITCalculator` や `TimeoutTest` を開いて ファイル実行を押したときは、1 クラスの指定なので除外を外して動かします（`TimeoutTest` は `@Disabled` なのでスキップになります）。
+- テストクラスを開いて、エディタの右上の ▶ 実行を押します。
+- `scripts/01_build_test.sh` を開いて ▶ 実行を押すと、ビルドテストが動きます。`ITCalculator` と `TimeoutTest` は除外されます。
+- `scripts/02_integration_test.sh` を開いて ▶ 実行を押すと、`ITCalculator` だけが動きます。
+- `ITCalculator` や `TimeoutTest` を開いて ▶ 実行を押したときは、1 クラスの指定なので除外を外して動かします（`TimeoutTest` は `@Disabled` なのでスキップになります）。
 
 ## 結果のどこを見るか
 

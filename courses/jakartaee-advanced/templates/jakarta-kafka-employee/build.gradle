@@ -1,7 +1,7 @@
 // jakarta-kafka-employee: Kafka の公式のクライアントライブラリ（kafka-clients）による送受信（送信側 producer）
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // 受信側（consumer/）も同じ Payara Server に一緒にデプロイする（codinable.services.json の wars）
-// Codinable 同梱の Kafka（127.0.0.1:9092）は、アプリ実行の前に自動で起動する（codinable.services.json の services）
+// Codinable 同梱の Kafka（127.0.0.1:9092）は、▶ アプリ実行の前に自動で起動する（codinable.services.json の services）
 plugins {
     id 'war'
 }

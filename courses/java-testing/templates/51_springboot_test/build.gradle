@@ -1,5 +1,5 @@
 // 51_springboot_test: Spring Boot Test による単体テスト（チャプター5.1）
-// テストクラスを開いて、エディタの右上の ファイル実行で流す（アプリ実行で人物管理の画面も動かせる）
+// テストクラスを開いて、エディタの右上の ▶ 実行で流す（▶ アプリ実行で人物管理の画面も動かせる）
 plugins {
     id "java"
     id "org.springframework.boot" version "4.1.2"

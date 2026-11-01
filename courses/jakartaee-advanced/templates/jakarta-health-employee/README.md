@@ -17,8 +17,8 @@ MicroProfile Telemetry の `Meter` によるカウンター `employee.get.count`
 
 ## 動かし方
 
-1. ツールバーの アプリ実行を押す。プレビューに `http://localhost:8080/health` が開く
-2. `curl/` のスクリプトを開いて、エディタの右上の ファイル実行で流す
+1. ツールバーの ▶ アプリ実行を押す。プレビューに `http://localhost:8080/health` が開く
+2. `curl/` のスクリプトを開いて、エディタの右上の ▶ 実行で流す
    - `01_health.sh` … `/health`・`/health/live`・`/health/ready`・`/health/started`
    - `02_employee_metrics.sh` … 社員の取得を 3 回（うち 1 回は 404）呼び、カウンターを増やす
 

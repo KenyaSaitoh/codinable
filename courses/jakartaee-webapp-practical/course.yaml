@@ -8,10 +8,10 @@
 #  サンプルは 2 つのアプリで、チャプターごとに同じアプリを別の観点で読む
 #    leaf-books    REST API（Jakarta REST。WAR は leaf-books-api）+ React の書店（Vite 5173）
 #    customer-hub  書店が呼ぶ外部 API（WAR は customer-hub-api）
-#  どちらも アプリ実行（gradle:payaraRun）で同梱の Payara Server 7 にデプロイする
+#  どちらも ▶ アプリ実行（gradle:payaraRun）で同梱の Payara Server 7 にデプロイする
 #  書店の雛形には customer-hub/ を同梱し、codinable.services.json の wars で同じ Payara に
 #  一緒にデプロイする（コンテキストルートは /leaf-books-api と /customer-hub-api）
-#  React の画面（src/frontend）は processes に書き、アプリ実行で一緒に起動する
+#  React の画面（src/frontend）は processes に書き、▶ アプリ実行で一緒に起動する
 #  データソース jdbc/HsqldbDS は payara/post-boot-commands.asadmin でインメモリの HSQLDB に登録し、
 #  テーブルと初期データはデプロイのたびに persistence.xml が META-INF/sql から流す
 #  同じアプリを使う演習は dir で同じ雛形を指す（作業用プロジェクトは演習ごとに別に作られる）
@@ -69,12 +69,12 @@ exercises:
       ja: >-
         Leaf Books の書店 API です。api / service / dao / entity / external のパッケージが、
         HTTP の入出力・業務処理・DB・外部 API のどれを受け持つかを対応付けて読みます。
-        アプリ実行で書店 API と Customer Hub が Payara Server 7 にデプロイされ、React の画面（5173）も起動します。
+        ▶ アプリ実行で書店 API と Customer Hub が Payara Server 7 にデプロイされ、React の画面（5173）も起動します。
         alice@example.com / password でログインし、カートから注文すると、送料と注文履歴が確かめられます。
       en: >-
         The Leaf Books bookstore API. Map the api / service / dao / entity / external packages
         to what each handles: HTTP I/O, business logic, the DB and the external API.
-        Run app deploys the bookstore API and Customer Hub to Payara Server 7 and starts the React screen (5173).
+        ▶ Run app deploys the bookstore API and Customer Hub to Payara Server 7 and starts the React screen (5173).
         Log in as alice@example.com / password and order from the cart to see the delivery fee and the order history.
     openFiles:
       - README.md
@@ -92,11 +92,11 @@ exercises:
       ja: >-
         LayeredArchitectureTest は、レイヤー間の依存方向（api → service → dao → entity）を ArchUnit で検査します。
         DeliveryFeeServiceTest は送料の分岐、OrderServiceTest は注文の業務処理をモックで確かめます。
-        テストクラスを開いて、エディタの右上の ファイル実行で流してください。結果はテスト結果タブに出ます。
+        テストクラスを開いて、エディタの右上の ▶ 実行で流してください。結果はテスト結果タブに出ます。
       en: >-
         LayeredArchitectureTest checks the dependency direction between layers (api → service → dao → entity) with ArchUnit.
         DeliveryFeeServiceTest checks the delivery fee rules, and OrderServiceTest checks the ordering logic with mocks.
-        Open a test class and press Run file at the top right of the editor. The results appear in the test tab.
+        Open a test class and press ▶ Run at the top right of the editor. The results appear in the test tab.
     openFiles:
       - README.md
   # ── チャプター3: 永続化とトランザクション、外部連携の境界 ─────────
@@ -113,12 +113,12 @@ exercises:
     descriptions:
       ja: >-
         BookDao の JPQL と Criteria API の検索、StockResource の version を照合する在庫の更新、
-        OrderService のトランザクション境界を読みます。アプリ実行のあと、curl/ のスクリプトを開いて
-        エディタの右上の ファイル実行で順に流すと、検索結果と、古い version で更新したときの 409 が確かめられます。
+        OrderService のトランザクション境界を読みます。▶ アプリ実行のあと、curl/ のスクリプトを開いて
+        エディタの右上の ▶ 実行で順に流すと、検索結果と、古い version で更新したときの 409 が確かめられます。
       en: >-
         Read the JPQL and Criteria API queries in BookDao, the version-checked stock update in StockResource
-        and the transaction boundary of OrderService. After Run app, open the scripts in curl/ and press
-        Run file at the top right of the editor in order to see the search results and the 409 returned for a stale version.
+        and the transaction boundary of OrderService. After ▶ Run app, open the scripts in curl/ and press
+        ▶ Run at the top right of the editor in order to see the search results and the 409 returned for a stale version.
     openFiles:
       - README.md
   - id: customer-hub
@@ -133,11 +133,11 @@ exercises:
       en: Run Customer Hub, the external API
     descriptions:
       ja: >-
-        書店から呼ばれる側（プロバイダー）の顧客 API です。アプリ実行で Payara Server 7 にデプロイすると、
+        書店から呼ばれる側（プロバイダー）の顧客 API です。▶ アプリ実行で Payara Server 7 にデプロイすると、
         プレビューに http://localhost:8080/customer-hub-api/customers/1 の JSON が出ます。
         curl/ のスクリプトで、メールアドレスでの照会と、登録済みのメールアドレスで登録したときの 409 が確かめられます。
       en: >-
-        The customer API on the called (provider) side. Run app deploys it to Payara Server 7, and the
+        The customer API on the called (provider) side. ▶ Run app deploys it to Payara Server 7, and the
         preview shows the JSON at http://localhost:8080/customer-hub-api/customers/1.
         The scripts in curl/ show the lookup by email address and the 409 returned when registering an existing email address.
     openFiles:
@@ -156,11 +156,11 @@ exercises:
     descriptions:
       ja: >-
         src/frontend の React の画面（ページ・コンテキスト・サービス）と、それが呼ぶ OrderResource などの入出力を読みます。
-        アプリ実行で書店 API と React の画面（5173）が起動し、Webブラウザが React の画面に切り替わります。
+        ▶ アプリ実行で書店 API と React の画面（5173）が起動し、Webブラウザが React の画面に切り替わります。
         vite.config.ts の proxy により、/api への要求は Payara Server の /leaf-books-api へ中継されます。
       en: >-
         Read the React screen in src/frontend (pages, contexts and services) and the input and output of
-        OrderResource and the other resources it calls. Run app starts the bookstore API and the React screen (5173),
+        OrderResource and the other resources it calls. ▶ Run app starts the bookstore API and the React screen (5173),
         and the Web browser switches to the React screen. The proxy in vite.config.ts forwards /api to /leaf-books-api on Payara Server.
     openFiles:
       - README.md
@@ -178,11 +178,11 @@ exercises:
     descriptions:
       ja: >-
         AuthResource が発行する JWT の Cookie と CSRF トークン、JwtAuthFilter と CsrfTokenFilter の照合を読みます。
-        アプリ実行のあと、curl/ のスクリプトを開いてエディタの右上の ファイル実行で順に流すと、
+        ▶ アプリ実行のあと、curl/ のスクリプトを開いてエディタの右上の ▶ 実行で順に流すと、
         ログイン前の 401、ログインで届く 2 つの Cookie、CSRF トークンの無い注文の 403 が確かめられます。
       en: >-
         Read the JWT cookie and the CSRF token issued by AuthResource, and how JwtAuthFilter and CsrfTokenFilter check them.
-        After Run app, open the scripts in curl/ and press Run file at the top right of the editor in order to see
+        After ▶ Run app, open the scripts in curl/ and press ▶ Run at the top right of the editor in order to see
         the 401 before login, the two cookies set at login, and the 403 for an order without the CSRF token.
     openFiles:
       - README.md

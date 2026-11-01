@@ -1,7 +1,7 @@
 // jakarta-async-client-employee の Java コンソールのクライアント
 // Jakarta REST のクライアントAPI（rx()）と MicroProfile Rest Client で、ルートの社員API を非同期に呼ぶ
 // Payara Server と同じ Jakarta REST の実装（Jersey）をライブラリとして使い、Java SE のプログラムとして動く
-// ルートの社員API を アプリ実行でデプロイしてから、client/run.sh を開いてエディタの右上の ファイル実行で動かす
+// ルートの社員API を ▶ アプリ実行でデプロイしてから、client/run.sh を開いてエディタの右上の ▶ 実行で動かす
 plugins {
     id 'java'
     id 'application'

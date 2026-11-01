@@ -15,9 +15,9 @@
 
 ## 動かし方
 
-1. `curl/01_prepare_sample.sh` を開いて、エディタの右上の ファイル実行で流す（`C:/tmp/output` にファイルができる）
-2. ツールバーの アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-servlet-file-download/` が開く
-3. 画面のリンクからダウンロードする。`curl/02_download.sh`・`curl/03_not_found.sh` を ファイル実行で流す
+1. `curl/01_prepare_sample.sh` を開いて、エディタの右上の ▶ 実行で流す（`C:/tmp/output` にファイルができる）
+2. ツールバーの ▶ アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-servlet-file-download/` が開く
+3. 画面のリンクからダウンロードする。`curl/02_download.sh`・`curl/03_not_found.sh` を ▶ 実行で流す
 
 ## 結果のどこを見るか
 

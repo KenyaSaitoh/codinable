@@ -1,5 +1,5 @@
 // jakarta-websocket-employee: Jakarta WebSocket による社員通知
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // 通知の画面（src/main/webapp）とエンドポイントが同じ WAR にあるので、開発用の転送の仕組みは使わない
 plugins {
     id 'war'

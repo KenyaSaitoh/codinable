@@ -1,5 +1,5 @@
 // spring-bookstore-rest: テスト対象の Spring Boot アプリケーション（ポート 8081）
-// テストのプロジェクト（1 つ上のフォルダー）の codinable.services.json から、アプリ実行のときに一緒に起動する
+// テストのプロジェクト（1 つ上のフォルダー）の codinable.services.json から、▶ アプリ実行のときに一緒に起動する
 // 顧客情報を提供する REST API。ログインのときに spring-bookstore-mvc から呼ばれる
 plugins {
     id "java"

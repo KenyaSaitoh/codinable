@@ -1,6 +1,6 @@
 // 71_selenide: Selenium / Selenide による Web ブラウザの UI テスト（チャプター7.1）
 // テスト対象の spring-bookstore-mvc（8080）と spring-bookstore-rest（8081）はサブフォルダーの独立したプロジェクト
-// アプリ実行で 2 つを起動してから、BookStoreTest を開いて ファイル実行する
+// ▶ アプリ実行で 2 つを起動してから、BookStoreTest を開いて ▶ 実行する
 // ドライバーと（Chrome が無ければ）Chrome for Testing は Selenium Manager が初回に用意する
 plugins {
     id "java"
@@ -36,7 +36,7 @@ test {
     }
 }
 
-// アプリ実行で動くタスク。codinable.services.json の processes が
+// ▶ アプリ実行で動くタスク。codinable.services.json の processes が
 // テスト対象の Spring Boot アプリを起動するので、ここではポートが開くまで待って案内を出す
 def waitForPorts = { Map<String, Integer> apps ->
     long limit = System.currentTimeMillis() + 10 * 60 * 1000
@@ -55,7 +55,7 @@ def waitForPorts = { Map<String, Integer> apps ->
         }
         println "${name} が起動しました（ポート ${port}）"
     }
-    println "起動したまま、テストクラスを開いてエディタの右上の ファイル実行を押してください"
+    println "起動したまま、テストクラスを開いてエディタの右上の ▶ 実行を押してください"
 }
 
 tasks.register("waitForApps") {

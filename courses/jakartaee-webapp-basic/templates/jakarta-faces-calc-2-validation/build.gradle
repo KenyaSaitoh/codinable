@@ -1,5 +1,5 @@
 // jakarta-faces-calc-2-validation: コンバーターと Bean Validation・FacesMessage（計算アプリケーション 2）
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

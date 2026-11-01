@@ -442,7 +442,7 @@ let treeFlashTimer = null;
  *   - run が sql: / file: の演習 → そのファイル (最初に動かすもの)
  *   - run が gradle:test の演習 → テストクラス
  *   - それ以外 → ▶ バッジの付いたファイル (テストクラス・main など)。
- *     アプリ実行と同じものになるクラス (@SpringBootApplication) は除く
+ *     ▶ アプリ実行と同じものになるクラス (@SpringBootApplication) は除く
  * 折りたたまれたディレクトリの中にあれば開き、最初の 1 つまでスクロールする
  */
 function flashExerciseFiles(exercise) {
@@ -517,7 +517,7 @@ function renderTree() {
         renderTree();
       });
     } else {
-      // 単独で動かせるファイル (開くとエディタの右上に ファイル実行が出る) には ▶ のバッジを付ける
+      // 単独で動かせるファイル (開くとエディタの右上に ▶ 実行が出る) には ▶ のバッジを付ける
       const runnable = !!projectInfo?.fileRuns?.[entry.path];
       el.className = 'tree-file' + (entry.path === activeFile ? ' current' : '') +
                      (entry.text ? ' editable' : '') + (runnable ? ' runnable' : '') +
@@ -1113,8 +1113,8 @@ function uniqueProjectName(base) {
  *
  * course.yaml の run は実行対象の書式 ('gradle:test' / 'sql:01_select.sql' …)
  *   - 🧪 テスト実行の対象と同じ   → 🧪 テスト実行を主役のボタンにする
- *   - app と同じ種類の gradle: / npm: → アプリ実行が動かすものをそれに差し替える (gradle:build の演習など)
- *   - sql: / file:                → 最初に動かすファイル。エディタで開いてタブの右上の ファイル実行で動かす
+ *   - app と同じ種類の gradle: / npm: → ▶ アプリ実行が動かすものをそれに差し替える (gradle:build の演習など)
+ *   - sql: / file:                → 最初に動かすファイル。エディタで開いてタブの右上の ▶ 実行で動かす
  */
 async function applyExerciseRunTarget(exercise) {
   flashExerciseFiles(exercise);
@@ -1128,11 +1128,11 @@ async function applyExerciseRunTarget(exercise) {
 // ═══════════════════════════════════════════
 //  実行
 //
-//  ツールバーは「アプリ実行」と「🧪 テスト実行」の 2 つだけ。何を動かすかは
+//  ツールバーは「▶ アプリ実行」と「🧪 テスト実行」の 2 つだけ。何を動かすかは
 //  プロジェクトの中身から 1 つに決まる (workspace.js の pickRunEntries)。
 //  Gradle のタスクや npm のスクリプトを並べて選ばせると、受講者は何を選べばよいかで迷う
 //  ファイル 1 つ (テストクラス・main・SQL・シェル …) を動かすのは、エディタのタブの
-//  右上の「ファイル実行」。開いているファイルが単独で動かせるときだけ出る (fileRunTarget)
+//  右上の「▶ 実行」。開いているファイルが単独で動かせるときだけ出る (fileRunTarget)
 //  どれで動かしても、実行は 1 本だけで、ログは同じ「実行結果」に流れる
 // ═══════════════════════════════════════════
 
@@ -1144,9 +1144,9 @@ function plannedRun() {
 }
 
 /**
- * いまのプロジェクトで「アプリ実行」が動かすものと、演習の主役
- *   primary: 'app'  … アプリ実行を塗りつぶす
- *            'test' … テストが主役 (run が gradle:test)。テストクラスを開いてエディタの ファイル実行で流す
+ * いまのプロジェクトで「▶ アプリ実行」が動かすものと、演習の主役
+ *   primary: 'app'  … ▶ アプリ実行を塗りつぶす
+ *            'test' … テストが主役 (run が gradle:test)。テストクラスを開いてエディタの ▶ 実行で流す
  *            'file' … ファイル単位の演習 (run が sql: / file:)
  * test (テスト全体) はボタンには出さない。e2e の検査が使う
  */
@@ -1184,17 +1184,17 @@ function updateRunButtons() {
   const { app } = entries;
   const runBtn = $('btn-run');
   runBtn.disabled = running || !project || !app;
-  runBtn.title    = app ? runTargetLabel(app) : t('runNoApp');
-  // アプリを動かす演習では塗りつぶす。テストやファイル単位の演習では、主役はエディタの ファイル実行
+  runBtn.title    = app ? tf('runAppTitle', { target: runTargetLabel(app).replace(/^▶\s*/, '') }) : t('runNoApp');
+  // アプリを動かす演習では塗りつぶす。テストやファイル単位の演習では、主役はエディタの ▶ 実行
   runBtn.classList.toggle('primary', entries.primary === 'app' && !!app);
-  // 自動テストが「アプリ実行が何を動かすか」を読めるようにしておく
+  // 自動テストが「▶ アプリ実行が何を動かすか」を読めるようにしておく
   $('toolbar').dataset.primaryTarget = app || '';
   $('btn-run-file').disabled = running && !runsBeside(fileRun);
 }
 
 /**
  * アプリを止めずに脇で動かす実行対象か (curl/01_get.sh のようなシェルのスクリプト)
- * アプリ実行で起こしたアプリへ API を送るためのものなので、アプリが動いていても押せる
+ * ▶ アプリ実行で起こしたアプリへ API を送るためのものなので、アプリが動いていても押せる
  */
 function runsBeside(target) {
   return /^file:.+\.(sh|bash)$/i.test(target || '');
@@ -1204,7 +1204,7 @@ function runsBeside(target) {
 let fileRun = null;
 
 /**
- * エディタのタブの右上の「ファイル実行」を、開いているファイルに合わせて出し入れする
+ * エディタのタブの右上の「▶ 実行」を、開いているファイルに合わせて出し入れする
  * 中身 (main や @Test の有無) で決まるので、開いたとき・保存したときに問い合わせる
  */
 async function updateFileRunButton() {
@@ -1255,13 +1255,13 @@ function appendRunOutput(text) {
   if (runOutputFollow) scrollRunOutputToEnd();
 }
 
-/** アプリ実行 */
+/** ▶ アプリ実行 */
 function runApp() { return runTarget(runEntries().app); }
 
-/** エディタの ファイル実行 (開いているファイルだけ) */
+/** エディタの ▶ 実行 (開いているファイルだけ) */
 function runActiveFile() { return runTarget(fileRun); }
 
-/** Ctrl+Enter: 開いているファイルが動かせればそれ、無ければ アプリ実行 */
+/** Ctrl+Enter: 開いているファイルが動かせればそれ、無ければ ▶ アプリ実行 */
 function runShortcut() {
   return fileRun ? runActiveFile() : runApp();
 }
@@ -1317,7 +1317,7 @@ ${tf('runFailed', { error: side.error || '' })}
   setRunning(true);
 }
 
-/** ツリーの右クリックから直接ファイルを実行する (開いてからエディタの ファイル実行と同じものを動かす) */
+/** ツリーの右クリックから直接ファイルを実行する (開いてからエディタの ▶ 実行と同じものを動かす) */
 async function runFile(relPath) {
   await openFile(relPath);
   const target = await window.api.wsFileRunTarget(project, relPath);

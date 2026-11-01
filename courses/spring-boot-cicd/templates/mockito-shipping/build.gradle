@@ -34,7 +34,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-// アプリ実行で固定料金のクライアントとメモリ内保存を使い、3,600 円の注文を 1 件保存する例を出す
+// ▶ アプリ実行で固定料金のクライアントとメモリ内保存を使い、3,600 円の注文を 1 件保存する例を出す
 application {
     mainClass = 'pro.kensait.shipping.ShippingApplication'
 }

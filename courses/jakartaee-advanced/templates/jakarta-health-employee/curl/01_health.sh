@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ヘルスのエンドポイントを問い合わせる（Payara の場合、サーバーのルートコンテキストの /health に置かれる）
-# 前提: 先に アプリ実行で jakarta-health-employee をデプロイしておく
+# 前提: 先に ▶ アプリ実行で jakarta-health-employee をデプロイしておく
 # 期待する結果:
 #   1つ目 GET /health は HTTP/1.1 200 と {"status":"UP","checks":[...]}。
 #         checks に heap-memory（usedBytes・maxBytes）、database（employeeCount 16）、initialization が入る

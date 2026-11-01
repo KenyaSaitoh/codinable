@@ -13,7 +13,7 @@
 
 ## 動かし方
 
-1. ツールバーの アプリ実行を押す。Gradle が WAR を作り、同梱の Payara Server 7 へデプロイする
+1. ツールバーの ▶ アプリ実行を押す。Gradle が WAR を作り、同梱の Payara Server 7 へデプロイする
 2. デプロイが終わると、プレビューに `http://localhost:8080/jakarta-servlet-hello/hello` が開き、「Hello, Alice!」が表示される
 
 ## 結果のどこを見るか
@@ -21,4 +21,4 @@
 - 実行結果に、`Loading application [jakarta-servlet-hello] at [/jakarta-servlet-hello]` と
   `jakarta-servlet-hello was successfully deployed` が出る。WAR のファイル名がコンテキストルートになっている
 - その少し前に `HelloServlet#init` が出る。最初のリクエストを待たずに、デプロイの時点で `init` が呼ばれている
-- ⏹ で止めると Payara Server ごと終了する。もう一度 アプリ実行を押すと、サーバーを起動し直してデプロイする
+- ⏹ で止めると Payara Server ごと終了する。もう一度 ▶ アプリ実行を押すと、サーバーを起動し直してデプロイする

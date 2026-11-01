@@ -3,7 +3,7 @@
 #
 #  講座の原稿の出典行（03_thread_concurrent: pro.kensait...Main）のフォルダーを、そのまま 1 つずつの
 #  Gradle プロジェクトにして templates/ に置いている。1 つのプロジェクトを複数のレッスンの演習で使う
-#  run の -PmainClass がレッスンごとに最初に動かす main。ほかの main はファイルを開いて ファイル実行で動かす
+#  run の -PmainClass がレッスンごとに最初に動かす main。ほかの main はファイルを開いて ▶ 実行で動かす
 #  06_network_io はサーバーを codinable.services.json の processes で一緒に起動する
 # ═══════════════════════════════════════════════════════════
 id: java-advanced
@@ -19,11 +19,11 @@ descriptions:
   ja: >-
     モジュール、スレッドと並行処理、ラムダ式とストリーム、入出力、総称型、リフレクション、アノテーション、レコードの仕組みを、
     短いコードを動かして確かめる講座の演習です。どの演習も Java のコンソールプログラムで、main を持つクラスを開いて
-    エディタの右上の ファイル実行で動かします。サーバーとクライアントの演習は、クライアントの ファイル実行でサーバーも一緒に起動します。
+    エディタの右上の ▶ 実行で動かします。サーバーとクライアントの演習は、クライアントの ▶ 実行でサーバーも一緒に起動します。
   en: >-
     Exercises for the course that checks, by running short programs, how modules, threads and concurrency, lambdas and
     streams, I/O, generics, reflection, annotations and records work. Every exercise is a Java console program: open a class
-    with a main method and press Run file at the top right of the editor. In the server and client exercises, running a client
+    with a main method and press ▶ Run at the top right of the editor. In the server and client exercises, running a client
     also starts its server.
 
 # チャプター名（演習一覧の見出し。原稿 1.1 の構成表のチャプターを並べている）
@@ -88,9 +88,9 @@ exercises:
       en: 'requires, exports and access between modules'
     descriptions:
       ja: >-
-        2 つの module-info.java と Application を読み、アプリ実行で hoge モジュールを動かして 13 が表示されることを見ます。Application のコメントを外すと、Common が exports されていないためコンパイルエラーになります。
+        2 つの module-info.java と Application を読み、▶ アプリ実行で hoge モジュールを動かして 13 が表示されることを見ます。Application のコメントを外すと、Common が exports されていないためコンパイルエラーになります。
       en: >-
-        Read the two module-info.java files and Application, then press Run app to run the hoge module and see 13. Uncommenting the Common call gives a compile error because its package is not exported.
+        Read the two module-info.java files and Application, then press ▶ Run app to run the hoge module and see 13. Uncommenting the Common call gives a compile error because its package is not exported.
     openFiles:
       - README.md
 
@@ -107,9 +107,9 @@ exercises:
       en: 'Creating threads and start()'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_1_1.runnable.Main_Lambda を動かし、[ Main ] finish が先に表示された後でタスクの合計値が表示されることを見ます。thread.Main も同じように動かせます。
+        ▶ アプリ実行で lsn_3_1_1.runnable.Main_Lambda を動かし、[ Main ] finish が先に表示された後でタスクの合計値が表示されることを見ます。thread.Main も同じように動かせます。
       en: >-
-        Press Run app to run lsn_3_1_1.runnable.Main_Lambda: [ Main ] finish appears first and the task total later. thread.Main works the same way.
+        Press ▶ Run app to run lsn_3_1_1.runnable.Main_Lambda: [ Main ] finish appears first and the task total later. thread.Main works the same way.
     openFiles:
       - README.md
 
@@ -125,9 +125,9 @@ exercises:
       en: 'Waiting with join()'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_1_1.join.Main を動かし、t2（5 秒）と t1（8 秒）が終わってからメインスレッド終了が表示されることを見ます。
+        ▶ アプリ実行で lsn_3_1_1.join.Main を動かし、t2（5 秒）と t1（8 秒）が終わってからメインスレッド終了が表示されることを見ます。
       en: >-
-        Press Run app to run lsn_3_1_1.join.Main: the main thread finishes only after t2 (5 s) and t1 (8 s).
+        Press ▶ Run app to run lsn_3_1_1.join.Main: the main thread finishes only after t2 (5 s) and t1 (8 s).
     openFiles:
       - README.md
 
@@ -143,9 +143,9 @@ exercises:
       en: 'Race conditions and synchronized'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_1_2.unsafe.Main を何度か動かし、最終的な値が 30 にならず毎回変わることを見ます。safe.Main を開いてファイル実行すると常に 30 になります。
+        ▶ アプリ実行で lsn_3_1_2.unsafe.Main を何度か動かし、最終的な値が 30 にならず毎回変わることを見ます。safe.Main を開いて▶ 実行すると常に 30 になります。
       en: >-
-        Press Run app a few times to run lsn_3_1_2.unsafe.Main: the final value changes and misses 30. Open safe.Main and press Run file: it is always 30.
+        Press ▶ Run app a few times to run lsn_3_1_2.unsafe.Main: the final value changes and misses 30. Open safe.Main and press ▶ Run: it is always 30.
     openFiles:
       - README.md
 
@@ -161,9 +161,9 @@ exercises:
       en: 'Deadlock and ReentrantReadWriteLock'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_1_2.readwritelock.Main を動かし、最終的な値が 30 になることを見ます。deadlock.Main は開いてファイル実行し、出力が止まったら出力欄の「停止」で終わらせます。
+        ▶ アプリ実行で lsn_3_1_2.readwritelock.Main を動かし、最終的な値が 30 になることを見ます。deadlock.Main は開いて▶ 実行し、出力が止まったら出力欄の「停止」で終わらせます。
       en: >-
-        Press Run app to run lsn_3_1_2.readwritelock.Main and see 30. Open deadlock.Main, press Run file, and press Stop in the output pane once the output freezes.
+        Press ▶ Run app to run lsn_3_1_2.readwritelock.Main and see 30. Open deadlock.Main, press ▶ Run, and press Stop in the output pane once the output freezes.
     openFiles:
       - README.md
 
@@ -179,9 +179,9 @@ exercises:
       en: 'wait() and notify()'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_1_3.Main を動かし、BarThread の 5 秒の計算の後で FooThread が 12345 を受け取ることを見ます。
+        ▶ アプリ実行で lsn_3_1_3.Main を動かし、BarThread の 5 秒の計算の後で FooThread が 12345 を受け取ることを見ます。
       en: >-
-        Press Run app to run lsn_3_1_3.Main: FooThread receives 12345 after the 5-second calculation in BarThread.
+        Press ▶ Run app to run lsn_3_1_3.Main: FooThread receives 12345 after the 5-second calculation in BarThread.
     openFiles:
       - README.md
 
@@ -197,9 +197,9 @@ exercises:
       en: 'Immutability and thread-local values'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_1_4.Main を動かし、引数で渡していない "Alice" を Foo#process() が取り出すことを見ます。lsn_3_1_2.immutable.Main を開いてファイル実行すると、両方のスレッドが foo!!!!!!!!!! になります。
+        ▶ アプリ実行で lsn_3_1_4.Main を動かし、引数で渡していない "Alice" を Foo#process() が取り出すことを見ます。lsn_3_1_2.immutable.Main を開いて▶ 実行すると、両方のスレッドが foo!!!!!!!!!! になります。
       en: >-
-        Press Run app to run lsn_3_1_4.Main: Foo#process() gets "Alice" without an argument. Open lsn_3_1_2.immutable.Main and press Run file: both threads end with foo!!!!!!!!!!.
+        Press ▶ Run app to run lsn_3_1_4.Main: Foo#process() gets "Alice" without an argument. Open lsn_3_1_2.immutable.Main and press ▶ Run: both threads end with foo!!!!!!!!!!.
     openFiles:
       - README.md
 
@@ -215,9 +215,9 @@ exercises:
       en: 'Kinds of thread pools'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_2_2.Main_Cached を動かし、3 つのタスクが並列に動くことを見ます。Main_Single と Main_Fixed は開いてファイル実行します。shutdown しないのでプログラムは終わらず、出力欄の「停止」で終わらせます。
+        ▶ アプリ実行で lsn_3_2_2.Main_Cached を動かし、3 つのタスクが並列に動くことを見ます。Main_Single と Main_Fixed は開いて▶ 実行します。shutdown しないのでプログラムは終わらず、出力欄の「停止」で終わらせます。
       en: >-
-        Press Run app to run lsn_3_2_2.Main_Cached and see three tasks in parallel. Open Main_Single and Main_Fixed and press Run file; they never shut down, so press Stop in the output pane.
+        Press ▶ Run app to run lsn_3_2_2.Main_Cached and see three tasks in parallel. Open Main_Single and Main_Fixed and press ▶ Run; they never shut down, so press Stop in the output pane.
     openFiles:
       - README.md
 
@@ -233,9 +233,9 @@ exercises:
       en: 'shutdown and awaitTermination'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_2_2.Main_Await を動かし、12 秒待っても終わらないタスクが shutdownNow() で割り込まれる流れを出力で見ます。
+        ▶ アプリ実行で lsn_3_2_2.Main_Await を動かし、12 秒待っても終わらないタスクが shutdownNow() で割り込まれる流れを出力で見ます。
       en: >-
-        Press Run app to run lsn_3_2_2.Main_Await and follow in the output how a task still running after 12 seconds is interrupted by shutdownNow().
+        Press ▶ Run app to run lsn_3_2_2.Main_Await and follow in the output how a task still running after 12 seconds is interrupted by shutdownNow().
     openFiles:
       - README.md
 
@@ -251,9 +251,9 @@ exercises:
       en: 'Delayed and periodic execution'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_2_3.Main_Schedule を動かします。Main_FixedRate と Main_FixedDelay は開いてファイル実行し、繰り返しの間隔を見比べてから出力欄の「停止」で終わらせます。
+        ▶ アプリ実行で lsn_3_2_3.Main_Schedule を動かします。Main_FixedRate と Main_FixedDelay は開いて▶ 実行し、繰り返しの間隔を見比べてから出力欄の「停止」で終わらせます。
       en: >-
-        Press Run app to run lsn_3_2_3.Main_Schedule. Open Main_FixedRate and Main_FixedDelay, press Run file, compare the intervals, then press Stop in the output pane.
+        Press ▶ Run app to run lsn_3_2_3.Main_Schedule. Open Main_FixedRate and Main_FixedDelay, press ▶ Run, compare the intervals, then press Stop in the output pane.
     openFiles:
       - README.md
 
@@ -269,9 +269,9 @@ exercises:
       en: 'Future and Callable'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_2_4.callable.Main_Get_3 を動かし、get() で結果を受け取る時点を見ます。Main_Timeout と exception.Main は開いてファイル実行します。
+        ▶ アプリ実行で lsn_3_2_4.callable.Main_Get_3 を動かし、get() で結果を受け取る時点を見ます。Main_Timeout と exception.Main は開いて▶ 実行します。
       en: >-
-        Press Run app to run lsn_3_2_4.callable.Main_Get_3 and see when get() returns. Open Main_Timeout and exception.Main and press Run file.
+        Press ▶ Run app to run lsn_3_2_4.callable.Main_Get_3 and see when get() returns. Open Main_Timeout and exception.Main and press ▶ Run.
     openFiles:
       - README.md
 
@@ -287,9 +287,9 @@ exercises:
       en: 'invokeAll and splitting work'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_2_5.invokeall.Main を動かし、約 15 秒後に結果がまとめて表示されることを見ます。collection.Main を開いてファイル実行すると合計値 5000050000 が表示されます。
+        ▶ アプリ実行で lsn_3_2_5.invokeall.Main を動かし、約 15 秒後に結果がまとめて表示されることを見ます。collection.Main を開いて▶ 実行すると合計値 5000050000 が表示されます。
       en: >-
-        Press Run app to run lsn_3_2_5.invokeall.Main: all results appear together after about 15 seconds. Open collection.Main and press Run file to see the total 5000050000.
+        Press ▶ Run app to run lsn_3_2_5.invokeall.Main: all results appear together after about 15 seconds. Open collection.Main and press ▶ Run to see the total 5000050000.
     openFiles:
       - README.md
 
@@ -305,9 +305,9 @@ exercises:
       en: 'CountDownLatch and CyclicBarrier'
     descriptions:
       ja: >-
-        アプリ実行で lsn_3_3_1.countdownlatch.Main を動かし、Worker が開始の合図を待ち、メインスレッドが全員の終了を待つ流れを見ます。cyclicbarrier.Main は開いてファイル実行します。
+        ▶ アプリ実行で lsn_3_3_1.countdownlatch.Main を動かし、Worker が開始の合図を待ち、メインスレッドが全員の終了を待つ流れを見ます。cyclicbarrier.Main は開いて▶ 実行します。
       en: >-
-        Press Run app to run lsn_3_3_1.countdownlatch.Main: the Workers wait for the start signal and main waits for them all. Open cyclicbarrier.Main and press Run file.
+        Press ▶ Run app to run lsn_3_3_1.countdownlatch.Main: the Workers wait for the start signal and main waits for them all. Open cyclicbarrier.Main and press ▶ Run.
     openFiles:
       - README.md
 
@@ -324,9 +324,9 @@ exercises:
       en: 'Lambdas and functional interfaces'
     descriptions:
       ja: >-
-        アプリ実行で lsn_4_1_2.comparator.Main_3 を動かし、[USA, Japan, France] の順に並ぶことを見ます。匿名クラスの Main_2 も開いてファイル実行し、結果を比べます。
+        ▶ アプリ実行で lsn_4_1_2.comparator.Main_3 を動かし、[USA, Japan, France] の順に並ぶことを見ます。匿名クラスの Main_2 も開いて▶ 実行し、結果を比べます。
       en: >-
-        Press Run app to run lsn_4_1_2.comparator.Main_3 and see [USA, Japan, France]. Open the anonymous-class version Main_2, press Run file and compare.
+        Press ▶ Run app to run lsn_4_1_2.comparator.Main_3 and see [USA, Japan, France]. Open the anonymous-class version Main_2, press ▶ Run and compare.
     openFiles:
       - README.md
 
@@ -342,9 +342,9 @@ exercises:
       en: 'Passing behavior as an argument'
     descriptions:
       ja: >-
-        アプリ実行で lsn_4_1_3.reuse.Main_Function を動かし、同じメソッドにラムダ式で別の計算を渡した結果を見ます。
+        ▶ アプリ実行で lsn_4_1_3.reuse.Main_Function を動かし、同じメソッドにラムダ式で別の計算を渡した結果を見ます。
       en: >-
-        Press Run app to run lsn_4_1_3.reuse.Main_Function and see one method used with different calculations passed as lambdas.
+        Press ▶ Run app to run lsn_4_1_3.reuse.Main_Function and see one method used with different calculations passed as lambdas.
     openFiles:
       - README.md
 
@@ -360,9 +360,9 @@ exercises:
       en: 'Deferred execution and closures'
     descriptions:
       ja: >-
-        アプリ実行で lsn_4_1_4.closure.Main を動かし、main の変数 base を使った 140 が Processor の中から表示されることを見ます。lsn_4_1_5.supplier.Main も開いてファイル実行します。
+        ▶ アプリ実行で lsn_4_1_4.closure.Main を動かし、main の変数 base を使った 140 が Processor の中から表示されることを見ます。lsn_4_1_5.supplier.Main も開いて▶ 実行します。
       en: >-
-        Press Run app to run lsn_4_1_4.closure.Main: 140, computed with the base variable of main, is printed from inside Processor. Also open lsn_4_1_5.supplier.Main and press Run file.
+        Press ▶ Run app to run lsn_4_1_4.closure.Main: 140, computed with the base variable of main, is printed from inside Processor. Also open lsn_4_1_5.supplier.Main and press ▶ Run.
     openFiles:
       - README.md
 
@@ -378,9 +378,9 @@ exercises:
       en: 'Method references'
     descriptions:
       ja: >-
-        アプリ実行で lsn_4_1_6.Main_5 を動かし、ラムダ式とメソッド参照のどちらも message => Hello, World! と表示されることを見ます。
+        ▶ アプリ実行で lsn_4_1_6.Main_5 を動かし、ラムダ式とメソッド参照のどちらも message => Hello, World! と表示されることを見ます。
       en: >-
-        Press Run app to run lsn_4_1_6.Main_5: both the lambda and the method reference print message => Hello, World!.
+        Press ▶ Run app to run lsn_4_1_6.Main_5: both the lambda and the method reference print message => Hello, World!.
     openFiles:
       - README.md
 
@@ -396,9 +396,9 @@ exercises:
       en: 'Stream pipelines'
     descriptions:
       ja: >-
-        アプリ実行で lsn_4_2_1.Main を動かし、生成・中間操作・終端操作を通った結果を見ます。
+        ▶ アプリ実行で lsn_4_2_1.Main を動かし、生成・中間操作・終端操作を通った結果を見ます。
       en: >-
-        Press Run app to run lsn_4_2_1.Main and see the result of the source, intermediate and terminal steps.
+        Press ▶ Run app to run lsn_4_2_1.Main and see the result of the source, intermediate and terminal steps.
     openFiles:
       - README.md
 
@@ -414,9 +414,9 @@ exercises:
       en: 'Intermediate and terminal operations'
     descriptions:
       ja: >-
-        アプリ実行で lsn_4_2_4.Main_Aggregate を動かし、集計の結果と、空のときの値の決め方を見ます。
+        ▶ アプリ実行で lsn_4_2_4.Main_Aggregate を動かし、集計の結果と、空のときの値の決め方を見ます。
       en: >-
-        Press Run app to run lsn_4_2_4.Main_Aggregate and see the aggregates and how the empty case is handled.
+        Press ▶ Run app to run lsn_4_2_4.Main_Aggregate and see the aggregates and how the empty case is handled.
     openFiles:
       - README.md
 
@@ -432,9 +432,9 @@ exercises:
       en: 'Aggregating with collectors'
     descriptions:
       ja: >-
-        アプリ実行で lsn_4_2_5.Main_Sales を動かし、SALES.csv の売上個数が商品名ごとに A01 => 236 の形で表示されることを見ます。
+        ▶ アプリ実行で lsn_4_2_5.Main_Sales を動かし、SALES.csv の売上個数が商品名ごとに A01 => 236 の形で表示されることを見ます。
       en: >-
-        Press Run app to run lsn_4_2_5.Main_Sales: units from SALES.csv are summed per product, shown as A01 => 236.
+        Press ▶ Run app to run lsn_4_2_5.Main_Sales: units from SALES.csv are summed per product, shown as A01 => 236.
     openFiles:
       - README.md
 
@@ -451,9 +451,9 @@ exercises:
       en: 'Character encodings and reading'
     descriptions:
       ja: >-
-        アプリ実行で lsn_5_1_3.Main_BufferedReader を動かし、UTF-8 の foo.txt と Shift_JIS の bar.txt が正しく読めることを見ます。
+        ▶ アプリ実行で lsn_5_1_3.Main_BufferedReader を動かし、UTF-8 の foo.txt と Shift_JIS の bar.txt が正しく読めることを見ます。
       en: >-
-        Press Run app to run lsn_5_1_3.Main_BufferedReader: foo.txt in UTF-8 and bar.txt in Shift_JIS are both read correctly.
+        Press ▶ Run app to run lsn_5_1_3.Main_BufferedReader: foo.txt in UTF-8 and bar.txt in Shift_JIS are both read correctly.
     openFiles:
       - README.md
 
@@ -469,9 +469,9 @@ exercises:
       en: 'Closing resources and copying binaries'
     descriptions:
       ja: >-
-        アプリ実行で lsn_5_1_4.Main_BufferedOutputStream を動かし、java_logo1.jpg のコピー java_logo2.jpg ができることをツリーで見ます。Main_BufferedWriter も開いてファイル実行します。
+        ▶ アプリ実行で lsn_5_1_4.Main_BufferedOutputStream を動かし、java_logo1.jpg のコピー java_logo2.jpg ができることをツリーで見ます。Main_BufferedWriter も開いて▶ 実行します。
       en: >-
-        Press Run app to run lsn_5_1_4.Main_BufferedOutputStream and find the copy java_logo2.jpg in the tree. Also open Main_BufferedWriter and press Run file.
+        Press ▶ Run app to run lsn_5_1_4.Main_BufferedOutputStream and find the copy java_logo2.jpg in the tree. Also open Main_BufferedWriter and press ▶ Run.
     openFiles:
       - README.md
 
@@ -487,9 +487,9 @@ exercises:
       en: 'Byte array streams'
     descriptions:
       ja: >-
-        アプリ実行で lsn_5_2_1.Main を動かし、画像をいったんメモリーに書き込んでから java_logo2.jpg へ書き出します。
+        ▶ アプリ実行で lsn_5_2_1.Main を動かし、画像をいったんメモリーに書き込んでから java_logo2.jpg へ書き出します。
       en: >-
-        Press Run app to run lsn_5_2_1.Main: the image is written to memory first and then to java_logo2.jpg.
+        Press ▶ Run app to run lsn_5_2_1.Main: the image is written to memory first and then to java_logo2.jpg.
     openFiles:
       - README.md
 
@@ -505,9 +505,9 @@ exercises:
       en: 'Serialization'
     descriptions:
       ja: >-
-        アプリ実行で lsn_5_2_2.Main_Ser_1 を動かして alice.ser を書き、Main_Ser_2 を開いてファイル実行して復元した Person を見ます。
+        ▶ アプリ実行で lsn_5_2_2.Main_Ser_1 を動かして alice.ser を書き、Main_Ser_2 を開いて▶ 実行して復元した Person を見ます。
       en: >-
-        Press Run app to run lsn_5_2_2.Main_Ser_1, which writes alice.ser, then open Main_Ser_2 and press Run file to see the restored Person.
+        Press ▶ Run app to run lsn_5_2_2.Main_Ser_1, which writes alice.ser, then open Main_Ser_2 and press ▶ Run to see the restored Person.
     openFiles:
       - README.md
 
@@ -524,9 +524,9 @@ exercises:
       en: 'ByteBuffer position and limit'
     descriptions:
       ja: >-
-        アプリ実行で lsn_6_1_2.Main を動かし、flip() の前後と取り出しごとの残りバイトを見ます。
+        ▶ アプリ実行で lsn_6_1_2.Main を動かし、flip() の前後と取り出しごとの残りバイトを見ます。
       en: >-
-        Press Run app to run lsn_6_1_2.Main and see the remaining bytes around flip() and after each read.
+        Press ▶ Run app to run lsn_6_1_2.Main and see the remaining bytes around flip() and after each read.
     openFiles:
       - README.md
 
@@ -542,9 +542,9 @@ exercises:
       en: 'TCP server and client'
     descriptions:
       ja: >-
-        アプリ実行で lsn_6_1_3.client.Main を動かします。相手の server.Main は一緒に起動します。response => Hello! 私はAliceです を見たら、サーバーは出力欄の右の列の「停止」で止めます。
+        ▶ アプリ実行で lsn_6_1_3.client.Main を動かします。相手の server.Main は一緒に起動します。response => Hello! 私はAliceです を見たら、サーバーは出力欄の右の列の「停止」で止めます。
       en: >-
-        Press Run app to run lsn_6_1_3.client.Main; its server.Main starts with it. After response => Hello! 私はAliceです, stop the server with Stop in the column to the right of the output.
+        Press ▶ Run app to run lsn_6_1_3.client.Main; its server.Main starts with it. After response => Hello! 私はAliceです, stop the server with Stop in the column to the right of the output.
     openFiles:
       - README.md
 
@@ -560,9 +560,9 @@ exercises:
       en: 'Blocking I/O and selectors'
     descriptions:
       ja: >-
-        アプリ実行で lsn_6_1_4.client.Main を動かします。セレクタのサーバーが一緒に起動し、[server] の行に select count が出ます。lsn_6_1_3.client.Main_Multi を開いてファイル実行すると、1 件ずつ約 2 秒おきに処理されます。
+        ▶ アプリ実行で lsn_6_1_4.client.Main を動かします。セレクタのサーバーが一緒に起動し、[server] の行に select count が出ます。lsn_6_1_3.client.Main_Multi を開いて▶ 実行すると、1 件ずつ約 2 秒おきに処理されます。
       en: >-
-        Press Run app to run lsn_6_1_4.client.Main; the selector server starts with it and logs select count on [server] lines. Open lsn_6_1_3.client.Main_Multi and press Run file to see one request handled about every 2 seconds.
+        Press ▶ Run app to run lsn_6_1_4.client.Main; the selector server starts with it and logs select count on [server] lines. Open lsn_6_1_3.client.Main_Multi and press ▶ Run to see one request handled about every 2 seconds.
     openFiles:
       - README.md
 
@@ -578,9 +578,9 @@ exercises:
       en: 'Sending and receiving with UDP'
     descriptions:
       ja: >-
-        アプリ実行で lsn_6_1_5.client.Main を動かします。受信側の server.Main が一緒に起動し、[server] Hello! 私はAliceです が出ます。Main_Multi を開いてファイル実行すると、clear() が無いため 3 行とも最初の名前が表示され、2 件目以降は捨てられます。
+        ▶ アプリ実行で lsn_6_1_5.client.Main を動かします。受信側の server.Main が一緒に起動し、[server] Hello! 私はAliceです が出ます。Main_Multi を開いて▶ 実行すると、clear() が無いため 3 行とも最初の名前が表示され、2 件目以降は捨てられます。
       en: >-
-        Press Run app to run lsn_6_1_5.client.Main; server.Main starts with it and prints [server] Hello! 私はAliceです. Open Main_Multi and press Run file: without clear(), all three lines show the first name and the later datagrams are discarded.
+        Press ▶ Run app to run lsn_6_1_5.client.Main; server.Main starts with it and prints [server] Hello! 私はAliceです. Open Main_Multi and press ▶ Run: without clear(), all three lines show the first name and the later datagrams are discarded.
     openFiles:
       - README.md
 
@@ -596,9 +596,9 @@ exercises:
       en: 'Synchronous calls with the HTTP client'
     descriptions:
       ja: >-
-        アプリ実行で lsn_6_2_3.httpclient.Main_GET_Sync を動かします。ポート 8080 のサーバーが一緒に起動し、ステータス 200 とボディ Hello! 私はAliceです が表示されます。
+        ▶ アプリ実行で lsn_6_2_3.httpclient.Main_GET_Sync を動かします。ポート 8080 のサーバーが一緒に起動し、ステータス 200 とボディ Hello! 私はAliceです が表示されます。
       en: >-
-        Press Run app to run lsn_6_2_3.httpclient.Main_GET_Sync; the server on port 8080 starts with it. You get status 200 and the body Hello! 私はAliceです.
+        Press ▶ Run app to run lsn_6_2_3.httpclient.Main_GET_Sync; the server on port 8080 starts with it. You get status 200 and the body Hello! 私はAliceです.
     openFiles:
       - README.md
 
@@ -614,9 +614,9 @@ exercises:
       en: 'Asynchronous calls with the HTTP client'
     descriptions:
       ja: >-
-        アプリ実行で lsn_6_2_4.httpclient.Main_GET_Async_3 を動かします。応答まで 10 秒待つサーバーが一緒に起動し、先に send request の行が、10 秒後に ### で囲んだ応答が表示されます。
+        ▶ アプリ実行で lsn_6_2_4.httpclient.Main_GET_Async_3 を動かします。応答まで 10 秒待つサーバーが一緒に起動し、先に send request の行が、10 秒後に ### で囲んだ応答が表示されます。
       en: >-
-        Press Run app to run lsn_6_2_4.httpclient.Main_GET_Async_3; a server that waits 10 seconds starts with it. send request appears first and the response wrapped in ### 10 seconds later.
+        Press ▶ Run app to run lsn_6_2_4.httpclient.Main_GET_Async_3; a server that waits 10 seconds starts with it. send request appears first and the response wrapped in ### 10 seconds later.
     openFiles:
       - README.md
 
@@ -633,9 +633,9 @@ exercises:
       en: 'What generics guarantee'
     descriptions:
       ja: >-
-        アプリ実行で lsn_7_1_2.interfaces.Main_1 を動かします。Main_2 を開いてファイル実行すると、原型の StrLengthComparator1 で ClassCastException が発生します。
+        ▶ アプリ実行で lsn_7_1_2.interfaces.Main_1 を動かします。Main_2 を開いて▶ 実行すると、原型の StrLengthComparator1 で ClassCastException が発生します。
       en: >-
-        Press Run app to run lsn_7_1_2.interfaces.Main_1. Open Main_2 and press Run file: the raw-typed StrLengthComparator1 throws ClassCastException.
+        Press ▶ Run app to run lsn_7_1_2.interfaces.Main_1. Open Main_2 and press ▶ Run: the raw-typed StrLengthComparator1 throws ClassCastException.
     openFiles:
       - README.md
 
@@ -651,9 +651,9 @@ exercises:
       en: 'Generic classes and erasure'
     descriptions:
       ja: >-
-        アプリ実行で lsn_7_1_2.generictype.Main を動かし、MyContainer に入れた値を取り出す結果を見ます。
+        ▶ アプリ実行で lsn_7_1_2.generictype.Main を動かし、MyContainer に入れた値を取り出す結果を見ます。
       en: >-
-        Press Run app to run lsn_7_1_2.generictype.Main and see values stored in and read from MyContainer.
+        Press ▶ Run app to run lsn_7_1_2.generictype.Main and see values stored in and read from MyContainer.
     openFiles:
       - README.md
 
@@ -669,9 +669,9 @@ exercises:
       en: 'Generic methods and bounds'
     descriptions:
       ja: >-
-        アプリ実行で lsn_7_1_4.genericmethod.Main を動かします。extend.Main も開いてファイル実行し、上限を付けたときの違いを見ます。
+        ▶ アプリ実行で lsn_7_1_4.genericmethod.Main を動かします。extend.Main も開いて▶ 実行し、上限を付けたときの違いを見ます。
       en: >-
-        Press Run app to run lsn_7_1_4.genericmethod.Main. Also open extend.Main and press Run file to see what an upper bound changes.
+        Press ▶ Run app to run lsn_7_1_4.genericmethod.Main. Also open extend.Main and press ▶ Run to see what an upper bound changes.
     openFiles:
       - README.md
 
@@ -687,9 +687,9 @@ exercises:
       en: 'Invariance and wildcards'
     descriptions:
       ja: >-
-        アプリ実行で lsn_7_1_3.Main_Invariant を動かします。lsn_7_1_5.unknown.Main_1 も開いてファイル実行し、ワイルドカードで受け取る例を見ます。
+        ▶ アプリ実行で lsn_7_1_3.Main_Invariant を動かします。lsn_7_1_5.unknown.Main_1 も開いて▶ 実行し、ワイルドカードで受け取る例を見ます。
       en: >-
-        Press Run app to run lsn_7_1_3.Main_Invariant. Also open lsn_7_1_5.unknown.Main_1 and press Run file for an example that accepts a wildcard.
+        Press ▶ Run app to run lsn_7_1_3.Main_Invariant. Also open lsn_7_1_5.unknown.Main_1 and press ▶ Run for an example that accepts a wildcard.
     openFiles:
       - README.md
 
@@ -705,9 +705,9 @@ exercises:
       en: 'API design with PECS'
     descriptions:
       ja: >-
-        アプリ実行で lsn_7_1_6.boundary_1.Main_2 を動かします。boundary_3.Main_2 も開いてファイル実行し、List<Bar> から List<Foo> へのコピーを見ます。
+        ▶ アプリ実行で lsn_7_1_6.boundary_1.Main_2 を動かします。boundary_3.Main_2 も開いて▶ 実行し、List<Bar> から List<Foo> へのコピーを見ます。
       en: >-
-        Press Run app to run lsn_7_1_6.boundary_1.Main_2. Also open boundary_3.Main_2 and press Run file to see a copy from List<Bar> to List<Foo>.
+        Press ▶ Run app to run lsn_7_1_6.boundary_1.Main_2. Also open boundary_3.Main_2 and press ▶ Run to see a copy from List<Bar> to List<Foo>.
     openFiles:
       - README.md
 
@@ -724,9 +724,9 @@ exercises:
       en: 'Class loading and initialization'
     descriptions:
       ja: >-
-        アプリ実行で lsn_8_1_2.Main を動かし、Greeting の時刻が snippet_2 で初めて表示されることを見ます。
+        ▶ アプリ実行で lsn_8_1_2.Main を動かし、Greeting の時刻が snippet_2 で初めて表示されることを見ます。
       en: >-
-        Press Run app to run lsn_8_1_2.Main: the time in Greeting is printed for the first time in snippet_2.
+        Press ▶ Run app to run lsn_8_1_2.Main: the time in Greeting is printed for the first time in snippet_2.
     openFiles:
       - README.md
 
@@ -742,9 +742,9 @@ exercises:
       en: 'The class loader hierarchy'
     descriptions:
       ja: >-
-        アプリ実行で lsn_8_1_1.Main_1 を動かし、1 行目と 4 行目の @ の後ろの値が一致することを見ます。
+        ▶ アプリ実行で lsn_8_1_1.Main_1 を動かし、1 行目と 4 行目の @ の後ろの値が一致することを見ます。
       en: >-
-        Press Run app to run lsn_8_1_1.Main_1 and check that the values after @ on lines 1 and 4 match.
+        Press ▶ Run app to run lsn_8_1_1.Main_1 and check that the values after @ on lines 1 and 4 match.
     openFiles:
       - README.md
 
@@ -760,9 +760,9 @@ exercises:
       en: 'Loading resources'
     descriptions:
       ja: >-
-        アプリ実行で lsn_8_1_1.Main_2 を動かし、src/main/resources の config/MyResource.properties を読んだ結果を見ます。
+        ▶ アプリ実行で lsn_8_1_1.Main_2 を動かし、src/main/resources の config/MyResource.properties を読んだ結果を見ます。
       en: >-
-        Press Run app to run lsn_8_1_1.Main_2 and see what it reads from config/MyResource.properties in src/main/resources.
+        Press ▶ Run app to run lsn_8_1_1.Main_2 and see what it reads from config/MyResource.properties in src/main/resources.
     openFiles:
       - README.md
 
@@ -778,9 +778,9 @@ exercises:
       en: 'Creating objects and calling methods dynamically'
     descriptions:
       ja: >-
-        アプリ実行で lsn_8_2_2.Main_MethodInvocation_1 を動かします。Main_MethodInvocation_2 を開いてファイル実行すると、private メソッドの呼び出しも見られます。
+        ▶ アプリ実行で lsn_8_2_2.Main_MethodInvocation_1 を動かします。Main_MethodInvocation_2 を開いて▶ 実行すると、private メソッドの呼び出しも見られます。
       en: >-
-        Press Run app to run lsn_8_2_2.Main_MethodInvocation_1. Open Main_MethodInvocation_2 and press Run file to see a private method called as well.
+        Press ▶ Run app to run lsn_8_2_2.Main_MethodInvocation_1. Open Main_MethodInvocation_2 and press ▶ Run to see a private method called as well.
     openFiles:
       - README.md
 
@@ -796,9 +796,9 @@ exercises:
       en: 'Copying values with reflection'
     descriptions:
       ja: >-
-        アプリ実行で lsn_8_2_2.Main_InstanceCopy を動かし、Person の値が Customer に詰め替えられた結果を見ます。
+        ▶ アプリ実行で lsn_8_2_2.Main_InstanceCopy を動かし、Person の値が Customer に詰め替えられた結果を見ます。
       en: >-
-        Press Run app to run lsn_8_2_2.Main_InstanceCopy and see the values of Person copied into Customer.
+        Press ▶ Run app to run lsn_8_2_2.Main_InstanceCopy and see the values of Person copied into Customer.
     openFiles:
       - README.md
 
@@ -814,9 +814,9 @@ exercises:
       en: 'Java SE annotations'
     descriptions:
       ja: >-
-        アプリ実行で lsn_8_3_2.javase.Main_JavaSE_Annotation を動かします。Calculator の @Deprecated と Main_CalcClient の警告も確かめます。
+        ▶ アプリ実行で lsn_8_3_2.javase.Main_JavaSE_Annotation を動かします。Calculator の @Deprecated と Main_CalcClient の警告も確かめます。
       en: >-
-        Press Run app to run lsn_8_3_2.javase.Main_JavaSE_Annotation. Also look at @Deprecated on Calculator and the warning in Main_CalcClient.
+        Press ▶ Run app to run lsn_8_3_2.javase.Main_JavaSE_Annotation. Also look at @Deprecated on Calculator and the warning in Main_CalcClient.
     openFiles:
       - README.md
 
@@ -832,9 +832,9 @@ exercises:
       en: 'Custom annotations'
     descriptions:
       ja: >-
-        アプリ実行で lsn_8_3_2.metainfo.Main_Custom_1 を動かします。maxlength.Main を開いてファイル実行すると、11 文字の値で「文字列長が指定された長さを超えています」の例外が発生します。
+        ▶ アプリ実行で lsn_8_3_2.metainfo.Main_Custom_1 を動かします。maxlength.Main を開いて▶ 実行すると、11 文字の値で「文字列長が指定された長さを超えています」の例外が発生します。
       en: >-
-        Press Run app to run lsn_8_3_2.metainfo.Main_Custom_1. Open maxlength.Main and press Run file: the 11-character value raises the exception for exceeding the length.
+        Press ▶ Run app to run lsn_8_3_2.metainfo.Main_Custom_1. Open maxlength.Main and press ▶ Run: the 11-character value raises the exception for exceeding the length.
     openFiles:
       - README.md
 
@@ -851,9 +851,9 @@ exercises:
       en: 'Record structure and equality'
     descriptions:
       ja: >-
-        アプリ実行で lsn_9_1_1.Main_HashSet を動かし、値が等しい alice2 の追加が false になることを見ます。
+        ▶ アプリ実行で lsn_9_1_1.Main_HashSet を動かし、値が等しい alice2 の追加が false になることを見ます。
       en: >-
-        Press Run app to run lsn_9_1_1.Main_HashSet: adding alice2, which has equal values, returns false.
+        Press ▶ Run app to run lsn_9_1_1.Main_HashSet: adding alice2, which has equal values, returns false.
     openFiles:
       - README.md
 
@@ -869,9 +869,9 @@ exercises:
       en: 'Compact constructors'
     descriptions:
       ja: >-
-        アプリ実行で lsn_9_1_2.Main を動かし、コンパクトコンストラクタの検証を通って生成された Person を見ます。
+        ▶ アプリ実行で lsn_9_1_2.Main を動かし、コンパクトコンストラクタの検証を通って生成された Person を見ます。
       en: >-
-        Press Run app to run lsn_9_1_2.Main and see a Person that passed validation in the compact constructor.
+        Press ▶ Run app to run lsn_9_1_2.Main and see a Person that passed validation in the compact constructor.
     openFiles:
       - README.md
 
@@ -887,8 +887,8 @@ exercises:
       en: 'Record patterns and sealed types'
     descriptions:
       ja: >-
-        アプリ実行で lsn_9_1_3.Main を動かし、describe() の switch が上から順に分岐して Bobさんは未成年です などを返すことを見ます。sealed の Shape を使う area() はすべての型を扱うので default がありません。
+        ▶ アプリ実行で lsn_9_1_3.Main を動かし、describe() の switch が上から順に分岐して Bobさんは未成年です などを返すことを見ます。sealed の Shape を使う area() はすべての型を扱うので default がありません。
       en: >-
-        Press Run app to run lsn_9_1_3.Main: the switch in describe() tries cases from the top and returns Bobさんは未成年です and so on. area() on the sealed Shape handles every type, so it needs no default.
+        Press ▶ Run app to run lsn_9_1_3.Main: the switch in describe() tries cases from the top and returns Bobさんは未成年です and so on. area() on the sealed Shape handles every type, so it needs no default.
     openFiles:
       - README.md

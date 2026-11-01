@@ -5,20 +5,20 @@
 
 ## Codinable での動かし方
 
-- ツールバーの **アプリ実行** を押します。`mains.txt` に並べた main を上から順に実行し、
+- ツールバーの **▶ アプリ実行** を押します。`mains.txt` に並べた main を上から順に実行し、
   出力は `===== [番号/件数] クラス名 =====` で区切られます。
 - main ごとに `sql/hsqldb/*.sql`（テーブルの削除・作成・初期データ）を流し直すので、どの main も初期データから始まります。
   DB は HSQLDB のインメモリ（`jdbc:hsqldb:mem:testdb`）で、元の教材の HSQLDB サーバーや `setupHsqldb` は使いません。
-- マッピングと各 main の実行はテストでも確かめられます。`MyBatisMappingTest.java`・`SampleMainTest.java`・`GeneratedKeyTest.java`（`src/test/java`）を開いて、エディタの右上の **ファイル実行** で流してください。
-- main を 1 つだけ動かしたいときは、そのクラスを開いてエディタの右上の **ファイル実行** を押します（このときも先に初期データへ戻します）。
-  `mains.txt` のほかの行の先頭に `#` を付けてから **アプリ実行** を押しても同じです。
+- マッピングと各 main の実行はテストでも確かめられます。`MyBatisMappingTest.java`・`SampleMainTest.java`・`GeneratedKeyTest.java`（`src/test/java`）を開いて、エディタの右上の **▶ 実行** で流してください。
+- main を 1 つだけ動かしたいときは、そのクラスを開いてエディタの右上の **▶ 実行** を押します（このときも先に初期データへ戻します）。
+  `mains.txt` のほかの行の先頭に `#` を付けてから **▶ アプリ実行** を押しても同じです。
 - 起動クラス `pro.kensait.course.SampleLauncher` と `mains.txt` は Codinable 用に足したものです。教材の main は元のままです。
 
 ## 読む順番
 
 1. 下の「この演習で使うテーブル」（テーブル構成・初期データ。元は `sql/hsqldb/2_*.sql` と `3_*.sql`）を確認する。
 2. `src/main/resources/mybatis-config.xml` と `mybatis-mapper*.xml`を確認する。
-3. **アプリ実行** で main を動かし、SQL・取得結果・更新後のデータを照合する。
+3. **▶ アプリ実行** で main を動かし、SQL・取得結果・更新後のデータを照合する。
 
 ## 実行する main（mains.txt の順）
 

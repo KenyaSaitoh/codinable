@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Faces の画面のログインの流れと、protected-views による削除画面の保護を curl でたどる
 # （Webブラウザの代わりに、Cookie とビューステートを持ち回る）
-# 前提: 先に アプリ実行で jakarta-security-employee-faces をデプロイしておく
+# 前提: 先に ▶ アプリ実行で jakarta-security-employee-faces をデプロイしておく
 # 期待する結果:
 #   1つ目 未ログインで社員一覧を開くと 302 で login.xhtml へリダイレクトされる（useForwardToLogin = false）
 #   2つ目 Bob / 2222 でログインすると 302 で元の社員一覧へ戻る

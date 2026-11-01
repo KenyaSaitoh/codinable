@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # createEmployee（新規作成。201とLocationヘッダーが返る）→ 作った社員を取得し直す
-# 先に アプリ実行でアプリを起動しておく（ポート 8089）
+# 先に ▶ アプリ実行でアプリを起動しておく（ポート 8089）
 # 期待する結果: HTTP/1.1 201
 #   Location: /employees/10017
 #   {"employeeId":10017,"employeeName":"Walter","departmentId":3,"departmentName":"SALES","jobName":"ASSOCIATE","salary":230000,"entranceDate":"2018-04-01"}

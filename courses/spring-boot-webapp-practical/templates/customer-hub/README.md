@@ -5,9 +5,9 @@ Leaf Books（MVC 版 / SPA 版）はログインと顧客登録のときに、�
 
 ## Codinable での動かし方
 
-- ツールバーの **アプリ実行** を押す → `http://localhost:8081` で起動し、プレビューで `/customers/1` が開く
+- ツールバーの **▶ アプリ実行** を押す → `http://localhost:8081` で起動し、プレビューで `/customers/1` が開く
 - テストは `src/test/java/pro/kensait/customer/` の `api/CustomerApiTest.java`・`service/CustomerServiceTest.java`・
-  `repository/CustomerRepositoryTest.java` を開いて、エディタの右上の ファイル実行で流す
+  `repository/CustomerRepositoryTest.java` を開いて、エディタの右上の ▶ 実行で流す
 
 主に読むのは `src/main/java/pro/kensait/customer/api/CustomerApi.java`（REST Controller）です。
 `CustomerService` を呼び、業務例外を例外ハンドラで HTTP ステータス（404 など）へ変換する流れを追います。
@@ -26,7 +26,7 @@ DB は HSQLDB のインメモリで、起動のたびに `sql/hsqldb/` の DDL �
 | `http://localhost:8081/customers/query_birthday?birthday=1995-01-01` | 誕生日以降の顧客 |
 | `http://localhost:8081/customers/999` | 存在しない ID（404 の応答） |
 
-curl でも確かめられます。起動したまま `curl/` のスクリプトを順に開いて、エディタの右上の ファイル実行で送ります
+curl でも確かめられます。起動したまま `curl/` のスクリプトを順に開いて、エディタの右上の ▶ 実行で送ります
 （`01_get_customer.sh` が ID での取得と 404、`02_query_email.sh` がメールアドレスでの照会、`03_create_customer.sh` が顧客の登録）。
 
 初期データの顧客は alice / bob / carol / dave / ellen（`@example.com`）で、

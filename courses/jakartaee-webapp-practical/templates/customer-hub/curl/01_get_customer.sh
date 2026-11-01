@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 顧客を ID とメールアドレスで照会する
 # 書店（leaf-books）の CustomerHubRestClient は、ログインのときにメールアドレスでの照会を呼ぶ
-# 先に アプリ実行で Customer Hub（/customer-hub-api）をデプロイしておく
+# 先に ▶ アプリ実行で Customer Hub（/customer-hub-api）をデプロイしておく
 # 期待する結果:
 #   1つ目 HTTP/1.1 200 と顧客 1（Alice）の JSON
 #   2つ目 HTTP/1.1 200。alice@example.com で照会した結果

@@ -1,5 +1,5 @@
 // jakarta-graphql-employee: MicroProfile GraphQL のスキーマとデータ取得
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // Payara Server 7 は MicroProfile GraphQL の実装を同梱しないので、実装の SmallRye GraphQL を WAR に含める
 // React の画面（frontend/）は Vite の開発サーバー（5173）で動き、/graphql を 8080 へ転送する（codinable.services.json の processes）
 plugins {

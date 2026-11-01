@@ -1,7 +1,7 @@
 // jakarta-security-employee: Jakarta Security のフォーム認証と認可、パスワードのハッシュ化、CSRF 対策
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // React の画面（frontend/）は Vite の開発サーバー（5173）で動き、/api を 8080 の Payara Server へ転送する
-// （codinable.services.json の processes で、アプリ実行と一緒に起動する）
+// （codinable.services.json の processes で、▶ アプリ実行と一緒に起動する）
 plugins {
     id 'war'
 }

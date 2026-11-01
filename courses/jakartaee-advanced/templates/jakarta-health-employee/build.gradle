@@ -1,5 +1,5 @@
 // jakarta-health-employee: MicroProfile Health による稼働状態の公開と、Telemetry のメトリクス（Meter）
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 // Payara の場合、ヘルスのエンドポイントはサーバーのルートコンテキスト（http://localhost:8080/health）に置かれる
 plugins {
     id 'war'

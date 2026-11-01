@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Bob（ADMIN）でログインし、CSRF トークンの有無で登録の結果が変わることを確かめる
-# 前提: 先に アプリ実行で jakarta-security-employee をデプロイしておく
+# 前提: 先に ▶ アプリ実行で jakarta-security-employee をデプロイしておく
 # 期待する結果:
 #   ログインの前に GET /api/csrf でトークンを取得する（ログインの POST も CsrfFilter が照合する）
 #   ログインは 204（ログインの成功でトークンは破棄されるので、登録の前に取り直す）

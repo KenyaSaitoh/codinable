@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /*
  * 確認用の社員API（http://localhost:8095）。Payara Server とは別のプロセスとして動く
- * アプリ実行で一緒に起動し、出力欄の右の「api」の停止・起動で障害と復旧を作れる
+ * ▶ アプリ実行で一緒に起動し、出力欄の右の「api」の停止・起動で障害と復旧を作れる
  *   GET  /employees              … 社員 16 件
  *   GET  /employees/{employeeId} … 社員 1 件（無ければ 404）
  *   POST /admin/delay?ms=1500    … 以後の /employees の応答を指定のミリ秒だけ遅らせる（0 で元に戻す）

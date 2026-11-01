@@ -15,7 +15,7 @@ DBUnit で EMPLOYEE テーブルを CSV の初期データにそろえ、DAO の
 
 ## ボタンでの動かし方
 
-テストクラスを開いて、エディタの右上の ファイル実行を押します。DB はインメモリの HSQLDB で、テーブルはテストの開始時に `src/test/resources/schema.sql` から作られます（`SchemaInitializer`）。サーバーの起動は要りません。
+テストクラスを開いて、エディタの右上の ▶ 実行を押します。DB はインメモリの HSQLDB で、テーブルはテストの開始時に `src/test/resources/schema.sql` から作られます（`SchemaInitializer`）。サーバーの起動は要りません。
 
 ## 結果のどこを見るか
 

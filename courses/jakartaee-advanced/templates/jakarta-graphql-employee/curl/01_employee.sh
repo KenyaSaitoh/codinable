@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 社員 1 件を、変数付きのクエリで取得する
-# 前提: 先に アプリ実行で jakarta-graphql-employee をデプロイしておく
+# 前提: 先に ▶ アプリ実行で jakarta-graphql-employee をデプロイしておく
 # 期待する結果:
 #   1つ目 HTTP/1.1 200 と {"data":{"employee":{"id":"10001","employeeName":"Alice","department":{"id":"3","departmentName":"SALES"}}}}
 #   2つ目 存在しない社員 99999 は HTTP 200 のまま、errors の message に「社員が存在しません => 99999」、data.employee は null

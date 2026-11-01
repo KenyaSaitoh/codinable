@@ -14,12 +14,12 @@
 
 ## 動かし方
 
-1. ツールバーの アプリ実行を押す
+1. ツールバーの ▶ アプリ実行を押す
 2. デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-hello/HelloPage.xhtml` が開き、「Hello, Alice!」が表示される
 
 ## 結果のどこを見るか
 
 - 画面には `HelloBean` の `message` の値が出る。`@Named` により、クラス名の先頭を小文字にした `helloBean` で参照できる
-- `HelloPage.xhtml` の `#{helloBean.messag}` のように名前を書き間違えて アプリ実行し直すと、
+- `HelloPage.xhtml` の `#{helloBean.messag}` のように名前を書き間違えて ▶ アプリ実行し直すと、
   `Development` のため、式の誤りが画面に詳しく表示される
 - 最初の GET ではフォームの送信が無いので、ライフサイクルはビューの復元からレスポンスのレンダリングへ直接進む

@@ -18,9 +18,9 @@ DB は組み込みの H2（インメモリ）で、起動のたびに `schema.sq
 
 | 操作 | 内容 |
 |---|---|
-| 上のテストクラスを開いて、エディタの右上の ファイル実行 | そのクラスのテストを流し、テスト結果とカバレッジを表示（5クラスで単体32件 + `it` タグ8件） |
-| ツールバーの アプリ実行 | アプリを起動する。プレビューで <http://localhost:8080/employees> を開く |
-| ツールバーの アプリ実行（演習「CIのワークフローを読み、成果物のJARを作る」） | build が走り、テストを通したうえで実行可能 JAR `build/libs/employee-app.jar` を作る（チャプター8.1） |
+| 上のテストクラスを開いて、エディタの右上の ▶ 実行 | そのクラスのテストを流し、テスト結果とカバレッジを表示（5クラスで単体32件 + `it` タグ8件） |
+| ツールバーの ▶ アプリ実行 | アプリを起動する。プレビューで <http://localhost:8080/employees> を開く |
+| ツールバーの ▶ アプリ実行（演習「CIのワークフローを読み、成果物のJARを作る」） | build が走り、テストを通したうえで実行可能 JAR `build/libs/employee-app.jar` を作る（チャプター8.1） |
 
 演習ごとに見るクラスは次のとおりです。
 
@@ -30,9 +30,9 @@ DB は組み込みの H2（インメモリ）で、起動のたびに `schema.sq
 （いずれも `src/test/java/pro/kensait/spring/employee/` 配下）
 
 元のサンプルは通常の `test` から `@Tag("it")` を除外し、結合テストを別タスク `integrationTest` で
-流していました。Codinable はテストクラスの ファイル実行で `test` タスクを使うため、ここでは除外をやめています
+流していました。Codinable はテストクラスの ▶ 実行で `test` タスクを使うため、ここでは除外をやめています
 （理由は `build.gradle` のコメント）。原稿・CI と同じ分け方で流したいときは、
-`scripts/01_integration_test.sh` を開いて ファイル実行します（`@Tag("it")` の結合テストだけを流す `gradlew.bat integrationTest`）。
+`scripts/01_integration_test.sh` を開いて ▶ 実行します（`@Tag("it")` の結合テストだけを流す `gradlew.bat integrationTest`）。
 
 レポートは `build/reports/tests/` に出ます。
 
@@ -51,5 +51,5 @@ DB は組み込みの H2（インメモリ）で、起動のたびに `schema.sq
 （`projects/master/...`）を前提にしており、原稿のとおり実体のない `pipeline-employee` への参照も
 残っています。構造（イベント・ジョブの依存・レポート保存・公開条件）を読む教材として扱ってください。
 
-手元では、演習「CIのワークフローを読み、成果物のJARを作る」で アプリ実行を押すと build が走り、
+手元では、演習「CIのワークフローを読み、成果物のJARを作る」で ▶ アプリ実行を押すと build が走り、
 「テスト → 成果物（`build/libs/employee-app.jar`）」の流れを確かめられます。

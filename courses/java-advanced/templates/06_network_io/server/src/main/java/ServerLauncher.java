@@ -3,11 +3,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * クライアントの ファイル実行で一緒に起動するサーバーの入口（Codinable 用。講座のコードではない）
+ * クライアントの ▶ 実行で一緒に起動するサーバーの入口（Codinable 用。講座のコードではない）
  *
  * 引数のクラスの main を動かし、確認用のポート 55556 を別に開く。Codinable とクライアントの起動待ちが
  * 接続するのはこのポートなので、教材のサーバー（55555 / 8080）には余計な接続が行かない。
- * "S" を受け取ると終了する（同じポートのサーバーを ファイル実行するとき）
+ * "S" を受け取ると終了する（同じポートのサーバーを ▶ 実行するとき）
  */
 public class ServerLauncher {
     private static final int LAUNCHER_PORT = 55556;

@@ -262,7 +262,7 @@ ipcMain.handle('ws-project-info', (_event, { name } = {}) => {
            ...workspace.readProjectMeta(dir), services, processes };
 });
 
-// エディタのタブの右上の「ファイル実行」: 開いているファイルだけを動かすときの実行対象 (動かせなければ null)
+// エディタのタブの右上の「▶ 実行」: 開いているファイルだけを動かすときの実行対象 (動かせなければ null)
 ipcMain.handle('ws-file-run-target', (_event, { name, relPath } = {}) => {
   const dir = workspace.resolveProjectDir(name);
   if (!dir || !fs.existsSync(dir)) return null;

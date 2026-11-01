@@ -3,7 +3,7 @@
 # JWT は HttpOnly Cookie（token）で、更新系の要求には CSRF トークン
 # （Cookie XSRF-TOKEN の値をヘッダー X-XSRF-TOKEN に）が要る
 # Cookie は一時ファイル（cookie jar）に保存して、次の要求へ持ち回る
-# 先に アプリ実行で REST API（8080）と Customer Hub（customer-hub/、8081）を起動しておく
+# 先に ▶ アプリ実行で REST API（8080）と Customer Hub（customer-hub/、8081）を起動しておく
 # 期待する結果:
 #   1つ目 HTTP/1.1 403（本体は 403 だが XSRF-TOKEN の Cookie を受け取る）
 #   2つ目 HTTP/1.1 200 と Set-Cookie: token=...（JWT）。alice@example.com / password でログイン

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 何をするか: 入力画面からポストバックで足し算を送り、応答と、リダイレクト先の GET を 2 回続けて見る
-# 前提: 先に アプリ実行で WAR をデプロイしておく
+# 前提: 先に ▶ アプリ実行で WAR をデプロイしておく
 # 期待する結果:
 #   1. POST の応答は 302 と Location: …/CalcOutputPage.xhtml（faces-redirect=true。結果の値は URL に付かない）
 #   2. 同じ Cookie で Location を GET すると「計算結果：40」（Flash に入れた値）

@@ -1,5 +1,5 @@
 // jakarta-faces-employee: CDI によるレイヤー設計と Faces の画面・会話スコープ（メモリー版の社員管理）
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

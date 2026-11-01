@@ -15,9 +15,9 @@
 
 ## 動かし方
 
-1. ツールバーの アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml` が開く
+1. ツールバーの ▶ アプリ実行を押す。デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml` が開く
 2. 2 つの数値を入れて「足し算」を押す。入力画面の下のリンクで `CalcAddByGetPage.xhtml?param1=30&param2=10` も開く
-3. `curl/` のスクリプトを開いて、エディタの右上の ファイル実行で 1 つずつ流す
+3. `curl/` のスクリプトを開いて、エディタの右上の ▶ 実行で 1 つずつ流す
 
 ## 結果のどこを見るか
 

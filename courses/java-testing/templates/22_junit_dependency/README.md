@@ -14,8 +14,8 @@
 
 ## ボタンでの動かし方
 
-- `ShippingServiceTest.java` と `ShippingServiceMockingTest.java` を開いて、エディタの右上の ファイル実行を押します。
-- `scripts/01_jacoco_report.sh` を開いて ファイル実行を押すと、JaCoCo のレポートを作ります（先に一度テストクラスを ファイル実行しておきます）。
+- `ShippingServiceTest.java` と `ShippingServiceMockingTest.java` を開いて、エディタの右上の ▶ 実行を押します。
+- `scripts/01_jacoco_report.sh` を開いて ▶ 実行を押すと、JaCoCo のレポートを作ります（先に一度テストクラスを ▶ 実行しておきます）。
 
 ## 結果のどこを見るか
 

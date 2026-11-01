@@ -14,10 +14,10 @@
 
 ## ボタンでの動かし方
 
-1. アプリ実行を押すと、そのレッスンの `WireMockApp` が起動します。別の `WireMockApp` は、開いてエディタの右上の ファイル実行で起動します。
-2. 起動したまま、`curl/` のスクリプトを開いて ファイル実行を押します。スクリプトの先頭に、どの `WireMockApp` 向けかを書いてあります。
+1. ▶ アプリ実行を押すと、そのレッスンの `WireMockApp` が起動します。別の `WireMockApp` は、開いてエディタの右上の ▶ 実行で起動します。
+2. 起動したまま、`curl/` のスクリプトを開いて ▶ 実行を押します。スクリプトの先頭に、どの `WireMockApp` 向けかを書いてあります。
 3. モックサーバーは待ち受けを続けます。止めるときは出力欄の「停止」を押します。
-4. `scripts/01_person_api_test.sh` を開いて ファイル実行を押すと、チャプター6.1 の `PersonApiTest` の `test_GetPerson()` を、起動中の `person.rest.test1.WireMockApp` に向けて流します（テストのコードは `src/personApiTest/java` にあります）。
+4. `scripts/01_person_api_test.sh` を開いて ▶ 実行を押すと、チャプター6.1 の `PersonApiTest` の `test_GetPerson()` を、起動中の `person.rest.test1.WireMockApp` に向けて流します（テストのコードは `src/personApiTest/java` にあります）。
 
 ## 結果のどこを見るか
 

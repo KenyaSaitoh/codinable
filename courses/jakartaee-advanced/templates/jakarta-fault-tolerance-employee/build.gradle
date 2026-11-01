@@ -1,6 +1,6 @@
 // jakarta-fault-tolerance-employee: MicroProfile Fault Tolerance による障害への対処
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
-// 呼び出し先の確認用の社員API（api/、8095）は Payara Server とは別のプロセスで、アプリ実行で一緒に起動する
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// 呼び出し先の確認用の社員API（api/、8095）は Payara Server とは別のプロセスで、▶ アプリ実行で一緒に起動する
 // （codinable.services.json の processes）
 plugins {
     id 'war'

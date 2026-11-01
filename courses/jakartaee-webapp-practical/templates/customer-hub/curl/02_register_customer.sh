@@ -2,7 +2,7 @@
 # 顧客を登録してから、同じメールアドレスでもう一度登録する
 # CustomerService が CustomerExistsException を送出し、CustomerExceptionMapper が 409 に変換する
 # 書店の新規登録（AuthResource#register）は、この 409 をメールアドレスの重複として扱う
-# 先に アプリ実行で Customer Hub をデプロイしておく
+# 先に ▶ アプリ実行で Customer Hub をデプロイしておく
 # 期待する結果:
 #   1つ目 HTTP/1.1 200 と登録した顧客（customerId が振られる）
 #   2つ目 HTTP/1.1 409 と customer.exists

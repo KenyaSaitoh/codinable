@@ -1,5 +1,5 @@
 // employee-api: 確認用の社員 API（ルートの Rest Client から呼び出される側）。ルートと同じ Payara Server に一緒にデプロイする（codinable.services.json の wars）
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war'
 }

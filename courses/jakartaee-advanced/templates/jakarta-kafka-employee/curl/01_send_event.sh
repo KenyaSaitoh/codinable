@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 社員イベントを Kafka のトピック employee-events へ送り、受信ループが記録した受信履歴を確かめる
-# 前提: 先に アプリ実行で送信側（jakarta-kafka-employee）と受信側（jakarta-kafka-employee-consumer）をデプロイしておく
-#       （Codinable 同梱の Kafka は アプリ実行のときに自動で起動する）
+# 前提: 先に ▶ アプリ実行で送信側（jakarta-kafka-employee）と受信側（jakarta-kafka-employee-consumer）をデプロイしておく
+#       （Codinable 同梱の Kafka は ▶ アプリ実行のときに自動で起動する）
 # 期待する結果:
 #   1つ目 POST /api/events は HTTP/1.1 202 と eventId・topic（employee-events）・partition・offset
 #   2つ目 同じ eventId でもう一度送ると、202 で別の offset に記録される（Kafka には 2 件とも残る）

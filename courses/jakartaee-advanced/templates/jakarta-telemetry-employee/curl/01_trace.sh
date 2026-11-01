@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 社員の取得を呼び、トレースのスパンを実行結果（Payara Server のログ）で確かめる
-# 前提: 先に アプリ実行で jakarta-telemetry-employee をデプロイしておく
+# 前提: 先に ▶ アプリ実行で jakarta-telemetry-employee をデプロイしておく
 # 期待する結果:
 #   1つ目 GET /api/employees/10001 は HTTP 200。traceparent ヘッダーを付けて送るので、トレースIDはヘッダーの値を引き継ぐ
 #   2つ目 GET /api/employees は 16 件

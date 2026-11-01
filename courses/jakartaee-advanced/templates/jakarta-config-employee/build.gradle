@@ -1,5 +1,5 @@
 // jakarta-config-employee: MicroProfile Config による設定値と、JSON Binding の変換
-// アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
+// ▶ アプリ実行で WAR を作り、Codinable 同梱の Payara Server 7 へデプロイする
 plugins {
     id 'war' // WAR のファイル名が、そのままコンテキストルートになる
 }

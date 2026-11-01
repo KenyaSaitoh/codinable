@@ -1,6 +1,6 @@
 // 61_restassured: RestAssured による REST API のテスト（チャプター6.1）
 // テスト対象の spring-rest-calc / spring-rest-person はサブフォルダーの独立したプロジェクトで、ポートは 8080 と 8082
-// アプリ実行で 2 つとも起動する（codinable.services.json の processes）
+// ▶ アプリ実行で 2 つとも起動する（codinable.services.json の processes）
 plugins {
     id "java"
 }
@@ -37,7 +37,7 @@ test {
     }
 }
 
-// アプリ実行で動くタスク。codinable.services.json の processes が
+// ▶ アプリ実行で動くタスク。codinable.services.json の processes が
 // テスト対象の Spring Boot アプリを起動するので、ここではポートが開くまで待って案内を出す
 def waitForPorts = { Map<String, Integer> apps ->
     long limit = System.currentTimeMillis() + 10 * 60 * 1000
@@ -56,7 +56,7 @@ def waitForPorts = { Map<String, Integer> apps ->
         }
         println "${name} が起動しました（ポート ${port}）"
     }
-    println "起動したまま、テストクラスを開いてエディタの右上の ファイル実行を押してください"
+    println "起動したまま、テストクラスを開いてエディタの右上の ▶ 実行を押してください"
 }
 
 tasks.register("waitForApps") {

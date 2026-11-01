@@ -14,7 +14,7 @@
 
 ## ボタンでの動かし方
 
-`EmployeeDAOTest.java` を開いて、エディタの右上の ファイル実行を押します。接続先は講座本編の HSQLDB サーバーではなくインメモリの HSQLDB（`jdbc:hsqldb:mem:testdb`）にしてあるので、サーバーの起動は要りません。テーブルはテストの開始時に `src/test/resources/schema.sql` から作られます。
+`EmployeeDAOTest.java` を開いて、エディタの右上の ▶ 実行を押します。接続先は講座本編の HSQLDB サーバーではなくインメモリの HSQLDB（`jdbc:hsqldb:mem:testdb`）にしてあるので、サーバーの起動は要りません。テーブルはテストの開始時に `src/test/resources/schema.sql` から作られます。
 
 ## 結果のどこを見るか
 

@@ -4,7 +4,7 @@
 // Codinable ではすぐ動かせるように、同じ URL と同じ JSON を返す REST API を Express で書いている
 // 主役はクライアント側の public/app.js (jQuery) なので、こちらは読み流してよい
 //
-// アプリ実行を押すと、初回だけ依存パッケージ (express / jquery) を自動で入れてから起動し、
+// ▶ アプリ実行を押すと、初回だけ依存パッケージ (express / jquery) を自動で入れてから起動し、
 // http://localhost:3000 を検知してプレビュータブが開く
 
 const express = require('express');

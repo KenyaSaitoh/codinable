@@ -7,10 +7,10 @@
 #
 #  演習はレッスン（X.Y.Z）ごとに 1 つ。同じ雛形を別 id で使う。
 #  チャプター番号は原稿と同じ X.Y（「チャプター3.1」）にしている。
-#  run は gradle:run -PmainClass=… で、アプリ実行がそのレッスンの main を動かす
-#  （ほかの main は .java を開いてエディタの右上の ファイル実行）。
+#  run は gradle:run -PmainClass=… で、▶ アプリ実行がそのレッスンの main を動かす
+#  （ほかの main は .java を開いてエディタの右上の ▶ 実行）。
 #  標準入力を読むサンプル（06_statement の Main_If_1 など）は原稿がその前提で書いているのでそのまま。
-#  アプリ実行は標準入力の要らない main に当てている。
+#  ▶ アプリ実行は標準入力の要らない main に当てている。
 # ═══════════════════════════════════════════════════════════
 id: java-basic
 order: 21
@@ -26,12 +26,12 @@ descriptions:
     AI がコードを書く前提で、Java の文法とクラスの仕組みを読んで判断できるようにする講座の演習です。
     型とメモリー、演算子、配列、制御構文から、クラス、継承、インタフェース、列挙型、文字列、コレクション、例外、日時までを、
     原稿の出典行と同じ名前のフォルダーとクラスで動かして確かめます。
-    アプリ実行でレッスンの main が動きます。ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+    ▶ アプリ実行でレッスンの main が動きます。ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
   en: >-
     Exercises for the course that teaches you to read and judge Java code on the assumption that AI writes it:
     types and memory, operators, arrays and control flow, then classes, inheritance, interfaces, enums, strings,
     collections, exceptions and dates. Folders and classes have the same names as the source lines in the course text.
-    Run app runs the main of the lesson. To run another main, open the .java file and press Run file at the top right of the editor.
+    ▶ Run app runs the main of the lesson. To run another main, open the .java file and press ▶ Run at the top right of the editor.
 
 udemy:
   url: https://github.com/KenyaSaitoh/learn_java_basic_vsc
@@ -163,11 +163,11 @@ exercises:
       en: 'How compiling and running work'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Hello）を読み、アプリ実行で Hello を動かします。見るところは `Hello, World!` が表示されること。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Hello）を読み、▶ アプリ実行で Hello を動かします。見るところは `Hello, World!` が表示されること。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Hello), then press Run app to run Hello. Look at that `Hello, World!` is printed.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Hello), then press ▶ Run app to run Hello. Look at that `Hello, World!` is printed.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -183,31 +183,31 @@ exercises:
       en: 'Program structure'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Hello）を読み、アプリ実行で Hello を動かします。見るところは `Hello, World!` が表示されること。クラス・mainメソッド・命令文の位置は `Hello.java` の【1】〜【3】で確かめます。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Hello）を読み、▶ アプリ実行で Hello を動かします。見るところは `Hello, World!` が表示されること。クラス・mainメソッド・命令文の位置は `Hello.java` の【1】〜【3】で確かめます。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Hello), then press Run app to run Hello. Look at that `Hello, World!` is printed; markers 1-3 in `Hello.java` show the class, main method and statement.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Hello), then press ▶ Run app to run Hello. Look at that `Hello, World!` is printed; markers 1-3 in `Hello.java` show the class, main method and statement.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
   - id: 02_hello-2-2-1
     dir: 02_hello
     chapter: '2.2'
-    lesson: '2.2.1 エディターと「ファイル実行」の仕組み'
+    lesson: '2.2.1 エディターと「▶ 実行」の仕組み'
     runtime: java
     run: 'gradle:run'
     suggestName: 02_hello-2-2-1
     names:
-      ja: 'エディターと「ファイル実行」の仕組み'
-      en: 'The editor and how Run file works'
+      ja: 'エディターと「▶ 実行」の仕組み'
+      en: 'The editor and how ▶ Run works'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Hello）を読み、アプリ実行で Hello を動かします。見るところは コンパイルのあとで `Hello, World!` が表示されること。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Hello）を読み、▶ アプリ実行で Hello を動かします。見るところは コンパイルのあとで `Hello, World!` が表示されること。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Hello), then press Run app to run Hello. Look at that `Hello, World!` is printed after compilation.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Hello), then press ▶ Run app to run Hello. Look at that `Hello, World!` is printed after compilation.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -223,11 +223,11 @@ exercises:
       en: 'Variables and types'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_3_1）を読み、アプリ実行で Main_3_1 を動かします。見るところは snippet_7 の 30。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_3_1）を読み、▶ アプリ実行で Main_3_1 を動かします。見るところは snippet_7 の 30。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_3_1), then press Run app to run Main_3_1. Look at the 30 in snippet_7.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_3_1), then press ▶ Run app to run Main_3_1. Look at the 30 in snippet_7.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -243,11 +243,11 @@ exercises:
       en: 'Primitive types and reference types'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_3_3）を読み、アプリ実行で Main_3_3 を動かします。見るところは snippet_3 の 10 と snippet_4 の foo。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_3_3）を読み、▶ アプリ実行で Main_3_3 を動かします。見るところは snippet_3 の 10 と snippet_4 の foo。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_3_3), then press Run app to run Main_3_3. Look at the 10 in snippet_3 and foo in snippet_4.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_3_3), then press ▶ Run app to run Main_3_3. Look at the 10 in snippet_3 and foo in snippet_4.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -263,11 +263,11 @@ exercises:
       en: 'Ranges and limits of primitive types'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_3_1）を読み、アプリ実行で Main_3_1 を動かします。見るところは snippet_8・snippet_9 のコード（標準では値を表示しません。AI活用で println を足して確かめます）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_3_1）を読み、▶ アプリ実行で Main_3_1 を動かします。見るところは snippet_8・snippet_9 のコード（標準では値を表示しません。AI活用で println を足して確かめます）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_3_1), then press Run app to run Main_3_1. Look at the code of snippet_8 and snippet_9 (they print no values until you add println in the AI exercise).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_3_1), then press ▶ Run app to run Main_3_1. Look at the code of snippet_8 and snippet_9 (they print no values until you add println in the AI exercise).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -283,11 +283,11 @@ exercises:
       en: 'Numeric literals and default types'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_3_3、Main_3_2）を読み、アプリ実行で Main_3_2 を動かします。見るところは snippet の見出しの並び（数値はコードのコメントと比べます）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_3_3、Main_3_2）を読み、▶ アプリ実行で Main_3_2 を動かします。見るところは snippet の見出しの並び（数値はコードのコメントと比べます）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_3_3, Main_3_2), then press Run app to run Main_3_2. Look at the snippet headings (compare numbers with the comments in the code).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_3_3, Main_3_2), then press ▶ Run app to run Main_3_2. Look at the snippet headings (compare numbers with the comments in the code).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -303,11 +303,11 @@ exercises:
       en: 'Character and string literals, text blocks'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_3_2、Main_TextBlock）を読み、アプリ実行で Main_TextBlock を動かします。見るところは テキストブロックの各行のインデント。`Main_3_2` では snippet_7 のタブと snippet_8 の `'foo'`。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_3_2、Main_TextBlock）を読み、▶ アプリ実行で Main_TextBlock を動かします。見るところは テキストブロックの各行のインデント。`Main_3_2` では snippet_7 のタブと snippet_8 の `'foo'`。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_3_2, Main_TextBlock), then press Run app to run Main_TextBlock. Look at the indentation of each text block line; in `Main_3_2`, the tab in snippet_7 and `'foo'` in snippet_8.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_3_2, Main_TextBlock), then press ▶ Run app to run Main_TextBlock. Look at the indentation of each text block line; in `Main_3_2`, the tab in snippet_7 and `'foo'` in snippet_8.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -323,11 +323,11 @@ exercises:
       en: 'Type checking and conversion'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_3_3）を読み、アプリ実行で Main_3_3 を動かします。見るところは snippet_5〜snippet_9 のコード。コンパイルエラーになる行は `//` で無効にしてあります。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_3_3）を読み、▶ アプリ実行で Main_3_3 を動かします。見るところは snippet_5〜snippet_9 のコード。コンパイルエラーになる行は `//` で無効にしてあります。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_3_3), then press Run app to run Main_3_3. Look at the code of snippet_5 to snippet_9; lines that do not compile are commented out with `//`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_3_3), then press ▶ Run app to run Main_3_3. Look at the code of snippet_5 to snippet_9; lines that do not compile are commented out with `//`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -343,11 +343,11 @@ exercises:
       en: 'What narrowing conversions lose'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_3_3）を読み、アプリ実行で Main_3_3 を動かします。見るところは snippet_10・snippet_11 のコード（AI活用で println を足すと -112 と 12345）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_3_3）を読み、▶ アプリ実行で Main_3_3 を動かします。見るところは snippet_10・snippet_11 のコード（AI活用で println を足すと -112 と 12345）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_3_3), then press Run app to run Main_3_3. Look at the code of snippet_10 and snippet_11 (adding println in the AI exercise shows -112 and 12345).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_3_3), then press ▶ Run app to run Main_3_3. Look at the code of snippet_10 and snippet_11 (adding println in the AI exercise shows -112 and 12345).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -363,11 +363,11 @@ exercises:
       en: 'Type inference with var'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_3_3）を読み、アプリ実行で Main_3_3 を動かします。見るところは snippet_16〜snippet_18 の `var` のコード。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_3_3）を読み、▶ アプリ実行で Main_3_3 を動かします。見るところは snippet_16〜snippet_18 の `var` のコード。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_3_3), then press Run app to run Main_3_3. Look at the `var` code in snippet_16 to snippet_18.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_3_3), then press ▶ Run app to run Main_3_3. Look at the `var` code in snippet_16 to snippet_18.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -383,11 +383,11 @@ exercises:
       en: 'Expression evaluation order'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_4_1）を読み、アプリ実行で Main_4_1 を動かします。見るところは 式の snippet のコード（値はコードのコメントと比べます）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_4_1）を読み、▶ アプリ実行で Main_4_1 を動かします。見るところは 式の snippet のコード（値はコードのコメントと比べます）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_4_1), then press Run app to run Main_4_1. Look at the expression snippets (compare values with the comments in the code).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_4_1), then press ▶ Run app to run Main_4_1. Look at the expression snippets (compare values with the comments in the code).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -403,11 +403,11 @@ exercises:
       en: 'Pitfalls of arithmetic'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_4_1）を読み、アプリ実行で Main_4_1 を動かします。見るところは snippet_6 の 2.5。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_4_1）を読み、▶ アプリ実行で Main_4_1 を動かします。見るところは snippet_6 の 2.5。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_4_1), then press Run app to run Main_4_1. Look at the 2.5 in snippet_6.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_4_1), then press ▶ Run app to run Main_4_1. Look at the 2.5 in snippet_6.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -423,11 +423,11 @@ exercises:
       en: 'Comparison and logical operators'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_4_1）を読み、アプリ実行で Main_4_1 を動かします。見るところは 比較と論理演算の snippet のコードと、snippet_22〜snippet_27 のビット演算の 4、13、9、-5、3、-20。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_4_1）を読み、▶ アプリ実行で Main_4_1 を動かします。見るところは 比較と論理演算の snippet のコードと、snippet_22〜snippet_27 のビット演算の 4、13、9、-5、3、-20。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_4_1), then press Run app to run Main_4_1. Look at the comparison and logical snippets, and the bit operations 4, 13, 9, -5, 3 and -20 in snippet_22 to snippet_27.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_4_1), then press ▶ Run app to run Main_4_1. Look at the comparison and logical snippets, and the bit operations 4, 13, 9, -5, 3 and -20 in snippet_22 to snippet_27.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -443,11 +443,11 @@ exercises:
       en: 'Array structure'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_Average_2、Main_5_1）を読み、アプリ実行で Main_Average_2 を動かします。見るところは 平均スコアの 640.0。`Main_5_1` の snippet_8 では `Index 3 out of bounds for length 3`。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_Average_2、Main_5_1）を読み、▶ アプリ実行で Main_Average_2 を動かします。見るところは 平均スコアの 640.0。`Main_5_1` の snippet_8 では `Index 3 out of bounds for length 3`。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_Average_2, Main_5_1), then press Run app to run Main_Average_2. Look at the average score 640.0; in `Main_5_1`, snippet_8 shows `Index 3 out of bounds for length 3`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_Average_2, Main_5_1), then press ▶ Run app to run Main_Average_2. Look at the average score 640.0; in `Main_5_1`, snippet_8 shows `Index 3 out of bounds for length 3`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -463,11 +463,11 @@ exercises:
       en: 'Multidimensional arrays'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_5_1）を読み、アプリ実行で Main_5_1 を動かします。見るところは snippet_8 のスタックトレースと、それに続く snippet_9〜snippet_12。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_5_1）を読み、▶ アプリ実行で Main_5_1 を動かします。見るところは snippet_8 のスタックトレースと、それに続く snippet_9〜snippet_12。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_5_1), then press Run app to run Main_5_1. Look at the stack trace of snippet_8 and the following snippet_9 to snippet_12.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_5_1), then press ▶ Run app to run Main_5_1. Look at the stack trace of snippet_8 and the following snippet_9 to snippet_12.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -483,11 +483,11 @@ exercises:
       en: 'Assigning and sharing references'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_5_2）を読み、アプリ実行で Main_5_2 を動かします。見るところは snippet_2 の 660。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_5_2）を読み、▶ アプリ実行で Main_5_2 を動かします。見るところは snippet_2 の 660。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_5_2), then press Run app to run Main_5_2. Look at the 660 in snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_5_2), then press ▶ Run app to run Main_5_2. Look at the 660 in snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -503,11 +503,11 @@ exercises:
       en: 'if statements and condition order'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_If_1、Main_If_2、Main_If_3）を読み、アプリ実行で Main_6_2 を動かします。見るところは `Main_6_2` が動くこと。`Main_If_1`〜`Main_If_3` は入力の行を固定値に書き換えてから ファイル実行します。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_If_1、Main_If_2、Main_If_3）を読み、▶ アプリ実行で Main_6_2 を動かします。見るところは `Main_6_2` が動くこと。`Main_If_1`〜`Main_If_3` は入力の行を固定値に書き換えてから ▶ 実行します。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_If_1, Main_If_2, Main_If_3), then press Run app to run Main_6_2. Look at that `Main_6_2` runs; change the input line of `Main_If_1` to `Main_If_3` to a fixed value before pressing Run file.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_If_1, Main_If_2, Main_If_3), then press ▶ Run app to run Main_6_2. Look at that `Main_6_2` runs; change the input line of `Main_If_1` to `Main_If_3` to a fixed value before pressing ▶ Run.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -523,11 +523,11 @@ exercises:
       en: 'Combining conditions'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_If_7、Main_If_8）を読み、アプリ実行で Main_6_2 を動かします。見るところは `Main_6_2` が動くこと。`Main_If_7`・`Main_If_8` も入力の行を固定値に書き換えて比べます。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_If_7、Main_If_8）を読み、▶ アプリ実行で Main_6_2 を動かします。見るところは `Main_6_2` が動くこと。`Main_If_7`・`Main_If_8` も入力の行を固定値に書き換えて比べます。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_If_7, Main_If_8), then press Run app to run Main_6_2. Look at that `Main_6_2` runs; also change the input lines of `Main_If_7` and `Main_If_8` to fixed values and compare them.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_If_7, Main_If_8), then press ▶ Run app to run Main_6_2. Look at that `Main_6_2` runs; also change the input lines of `Main_If_7` and `Main_If_8` to fixed values and compare them.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -543,11 +543,11 @@ exercises:
       en: 'switch statements and fall-through'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_Switch_1）を読み、アプリ実行で Main_6_2 を動かします。見るところは `Main_6_2` が動くこと。`Main_Switch_1` は入力の行を固定値に書き換えて配送料を確かめます。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_Switch_1）を読み、▶ アプリ実行で Main_6_2 を動かします。見るところは `Main_6_2` が動くこと。`Main_Switch_1` は入力の行を固定値に書き換えて配送料を確かめます。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_Switch_1), then press Run app to run Main_6_2. Look at that `Main_6_2` runs; change the input line of `Main_Switch_1` to a fixed value and check the delivery fee.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_Switch_1), then press ▶ Run app to run Main_6_2. Look at that `Main_6_2` runs; change the input line of `Main_Switch_1` to a fixed value and check the delivery fee.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -563,11 +563,11 @@ exercises:
       en: 'switch expressions and exhaustiveness'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_Switch_4）を読み、アプリ実行で Main_6_2 を動かします。見るところは `Main_6_2` が動くこと。`Main_Switch_4` は入力の行を固定値に書き換えて配送料を確かめます。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_Switch_4）を読み、▶ アプリ実行で Main_6_2 を動かします。見るところは `Main_6_2` が動くこと。`Main_Switch_4` は入力の行を固定値に書き換えて配送料を確かめます。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_Switch_4), then press Run app to run Main_6_2. Look at that `Main_6_2` runs; change the input line of `Main_Switch_4` to a fixed value and check the delivery fee.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_Switch_4), then press ▶ Run app to run Main_6_2. Look at that `Main_6_2` runs; change the input line of `Main_Switch_4` to a fixed value and check the delivery fee.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -583,11 +583,11 @@ exercises:
       en: 'The ternary operator and choosing a branch style'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_TO）を読み、アプリ実行で Main_6_2 を動かします。見るところは `Main_6_2` が動くこと。`Main_TO` は入力の行を固定値に書き換えて配送料を確かめます。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_TO）を読み、▶ アプリ実行で Main_6_2 を動かします。見るところは `Main_6_2` が動くこと。`Main_TO` は入力の行を固定値に書き換えて配送料を確かめます。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_TO), then press Run app to run Main_6_2. Look at that `Main_6_2` runs; change the input line of `Main_TO` to a fixed value and check the delivery fee.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_TO), then press ▶ Run app to run Main_6_2. Look at that `Main_6_2` runs; change the input line of `Main_TO` to a fixed value and check the delivery fee.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -603,11 +603,11 @@ exercises:
       en: 'for and enhanced for statements'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_6_3、Main_Average_3）を読み、アプリ実行で Main_6_3 を動かします。見るところは snippet_1 のカウンタ変数の行。`Main_Average_3` では 640.0。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_6_3、Main_Average_3）を読み、▶ アプリ実行で Main_6_3 を動かします。見るところは snippet_1 のカウンタ変数の行。`Main_Average_3` では 640.0。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_6_3, Main_Average_3), then press Run app to run Main_6_3. Look at the counter lines in snippet_1; `Main_Average_3` prints 640.0.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_6_3, Main_Average_3), then press ▶ Run app to run Main_6_3. Look at the counter lines in snippet_1; `Main_Average_3` prints 640.0.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -623,11 +623,11 @@ exercises:
       en: 'for and enhanced for statements (array)'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_Average_2）を読み、アプリ実行で Main_Average_2 を動かします。見るところは 平均スコアの 640.0。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_Average_2）を読み、▶ アプリ実行で Main_Average_2 を動かします。見るところは 平均スコアの 640.0。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_Average_2), then press Run app to run Main_Average_2. Look at the average score 640.0.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_Average_2), then press ▶ Run app to run Main_Average_2. Look at the average score 640.0.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -643,11 +643,11 @@ exercises:
       en: 'while and do-while statements'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_6_3）を読み、アプリ実行で Main_6_3 を動かします。見るところは snippet_5 と snippet_7 の 15625。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_6_3）を読み、▶ アプリ実行で Main_6_3 を動かします。見るところは snippet_5 と snippet_7 の 15625。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_6_3), then press Run app to run Main_6_3. Look at the 15625 in snippet_5 and snippet_7.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_6_3), then press ▶ Run app to run Main_6_3. Look at the 15625 in snippet_5 and snippet_7.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -663,11 +663,11 @@ exercises:
       en: 'Loop control and infinite loops'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_6_3）を読み、アプリ実行で Main_6_3 を動かします。見るところは snippet_10 までが最後まで流れること。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_6_3）を読み、▶ アプリ実行で Main_6_3 を動かします。見るところは snippet_10 までが最後まで流れること。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_6_3), then press Run app to run Main_6_3. Look at that the run reaches the end of snippet_10.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_6_3), then press ▶ Run app to run Main_6_3. Look at that the run reaches the end of snippet_10.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -683,11 +683,11 @@ exercises:
       en: 'Nested loops'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_NestedLoop_1、Main_NestedLoop_3）を読み、アプリ実行で Main_NestedLoop_1 を動かします。見るところは Dave の 93.75。`Main_NestedLoop_3` では「追試開催」が 1 回だけ。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_NestedLoop_1、Main_NestedLoop_3）を読み、▶ アプリ実行で Main_NestedLoop_1 を動かします。見るところは Dave の 93.75。`Main_NestedLoop_3` では「追試開催」が 1 回だけ。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_NestedLoop_1, Main_NestedLoop_3), then press Run app to run Main_NestedLoop_1. Look at Dave's 93.75; `Main_NestedLoop_3` prints the retest message only once.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_NestedLoop_1, Main_NestedLoop_3), then press ▶ Run app to run Main_NestedLoop_1. Look at Dave's 93.75; `Main_NestedLoop_3` prints the retest message only once.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -703,11 +703,11 @@ exercises:
       en: 'Declaring classes and creating instances'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Person）を読み、アプリ実行で Main_7_2 を動かします。見るところは snippet_2 の name と age。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Person）を読み、▶ アプリ実行で Main_7_2 を動かします。見るところは snippet_2 の name と age。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Person), then press Run app to run Main_7_2. Look at name and age in snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Person), then press ▶ Run app to run Main_7_2. Look at name and age in snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -723,11 +723,11 @@ exercises:
       en: 'Fields and methods'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Person2、Main_7_2、Printer、Calculator、Main_Calculator）を読み、アプリ実行で Main_Calculator を動かします。見るところは 足し算の結果の 40。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Person2、Main_7_2、Printer、Calculator、Main_Calculator）を読み、▶ アプリ実行で Main_Calculator を動かします。見るところは 足し算の結果の 40。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Person2, Main_7_2, Printer, Calculator, Main_Calculator), then press Run app to run Main_Calculator. Look at the sum 40.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Person2, Main_7_2, Printer, Calculator, Main_Calculator), then press ▶ Run app to run Main_Calculator. Look at the sum 40.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -743,11 +743,11 @@ exercises:
       en: 'Scope and this'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Person3）を読み、アプリ実行で Main_7_2 を動かします。見るところは `Person3` のメソッドと、snippet_3・snippet_4 の挨拶の行。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Person3）を読み、▶ アプリ実行で Main_7_2 を動かします。見るところは `Person3` のメソッドと、snippet_3・snippet_4 の挨拶の行。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Person3), then press Run app to run Main_7_2. Look at the methods of `Person3` and the greeting lines in snippet_3 and snippet_4.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Person3), then press ▶ Run app to run Main_7_2. Look at the methods of `Person3` and the greeting lines in snippet_3 and snippet_4.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -763,11 +763,11 @@ exercises:
       en: 'Constructors'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Main_7_2）を読み、アプリ実行で Main_7_2 を動かします。見るところは snippet_4 の Alice と Bob の行。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Main_7_2）を読み、▶ アプリ実行で Main_7_2 を動かします。見るところは snippet_4 の Alice と Bob の行。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Main_7_2), then press Run app to run Main_7_2. Look at the Alice and Bob lines in snippet_4.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Main_7_2), then press ▶ Run app to run Main_7_2. Look at the Alice and Bob lines in snippet_4.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -783,11 +783,11 @@ exercises:
       en: 'Signatures and overloading'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Person3）を読み、アプリ実行で Main_MethodChain を動かします。見るところは snippet_1 のメッセージ。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Person3）を読み、▶ アプリ実行で Main_MethodChain を動かします。見るところは snippet_1 のメッセージ。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Person3), then press Run app to run Main_MethodChain. Look at the message in snippet_1.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Person3), then press ▶ Run app to run Main_MethodChain. Look at the message in snippet_1.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -803,11 +803,11 @@ exercises:
       en: 'Forms of method calls and the flow of processing'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Person3、Main_Recursive）を読み、アプリ実行で Main_Recursive を動かします。見るところは 再帰の合計の 55。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Person3、Main_Recursive）を読み、▶ アプリ実行で Main_Recursive を動かします。見るところは 再帰の合計の 55。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Person3, Main_Recursive), then press Run app to run Main_Recursive. Look at the recursive sum 55.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Person3, Main_Recursive), then press ▶ Run app to run Main_Recursive. Look at the recursive sum 55.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -823,11 +823,11 @@ exercises:
       en: 'Classes with and without state'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（StatefulCalc）を読み、アプリ実行で Main_StatefulCalc を動かします。見るところは 足し算の結果の 40。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（StatefulCalc）を読み、▶ アプリ実行で Main_StatefulCalc を動かします。見るところは 足し算の結果の 40。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (StatefulCalc), then press Run app to run Main_StatefulCalc. Look at the sum 40.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (StatefulCalc), then press ▶ Run app to run Main_StatefulCalc. Look at the sum 40.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -843,11 +843,11 @@ exercises:
       en: 'Static fields and shared state'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Person）を読み、アプリ実行で Main_Person を動かします。見るところは snippet_2 の name と age。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Person）を読み、▶ アプリ実行で Main_Person を動かします。見るところは snippet_2 の name と age。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Person), then press Run app to run Main_Person. Look at name and age in snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Person), then press ▶ Run app to run Main_Person. Look at name and age in snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -863,11 +863,11 @@ exercises:
       en: 'Static methods and static initializers'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（StaticCalculator）を読み、アプリ実行で Main_StaticCalculator を動かします。見るところは 足し算の結果の 40。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（StaticCalculator）を読み、▶ アプリ実行で Main_StaticCalculator を動かします。見るところは 足し算の結果の 40。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (StaticCalculator), then press Run app to run Main_StaticCalculator. Look at the sum 40.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (StaticCalculator), then press ▶ Run app to run Main_StaticCalculator. Look at the sum 40.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -883,11 +883,11 @@ exercises:
       en: 'Preventing reassignment with final'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Person2）を読み、アプリ実行で Main_NewPage を動かします。見るところは 30 行ごとの「改ページ」の位置。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Person2）を読み、▶ アプリ実行で Main_NewPage を動かします。見るところは 30 行ごとの「改ページ」の位置。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Person2), then press Run app to run Main_NewPage. Look at where the page-break line appears every 30 lines.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Person2), then press ▶ Run app to run Main_NewPage. Look at where the page-break line appears every 30 lines.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -903,11 +903,11 @@ exercises:
       en: 'Constants'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（Customer）を読み、アプリ実行で Main_NewPage を動かします。見るところは 30 行ごとの「改ページ」の位置（定数 `Customer` のコードも読みます）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（Customer）を読み、▶ アプリ実行で Main_NewPage を動かします。見るところは 30 行ごとの「改ページ」の位置（定数 `Customer` のコードも読みます）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (Customer), then press Run app to run Main_NewPage. Look at where the page-break line appears every 30 lines (also read the constants in `Customer`).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (Customer), then press ▶ Run app to run Main_NewPage. Look at where the page-break line appears every 30 lines (also read the constants in `Customer`).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -923,11 +923,11 @@ exercises:
       en: 'Imports and name resolution'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（pro.kensait.pkg1.Foo）を読み、アプリ実行で pro.kensait.pkg1.Main を動かします。見るところは `This is pro.kensait.pkg2.Baz!`。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（pro.kensait.pkg1.Foo）を読み、▶ アプリ実行で pro.kensait.pkg1.Main を動かします。見るところは `This is pro.kensait.pkg2.Baz!`。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (pro.kensait.pkg1.Foo), then press Run app to run pro.kensait.pkg1.Main. Look at `This is pro.kensait.pkg2.Baz!`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (pro.kensait.pkg1.Foo), then press ▶ Run app to run pro.kensait.pkg1.Main. Look at `This is pro.kensait.pkg2.Baz!`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -943,11 +943,11 @@ exercises:
       en: 'Access modifiers and visibility'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（pro.kensait.pkg2.Bar）を読み、アプリ実行で lsn_10_2_1.Main_2 を動かします。見るところは `pro.kensait.pkg2.Bar` のコメントにした【2】【4】（エディターの診断で確かめます。このレッスンのクラスには main がないので、ボタンは `lsn_10_2_1.Main_2` を動かします）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（pro.kensait.pkg2.Bar）を読み、▶ アプリ実行で lsn_10_2_1.Main_2 を動かします。見るところは `pro.kensait.pkg2.Bar` のコメントにした【2】【4】（エディターの診断で確かめます。このレッスンのクラスには main がないので、ボタンは `lsn_10_2_1.Main_2` を動かします）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (pro.kensait.pkg2.Bar), then press Run app to run lsn_10_2_1.Main_2. Look at the commented-out markers 2 and 4 in `pro.kensait.pkg2.Bar` (check them with the editor diagnostics; these classes have no main, so the button runs `lsn_10_2_1.Main_2`).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (pro.kensait.pkg2.Bar), then press ▶ Run app to run lsn_10_2_1.Main_2. Look at the commented-out markers 2 and 4 in `pro.kensait.pkg2.Bar` (check them with the editor diagnostics; these classes have no main, so the button runs `lsn_10_2_1.Main_2`).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -963,11 +963,11 @@ exercises:
       en: 'Encapsulation and accessor methods'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_10_1_1.Person）を読み、アプリ実行で lsn_10_2_1.Main_2 を動かします。見るところは `lsn_10_1_1.Person` のアクセサメソッド（main がないので、ボタンは `lsn_10_2_1.Main_2` を動かします）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_10_1_1.Person）を読み、▶ アプリ実行で lsn_10_2_1.Main_2 を動かします。見るところは `lsn_10_1_1.Person` のアクセサメソッド（main がないので、ボタンは `lsn_10_2_1.Main_2` を動かします）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_10_1_1.Person), then press Run app to run lsn_10_2_1.Main_2. Look at the accessors of `lsn_10_1_1.Person` (it has no main, so the button runs `lsn_10_2_1.Main_2`).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_10_1_1.Person), then press ▶ Run app to run lsn_10_2_1.Main_2. Look at the accessors of `lsn_10_1_1.Person` (it has no main, so the button runs `lsn_10_2_1.Main_2`).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -983,11 +983,11 @@ exercises:
       en: 'Associations, direction and multiplicity'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_10_2_1.Employee、lsn_10_2_1.Main_2）を読み、アプリ実行で lsn_10_2_1.Main_2 を動かします。見るところは Alice、Bob、Carol の順の名前。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_10_2_1.Employee、lsn_10_2_1.Main_2）を読み、▶ アプリ実行で lsn_10_2_1.Main_2 を動かします。見るところは Alice、Bob、Carol の順の名前。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_10_2_1.Employee, lsn_10_2_1.Main_2), then press Run app to run lsn_10_2_1.Main_2. Look at the names Alice, Bob and Carol in that order.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_10_2_1.Employee, lsn_10_2_1.Main_2), then press ▶ Run app to run lsn_10_2_1.Main_2. Look at the names Alice, Bob and Carol in that order.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1003,11 +1003,11 @@ exercises:
       en: 'Dependencies and their direction'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_10_2_2.Foo）を読み、アプリ実行で lsn_10_2_1.Main_2 を動かします。見るところは `lsn_10_2_2` の `Foo` と `Bar` の依存（main がないので、ボタンは `lsn_10_2_1.Main_2` を動かします）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_10_2_2.Foo）を読み、▶ アプリ実行で lsn_10_2_1.Main_2 を動かします。見るところは `lsn_10_2_2` の `Foo` と `Bar` の依存（main がないので、ボタンは `lsn_10_2_1.Main_2` を動かします）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_10_2_2.Foo), then press Run app to run lsn_10_2_1.Main_2. Look at the dependency between `Foo` and `Bar` in `lsn_10_2_2` (they have no main, so the button runs `lsn_10_2_1.Main_2`).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_10_2_2.Foo), then press ▶ Run app to run lsn_10_2_1.Main_2. Look at the dependency between `Foo` and `Bar` in `lsn_10_2_2` (they have no main, so the button runs `lsn_10_2_1.Main_2`).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1023,11 +1023,11 @@ exercises:
       en: 'Inheritance structure and constructor chaining'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_11_1_1.case_2.Bar）を読み、アプリ実行で lsn_11_1_1.case_2.Main を動かします。見るところは `subtract()` の結果の 60。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_11_1_1.case_2.Bar）を読み、▶ アプリ実行で lsn_11_1_1.case_2.Main を動かします。見るところは `subtract()` の結果の 60。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_11_1_1.case_2.Bar), then press Run app to run lsn_11_1_1.case_2.Main. Look at the `subtract()` result 60.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_11_1_1.case_2.Bar), then press ▶ Run app to run lsn_11_1_1.case_2.Main. Look at the `subtract()` result 60.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1043,11 +1043,11 @@ exercises:
       en: 'Conditions for overriding'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_11_1_2.case_2.Bar、lsn_11_1_2.case_3.Bar）を読み、アプリ実行で lsn_11_1_2.case_2.Main を動かします。見るところは `add()` の結果の 140。`case_3.Main` では 140 と 60。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_11_1_2.case_2.Bar、lsn_11_1_2.case_3.Bar）を読み、▶ アプリ実行で lsn_11_1_2.case_2.Main を動かします。見るところは `add()` の結果の 140。`case_3.Main` では 140 と 60。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_11_1_2.case_2.Bar, lsn_11_1_2.case_3.Bar), then press Run app to run lsn_11_1_2.case_2.Main. Look at the `add()` result 140; `case_3.Main` prints 140 and 60.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_11_1_2.case_2.Bar, lsn_11_1_2.case_3.Bar), then press ▶ Run app to run lsn_11_1_2.case_2.Main. Look at the `add()` result 140; `case_3.Main` prints 140 and 60.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1063,11 +1063,11 @@ exercises:
       en: 'Abstract classes for sharing and enforcing implementations'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_11_1_3.CustomerBase、lsn_11_1_3.GeneralCustomer）を読み、アプリ実行で lsn_11_1_3.Main を動かします。見るところは snippet_1 の 5000 と snippet_2 の 20000。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_11_1_3.CustomerBase、lsn_11_1_3.GeneralCustomer）を読み、▶ アプリ実行で lsn_11_1_3.Main を動かします。見るところは snippet_1 の 5000 と snippet_2 の 20000。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_11_1_3.CustomerBase, lsn_11_1_3.GeneralCustomer), then press Run app to run lsn_11_1_3.Main. Look at the 5000 in snippet_1 and 20000 in snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_11_1_3.CustomerBase, lsn_11_1_3.GeneralCustomer), then press ▶ Run app to run lsn_11_1_3.Main. Look at the 5000 in snippet_1 and 20000 in snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1083,11 +1083,11 @@ exercises:
       en: 'Type conversion and polymorphism'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_11_1_4.Main_4、lsn_11_1_5.Transaction）を読み、アプリ実行で lsn_11_1_4.Main_4 を動かします。見るところは OK が 2 行。`lsn_11_1_5.Main_2` では 5000 と 20000。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_11_1_4.Main_4、lsn_11_1_5.Transaction）を読み、▶ アプリ実行で lsn_11_1_4.Main_4 を動かします。見るところは OK が 2 行。`lsn_11_1_5.Main_2` では 5000 と 20000。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_11_1_4.Main_4, lsn_11_1_5.Transaction), then press Run app to run lsn_11_1_4.Main_4. Look at two lines of OK; `lsn_11_1_5.Main_2` prints 5000 and 20000.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_11_1_4.Main_4, lsn_11_1_5.Transaction), then press ▶ Run app to run lsn_11_1_4.Main_4. Look at two lines of OK; `lsn_11_1_5.Main_2` prints 5000 and 20000.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1103,11 +1103,11 @@ exercises:
       en: 'The structure of delegation'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_11_2_1.GeneralCustomer）を読み、アプリ実行で lsn_11_1_3.Main を動かします。見るところは `lsn_11_2_1.GeneralCustomer` の委譲のコード（main がないので、ボタンは比較元の `lsn_11_1_3.Main` を動かします）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_11_2_1.GeneralCustomer）を読み、▶ アプリ実行で lsn_11_1_3.Main を動かします。見るところは `lsn_11_2_1.GeneralCustomer` の委譲のコード（main がないので、ボタンは比較元の `lsn_11_1_3.Main` を動かします）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_11_2_1.GeneralCustomer), then press Run app to run lsn_11_1_3.Main. Look at the delegation in `lsn_11_2_1.GeneralCustomer` (it has no main, so the button runs `lsn_11_1_3.Main` for comparison).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_11_2_1.GeneralCustomer), then press ▶ Run app to run lsn_11_1_3.Main. Look at the delegation in `lsn_11_2_1.GeneralCustomer` (it has no main, so the button runs `lsn_11_1_3.Main` for comparison).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1123,11 +1123,11 @@ exercises:
       en: 'Separating the external specification with interfaces'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_12_1_1.Piyo）を読み、アプリ実行で lsn_12_1_1.Main を動かします。見るところは `Hoge says YES!` と `Piyo says YES!`。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_12_1_1.Piyo）を読み、▶ アプリ実行で lsn_12_1_1.Main を動かします。見るところは `Hoge says YES!` と `Piyo says YES!`。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_12_1_1.Piyo), then press Run app to run lsn_12_1_1.Main. Look at `Hoge says YES!` and `Piyo says YES!`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_12_1_1.Piyo), then press ▶ Run app to run lsn_12_1_1.Main. Look at `Hoge says YES!` and `Piyo says YES!`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1143,11 +1143,11 @@ exercises:
       en: 'Adding features unrelated to the class hierarchy'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_12_1_2.NameAggregator、lsn_12_1_2.NameAggregators）を読み、アプリ実行で lsn_12_1_2.Main を動かします。見るところは 名寄せ先の point=4000 と名寄せ元の invalid=true。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_12_1_2.NameAggregator、lsn_12_1_2.NameAggregators）を読み、▶ アプリ実行で lsn_12_1_2.Main を動かします。見るところは 名寄せ先の point=4000 と名寄せ元の invalid=true。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_12_1_2.NameAggregator, lsn_12_1_2.NameAggregators), then press Run app to run lsn_12_1_2.Main. Look at point=4000 on the target and invalid=true on the source of the merge.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_12_1_2.NameAggregator, lsn_12_1_2.NameAggregators), then press ▶ Run app to run lsn_12_1_2.Main. Look at point=4000 on the target and invalid=true on the source of the merge.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1163,11 +1163,11 @@ exercises:
       en: 'Interface members and when to use abstract classes'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_12_1_2.FamilySpec）を読み、アプリ実行で lsn_12_1_2.Main を動かします。見るところは 名寄せ先の point=4000。`FamilySpec` の default メソッドも読みます。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_12_1_2.FamilySpec）を読み、▶ アプリ実行で lsn_12_1_2.Main を動かします。見るところは 名寄せ先の point=4000。`FamilySpec` の default メソッドも読みます。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_12_1_2.FamilySpec), then press Run app to run lsn_12_1_2.Main. Look at point=4000 on the target; also read the default method of `FamilySpec`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_12_1_2.FamilySpec), then press ▶ Run app to run lsn_12_1_2.Main. Look at point=4000 on the target; also read the default method of `FamilySpec`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1183,11 +1183,11 @@ exercises:
       en: 'The role of the Object class'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_13_1_1.Person）を読み、アプリ実行で lsn_13_1_1.Main を動かします。見るところは `Person [name=Alice, age=25, address=中央区1-1-1]`。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_13_1_1.Person）を読み、▶ アプリ実行で lsn_13_1_1.Main を動かします。見るところは `Person [name=Alice, age=25, address=中央区1-1-1]`。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_13_1_1.Person), then press Run app to run lsn_13_1_1.Main. Look at `Person [name=Alice, age=25, address=中央区1-1-1]`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_13_1_1.Person), then press ▶ Run app to run lsn_13_1_1.Main. Look at `Person [name=Alice, age=25, address=中央区1-1-1]`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1203,11 +1203,11 @@ exercises:
       en: 'Identity, equality and the equals()/hashCode() contract'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_13_1_2.Person）を読み、アプリ実行で lsn_13_1_2.Main を動かします。見るところは `false, true`（`==` で別のインスタンスと同じインスタンスを比べた結果）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_13_1_2.Person）を読み、▶ アプリ実行で lsn_13_1_2.Main を動かします。見るところは `false, true`（`==` で別のインスタンスと同じインスタンスを比べた結果）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_13_1_2.Person), then press Run app to run lsn_13_1_2.Main. Look at `false, true` (`==` on different instances and on the same instance).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_13_1_2.Person), then press ▶ Run app to run lsn_13_1_2.Main. Look at `false, true` (`==` on different instances and on the same instance).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1223,11 +1223,11 @@ exercises:
       en: 'Pass-by-value of references and immutability'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_13_1_3.mutable.Main_2、lsn_13_1_3.immutable.Person）を読み、アプリ実行で lsn_13_1_3.mutable.Main_2 を動かします。見るところは 住所が 中央区2-2-2 に変わっていること。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_13_1_3.mutable.Main_2、lsn_13_1_3.immutable.Person）を読み、▶ アプリ実行で lsn_13_1_3.mutable.Main_2 を動かします。見るところは 住所が 中央区2-2-2 に変わっていること。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_13_1_3.mutable.Main_2, lsn_13_1_3.immutable.Person), then press Run app to run lsn_13_1_3.mutable.Main_2. Look at that the address has changed to 中央区2-2-2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_13_1_3.mutable.Main_2, lsn_13_1_3.immutable.Person), then press ▶ Run app to run lsn_13_1_3.mutable.Main_2. Look at that the address has changed to 中央区2-2-2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1243,11 +1243,11 @@ exercises:
       en: 'Copying instances'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_13_1_4.copy.Main_ShallowCopy、lsn_13_1_4.clone.Person）を読み、アプリ実行で lsn_13_1_4.copy.Main_ShallowCopy を動かします。見るところは コピー先の addressLine=2-2-2。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_13_1_4.copy.Main_ShallowCopy、lsn_13_1_4.clone.Person）を読み、▶ アプリ実行で lsn_13_1_4.copy.Main_ShallowCopy を動かします。見るところは コピー先の addressLine=2-2-2。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_13_1_4.copy.Main_ShallowCopy, lsn_13_1_4.clone.Person), then press Run app to run lsn_13_1_4.copy.Main_ShallowCopy. Look at addressLine=2-2-2 on the copy.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_13_1_4.copy.Main_ShallowCopy, lsn_13_1_4.clone.Person), then press ▶ Run app to run lsn_13_1_4.copy.Main_ShallowCopy. Look at addressLine=2-2-2 on the copy.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1263,11 +1263,11 @@ exercises:
       en: 'The structure of enums'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_15_1_1.CustomerType）を読み、アプリ実行で lsn_15_1_2.Main を動かします。見るところは snippet_1 の DIAMOND と 3。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_15_1_1.CustomerType）を読み、▶ アプリ実行で lsn_15_1_2.Main を動かします。見るところは snippet_1 の DIAMOND と 3。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_15_1_1.CustomerType), then press Run app to run lsn_15_1_2.Main. Look at DIAMOND and 3 in snippet_1.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_15_1_1.CustomerType), then press ▶ Run app to run lsn_15_1_2.Main. Look at DIAMOND and 3 in snippet_1.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1283,11 +1283,11 @@ exercises:
       en: 'Designing branches and comparisons'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_15_1_2.Main_Switch、lsn_15_1_2.Main）を読み、アプリ実行で lsn_15_1_2.Main を動かします。見るところは snippet_2・snippet_3 の会員種別の行。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_15_1_2.Main_Switch、lsn_15_1_2.Main）を読み、▶ アプリ実行で lsn_15_1_2.Main を動かします。見るところは snippet_2・snippet_3 の会員種別の行。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_15_1_2.Main_Switch, lsn_15_1_2.Main), then press Run app to run lsn_15_1_2.Main. Look at the customer type lines in snippet_2 and snippet_3.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_15_1_2.Main_Switch, lsn_15_1_2.Main), then press ▶ Run app to run lsn_15_1_2.Main. Look at the customer type lines in snippet_2 and snippet_3.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1303,11 +1303,11 @@ exercises:
       en: 'Grouping values and behavior in an enum'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_15_1_3.CustomerType2、lsn_15_1_3.Main）を読み、アプリ実行で lsn_15_1_3.Main を動かします。見るところは 一般会員とゴールド会員の逆引きの結果。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_15_1_3.CustomerType2、lsn_15_1_3.Main）を読み、▶ アプリ実行で lsn_15_1_3.Main を動かします。見るところは 一般会員とゴールド会員の逆引きの結果。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_15_1_3.CustomerType2, lsn_15_1_3.Main), then press Run app to run lsn_15_1_3.Main. Look at the reverse lookup results for the general and gold customers.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_15_1_3.CustomerType2, lsn_15_1_3.Main), then press ▶ Run app to run lsn_15_1_3.Main. Look at the reverse lookup results for the general and gold customers.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1323,11 +1323,11 @@ exercises:
       en: 'String immutability and the string pool'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_16_1_1.Main、lsn_16_1_1.Main_Reference）を読み、アプリ実行で lsn_16_1_1.Main を動かします。見るところは snippet_3 の true と snippet_4 の false。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_16_1_1.Main、lsn_16_1_1.Main_Reference）を読み、▶ アプリ実行で lsn_16_1_1.Main を動かします。見るところは snippet_3 の true と snippet_4 の false。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_16_1_1.Main, lsn_16_1_1.Main_Reference), then press Run app to run lsn_16_1_1.Main. Look at true in snippet_3 and false in snippet_4.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_16_1_1.Main, lsn_16_1_1.Main_Reference), then press ▶ Run app to run lsn_16_1_1.Main. Look at true in snippet_3 and false in snippet_4.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1343,11 +1343,11 @@ exercises:
       en: 'How the String API works'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_16_1_2.Main_Conversion、lsn_16_1_2.Main_Substring、lsn_16_1_3.Main）を読み、アプリ実行で lsn_16_1_2.Main_Conversion を動かします。見るところは snippet_1 の `Foo_Bar_Foobar` と snippet_2 の `FOO_BAR_FOOBAR`。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_16_1_2.Main_Conversion、lsn_16_1_2.Main_Substring、lsn_16_1_3.Main）を読み、▶ アプリ実行で lsn_16_1_2.Main_Conversion を動かします。見るところは snippet_1 の `Foo_Bar_Foobar` と snippet_2 の `FOO_BAR_FOOBAR`。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_16_1_2.Main_Conversion, lsn_16_1_2.Main_Substring, lsn_16_1_3.Main), then press Run app to run lsn_16_1_2.Main_Conversion. Look at `Foo_Bar_Foobar` in snippet_1 and `FOO_BAR_FOOBAR` in snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_16_1_2.Main_Conversion, lsn_16_1_2.Main_Substring, lsn_16_1_3.Main), then press ▶ Run app to run lsn_16_1_2.Main_Conversion. Look at `Foo_Bar_Foobar` in snippet_1 and `FOO_BAR_FOOBAR` in snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1363,11 +1363,11 @@ exercises:
       en: 'String concatenation and StringBuilder'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_16_1_4.Main）を読み、アプリ実行で lsn_16_1_4.Main を動かします。見るところは snippet_1 と snippet_2 の完了までの時間の差。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_16_1_4.Main）を読み、▶ アプリ実行で lsn_16_1_4.Main を動かします。見るところは snippet_1 と snippet_2 の完了までの時間の差。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_16_1_4.Main), then press Run app to run lsn_16_1_4.Main. Look at the difference in time to finish between snippet_1 and snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_16_1_4.Main), then press ▶ Run app to run lsn_16_1_4.Main. Look at the difference in time to finish between snippet_1 and snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1383,11 +1383,11 @@ exercises:
       en: 'How Pattern and Matcher work'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_16_2_3.Main_Matches_1、lsn_16_2_3.Main_Find）を読み、アプリ実行で lsn_16_2_3.Main_Matches_1 を動かします。見るところは snippet_1・snippet_2 の matches、lookingAt、group。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_16_2_3.Main_Matches_1、lsn_16_2_3.Main_Find）を読み、▶ アプリ実行で lsn_16_2_3.Main_Matches_1 を動かします。見るところは snippet_1・snippet_2 の matches、lookingAt、group。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_16_2_3.Main_Matches_1, lsn_16_2_3.Main_Find), then press Run app to run lsn_16_2_3.Main_Matches_1. Look at matches, lookingAt and group in snippet_1 and snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_16_2_3.Main_Matches_1, lsn_16_2_3.Main_Find), then press ▶ Run app to run lsn_16_2_3.Main_Matches_1. Look at matches, lookingAt and group in snippet_1 and snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1403,11 +1403,11 @@ exercises:
       en: 'Groups, replacement and format-check pitfalls'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_16_2_3.Main_FormatCheck、lsn_16_2_4.Main_Replace_2）を読み、アプリ実行で lsn_16_2_4.Main_Replace_2 を動かします。見るところは snippet_2、snippet_5〜snippet_7 の置換の結果。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_16_2_3.Main_FormatCheck、lsn_16_2_4.Main_Replace_2）を読み、▶ アプリ実行で lsn_16_2_4.Main_Replace_2 を動かします。見るところは snippet_2、snippet_5〜snippet_7 の置換の結果。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_16_2_3.Main_FormatCheck, lsn_16_2_4.Main_Replace_2), then press Run app to run lsn_16_2_4.Main_Replace_2. Look at the replacement results in snippet_2 and snippet_5 to snippet_7.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_16_2_3.Main_FormatCheck, lsn_16_2_4.Main_Replace_2), then press ▶ Run app to run lsn_16_2_4.Main_Replace_2. Look at the replacement results in snippet_2 and snippet_5 to snippet_7.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1423,11 +1423,11 @@ exercises:
       en: 'Wrapper class structure and automatic conversion'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_17_1_1.Main）を読み、アプリ実行で lsn_17_1_1.Main を動かします。見るところは アンボクシングした結果の 30。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_17_1_1.Main）を読み、▶ アプリ実行で lsn_17_1_1.Main を動かします。見るところは アンボクシングした結果の 30。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_17_1_1.Main), then press Run app to run lsn_17_1_1.Main. Look at the unboxed result 30.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_17_1_1.Main), then press ▶ Run app to run lsn_17_1_1.Main. Look at the unboxed result 30.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1443,11 +1443,11 @@ exercises:
       en: 'Numeric wrapper APIs and special floating-point values'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_17_1_2.Main）を読み、アプリ実行で lsn_17_1_2.Main を動かします。見るところは snippet_1 の 100 と snippet_2 の true。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_17_1_2.Main）を読み、▶ アプリ実行で lsn_17_1_2.Main を動かします。見るところは snippet_1 の 100 と snippet_2 の true。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_17_1_2.Main), then press Run app to run lsn_17_1_2.Main. Look at 100 in snippet_1 and true in snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_17_1_2.Main), then press ▶ Run app to run lsn_17_1_2.Main. Look at 100 in snippet_1 and true in snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1463,11 +1463,11 @@ exercises:
       en: 'The structure and use of BigDecimal'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_17_2_1.Main_1、lsn_17_2_1.Main_2）を読み、アプリ実行で lsn_17_2_1.Main_1 を動かします。見るところは snippet_2〜snippet_4 の 123.4567 と snippet_5 の長い値。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_17_2_1.Main_1、lsn_17_2_1.Main_2）を読み、▶ アプリ実行で lsn_17_2_1.Main_1 を動かします。見るところは snippet_2〜snippet_4 の 123.4567 と snippet_5 の長い値。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_17_2_1.Main_1, lsn_17_2_1.Main_2), then press Run app to run lsn_17_2_1.Main_1. Look at 123.4567 in snippet_2 to snippet_4 and the long value in snippet_5.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_17_2_1.Main_1, lsn_17_2_1.Main_2), then press ▶ Run app to run lsn_17_2_1.Main_1. Look at 123.4567 in snippet_2 to snippet_4 and the long value in snippet_5.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1483,11 +1483,11 @@ exercises:
       en: 'Number/string conversion and other numeric classes'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_17_2_2.Main）を読み、アプリ実行で lsn_17_2_2.Main を動かします。見るところは snippet_1 の 1,000,000 と ￥1,000,000、snippet_3 の 000012345。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_17_2_2.Main）を読み、▶ アプリ実行で lsn_17_2_2.Main を動かします。見るところは snippet_1 の 1,000,000 と ￥1,000,000、snippet_3 の 000012345。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_17_2_2.Main), then press Run app to run lsn_17_2_2.Main. Look at 1,000,000 and ￥1,000,000 in snippet_1 and 000012345 in snippet_3.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_17_2_2.Main), then press ▶ Run app to run lsn_17_2_2.Main. Look at 1,000,000 and ￥1,000,000 in snippet_1 and 000012345 in snippet_3.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1503,11 +1503,11 @@ exercises:
       en: 'How hashing and sets work'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_18_1_3.Person）を読み、アプリ実行で lsn_18_1_3.Main を動かします。見るところは snippet_3 で Alice が重複して入っていないこと。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_18_1_3.Person）を読み、▶ アプリ実行で lsn_18_1_3.Main を動かします。見るところは snippet_3 で Alice が重複して入っていないこと。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_18_1_3.Person), then press Run app to run lsn_18_1_3.Main. Look at that Alice is not added twice in snippet_3.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_18_1_3.Person), then press ▶ Run app to run lsn_18_1_3.Main. Look at that Alice is not added twice in snippet_3.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1523,11 +1523,11 @@ exercises:
       en: 'Map structure and keys'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_18_1_4.Main_Person、lsn_18_1_4.Main）を読み、アプリ実行で lsn_18_1_4.Main_Person を動かします。見るところは `Person [id=102, name=Bob, age=35, gender=male]`。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_18_1_4.Main_Person、lsn_18_1_4.Main）を読み、▶ アプリ実行で lsn_18_1_4.Main_Person を動かします。見るところは `Person [id=102, name=Bob, age=35, gender=male]`。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_18_1_4.Main_Person, lsn_18_1_4.Main), then press Run app to run lsn_18_1_4.Main_Person. Look at `Person [id=102, name=Bob, age=35, gender=male]`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_18_1_4.Main_Person, lsn_18_1_4.Main), then press ▶ Run app to run lsn_18_1_4.Main_Person. Look at `Person [id=102, name=Bob, age=35, gender=male]`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1543,11 +1543,11 @@ exercises:
       en: 'Element order and choosing a data structure'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_18_1_5.Main_Queue）を読み、アプリ実行で lsn_18_1_5.Main_Queue を動かします。見るところは snippet_3 の foo。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_18_1_5.Main_Queue）を読み、▶ アプリ実行で lsn_18_1_5.Main_Queue を動かします。見るところは snippet_3 の foo。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_18_1_5.Main_Queue), then press Run app to run lsn_18_1_5.Main_Queue. Look at foo in snippet_3.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_18_1_5.Main_Queue), then press ▶ Run app to run lsn_18_1_5.Main_Queue. Look at foo in snippet_3.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1563,11 +1563,11 @@ exercises:
       en: 'How comparison works (Comparable and Comparator)'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_18_2_1.Person）を読み、アプリ実行で lsn_18_2_1.Main_Sort_Person を動かします。見るところは snippet_1 の Alice、Carol、Bob の順。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_18_2_1.Person）を読み、▶ アプリ実行で lsn_18_2_1.Main_Sort_Person を動かします。見るところは snippet_1 の Alice、Carol、Bob の順。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_18_2_1.Person), then press Run app to run lsn_18_2_1.Main_Sort_Person. Look at the order Alice, Carol, Bob in snippet_1.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_18_2_1.Person), then press ▶ Run app to run lsn_18_2_1.Main_Sort_Person. Look at the order Alice, Carol, Bob in snippet_1.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1583,11 +1583,11 @@ exercises:
       en: 'Sorted sets and maps'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_18_2_2.Main_TreeSet）を読み、アプリ実行で lsn_18_2_2.Main_TreeSet を動かします。見るところは `[3, 4, 5, 6]` の部分集合。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_18_2_2.Main_TreeSet）を読み、▶ アプリ実行で lsn_18_2_2.Main_TreeSet を動かします。見るところは `[3, 4, 5, 6]` の部分集合。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_18_2_2.Main_TreeSet), then press Run app to run lsn_18_2_2.Main_TreeSet. Look at the subset `[3, 4, 5, 6]`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_18_2_2.Main_TreeSet), then press ▶ Run app to run lsn_18_2_2.Main_TreeSet. Look at the subset `[3, 4, 5, 6]`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1603,11 +1603,11 @@ exercises:
       en: 'Immutable collections and views'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_18_2_3.Main）を読み、アプリ実行で lsn_18_2_3.Main を動かします。見るところは snippet_1 と snippet_2 の `[foo, bar, baz]`。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_18_2_3.Main）を読み、▶ アプリ実行で lsn_18_2_3.Main を動かします。見るところは snippet_1 と snippet_2 の `[foo, bar, baz]`。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_18_2_3.Main), then press Run app to run lsn_18_2_3.Main. Look at `[foo, bar, baz]` in snippet_1 and snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_18_2_3.Main), then press ▶ Run app to run lsn_18_2_3.Main. Look at `[foo, bar, baz]` in snippet_1 and snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1623,11 +1623,11 @@ exercises:
       en: 'try-catch and exception propagation'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_19_1_5.Main_2、lsn_19_1_4.case_2.Foo）を読み、アプリ実行で lsn_19_1_4.case_3.Main を動かします。見るところは `URL生成不可` のメッセージと 0。`Main_2` は入力の行を固定値に書き換えて動かします。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_19_1_5.Main_2、lsn_19_1_4.case_2.Foo）を読み、▶ アプリ実行で lsn_19_1_4.case_3.Main を動かします。見るところは `URL生成不可` のメッセージと 0。`Main_2` は入力の行を固定値に書き換えて動かします。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_19_1_5.Main_2, lsn_19_1_4.case_2.Foo), then press Run app to run lsn_19_1_4.case_3.Main. Look at the message and the 0 from `lsn_19_1_4.case_3.Main`; change the input lines of `Main_2` to fixed values to run it.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_19_1_5.Main_2, lsn_19_1_4.case_2.Foo), then press ▶ Run app to run lsn_19_1_4.case_3.Main. Look at the message and the 0 from `lsn_19_1_4.case_3.Main`; change the input lines of `Main_2` to fixed values to run it.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1643,11 +1643,11 @@ exercises:
       en: 'Checked and unchecked exceptions'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_19_1_4.case_4.Bar）を読み、アプリ実行で lsn_19_1_4.case_3.Main を動かします。見るところは `URL生成不可` のメッセージと 0。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_19_1_4.case_4.Bar）を読み、▶ アプリ実行で lsn_19_1_4.case_3.Main を動かします。見るところは `URL生成不可` のメッセージと 0。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_19_1_4.case_4.Bar), then press Run app to run lsn_19_1_4.case_3.Main. Look at the error message and the 0.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_19_1_4.case_4.Bar), then press ▶ Run app to run lsn_19_1_4.case_3.Main. Look at the error message and the 0.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1663,11 +1663,11 @@ exercises:
       en: 'Where to handle exceptions'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_19_1_2.Main_2）を読み、アプリ実行で lsn_19_1_5.Main_3 を動かします。見るところは `例外発生` のメッセージ。`lsn_19_1_2.Main_2` は入力の行を固定値に書き換えて動かします。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_19_1_2.Main_2）を読み、▶ アプリ実行で lsn_19_1_5.Main_3 を動かします。見るところは `例外発生` のメッセージ。`lsn_19_1_2.Main_2` は入力の行を固定値に書き換えて動かします。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_19_1_2.Main_2), then press Run app to run lsn_19_1_5.Main_3. Look at the exception message; change the input lines of `lsn_19_1_2.Main_2` to fixed values to run it.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_19_1_2.Main_2), then press ▶ Run app to run lsn_19_1_5.Main_3. Look at the exception message; change the input lines of `lsn_19_1_2.Main_2` to fixed values to run it.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1683,11 +1683,11 @@ exercises:
       en: 'Cleaning up resources'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_19_1_6.Main、lsn_19_2_3.Main）を読み、アプリ実行で lsn_19_2_3.Main を動かします。見るところは `foo.txt` の 3 行。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_19_1_6.Main、lsn_19_2_3.Main）を読み、▶ アプリ実行で lsn_19_2_3.Main を動かします。見るところは `foo.txt` の 3 行。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_19_1_6.Main, lsn_19_2_3.Main), then press Run app to run lsn_19_2_3.Main. Look at the three lines of `foo.txt`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_19_1_6.Main, lsn_19_2_3.Main), then press ▶ Run app to run lsn_19_2_3.Main. Look at the three lines of `foo.txt`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1703,11 +1703,11 @@ exercises:
       en: 'User-defined exceptions and exception chaining'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_19_2_1.BalanceException、lsn_19_2_2.Foo）を読み、アプリ実行で lsn_19_2_1.Main を動かします。見るところは `BalanceException: 残高不足発生` のスタックトレース。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_19_2_1.BalanceException、lsn_19_2_2.Foo）を読み、▶ アプリ実行で lsn_19_2_1.Main を動かします。見るところは `BalanceException: 残高不足発生` のスタックトレース。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_19_2_1.BalanceException, lsn_19_2_2.Foo), then press Run app to run lsn_19_2_1.Main. Look at the stack trace of `BalanceException`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_19_2_1.BalanceException, lsn_19_2_2.Foo), then press ▶ Run app to run lsn_19_2_1.Main. Look at the stack trace of `BalanceException`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1723,11 +1723,11 @@ exercises:
       en: 'Assertions and validating preconditions'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_19_2_4.Calculator2、lsn_19_2_4.Calculator3）を読み、アプリ実行で lsn_19_2_4.Main_2 を動かします。見るところは `-ea` なしの 132。`Main_3` では `IllegalArgumentException`。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_19_2_4.Calculator2、lsn_19_2_4.Calculator3）を読み、▶ アプリ実行で lsn_19_2_4.Main_2 を動かします。見るところは `-ea` なしの 132。`Main_3` では `IllegalArgumentException`。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_19_2_4.Calculator2, lsn_19_2_4.Calculator3), then press Run app to run lsn_19_2_4.Main_2. Look at 132 without `-ea`; `Main_3` throws `IllegalArgumentException`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_19_2_4.Calculator2, lsn_19_2_4.Calculator3), then press ▶ Run app to run lsn_19_2_4.Main_2. Look at 132 without `-ea`; `Main_3` throws `IllegalArgumentException`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1743,11 +1743,11 @@ exercises:
       en: 'Structure and problems of legacy date classes'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_20_1_2.Main）を読み、アプリ実行で lsn_20_1_2.Main を動かします。見るところは snippet_7 の -1（途中で 20 秒止まります）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_20_1_2.Main）を読み、▶ アプリ実行で lsn_20_1_2.Main を動かします。見るところは snippet_7 の -1（途中で 20 秒止まります）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_20_1_2.Main), then press Run app to run lsn_20_1_2.Main. Look at the -1 in snippet_7 (the run pauses for 20 seconds).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_20_1_2.Main), then press ▶ Run app to run lsn_20_1_2.Main. Look at the -1 in snippet_7 (the run pauses for 20 seconds).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1763,11 +1763,11 @@ exercises:
       en: 'Reading existing code and migrating to the Date and Time API'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_20_1_4.Person）を読み、アプリ実行で lsn_20_1_4.Main を動かします。見るところは snippet_2 の 1997年4月10日。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_20_1_4.Person）を読み、▶ アプリ実行で lsn_20_1_4.Main を動かします。見るところは snippet_2 の 1997年4月10日。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_20_1_4.Person), then press Run app to run lsn_20_1_4.Main. Look at the date in snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_20_1_4.Person), then press ▶ Run app to run lsn_20_1_4.Main. Look at the date in snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1783,11 +1783,11 @@ exercises:
       en: 'Creating, calculating and comparing local date-times'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_20_2_2.Main、lsn_20_2_3.Main）を読み、アプリ実行で lsn_20_2_2.Main を動かします。見るところは snippet_5 の `The day is SUNDAY`。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_20_2_2.Main、lsn_20_2_3.Main）を読み、▶ アプリ実行で lsn_20_2_2.Main を動かします。見るところは snippet_5 の `The day is SUNDAY`。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_20_2_2.Main, lsn_20_2_3.Main), then press Run app to run lsn_20_2_2.Main. Look at `The day is SUNDAY` in snippet_5.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_20_2_2.Main, lsn_20_2_3.Main), then press ▶ Run app to run lsn_20_2_2.Main. Look at `The day is SUNDAY` in snippet_5.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1803,11 +1803,11 @@ exercises:
       en: 'Calculating date and time differences'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_20_2_4.Main）を読み、アプリ実行で lsn_20_2_4.Main を動かします。見るところは 146、380、10年7カ月4日、6時間10分。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_20_2_4.Main）を読み、▶ アプリ実行で lsn_20_2_4.Main を動かします。見るところは 146、380、10年7カ月4日、6時間10分。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_20_2_4.Main), then press Run app to run lsn_20_2_4.Main. Look at 146, 380, the period and the duration.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_20_2_4.Main), then press ▶ Run app to run lsn_20_2_4.Main. Look at 146, 380, the period and the duration.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1823,11 +1823,11 @@ exercises:
       en: 'Time zones and instants'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_20_2_5.Main）を読み、アプリ実行で lsn_20_2_5.Main を動かします。見るところは snippet_3 の東京とニューヨークの差の 13。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_20_2_5.Main）を読み、▶ アプリ実行で lsn_20_2_5.Main を動かします。見るところは snippet_3 の東京とニューヨークの差の 13。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_20_2_5.Main), then press Run app to run lsn_20_2_5.Main. Look at the 13-hour difference between Tokyo and New York in snippet_3.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_20_2_5.Main), then press ▶ Run app to run lsn_20_2_5.Main. Look at the 13-hour difference between Tokyo and New York in snippet_3.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1843,11 +1843,11 @@ exercises:
       en: 'Converting between date-times and strings'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_20_2_6.Main）を読み、アプリ実行で lsn_20_2_6.Main を動かします。見るところは snippet_1 の 2 つの書式と snippet_3 の `2022-04-05T08:05:03`。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_20_2_6.Main）を読み、▶ アプリ実行で lsn_20_2_6.Main を動かします。見るところは snippet_1 の 2 つの書式と snippet_3 の `2022-04-05T08:05:03`。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_20_2_6.Main), then press Run app to run lsn_20_2_6.Main. Look at the two formats in snippet_1 and `2022-04-05T08:05:03` in snippet_3.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_20_2_6.Main), then press ▶ Run app to run lsn_20_2_6.Main. Look at the two formats in snippet_1 and `2022-04-05T08:05:03` in snippet_3.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1863,11 +1863,11 @@ exercises:
       en: 'Hiding internal structure with member classes'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_21_1_3.ScoreManager）を読み、アプリ実行で lsn_21_1_3.Main_2 を動かします。見るところは 90、85、70、90。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_21_1_3.ScoreManager）を読み、▶ アプリ実行で lsn_21_1_3.Main_2 を動かします。見るところは 90、85、70、90。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_21_1_3.ScoreManager), then press Run app to run lsn_21_1_3.Main_2. Look at 90, 85, 70 and 90.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_21_1_3.ScoreManager), then press ▶ Run app to run lsn_21_1_3.Main_2. Look at 90, 85, 70 and 90.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1883,11 +1883,11 @@ exercises:
       en: 'Anonymous classes and closures'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_21_1_5.Main_3）を読み、アプリ実行で lsn_21_1_5.Main_3 を動かします。見るところは 100 + 30 + 10 の 140。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_21_1_5.Main_3）を読み、▶ アプリ実行で lsn_21_1_5.Main_3 を動かします。見るところは 100 + 30 + 10 の 140。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_21_1_5.Main_3), then press Run app to run lsn_21_1_5.Main_3. Look at 140, from 100 + 30 + 10.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_21_1_5.Main_3), then press ▶ Run app to run lsn_21_1_5.Main_3. Look at 140, from 100 + 30 + 10.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1903,11 +1903,11 @@ exercises:
       en: 'How null gets in and null checks'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_21_2_1.Main）を読み、アプリ実行で lsn_21_2_1.Main を動かします。見るところは `nullCheck1` の true と、続く `nullCheck2` の `NullPointerException`（わざと例外で終わります）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_21_2_1.Main）を読み、▶ アプリ実行で lsn_21_2_1.Main を動かします。見るところは `nullCheck1` の true と、続く `nullCheck2` の `NullPointerException`（わざと例外で終わります）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_21_2_1.Main), then press Run app to run lsn_21_2_1.Main. Look at true from `nullCheck1` and the `NullPointerException` from `nullCheck2` (it ends with an exception on purpose).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_21_2_1.Main), then press ▶ Run app to run lsn_21_2_1.Main. Look at true from `nullCheck1` and the `NullPointerException` from `nullCheck2` (it ends with an exception on purpose).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1923,11 +1923,11 @@ exercises:
       en: 'Designing return values and arguments with Optional'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_21_2_2.PersonDBSearcher）を読み、アプリ実行で lsn_21_2_2.Main を動かします。見るところは snippet_1 の empty と snippet_2 の既定の値。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_21_2_2.PersonDBSearcher）を読み、▶ アプリ実行で lsn_21_2_2.Main を動かします。見るところは snippet_1 の empty と snippet_2 の既定の値。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_21_2_2.PersonDBSearcher), then press Run app to run lsn_21_2_2.Main. Look at empty in snippet_1 and the default value in snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_21_2_2.PersonDBSearcher), then press ▶ Run app to run lsn_21_2_2.Main. Look at empty in snippet_1 and the default value in snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1943,11 +1943,11 @@ exercises:
       en: 'The System class and the runtime environment'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_21_3_1.Main）を読み、アプリ実行で lsn_21_3_1.Main を動かします。見るところは snippet_1 の WHITE と snippet_2 のホームディレクトリ。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_21_3_1.Main）を読み、▶ アプリ実行で lsn_21_3_1.Main を動かします。見るところは snippet_1 の WHITE と snippet_2 のホームディレクトリ。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_21_3_1.Main), then press Run app to run lsn_21_3_1.Main. Look at WHITE in snippet_1 and the home directory in snippet_2.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_21_3_1.Main), then press ▶ Run app to run lsn_21_3_1.Main. Look at WHITE in snippet_1 and the home directory in snippet_2.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1963,11 +1963,11 @@ exercises:
       en: 'Externalizing values with property files'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（src/MyResource.properties、lsn_21_3_2.Main）を読み、アプリ実行で lsn_21_3_2.Main を動かします。見るところは `アリス, 25, 中央区 1-1-1` が 2 回。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（src/MyResource.properties、lsn_21_3_2.Main）を読み、▶ アプリ実行で lsn_21_3_2.Main を動かします。見るところは `アリス, 25, 中央区 1-1-1` が 2 回。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (src/MyResource.properties, lsn_21_3_2.Main), then press Run app to run lsn_21_3_2.Main. Look at `アリス, 25, 中央区 1-1-1` printed twice.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (src/MyResource.properties, lsn_21_3_2.Main), then press ▶ Run app to run lsn_21_3_2.Main. Look at `アリス, 25, 中央区 1-1-1` printed twice.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -1983,11 +1983,11 @@ exercises:
       en: 'Internationalization'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_21_3_3.Main）を読み、アプリ実行で lsn_21_3_3.Main を動かします。見るところは snippet_5 の ￥10,000、$10,000.00、£10,000.00。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_21_3_3.Main）を読み、▶ アプリ実行で lsn_21_3_3.Main を動かします。見るところは snippet_5 の ￥10,000、$10,000.00、£10,000.00。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_21_3_3.Main), then press Run app to run lsn_21_3_3.Main. Look at ￥10,000, $10,000.00 and £10,000.00 in snippet_5.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_21_3_3.Main), then press ▶ Run app to run lsn_21_3_3.Main. Look at ￥10,000, $10,000.00 and £10,000.00 in snippet_5.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -2003,11 +2003,11 @@ exercises:
       en: 'The java command and passing values to a program'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_21_4_1.Hello）を読み、アプリ実行で lsn_21_4_1.Main_JVM_Param を動かします。見るところは `program.mode => null`。`lsn_21_4_1.Hello` は引数なしだと `ArrayIndexOutOfBoundsException` です。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_21_4_1.Hello）を読み、▶ アプリ実行で lsn_21_4_1.Main_JVM_Param を動かします。見るところは `program.mode => null`。`lsn_21_4_1.Hello` は引数なしだと `ArrayIndexOutOfBoundsException` です。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_21_4_1.Hello), then press Run app to run lsn_21_4_1.Main_JVM_Param. Look at `program.mode => null`; `lsn_21_4_1.Hello` without arguments throws `ArrayIndexOutOfBoundsException`.
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_21_4_1.Hello), then press ▶ Run app to run lsn_21_4_1.Main_JVM_Param. Look at `program.mode => null`; `lsn_21_4_1.Hello` without arguments throws `ArrayIndexOutOfBoundsException`.
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -2023,10 +2023,10 @@ exercises:
       en: 'Documenting API contracts with Javadoc'
     descriptions:
       ja: >-
-        原稿の出典行のクラス（lsn_21_4_3.JavadocSample）を読み、アプリ実行で lsn_21_4_1.Main_JVM_Param を動かします。見るところは `lsn_21_4_3.JavadocSample` のコメントとタグ（main がないので、ボタンは `Main_JVM_Param` を動かします）。
-        ほかの main は .java を開いてエディタの右上の ファイル実行で動かします。
+        原稿の出典行のクラス（lsn_21_4_3.JavadocSample）を読み、▶ アプリ実行で lsn_21_4_1.Main_JVM_Param を動かします。見るところは `lsn_21_4_3.JavadocSample` のコメントとタグ（main がないので、ボタンは `Main_JVM_Param` を動かします）。
+        ほかの main は .java を開いてエディタの右上の ▶ 実行で動かします。
       en: >-
-        Read the classes in the source lines of the text (lsn_21_4_3.JavadocSample), then press Run app to run lsn_21_4_1.Main_JVM_Param. Look at the comments and tags in `lsn_21_4_3.JavadocSample` (it has no main, so the button runs `Main_JVM_Param`).
-        To run another main, open the .java file and press Run file at the top right of the editor.
+        Read the classes in the source lines of the text (lsn_21_4_3.JavadocSample), then press ▶ Run app to run lsn_21_4_1.Main_JVM_Param. Look at the comments and tags in `lsn_21_4_3.JavadocSample` (it has no main, so the button runs `Main_JVM_Param`).
+        To run another main, open the .java file and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md

@@ -58,7 +58,7 @@ tasks.register('installPlaywright', JavaExec) {
 
 // 元のサンプルは test から @Tag("e2e") を除外し、別タスク e2eTest（installPlaywright に依存）で
 // E2E を流していた。この章のテスト（EmployeePlaywrightTest）はすべて @Tag("e2e") なので、
-// Codinable でテストクラスを ファイル実行したとき（test タスク）に走るよう e2eTest の設定を test へ移している
+// Codinable でテストクラスを ▶ 実行したとき（test タスク）に走るよう e2eTest の設定を test へ移している
 // アプリはテストがランダムポートで自前で起動するので、別に bootRun しておく必要はない
 tasks.named('test') {
     dependsOn tasks.named('installPlaywright')
@@ -75,7 +75,7 @@ tasks.named('test') {
 }
 
 // 保存した Trace（build/reports/playwright/<テストメソッド名>.zip）を
-// テストと同じバージョンの Trace Viewer で開く（scripts/01_show_trace.sh を ファイル実行。gradlew.bat showPlaywrightTrace）
+// テストと同じバージョンの Trace Viewer で開く（scripts/01_show_trace.sh を ▶ 実行。gradlew.bat showPlaywrightTrace）
 tasks.register('showPlaywrightTrace', JavaExec) {
     group = 'playwright'
     description = 'Open a saved trace with the same Playwright version as the tests'

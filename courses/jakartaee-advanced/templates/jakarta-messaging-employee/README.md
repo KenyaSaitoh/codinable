@@ -6,10 +6,10 @@
 
 | 場所 | 中身 | 動かし方 |
 |---|---|---|
-| このフォルダ直下 | 送信側（`http://localhost:8080/jakarta-messaging-employee/api`） | アプリ実行 |
-| `consumer/` | 受信側（`http://localhost:8080/jakarta-messaging-employee-consumer/api/events` が受信履歴） | アプリ実行で同じ Payara Server に一緒にデプロイ |
+| このフォルダ直下 | 送信側（`http://localhost:8080/jakarta-messaging-employee/api`） | ▶ アプリ実行 |
+| `consumer/` | 受信側（`http://localhost:8080/jakarta-messaging-employee-consumer/api/events` が受信履歴） | ▶ アプリ実行で同じ Payara Server に一緒にデプロイ |
 
-DB は同梱の HSQLDB（インメモリ）で、送信側は EMPLOYEE、受信側は RECEIVED_EVENT を使います。アプリ実行のたびに初期状態に戻ります。
+DB は同梱の HSQLDB（インメモリ）で、送信側は EMPLOYEE、受信側は RECEIVED_EVENT を使います。▶ アプリ実行のたびに初期状態に戻ります。
 
 ## 見るファイル
 
@@ -23,8 +23,8 @@ DB は同梱の HSQLDB（インメモリ）で、送信側は EMPLOYEE、受信�
 
 ## 動かし方
 
-1. ツールバーの アプリ実行を押す。受信側、送信側の順にデプロイされ、プレビューに受信履歴（最初は空の `[]`）が開く
-2. `curl/` のスクリプトを開いて、エディタの右上の ファイル実行で順に流す
+1. ツールバーの ▶ アプリ実行を押す。受信側、送信側の順にデプロイされ、プレビューに受信履歴（最初は空の `[]`）が開く
+2. `curl/` のスクリプトを開いて、エディタの右上の ▶ 実行で順に流す
    - `01_send_event.sh` … イベントを送ると 202。受信側の履歴に同じ `eventId` が記録される
    - `02_register.sh` … 給与が範囲内の登録は 201 で、イベントも届く。範囲外は 400 で、登録もイベントも取り消される
    - `03_duplicate.sh` … 同じ `eventId` を 2 回送っても、受信側の記録は 1 件だけ

@@ -17,7 +17,7 @@ Spring MVC + Thymeleaf でサーバーが HTML を生成する書店アプリで
 
 ## Codinable での動かし方
 
-1. ツールバーの **アプリ実行** を押す
+1. ツールバーの **▶ アプリ実行** を押す
    → 書店が `http://localhost:8080` で起動し、プレビュータブが開く。
    ログイン・顧客登録で呼ぶ Customer Hub（`customer-hub/`、ポート 8081）も一緒に起動する
    （`codinable.services.json` に書いてある。出力には `[customer-hub]` を付けて出る）
@@ -34,7 +34,7 @@ Customer Hub は「停止」では止まりません。出力タブの行の右�
 
 ## テスト
 
-`src/test/java/pro/kensait/leafbooks/` のテストクラスを開いて、エディタの右上の ファイル実行で流してください。
+`src/test/java/pro/kensait/leafbooks/` のテストクラスを開いて、エディタの右上の ▶ 実行で流してください。
 Controller（MockMvc。例: `web/order/OrderControllerTest.java`）・Service（Mockito。例: `service/order/OrderServiceTest.java`）・
 Repository（`@DataJpaTest`。例: `repository/StockRepositoryTest.java`）のテストがあります。
 JPA の演習では `StockRepositoryTest.java` の「バージョンが一致しない場合、更新が失敗すること」を見ます。
@@ -43,8 +43,8 @@ JPA の演習では `StockRepositoryTest.java` の「バージョンが一致し
 
 HSQLDB のインメモリで動かしています。起動のたびに `sql/hsqldb/` の
 `2_BOOKSTORE_DDL.sql` と `3_BOOKSTORE_DML.sql` から作り直されるので、
-アプリ実行のたびに初期データから始まります（注文や在庫の変更は残りません）。
-Customer Hub も アプリ実行のたびに起動し直すので、登録した顧客も初期データに戻ります。
+▶ アプリ実行のたびに初期データから始まります（注文や在庫の変更は残りません）。
+Customer Hub も ▶ アプリ実行のたびに起動し直すので、登録した顧客も初期データに戻ります。
 元の講座のように HSQLDB サーバーを起動する必要はありません。
 テーブル構成と初期データは下の「この演習で使うテーブル」にまとめてあります。
 

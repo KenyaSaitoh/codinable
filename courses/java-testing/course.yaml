@@ -3,7 +3,7 @@
 #
 #  雛形のフォルダー名は原稿の出典行のプロジェクト名（21_junit、31_mockito など）と同じにしてある
 #  テスト対象の Spring Boot アプリ（spring-rest-*、spring-bookstore-*）は、テストのプロジェクトのサブフォルダーに置き、
-#  アプリ実行のときに codinable.services.json の processes で起動する
+#  ▶ アプリ実行のときに codinable.services.json の processes で起動する
 #  run の gradle:waitFor* は、そのアプリのポートが開くまで待って案内を出すだけのタスク
 #  Docker が要る演習（Testcontainers）と PIT は置かない
 #
@@ -23,14 +23,14 @@ descriptions:
     JUnit と Mockito による単体テスト、DBUnit と Database Rider によるデータベーステスト、Spring Boot Test、
     RestAssured と WireMock による REST API のテスト、Selenium（Selenide）と Playwright による UI テスト、
     Gatling による負荷テストを、AI が書いたテストを人が確かめる視点で扱う講座の演習です。
-    テストクラスを開いてエディタの右上の ファイル実行で流し、テスト結果とカバレッジを確かめます。
-    テスト対象のアプリが要る演習は、先に アプリ実行で起動します。
+    テストクラスを開いてエディタの右上の ▶ 実行で流し、テスト結果とカバレッジを確かめます。
+    テスト対象のアプリが要る演習は、先に ▶ アプリ実行で起動します。
   en: >-
     Exercises for the course on unit tests with JUnit and Mockito, database tests with DBUnit and Database Rider,
     Spring Boot Test, REST API tests with RestAssured and WireMock, UI tests with Selenium (Selenide) and Playwright,
     and load tests with Gatling, from the viewpoint of people verifying tests written by AI.
-    Open a test class and press Run file at the top right of the editor to see the results and coverage.
-    Exercises that need an application under test start it first with Run app.
+    Open a test class and press ▶ Run at the top right of the editor to see the results and coverage.
+    Exercises that need an application under test start it first with ▶ Run app.
 
 # チャプター名（演習一覧の見出し）
 chapters:
@@ -93,9 +93,9 @@ exercises:
       en: 'Reading branches for delivery fee tests'
     descriptions:
       ja: >-
-        CustomerService2 の配送料の分岐と、CustomerService2Test を読みます。CustomerService2Test.java を開いて、エディタの右上の ファイル実行で流してください。命令網羅・分岐網羅・条件網羅のどれを満たすかを確かめてください。
+        CustomerService2 の配送料の分岐と、CustomerService2Test を読みます。CustomerService2Test.java を開いて、エディタの右上の ▶ 実行で流してください。命令網羅・分岐網羅・条件網羅のどれを満たすかを確かめてください。
       en: >-
-        Read the branches of CustomerService2 and CustomerService2Test. Open CustomerService2Test.java and press Run file at the top right of the editor. Check which coverage criteria it meets.
+        Read the branches of CustomerService2 and CustomerService2Test. Open CustomerService2Test.java and press ▶ Run at the top right of the editor. Check which coverage criteria it meets.
     openFiles:
       - README.md
 
@@ -111,9 +111,9 @@ exercises:
       en: 'Test viewpoints for the special calculator'
     descriptions:
       ja: >-
-        仕様どおりに例外を送出する SpecialCalculator を読み、テスト観点の表から AI に SpecialCalculatorTest を書かせます。できたテストを開いて、エディタの右上の ファイル実行で流してください。
+        仕様どおりに例外を送出する SpecialCalculator を読み、テスト観点の表から AI に SpecialCalculatorTest を書かせます。できたテストを開いて、エディタの右上の ▶ 実行で流してください。
       en: >-
-        Read SpecialCalculator and have the AI write SpecialCalculatorTest from the viewpoint table. Open the new test and press Run file at the top right of the editor.
+        Read SpecialCalculator and have the AI write SpecialCalculatorTest from the viewpoint table. Open the new test and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -129,9 +129,9 @@ exercises:
       en: 'State-based verification'
     descriptions:
       ja: >-
-        StatefulCalcTest.java を開いて、エディタの右上の ファイル実行で流してください。戻り値のない add() の結果を getAnswer() で取り出して比べています。
+        StatefulCalcTest.java を開いて、エディタの右上の ▶ 実行で流してください。戻り値のない add() の結果を getAnswer() で取り出して比べています。
       en: >-
-        Open StatefulCalcTest.java and press Run file at the top right of the editor. The result of add(), which returns nothing, is read with getAnswer().
+        Open StatefulCalcTest.java and press ▶ Run at the top right of the editor. The result of add(), which returns nothing, is read with getAnswer().
     openFiles:
       - README.md
 
@@ -147,9 +147,9 @@ exercises:
       en: 'Behavior verification with a mock'
     descriptions:
       ja: >-
-        mock/verify/VerifyTest.java を開いて、エディタの右上の ファイル実行で流してください。MapUtil が Map の get() を呼んだ回数を verify() で確かめています。
+        mock/verify/VerifyTest.java を開いて、エディタの右上の ▶ 実行で流してください。MapUtil が Map の get() を呼んだ回数を verify() で確かめています。
       en: >-
-        Open mock/verify/VerifyTest.java and press Run file at the top right of the editor. verify() checks how many times MapUtil called get() on the map.
+        Open mock/verify/VerifyTest.java and press ▶ Run at the top right of the editor. verify() checks how many times MapUtil called get() on the map.
     openFiles:
       - README.md
 
@@ -165,9 +165,9 @@ exercises:
       en: 'The three phases of a test method'
     descriptions:
       ja: >-
-        calc/normal/CalculatorTest_1.java を開いて、エディタの右上の ファイル実行で流してください。準備・実行・検証の 3 つのフェーズとテスト結果の表示名を確かめてください。
+        calc/normal/CalculatorTest_1.java を開いて、エディタの右上の ▶ 実行で流してください。準備・実行・検証の 3 つのフェーズとテスト結果の表示名を確かめてください。
       en: >-
-        Open calc/normal/CalculatorTest_1.java and press Run file at the top right of the editor. Check the three phases and the display name in the results.
+        Open calc/normal/CalculatorTest_1.java and press ▶ Run at the top right of the editor. Check the three phases and the display name in the results.
     openFiles:
       - README.md
 
@@ -183,9 +183,9 @@ exercises:
       en: 'Assertions and expected values'
     descriptions:
       ja: >-
-        assertion1/AssertEqualsTest.java を開いて、エディタの右上の ファイル実行で流してください。test_Equals_WithinDelta の許容誤差 1.0 が何を見逃すかを考えてください。
+        assertion1/AssertEqualsTest.java を開いて、エディタの右上の ▶ 実行で流してください。test_Equals_WithinDelta の許容誤差 1.0 が何を見逃すかを考えてください。
       en: >-
-        Open assertion1/AssertEqualsTest.java and press Run file at the top right of the editor. Consider what the delta of 1.0 in test_Equals_WithinDelta lets through.
+        Open assertion1/AssertEqualsTest.java and press ▶ Run at the top right of the editor. Consider what the delta of 1.0 in test_Equals_WithinDelta lets through.
     openFiles:
       - README.md
 
@@ -201,9 +201,9 @@ exercises:
       en: 'Lifecycle and test fixtures'
     descriptions:
       ja: >-
-        calc/normal/CalculatorTest_2.java と lifecycle/NestedLifeCycleTest.java をそれぞれ開いて、エディタの右上の ファイル実行で流してください。実行結果の出力で呼び出しの順序を確かめられます。
+        calc/normal/CalculatorTest_2.java と lifecycle/NestedLifeCycleTest.java をそれぞれ開いて、エディタの右上の ▶ 実行で流してください。実行結果の出力で呼び出しの順序を確かめられます。
       en: >-
-        Open calc/normal/CalculatorTest_2.java and lifecycle/NestedLifeCycleTest.java in turn and press Run file at the top right of the editor. The output shows the call order.
+        Open calc/normal/CalculatorTest_2.java and lifecycle/NestedLifeCycleTest.java in turn and press ▶ Run at the top right of the editor. The output shows the call order.
     openFiles:
       - README.md
 
@@ -219,9 +219,9 @@ exercises:
       en: 'Grouping preconditions with nested classes'
     descriptions:
       ja: >-
-        cart/CartNestedTest.java を開いて、エディタの右上の ファイル実行で流してください。テスト結果に、前提条件の節と振る舞いの葉が階層で並びます。
+        cart/CartNestedTest.java を開いて、エディタの右上の ▶ 実行で流してください。テスト結果に、前提条件の節と振る舞いの葉が階層で並びます。
       en: >-
-        Open cart/CartNestedTest.java and press Run file at the top right of the editor. The results show preconditions and behaviors as a tree.
+        Open cart/CartNestedTest.java and press ▶ Run at the top right of the editor. The results show preconditions and behaviors as a tree.
     openFiles:
       - README.md
 
@@ -237,9 +237,9 @@ exercises:
       en: 'Parameterized tests and boundaries'
     descriptions:
       ja: >-
-        fee/FeeParameterTest_2.java と fee/FeeParameterTest_3.java をそれぞれ開いて、エディタの右上の ファイル実行で流してください。parameter.csv の 4 行が別々のケースとして並びます。
+        fee/FeeParameterTest_2.java と fee/FeeParameterTest_3.java をそれぞれ開いて、エディタの右上の ▶ 実行で流してください。parameter.csv の 4 行が別々のケースとして並びます。
       en: >-
-        Open fee/FeeParameterTest_2.java and fee/FeeParameterTest_3.java in turn and press Run file at the top right of the editor. Each row of parameter.csv appears as a case.
+        Open fee/FeeParameterTest_2.java and fee/FeeParameterTest_3.java in turn and press ▶ Run at the top right of the editor. Each row of parameter.csv appears as a case.
     openFiles:
       - README.md
 
@@ -255,9 +255,9 @@ exercises:
       en: 'Testing exceptions'
     descriptions:
       ja: >-
-        calc/exception/CalcExceptionTest_1.java と CalcExceptionTest_2.java をそれぞれ開いて、エディタの右上の ファイル実行で流してください。try-catch と fail() の形と、assertThrows() の形を比べます。
+        calc/exception/CalcExceptionTest_1.java と CalcExceptionTest_2.java をそれぞれ開いて、エディタの右上の ▶ 実行で流してください。try-catch と fail() の形と、assertThrows() の形を比べます。
       en: >-
-        Open calc/exception/CalcExceptionTest_1.java and CalcExceptionTest_2.java in turn and press Run file at the top right of the editor. Compare try-catch with fail() and assertThrows().
+        Open calc/exception/CalcExceptionTest_1.java and CalcExceptionTest_2.java in turn and press ▶ Run at the top right of the editor. Compare try-catch with fail() and assertThrows().
     openFiles:
       - README.md
 
@@ -273,9 +273,9 @@ exercises:
       en: 'Timeouts and assumptions'
     descriptions:
       ja: >-
-        assertion4/AssumptionTest.java を開いて、エディタの右上の ファイル実行で流してください。assertion4/TimeoutTest.java は @Disabled なので、開いて流すとスキップとして出ます。
+        assertion4/AssumptionTest.java を開いて、エディタの右上の ▶ 実行で流してください。assertion4/TimeoutTest.java は @Disabled なので、開いて流すとスキップとして出ます。
       en: >-
-        Open assertion4/AssumptionTest.java and press Run file at the top right of the editor. assertion4/TimeoutTest.java is @Disabled, so it shows as skipped.
+        Open assertion4/AssumptionTest.java and press ▶ Run at the top right of the editor. assertion4/TimeoutTest.java is @Disabled, so it shows as skipped.
     openFiles:
       - README.md
 
@@ -291,9 +291,9 @@ exercises:
       en: 'The shipping service specification'
     descriptions:
       ja: >-
-        ShippingService の割引の分岐を読み、ShippingServiceMockingTest.java を開いて、エディタの右上の ファイル実行で流してください。ゴールド会員とダイヤモンド会員の結果を仕様と比べてください。
+        ShippingService の割引の分岐を読み、ShippingServiceMockingTest.java を開いて、エディタの右上の ▶ 実行で流してください。ゴールド会員とダイヤモンド会員の結果を仕様と比べてください。
       en: >-
-        Read the discount branches of ShippingService, then open ShippingServiceMockingTest.java and press Run file at the top right of the editor. Compare the gold and diamond results with the specification.
+        Read the discount branches of ShippingService, then open ShippingServiceMockingTest.java and press ▶ Run at the top right of the editor. Compare the gold and diamond results with the specification.
     openFiles:
       - README.md
 
@@ -309,9 +309,9 @@ exercises:
       en: 'Dependency injection and test scope'
     descriptions:
       ja: >-
-        ShippingService のコンストラクタが CostCalculatorIF を受け取る形を読み、本物の CostCalculator を注入する ShippingServiceTest.java を開いて、エディタの右上の ファイル実行で流してください。
+        ShippingService のコンストラクタが CostCalculatorIF を受け取る形を読み、本物の CostCalculator を注入する ShippingServiceTest.java を開いて、エディタの右上の ▶ 実行で流してください。
       en: >-
-        Read how the ShippingService constructor receives CostCalculatorIF, then open ShippingServiceTest.java, which injects the real CostCalculator, and press Run file at the top right of the editor.
+        Read how the ShippingService constructor receives CostCalculatorIF, then open ShippingServiceTest.java, which injects the real CostCalculator, and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -327,9 +327,9 @@ exercises:
       en: 'Replacing dependencies with a test double'
     descriptions:
       ja: >-
-        src/test/java の MockCostCalculator と、それを渡す ShippingServiceMockingTest を読みます。ShippingServiceMockingTest.java を開いて、エディタの右上の ファイル実行で流してください。
+        src/test/java の MockCostCalculator と、それを渡す ShippingServiceMockingTest を読みます。ShippingServiceMockingTest.java を開いて、エディタの右上の ▶ 実行で流してください。
       en: >-
-        Read MockCostCalculator in src/test/java and ShippingServiceMockingTest, which passes it in. Open ShippingServiceMockingTest.java and press Run file at the top right of the editor.
+        Read MockCostCalculator in src/test/java and ShippingServiceMockingTest, which passes it in. Open ShippingServiceMockingTest.java and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -345,9 +345,9 @@ exercises:
       en: 'Spotting hard-to-test dependencies'
     descriptions:
       ja: >-
-        Shipping の equals() が注文日時を比べないことと、ShippingService の LocalDateTime.now() と ShippingDAO.save() を読みます。ShippingServiceMockingTest.java を開いて、エディタの右上の ファイル実行で流してください。
+        Shipping の equals() が注文日時を比べないことと、ShippingService の LocalDateTime.now() と ShippingDAO.save() を読みます。ShippingServiceMockingTest.java を開いて、エディタの右上の ▶ 実行で流してください。
       en: >-
-        Read Shipping.equals(), which ignores the order date, and LocalDateTime.now() and ShippingDAO.save() in ShippingService. Open ShippingServiceMockingTest.java and press Run file at the top right of the editor.
+        Read Shipping.equals(), which ignores the order date, and LocalDateTime.now() and ShippingDAO.save() in ShippingService. Open ShippingServiceMockingTest.java and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -363,9 +363,9 @@ exercises:
       en: 'Grouping tests'
     descriptions:
       ja: >-
-        build.gradle の test と integrationTest を読み、scripts/01_build_test.sh と scripts/02_integration_test.sh を開いて、エディタの右上の ファイル実行で流してください。どちらに何が含まれるかを結果で確かめます。
+        build.gradle の test と integrationTest を読み、scripts/01_build_test.sh と scripts/02_integration_test.sh を開いて、エディタの右上の ▶ 実行で流してください。どちらに何が含まれるかを結果で確かめます。
       en: >-
-        Read test and integrationTest in build.gradle, then open scripts/01_build_test.sh and scripts/02_integration_test.sh and press Run file at the top right of the editor. The output shows what each one includes.
+        Read test and integrationTest in build.gradle, then open scripts/01_build_test.sh and scripts/02_integration_test.sh and press ▶ Run at the top right of the editor. The output shows what each one includes.
     openFiles:
       - README.md
 
@@ -381,9 +381,9 @@ exercises:
       en: 'Measuring coverage with JaCoCo'
     descriptions:
       ja: >-
-        ShippingServiceMockingTest.java を開いて、エディタの右上の ファイル実行で流してください。テスト結果のカバレッジと、ShippingService.java の行の色を確かめてください。HTML レポートは scripts/01_jacoco_report.sh を ファイル実行すると作られます。
+        ShippingServiceMockingTest.java を開いて、エディタの右上の ▶ 実行で流してください。テスト結果のカバレッジと、ShippingService.java の行の色を確かめてください。HTML レポートは scripts/01_jacoco_report.sh を ▶ 実行すると作られます。
       en: >-
-        Open ShippingServiceMockingTest.java and press Run file at the top right of the editor. Check the coverage and the line colors in ShippingService.java. Run scripts/01_jacoco_report.sh to create the HTML report.
+        Open ShippingServiceMockingTest.java and press ▶ Run at the top right of the editor. Check the coverage and the line colors in ShippingService.java. Run scripts/01_jacoco_report.sh to create the HTML report.
     openFiles:
       - README.md
 
@@ -399,9 +399,9 @@ exercises:
       en: 'Stubbing behavior'
     descriptions:
       ja: >-
-        mock/behavior/BasicMockTest_1.java、calc/normal/CalcTest_ArgMatchers.java、calc/normal/CalcTest_DynamicAnswer.java をそれぞれ開いて、エディタの右上の ファイル実行で流してください。
+        mock/behavior/BasicMockTest_1.java、calc/normal/CalcTest_ArgMatchers.java、calc/normal/CalcTest_DynamicAnswer.java をそれぞれ開いて、エディタの右上の ▶ 実行で流してください。
       en: >-
-        Open mock/behavior/BasicMockTest_1.java, calc/normal/CalcTest_ArgMatchers.java and calc/normal/CalcTest_DynamicAnswer.java in turn and press Run file at the top right of the editor.
+        Open mock/behavior/BasicMockTest_1.java, calc/normal/CalcTest_ArgMatchers.java and calc/normal/CalcTest_DynamicAnswer.java in turn and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -417,9 +417,9 @@ exercises:
       en: 'Verifying calls'
     descriptions:
       ja: >-
-        mock/verify/VerifyTest.java を開いて、エディタの右上の ファイル実行で流してください。times()・atMost()・never() の違いをテストメソッドごとに確かめてください。
+        mock/verify/VerifyTest.java を開いて、エディタの右上の ▶ 実行で流してください。times()・atMost()・never() の違いをテストメソッドごとに確かめてください。
       en: >-
-        Open mock/verify/VerifyTest.java and press Run file at the top right of the editor. Compare times(), atMost() and never() method by method.
+        Open mock/verify/VerifyTest.java and press ▶ Run at the top right of the editor. Compare times(), atMost() and never() method by method.
     openFiles:
       - README.md
 
@@ -435,9 +435,9 @@ exercises:
       en: 'Spies'
     descriptions:
       ja: >-
-        spy/DoNothingTest.java を開いて、エディタの右上の ファイル実行で流してください。doNothing() で clear() の副作用を止めても、呼び出しは verify() で確かめられます。
+        spy/DoNothingTest.java を開いて、エディタの右上の ▶ 実行で流してください。doNothing() で clear() の副作用を止めても、呼び出しは verify() で確かめられます。
       en: >-
-        Open spy/DoNothingTest.java and press Run file at the top right of the editor. doNothing() stops the side effect of clear(), and verify() still sees the call.
+        Open spy/DoNothingTest.java and press ▶ Run at the top right of the editor. doNothing() stops the side effect of clear(), and verify() still sees the call.
     openFiles:
       - README.md
 
@@ -453,9 +453,9 @@ exercises:
       en: 'Applying Mockito and over-mocking'
     descriptions:
       ja: >-
-        ShippingServiceTest_1.java と ShippingServiceTest_2.java をそれぞれ開いて、エディタの右上の ファイル実行で流してください。_2 は Baggage と Client までモックにしています。
+        ShippingServiceTest_1.java と ShippingServiceTest_2.java をそれぞれ開いて、エディタの右上の ▶ 実行で流してください。_2 は Baggage と Client までモックにしています。
       en: >-
-        Open ShippingServiceTest_1.java and ShippingServiceTest_2.java in turn and press Run file at the top right of the editor. _2 also mocks Baggage and Client.
+        Open ShippingServiceTest_1.java and ShippingServiceTest_2.java in turn and press ▶ Run at the top right of the editor. _2 also mocks Baggage and Client.
     openFiles:
       - README.md
 
@@ -471,9 +471,9 @@ exercises:
       en: 'DBUnit structure and setup'
     descriptions:
       ja: >-
-        EmployeeDAOTest.java と EmployeeDAOExtensionTest.java をそれぞれ開いて、エディタの右上の ファイル実行で流してください。INIT_DATA/EMPLOYEE.csv の 5 件が各テストの前に入ります。
+        EmployeeDAOTest.java と EmployeeDAOExtensionTest.java をそれぞれ開いて、エディタの右上の ▶ 実行で流してください。INIT_DATA/EMPLOYEE.csv の 5 件が各テストの前に入ります。
       en: >-
-        Open EmployeeDAOTest.java and EmployeeDAOExtensionTest.java in turn and press Run file at the top right of the editor. The five rows of INIT_DATA/EMPLOYEE.csv are loaded before each test.
+        Open EmployeeDAOTest.java and EmployeeDAOExtensionTest.java in turn and press ▶ Run at the top right of the editor. The five rows of INIT_DATA/EMPLOYEE.csv are loaded before each test.
     openFiles:
       - README.md
 
@@ -489,9 +489,9 @@ exercises:
       en: 'CRUD tests and expected tables'
     descriptions:
       ja: >-
-        EmployeeDAOTest.java と EmployeeDAOFilterSortTest.java をそれぞれ開いて、エディタの右上の ファイル実行で流してください。EXPECTED_DATA_3/EMPLOYEE.csv の値を書き換えると、どの行・列の差として出るかを確かめられます。
+        EmployeeDAOTest.java と EmployeeDAOFilterSortTest.java をそれぞれ開いて、エディタの右上の ▶ 実行で流してください。EXPECTED_DATA_3/EMPLOYEE.csv の値を書き換えると、どの行・列の差として出るかを確かめられます。
       en: >-
-        Open EmployeeDAOTest.java and EmployeeDAOFilterSortTest.java in turn and press Run file at the top right of the editor. Change a value in EXPECTED_DATA_3/EMPLOYEE.csv to see how a difference is reported.
+        Open EmployeeDAOTest.java and EmployeeDAOFilterSortTest.java in turn and press ▶ Run at the top right of the editor. Change a value in EXPECTED_DATA_3/EMPLOYEE.csv to see how a difference is reported.
     openFiles:
       - README.md
 
@@ -507,9 +507,9 @@ exercises:
       en: 'Combining DBUnit and Mockito'
     descriptions:
       ja: >-
-        ShippingServiceDBTest.java を開いて、エディタの右上の ファイル実行で流してください。料金計算をモックで固定し、結果を SHIPPING テーブルの中身で確かめます。
+        ShippingServiceDBTest.java を開いて、エディタの右上の ▶ 実行で流してください。料金計算をモックで固定し、結果を SHIPPING テーブルの中身で確かめます。
       en: >-
-        Open ShippingServiceDBTest.java and press Run file at the top right of the editor. The cost calculation is mocked and the result is checked in the SHIPPING table.
+        Open ShippingServiceDBTest.java and press ▶ Run at the top right of the editor. The cost calculation is mocked and the result is checked in the SHIPPING table.
     openFiles:
       - README.md
 
@@ -525,9 +525,9 @@ exercises:
       en: 'How Database Rider maps to DBUnit'
     descriptions:
       ja: >-
-        build.gradle の依存関係と dbunit.yml を読み、EmployeeDAOTest.java を開いて、エディタの右上の ファイル実行で流してください。
+        build.gradle の依存関係と dbunit.yml を読み、EmployeeDAOTest.java を開いて、エディタの右上の ▶ 実行で流してください。
       en: >-
-        Read the dependencies in build.gradle and dbunit.yml, then open EmployeeDAOTest.java and press Run file at the top right of the editor.
+        Read the dependencies in build.gradle and dbunit.yml, then open EmployeeDAOTest.java and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -543,9 +543,9 @@ exercises:
       en: 'YAML datasets and declarative tests'
     descriptions:
       ja: >-
-        datasets/init.yml と datasets/expected_update.yml を読み、EmployeeDAOTest.java を開いて、エディタの右上の ファイル実行で流してください。expected_update.yml の値を書き換えて、どの比較で失敗するかを確かめてください。
+        datasets/init.yml と datasets/expected_update.yml を読み、EmployeeDAOTest.java を開いて、エディタの右上の ▶ 実行で流してください。expected_update.yml の値を書き換えて、どの比較で失敗するかを確かめてください。
       en: >-
-        Read datasets/init.yml and datasets/expected_update.yml, then open EmployeeDAOTest.java and press Run file at the top right of the editor. Change a value in expected_update.yml and see which comparison fails.
+        Read datasets/init.yml and datasets/expected_update.yml, then open EmployeeDAOTest.java and press ▶ Run at the top right of the editor. Change a value in expected_update.yml and see which comparison fails.
     openFiles:
       - README.md
 
@@ -561,9 +561,9 @@ exercises:
       en: 'Service tests with @MockitoBean'
     descriptions:
       ja: >-
-        person/service/PersonServiceTest.java を開いて、エディタの右上の ファイル実行で流してください。アプリ実行を押すと、人物管理の画面をプレビューで動かせます。
+        person/service/PersonServiceTest.java を開いて、エディタの右上の ▶ 実行で流してください。▶ アプリ実行を押すと、人物管理の画面をプレビューで動かせます。
       en: >-
-        Open person/service/PersonServiceTest.java and press Run file at the top right of the editor. Press Run app to use the screen in the preview.
+        Open person/service/PersonServiceTest.java and press ▶ Run at the top right of the editor. Press ▶ Run app to use the screen in the preview.
     openFiles:
       - README.md
 
@@ -579,9 +579,9 @@ exercises:
       en: 'Controller tests with MockMvc'
     descriptions:
       ja: >-
-        person/web/PersonControllerTest.java を開いて、エディタの右上の ファイル実行で流してください。ビュー名・モデルのエラー・セッション属性まで確かめています。
+        person/web/PersonControllerTest.java を開いて、エディタの右上の ▶ 実行で流してください。ビュー名・モデルのエラー・セッション属性まで確かめています。
       en: >-
-        Open person/web/PersonControllerTest.java and press Run file at the top right of the editor. View names, model errors and session attributes are checked.
+        Open person/web/PersonControllerTest.java and press ▶ Run at the top right of the editor. View names, model errors and session attributes are checked.
     openFiles:
       - README.md
 
@@ -597,9 +597,9 @@ exercises:
       en: 'Test profiles and properties'
     descriptions:
       ja: >-
-        config/PropertyTest.java と config/ProfileTest.java をそれぞれ開いて、エディタの右上の ファイル実行で流してください。PropertyTest は実行結果に 100 と 200 を出します。
+        config/PropertyTest.java と config/ProfileTest.java をそれぞれ開いて、エディタの右上の ▶ 実行で流してください。PropertyTest は実行結果に 100 と 200 を出します。
       en: >-
-        Open config/PropertyTest.java and config/ProfileTest.java in turn and press Run file at the top right of the editor. PropertyTest prints 100 and 200.
+        Open config/PropertyTest.java and config/ProfileTest.java in turn and press ▶ Run at the top right of the editor. PropertyTest prints 100 and 200.
     openFiles:
       - README.md
 
@@ -615,9 +615,9 @@ exercises:
       en: 'Calling the calc API with Given-When-Then'
     descriptions:
       ja: >-
-        アプリ実行で spring-rest-calc と spring-rest-person を起動してから、起動したまま calc/rest/test/CalcApiTest.java を開いて、エディタの右上の ファイル実行で流してください。
+        ▶ アプリ実行で spring-rest-calc と spring-rest-person を起動してから、起動したまま calc/rest/test/CalcApiTest.java を開いて、エディタの右上の ▶ 実行で流してください。
       en: >-
-        Press Run app to start spring-rest-calc and spring-rest-person. While it runs, open calc/rest/test/CalcApiTest.java and press Run file at the top right of the editor.
+        Press ▶ Run app to start spring-rest-calc and spring-rest-person. While it runs, open calc/rest/test/CalcApiTest.java and press ▶ Run at the top right of the editor.
     openFiles:
       - README.md
 
@@ -633,9 +633,9 @@ exercises:
       en: 'Testing the Person REST API'
     descriptions:
       ja: >-
-        アプリ実行で spring-rest-calc と spring-rest-person を起動してから、起動したまま person/rest/test/PersonApiTest.java を開いて、エディタの右上の ファイル実行で流してください。テストによる変更はサーバーに残るので、アプリ実行で起動し直すと初期データに戻ります。
+        ▶ アプリ実行で spring-rest-calc と spring-rest-person を起動してから、起動したまま person/rest/test/PersonApiTest.java を開いて、エディタの右上の ▶ 実行で流してください。テストによる変更はサーバーに残るので、▶ アプリ実行で起動し直すと初期データに戻ります。
       en: >-
-        Press Run app to start spring-rest-calc and spring-rest-person. While it runs, open person/rest/test/PersonApiTest.java and press Run file at the top right of the editor. Changes stay on the server until you press Run app again.
+        Press ▶ Run app to start spring-rest-calc and spring-rest-person. While it runs, open person/rest/test/PersonApiTest.java and press ▶ Run at the top right of the editor. Changes stay on the server until you press ▶ Run app again.
     openFiles:
       - README.md
 
@@ -651,9 +651,9 @@ exercises:
       en: 'Starting a mock server'
     descriptions:
       ja: >-
-        アプリ実行で calc.rest.test1.WireMockApp を起動してから、curl/01_calc_add1.sh を開いて、エディタの右上の ファイル実行で送ってください。止めるときは出力欄の「停止」を押します。
+        ▶ アプリ実行で calc.rest.test1.WireMockApp を起動してから、curl/01_calc_add1.sh を開いて、エディタの右上の ▶ 実行で送ってください。止めるときは出力欄の「停止」を押します。
       en: >-
-        Press Run app to start calc.rest.test1.WireMockApp, then open curl/01_calc_add1.sh and press Run file at the top right of the editor. Press Stop in the output pane to end it.
+        Press ▶ Run app to start calc.rest.test1.WireMockApp, then open curl/01_calc_add1.sh and press ▶ Run at the top right of the editor. Press Stop in the output pane to end it.
     openFiles:
       - README.md
 
@@ -669,9 +669,9 @@ exercises:
       en: 'Stub conditions and priority'
     descriptions:
       ja: >-
-        アプリ実行で calc.rest.test2.WireMockApp を起動してから、curl/02_calc_add.sh を開いて、エディタの右上の ファイル実行で送ってください。広い条件の 200 と狭い条件の 400 が返ります。
+        ▶ アプリ実行で calc.rest.test2.WireMockApp を起動してから、curl/02_calc_add.sh を開いて、エディタの右上の ▶ 実行で送ってください。広い条件の 200 と狭い条件の 400 が返ります。
       en: >-
-        Press Run app to start calc.rest.test2.WireMockApp, then open curl/02_calc_add.sh and press Run file at the top right of the editor. The broad stub returns 200 and the narrow stub 400.
+        Press ▶ Run app to start calc.rest.test2.WireMockApp, then open curl/02_calc_add.sh and press ▶ Run at the top right of the editor. The broad stub returns 200 and the narrow stub 400.
     openFiles:
       - README.md
 
@@ -687,9 +687,9 @@ exercises:
       en: 'A mock server for the Person service'
     descriptions:
       ja: >-
-        アプリ実行で person.rest.test1.WireMockApp を起動してから、curl/03_persons.sh を開いて、エディタの右上の ファイル実行で送ってください。どの personId でも alice が返ります。
+        ▶ アプリ実行で person.rest.test1.WireMockApp を起動してから、curl/03_persons.sh を開いて、エディタの右上の ▶ 実行で送ってください。どの personId でも alice が返ります。
       en: >-
-        Press Run app to start person.rest.test1.WireMockApp, then open curl/03_persons.sh and press Run file at the top right of the editor. Every personId returns alice.
+        Press ▶ Run app to start person.rest.test1.WireMockApp, then open curl/03_persons.sh and press ▶ Run at the top right of the editor. Every personId returns alice.
     openFiles:
       - README.md
 
@@ -705,9 +705,9 @@ exercises:
       en: 'Testing the bookstore UI with Selenide'
     descriptions:
       ja: >-
-        アプリ実行で spring-bookstore-rest と spring-bookstore-mvc を起動してから、起動したまま BookStoreTest.java を開いて、エディタの右上の ファイル実行で流してください。Chrome が起動して画面が自動で操作されます。
+        ▶ アプリ実行で spring-bookstore-rest と spring-bookstore-mvc を起動してから、起動したまま BookStoreTest.java を開いて、エディタの右上の ▶ 実行で流してください。Chrome が起動して画面が自動で操作されます。
       en: >-
-        Press Run app to start spring-bookstore-rest and spring-bookstore-mvc. While they run, open BookStoreTest.java and press Run file at the top right of the editor. Chrome starts and the screens are operated automatically.
+        Press ▶ Run app to start spring-bookstore-rest and spring-bookstore-mvc. While they run, open BookStoreTest.java and press ▶ Run at the top right of the editor. Chrome starts and the screens are operated automatically.
     openFiles:
       - README.md
 
@@ -723,9 +723,9 @@ exercises:
       en: 'How Playwright starts'
     descriptions:
       ja: >-
-        BookStoreOptions.java を読み、アプリ実行で 2 つのアプリを起動してから、起動したまま BookStoreTest.java を開いて、エディタの右上の ファイル実行で流してください。初回は Web ブラウザのダウンロードが終わってからテストが始まります。
+        BookStoreOptions.java を読み、▶ アプリ実行で 2 つのアプリを起動してから、起動したまま BookStoreTest.java を開いて、エディタの右上の ▶ 実行で流してください。初回は Web ブラウザのダウンロードが終わってからテストが始まります。
       en: >-
-        Read BookStoreOptions.java and press Run app to start the two apps. While they run, open BookStoreTest.java and press Run file at the top right of the editor. The first run downloads the browsers before the test starts.
+        Read BookStoreOptions.java and press ▶ Run app to start the two apps. While they run, open BookStoreTest.java and press ▶ Run at the top right of the editor. The first run downloads the browsers before the test starts.
     openFiles:
       - README.md
 
@@ -741,9 +741,9 @@ exercises:
       en: 'Testing the bookstore UI with Playwright'
     descriptions:
       ja: >-
-        アプリ実行で 2 つのアプリを起動してから、起動したまま BookStoreTest.java を開いて、エディタの右上の ファイル実行で流してください。トレースは trace/BookStoreTest.zip に保存され、scripts/02_show_trace.sh で開けます。
+        ▶ アプリ実行で 2 つのアプリを起動してから、起動したまま BookStoreTest.java を開いて、エディタの右上の ▶ 実行で流してください。トレースは trace/BookStoreTest.zip に保存され、scripts/02_show_trace.sh で開けます。
       en: >-
-        Press Run app to start the two apps. While they run, open BookStoreTest.java and press Run file at the top right of the editor. The trace is saved to trace/BookStoreTest.zip and scripts/02_show_trace.sh opens it.
+        Press ▶ Run app to start the two apps. While they run, open BookStoreTest.java and press ▶ Run at the top right of the editor. The trace is saved to trace/BookStoreTest.zip and scripts/02_show_trace.sh opens it.
     openFiles:
       - README.md
 
@@ -759,9 +759,9 @@ exercises:
       en: 'Applying load with Gatling'
     descriptions:
       ja: >-
-        アプリ実行で 2 つのアプリを起動してから、起動したまま scripts/01_gatling_run.sh を開いて、エディタの右上の ファイル実行を押してください。約 3 分 20 秒かけて負荷をかけ、実行結果にサマリーが出ます。
+        ▶ アプリ実行で 2 つのアプリを起動してから、起動したまま scripts/01_gatling_run.sh を開いて、エディタの右上の ▶ 実行を押してください。約 3 分 20 秒かけて負荷をかけ、実行結果にサマリーが出ます。
       en: >-
-        Press Run app to start the two apps. While they run, open scripts/01_gatling_run.sh and press Run file at the top right of the editor. The load runs for about 3 minutes 20 seconds and a summary is printed.
+        Press ▶ Run app to start the two apps. While they run, open scripts/01_gatling_run.sh and press ▶ Run at the top right of the editor. The load runs for about 3 minutes 20 seconds and a summary is printed.
     openFiles:
       - README.md
 
@@ -777,9 +777,9 @@ exercises:
       en: 'Reviewing tests written by AI'
     descriptions:
       ja: >-
-        fee/FeeServiceTest.java を開いて、エディタの右上の ファイル実行で流してください。期待値が仕様の表の値か、境界の両側があるかを観点にして読んでください。
+        fee/FeeServiceTest.java を開いて、エディタの右上の ▶ 実行で流してください。期待値が仕様の表の値か、境界の両側があるかを観点にして読んでください。
       en: >-
-        Open fee/FeeServiceTest.java and press Run file at the top right of the editor. Check that expected values come from the specification and that both sides of each boundary are covered.
+        Open fee/FeeServiceTest.java and press ▶ Run at the top right of the editor. Check that expected values come from the specification and that both sides of each boundary are covered.
     openFiles:
       - README.md
 
@@ -795,8 +795,8 @@ exercises:
       en: 'Checking test strength by injecting a fault'
     descriptions:
       ja: >-
-        fee/FeeServiceTest.java と fee/FeeParameterTest_3.java をそれぞれ開いて、エディタの右上の ファイル実行で流してください。FeeService の 3000 <= amount を 3000 < amount に変えると、前者だけが失敗します。
+        fee/FeeServiceTest.java と fee/FeeParameterTest_3.java をそれぞれ開いて、エディタの右上の ▶ 実行で流してください。FeeService の 3000 <= amount を 3000 < amount に変えると、前者だけが失敗します。
       en: >-
-        Open fee/FeeServiceTest.java and fee/FeeParameterTest_3.java in turn and press Run file at the top right of the editor. Change 3000 <= amount in FeeService to 3000 < amount and only the former fails.
+        Open fee/FeeServiceTest.java and fee/FeeParameterTest_3.java in turn and press ▶ Run at the top right of the editor. Change 3000 <= amount in FeeService to 3000 < amount and only the former fails.
     openFiles:
       - README.md

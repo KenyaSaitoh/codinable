@@ -10,7 +10,7 @@ import jakarta.ws.rs.ext.Provider;
 
 /*
  * Jakarta REST が本文の変換に使う Jsonb の設定
- * @Provider を外して アプリ実行すると、Victor の null の項目が省略される（既定の変換）
+ * @Provider を外して ▶ アプリ実行すると、Victor の null の項目が省略される（既定の変換）
  */
 @Provider // 【1】
 public class JsonbConfigResolver implements ContextResolver<Jsonb> {

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # updateEmployee（更新）
-# 先に アプリ実行でアプリを起動しておく（ポート 8088）
+# 先に ▶ アプリ実行でアプリを起動しておく（ポート 8088）
 # 期待する結果: HTTP/1.1 200
 #   {"data":{"updateEmployee":{"id":"10002","employeeName":"Bob","salary":460000}}}
 set -x

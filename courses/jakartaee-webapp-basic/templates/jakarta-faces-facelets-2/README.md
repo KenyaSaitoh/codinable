@@ -18,7 +18,7 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/facelets/` の下に�
 
 ## 動かし方
 
-1. ツールバーの アプリ実行を押す
+1. ツールバーの ▶ アプリ実行を押す
 2. デプロイが終わると、プレビューに `http://localhost:8080/jakarta-faces-facelets-2/IndexPage.xhtml` が開く。目次から各画面を開く
 
 ## 結果のどこを見るか
