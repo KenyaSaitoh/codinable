@@ -6,4 +6,4 @@
 set -x
 curl -sS -i -X POST http://localhost:8081/customers/ \
   -H 'Content-Type: application/json' \
-  -d '{"customerName":"Frank","password":"password","email":"frank@gmail.com","birthday":"2000-01-01","address":"Tokyo"}'
+  -d '{"customerName":"Frank","password":"password","email":"frank@example.com","birthday":"2000-01-01","address":"Tokyo"}'

@@ -22,7 +22,7 @@ Spring MVC + Thymeleaf でサーバーが HTML を生成する書店アプリで
    ログイン・顧客登録で呼ぶ Customer Hub（`customer-hub/`、ポート 8081）も一緒に起動する
    （`codinable.services.json` に書いてある。出力には `[customer-hub]` を付けて出る）
 
-2. ログイン画面でメールアドレス `alice@gmail.com`、パスワード `password` を入れる
+2. ログイン画面でメールアドレス `alice@example.com`、パスワード `password` を入れる
    （bob / carol / dave / ellen も同じパスワード）
 
 3. 書籍選択 → カート → 注文 → 注文履歴と進める。注文完了画面で再読み込みしても、

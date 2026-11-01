@@ -26,7 +26,7 @@ React の画面（`frontend/`）と、JSON を返す Spring Boot の REST API
 1. **▶ アプリ実行** を押す。初回は `frontend/` の `npm install` が自動で走るので少し時間がかかる
 2. React の画面が待ち受けを始めると、プレビューが `http://localhost:5173` に移る。
    `/api` への要求は Vite が `http://localhost:8080` へ中継する（`frontend/vite.config.ts`）
-3. ログイン画面でメールアドレス `alice@gmail.com`、パスワード `password` を入れ、
+3. ログイン画面でメールアドレス `alice@example.com`、パスワード `password` を入れ、
    書籍の選択 → カート → 注文確認 → 注文 → 注文履歴と進める
    （bob / carol / dave / ellen も同じパスワード）
 

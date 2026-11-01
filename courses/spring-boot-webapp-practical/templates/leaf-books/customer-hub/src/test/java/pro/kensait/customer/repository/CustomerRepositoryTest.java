@@ -38,7 +38,7 @@ class CustomerRepositoryTest {
         // 検証フェーズ：期待値と実測値が一致しているかを検証する
         assertTrue(found.isPresent());
         assertEquals("Alice", found.get().getCustomerName());
-        assertEquals("alice@gmail.com", found.get().getEmail());
+        assertEquals("alice@example.com", found.get().getEmail());
     }
     
     // 「メールアドレスで顧客を検索できること」の検証
@@ -46,7 +46,7 @@ class CustomerRepositoryTest {
     @DisplayName("メールアドレスで顧客を検索できること")
     void test_findCustomerByEmail() {
         // 実行フェーズ：メールアドレスで顧客を検索する
-        Optional<Customer> found = customerRepository.findCustomerByEmail("alice@gmail.com");
+        Optional<Customer> found = customerRepository.findCustomerByEmail("alice@example.com");
         
         // 検証フェーズ：期待値と実測値が一致しているかを検証する
         assertTrue(found.isPresent());

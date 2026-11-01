@@ -87,7 +87,7 @@ async function main() {
     assert.equal(state(), 'running', log.slice(-2000));
     const res = await fetch('http://127.0.0.1:8081/customers/1');
     assert.equal(res.status, 200);
-    assert.match(await res.text(), /alice@gmail\.com/);
+    assert.match(await res.text(), /alice@example\.com/);
   });
 
   await step('restart resets the customer-hub data', async () => {

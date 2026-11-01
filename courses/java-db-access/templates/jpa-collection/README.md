@@ -69,16 +69,16 @@
 
 | EMPLOYEE_ID | ADDRESS |
 |---|---|
-| 10001 | alice@gmail.com |
+| 10001 | alice@example.com |
 | 10001 | alice@outlook.jp |
 | 10001 | alice@yahoo.co.jp |
-| 10002 | bob@gmail.com |
+| 10002 | bob@example.com |
 | 10002 | bob@outlook.jp |
-| 10003 | carol@gmail.com |
+| 10003 | carol@example.com |
 | 10003 | carol@outlook.jp |
-| 10004 | dave@gmail.com |
+| 10004 | dave@example.com |
 | 10004 | dave@outlook.jp |
-| 10005 | ellen@gmail.com |
-| 10006 | frank@gmail.com |
+| 10005 | ellen@example.com |
+| 10006 | frank@example.com |
 | 10006 | frank@outlook.jp |
 <!-- schema:end -->

@@ -108,12 +108,12 @@ exercises:
         MVC 版の書店です。OrderService.orderBooks（Transaction Script）、注文の入力を運ぶ OrderTO、
         送料を決める DeliveryFeeService を読みます。▶ アプリ実行で書店が 8080 で、
         ログインに使う Customer Hub が 8081 で起動します。
-        alice@gmail.com / password でログインし、カートから注文すると送料と注文履歴が確かめられます。
+        alice@example.com / password でログインし、カートから注文すると送料と注文履歴が確かめられます。
       en: >-
         The MVC version of the bookstore. Read OrderService.orderBooks (a Transaction Script),
         OrderTO which carries the order input, and DeliveryFeeService which decides the delivery fee.
         ▶ Run app starts the bookstore on port 8080 and Customer Hub, used for login, on 8081.
-        Log in as alice@gmail.com / password and order from the
+        Log in as alice@example.com / password and order from the
         cart to see the delivery fee and the order history.
     openFiles:
       - README.md
@@ -157,13 +157,13 @@ exercises:
       ja: >-
         書店から呼ばれる側（プロバイダ）の顧客 API です。▶ アプリ実行で 8081 で起動します。
         http://localhost:8081/customers/1 や
-        /customers/query_email?email=alice@gmail.com で JSON を、
+        /customers/query_email?email=alice@example.com で JSON を、
         存在しない ID で 404 を確かめます（curl/ のスクリプトを開いてエディタの右上の ▶ 実行でも送れます）。CustomerApi が CustomerService を呼び、
         業務例外を HTTP ステータスへ変換する流れを読みます。
       en: >-
         The customer API on the provider side, called by the bookstores. ▶ Run app starts it on port 8081.
         Check the JSON at http://localhost:8081/customers/1 and
-        /customers/query_email?email=alice@gmail.com, and a 404 for an ID that does not exist (the scripts
+        /customers/query_email?email=alice@example.com, and a 404 for an ID that does not exist (the scripts
         in curl/ send the same requests with ▶ Run at the top right of the editor).
         Read how CustomerApi calls CustomerService and turns business exceptions into HTTP statuses.
     openFiles:
@@ -211,14 +211,14 @@ exercises:
         Controller が Model とビュー名を返して Thymeleaf が HTML を作る流れ、
         @SessionAttributes のカート、TokenProcessor による SecurityContext の保存、
         注文後の Post/Redirect/Get を読みます。▶ アプリ実行で書店と Customer Hub が起動したら、
-        alice@gmail.com / password でログイン → 書籍選択 → カート → 注文 → 注文履歴と進めます。
+        alice@example.com / password でログイン → 書籍選択 → カート → 注文 → 注文履歴と進めます。
         注文完了画面で再読み込みしても注文が二重にならないことも確かめられます。
       en: >-
         Read how a Controller returns a Model and a view name for Thymeleaf to render,
         the cart kept with @SessionAttributes, how TokenProcessor stores the SecurityContext,
         and Post/Redirect/Get after an order. Once ▶ Run app has started the bookstore and Customer Hub,
         log in as
-        alice@gmail.com / password and go through book selection, cart, order and order history.
+        alice@example.com / password and go through book selection, cart, order and order history.
         Reloading the order-complete page does not place the order twice.
     openFiles:
       - README.md
@@ -240,13 +240,13 @@ exercises:
         OrderConfirmPage の送信中・成功・失敗の状態遷移を読みます。
         ▶ アプリ実行で REST API（8080）と Customer Hub（8081）、frontend/ の React の画面（5173）が一緒に起動し、
         画面が待ち受けを始めるとプレビューが http://localhost:5173 に移ります（初回は npm install が自動で走ります）。
-        alice@gmail.com / password でログインして注文まで進めます。
+        alice@example.com / password でログインして注文まで進めます。
       en: >-
         Read the React screen structure (Router and Providers in App.tsx), the cart state in
         CartContext, and the submitting / success / failure transitions in OrderConfirmPage.
         ▶ Run app starts the REST API (8080), Customer Hub (8081) and the React screen in frontend/ (5173) together;
         once the screen is listening, the preview moves to http://localhost:5173 (the first run installs the npm packages automatically).
-        Log in as alice@gmail.com / password and go through to an order.
+        Log in as alice@example.com / password and go through to an order.
     openFiles:
       - README.md
 

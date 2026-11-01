@@ -13,14 +13,14 @@
     <table>
       <tr>
         <td>メールアドレス</td>
-        <td><input type="text" th:field="*{email}" /></td>
+        <td><input type="text" th:field="*{email}" placeholder="alice@example.com" /></td>
         <td><span th:if="${#fields.hasErrors('email')}"
                   th:errors="*{email}" class="error"></span>
         </td>
       </tr>
       <tr>
         <td>パスワード</td>
-        <td><input type="password" th:field="*{password}" /></td>
+        <td><input type="password" th:field="*{password}" placeholder="password" /></td>
         <td><span th:if="${#fields.hasErrors('password')}"
                   th:errors="*{password}" class="error"></span></td>
       </tr>

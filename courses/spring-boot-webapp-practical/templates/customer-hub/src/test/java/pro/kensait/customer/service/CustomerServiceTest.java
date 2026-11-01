@@ -48,7 +48,7 @@ class CustomerServiceTest {
     @BeforeEach
     void setUp() {
         testCustomer = new Customer("Alice", "$2a$10$.mUq6NV8iIo0juyT0AMB6OrWCvZZ7pG.ajIzr8KPESQ5Wa2ubLhl2", 
-                "alice@gmail.com", LocalDate.of(1998, 4, 10), "東京都中央区1-1-1");
+                "alice@example.com", LocalDate.of(1998, 4, 10), "東京都中央区1-1-1");
         testCustomer.setCustomerId(1);
     }
     
@@ -73,7 +73,7 @@ class CustomerServiceTest {
             // 検証フェーズ：期待値と実測値が一致しているかを検証する
             assertNotNull(result);
             assertEquals("Alice", result.getCustomerName());
-            assertEquals("alice@gmail.com", result.getEmail());
+            assertEquals("alice@example.com", result.getEmail());
             verify(customerRepository, times(1)).findById(1);
         }
         
@@ -95,16 +95,16 @@ class CustomerServiceTest {
         @DisplayName("メールアドレスで顧客を取得できること")
         void test_getCustomerByEmail() {
             // 準備フェーズ：CustomerRepositoryのモック動作を設定する
-            when(customerRepository.findCustomerByEmail("alice@gmail.com"))
+            when(customerRepository.findCustomerByEmail("alice@example.com"))
                     .thenReturn(Optional.of(testCustomer));
             
             // 実行フェーズ：メールアドレスで顧客を取得する
-            Customer result = customerService.getCustomerByEmail("alice@gmail.com");
+            Customer result = customerService.getCustomerByEmail("alice@example.com");
             
             // 検証フェーズ：期待値と実測値が一致しているかを検証する
             assertNotNull(result);
             assertEquals("Alice", result.getCustomerName());
-            verify(customerRepository, times(1)).findCustomerByEmail("alice@gmail.com");
+            verify(customerRepository, times(1)).findCustomerByEmail("alice@example.com");
         }
         
         // 「存在しないメールアドレスで例外がスローされること」の検証

@@ -48,7 +48,7 @@ public class InsertMain {
                         LocalDate.of(2018, 4, 1), job, 230000, projects);
 
                 // 新しいメールを生成する
-                Email email = new Email(201, employeeId, "walter@gmail.com");
+                Email email = new Email(201, employeeId, "walter@example.com");
                 List<Email> emails = new ArrayList<Email>();
                 emails.add(email);
                 employee.setEmails(emails);

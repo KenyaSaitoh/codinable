@@ -67,7 +67,7 @@ class CustomerApiTest {
                 .build();
         
         testCustomer = new Customer("Alice", "$2a$10$.mUq6NV8iIo0juyT0AMB6OrWCvZZ7pG.ajIzr8KPESQ5Wa2ubLhl2", 
-                "alice@gmail.com", LocalDate.of(1998, 4, 10), "東京都中央区1-1-1");
+                "alice@example.com", LocalDate.of(1998, 4, 10), "東京都中央区1-1-1");
         testCustomer.setCustomerId(1);
     }
     
@@ -92,7 +92,7 @@ class CustomerApiTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.customerId").value(1))
                     .andExpect(jsonPath("$.customerName").value("Alice"))
-                    .andExpect(jsonPath("$.email").value("alice@gmail.com"));
+                    .andExpect(jsonPath("$.email").value("alice@example.com"));
             
             verify(customerService, times(1)).getCustomerById(1);
         }
@@ -116,19 +116,19 @@ class CustomerApiTest {
         @DisplayName("メールアドレスで顧客を検索できること")
         void test_queryByEmail() throws Exception {
             // 準備フェーズ：CustomerServiceのモック動作を設定する
-            when(customerService.getCustomerByEmail("alice@gmail.com"))
+            when(customerService.getCustomerByEmail("alice@example.com"))
                     .thenReturn(testCustomer);
             
             // 実行・検証フェーズ：GET /customers/query_email?email=...を実行する
             mockMvc.perform(get("/customers/query_email")
-                            .param("email", "alice@gmail.com")
+                            .param("email", "alice@example.com")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.customerId").value(1))
                     .andExpect(jsonPath("$.customerName").value("Alice"))
-                    .andExpect(jsonPath("$.email").value("alice@gmail.com"));
+                    .andExpect(jsonPath("$.email").value("alice@example.com"));
             
-            verify(customerService, times(1)).getCustomerByEmail("alice@gmail.com");
+            verify(customerService, times(1)).getCustomerByEmail("alice@example.com");
         }
         
         // 「誕生日から顧客リストを検索できること」の検証
@@ -168,7 +168,7 @@ class CustomerApiTest {
             when(customerService.registerCustomer(any(Customer.class))).thenReturn(testCustomer);
             
             CustomerTO requestCustomer = new CustomerTO(null, "Alice", "$2a$10$.mUq6NV8iIo0juyT0AMB6OrWCvZZ7pG.ajIzr8KPESQ5Wa2ubLhl2", 
-                    "alice@gmail.com", LocalDate.of(1998, 4, 10), "東京都中央区1-1-1");
+                    "alice@example.com", LocalDate.of(1998, 4, 10), "東京都中央区1-1-1");
             String requestBody = objectMapper.writeValueAsString(requestCustomer);
             
             // 実行・検証フェーズ：POST /customers/を実行する
@@ -199,7 +199,7 @@ class CustomerApiTest {
             doNothing().when(customerService).replaceCustomer(any(Customer.class));
             
             CustomerTO requestCustomer = new CustomerTO(null, "Alice", "$2a$10$.mUq6NV8iIo0juyT0AMB6OrWCvZZ7pG.ajIzr8KPESQ5Wa2ubLhl2", 
-                    "alice@gmail.com", LocalDate.of(1998, 4, 10), "東京都中央区1-1-1");
+                    "alice@example.com", LocalDate.of(1998, 4, 10), "東京都中央区1-1-1");
             String requestBody = objectMapper.writeValueAsString(requestCustomer);
             
             // 実行・検証フェーズ：PUT /customers/1を実行する

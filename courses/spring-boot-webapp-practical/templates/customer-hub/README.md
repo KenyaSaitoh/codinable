@@ -22,14 +22,14 @@ DB は HSQLDB のインメモリで、起動のたびに `sql/hsqldb/` の DDL �
 |---|---|
 | `http://localhost:8081/customers/` | 全顧客 |
 | `http://localhost:8081/customers/1` | 顧客 ID で取得 |
-| `http://localhost:8081/customers/query_email?email=alice@gmail.com` | メールアドレスで照会（ログイン時に書店が使う） |
+| `http://localhost:8081/customers/query_email?email=alice@example.com` | メールアドレスで照会（ログイン時に書店が使う） |
 | `http://localhost:8081/customers/query_birthday?birthday=1995-01-01` | 誕生日以降の顧客 |
 | `http://localhost:8081/customers/999` | 存在しない ID（404 の応答） |
 
 curl でも確かめられます。起動したまま `curl/` のスクリプトを順に開いて、エディタの右上の ▶ 実行で送ります
 （`01_get_customer.sh` が ID での取得と 404、`02_query_email.sh` がメールアドレスでの照会、`03_create_customer.sh` が顧客の登録）。
 
-初期データの顧客は alice / bob / carol / dave / ellen（`@gmail.com`）で、
+初期データの顧客は alice / bob / carol / dave / ellen（`@example.com`）で、
 パスワードはすべて `password` です（DB には BCrypt のハッシュが入っています）。
 
 ## 構成

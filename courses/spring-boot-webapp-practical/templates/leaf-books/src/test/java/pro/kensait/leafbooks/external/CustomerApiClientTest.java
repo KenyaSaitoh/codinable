@@ -59,7 +59,7 @@ class CustomerApiClientTest {
         ReflectionTestUtils.setField(customerApiClient, "baseUrl", baseUrl);
         
         testCustomer = new CustomerTO(1, "Alice", "$2a$10$.mUq6NV8iIo0juyT0AMB6OrWCvZZ7pG.ajIzr8KPESQ5Wa2ubLhl2", 
-                "alice@gmail.com", LocalDate.of(1998, 4, 10), "東京都中央区1-1-1");
+                "alice@example.com", LocalDate.of(1998, 4, 10), "東京都中央区1-1-1");
     }
     
     /*
@@ -93,7 +93,7 @@ class CustomerApiClientTest {
         @DisplayName("メールアドレスで顧客を検索できること")
         void test_queryByEmail() {
             // 準備フェーズ：RestTemplateのモック動作を設定する
-            String email = "alice@gmail.com";
+            String email = "alice@example.com";
             ResponseEntity<CustomerTO> responseEntity = ResponseEntity.ok(testCustomer);
             when(restTemplate.getForEntity(anyString(), eq(CustomerTO.class)))
                     .thenReturn(responseEntity);

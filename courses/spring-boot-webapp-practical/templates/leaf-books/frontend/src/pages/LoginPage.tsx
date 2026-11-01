@@ -76,6 +76,7 @@ const LoginPage: React.FC = () => {
                   <td className="py-3">
                     <input
                       type="email"
+                      placeholder="alice@example.com"
                       value={loginData.email}
                       onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                       className="form-input"
@@ -88,6 +89,7 @@ const LoginPage: React.FC = () => {
                   <td className="py-3">
                     <input
                       type="password"
+                      placeholder="password"
                       value={loginData.password}
                       onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                       className="form-input"

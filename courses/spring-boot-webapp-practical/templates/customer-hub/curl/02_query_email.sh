@@ -4,4 +4,4 @@
 # DB はインメモリ。アプリを起動し直すと初期データに戻る
 # 期待する結果: HTTP/1.1 200 と alice の JSON
 set -x
-curl -sS -i 'http://localhost:8081/customers/query_email?email=alice@gmail.com'
+curl -sS -i 'http://localhost:8081/customers/query_email?email=alice@example.com'
