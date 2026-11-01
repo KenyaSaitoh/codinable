@@ -148,6 +148,12 @@ public class OrderController {
         logger.info("[ OrderController#getOrderDetail ] tranId: {}", tranId);
 
         OrderTran orderTran = orderService.getOrderTran(tranId);
+
+        // 認証された顧客の注文でなければ、403（Forbidden）を返す
+        if (!isOwner(orderTran)) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN).build();
+        }
+
         OrderResponse response = convertToOrderResponse(orderTran);
 
         return ResponseEntity.ok(response);
@@ -159,6 +165,11 @@ public class OrderController {
             @PathVariable Integer tranId,
             @PathVariable Integer detailId) {
         logger.info("[ OrderController#getOrderDetailItem ] tranId: {}, detailId: {}", tranId, detailId);
+
+        // 認証された顧客の注文でなければ、403（Forbidden）を返す
+        if (!isOwner(orderService.getOrderTran(tranId))) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN).build();
+        }
 
         OrderDetailPK pk = new OrderDetailPK(tranId, detailId);
         OrderDetail orderDetail = orderService.getOrderDetail(pk);
@@ -173,6 +184,14 @@ public class OrderController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    // 注文が、認証された顧客のものかを判定する
+    private boolean isOwner(OrderTran orderTran) {
+        JwtAuthenticationToken authentication = (JwtAuthenticationToken)
+                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null
+                && orderTran.getCustomer().equals(authentication.getCustomerId());
     }
 
     // OrderTranをOrderResponseに変換

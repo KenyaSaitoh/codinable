@@ -58,8 +58,9 @@ public class CustomerController {
         // 住所に対する入力チェック（正しい都道府県名で始まっているか）を行い、
         // エラーがあった場合はBindingResultに追加する
         // ※他のエラーメッセージと一括して表示するため、画面遷移はしない
-        if (! customerParam.address().isBlank() &&
-                ! checkAddressPrefectures(customerParam.address())) {
+        String address = customerParam.address();
+        if (address != null && ! address.isBlank() &&
+                ! checkAddressPrefectures(address)) {
             logger.info("[ CustomerController#register ] 住所入力エラー");
             errors.rejectValue("address", "error.address.prefecture"); // 第1引数addressはcustomerParamのプロパティと一致している必要あり
         }

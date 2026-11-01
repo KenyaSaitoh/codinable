@@ -131,6 +131,9 @@ public class OrderController {
             Model model) {
         logger.info("[ OrderController#viewOrderDetail ]");
 
+        // ログイン中の顧客の注文でなければ、アクセスを拒否する（403）
+        checkOwner(orderService.getOrderTran(tranId));
+
         // OrderServiceを呼び出し、指定された注文明細エンティティを取得する
         OrderDetailPK pk = new OrderDetailPK(tranId, detailId);
         OrderDetail orderDetail = orderService.getOrderDetail(pk);
@@ -220,6 +223,9 @@ public class OrderController {
         // OrderServiceを呼び出し、指定された注文エンティティを取得する
         OrderTran orderTran = orderService.getOrderTran(orderTranId);
 
+        // ログイン中の顧客の注文でなければ、アクセスを拒否する（403）
+        checkOwner(orderTran);
+
         // 取得した注文明細エンティティをモデルに追加する
         model.addAttribute("orderTran", orderTran);
 
@@ -298,10 +304,22 @@ public class OrderController {
         // OrderServiceを呼び出し、指定された注文エンティティを取得する
         OrderTran orderTran = orderService.getOrderTran(orderTranId);
 
+        // ログイン中の顧客の注文でなければ、アクセスを拒否する（403）
+        checkOwner(orderTran);
+
         // 取得した注文明細エンティティをモデルに追加する
         model.addAttribute("orderTran", orderTran);
 
         // OrderSuccessPageにフォワードする
         return "OrderSuccessPage";
+    }
+
+    // 注文がログイン中の顧客のものでなければ、AccessDeniedException（403）を送出する
+    private void checkOwner(OrderTran orderTran) {
+        CustomerTO customer = (CustomerTO) session.getAttribute("customer");
+        if (customer == null || !orderTran.getCustomer().equals(customer.customerId())) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "他の顧客の注文は参照できません");
+        }
     }
 }

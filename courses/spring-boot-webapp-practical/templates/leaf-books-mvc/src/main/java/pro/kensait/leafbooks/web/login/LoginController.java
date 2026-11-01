@@ -24,7 +24,7 @@ import pro.kensait.leafbooks.external.CustomerNotFoundException;
 import pro.kensait.leafbooks.external.CustomerTO;
 
 /*
- * ログインのコントローラーを担うクラス （ログイン画面はCognitoのマネージドログインが提供するため、エラー画面への遷移のみを担当する）
+ * ログインのコントローラーを担うクラス（パスワードを照合し、SecurityContextをHTTPセッションへ保存する）
  */
 @Controller
 public class LoginController {
@@ -90,6 +90,10 @@ public class LoginController {
             errors.addError(error);
             return "TopPage";        
         }
+
+        // セッション固定化攻撃を防ぐため、ログインの成功時にセッションIDを変更する
+        request.getSession();
+        request.changeSessionId();
 
         // 顧客エンティティをHTTPセッションに登録する
         session.setAttribute("customer", customer);
