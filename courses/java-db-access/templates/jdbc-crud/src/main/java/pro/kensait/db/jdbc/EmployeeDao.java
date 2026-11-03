@@ -1,9 +1,12 @@
 package pro.kensait.db.jdbc;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 
@@ -46,6 +49,23 @@ public final class EmployeeDao {
         }
     }
 
+    // リポジトリメソッド：条件検索によって部署の社員を社員番号順に取得
+    public List<Employee> findByDepartmentId(int departmentId) throws SQLException {
+        String sql = "SELECT EMPLOYEE_ID, DEPARTMENT_ID, EMPLOYEE_NAME, SALARY "
+                + "FROM EMPLOYEE WHERE DEPARTMENT_ID = ? ORDER BY EMPLOYEE_ID";
+        try (Connection connection = connectionProvider.open();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, departmentId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                List<Employee> employees = new ArrayList<>();
+                while (resultSet.next()) {
+                    employees.add(map(resultSet));
+                }
+                return employees;
+            }
+        }
+    }
+
     // 一件更新
     public int update(Employee employee) throws SQLException {
         String sql = "UPDATE EMPLOYEE SET DEPARTMENT_ID = ?, EMPLOYEE_NAME = ?, SALARY = ? "
@@ -58,13 +78,28 @@ public final class EmployeeDao {
         });
     }
 
+    // 一括更新：部署の全社員の給与を加算し、更新件数を返す
+    public int raiseSalaryByDepartmentId(int departmentId, BigDecimal amount) throws SQLException {
+        String sql = "UPDATE EMPLOYEE SET SALARY = SALARY + ? WHERE DEPARTMENT_ID = ?";
+        return executeUpdate(sql, statement -> {
+            statement.setBigDecimal(1, amount);
+            statement.setInt(2, departmentId);
+        });
+    }
+
     // APIメソッド：Employeeの削除
     public int delete(int id) throws SQLException {
         return executeUpdate("DELETE FROM EMPLOYEE WHERE EMPLOYEE_ID = ?",
                 statement -> statement.setInt(1, id));
     }
 
-    // この章は1操作を1トランザクションとする複数操作の一括確定は第04章で扱う
+    // 一括削除：部署の全社員を削除し、削除件数を返す
+    public int deleteByDepartmentId(int departmentId) throws SQLException {
+        return executeUpdate("DELETE FROM EMPLOYEE WHERE DEPARTMENT_ID = ?",
+                statement -> statement.setInt(1, departmentId));
+    }
+
+    // 1操作を1トランザクションとして確定する（複数操作の一括確定は jdbc-transaction で扱う）
     private int executeUpdate(String sql, StatementBinder binder) throws SQLException {
         try (Connection connection = connectionProvider.open()) {
             connection.setAutoCommit(false);

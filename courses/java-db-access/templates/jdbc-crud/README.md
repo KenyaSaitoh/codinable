@@ -9,10 +9,12 @@ DDL の実行には `Statement`、値を受け取る CRUD には、SQL インジ
 
 `Employee` → `EmployeeDao` → `EmployeeDaoTest` の順に読みます。
 
+`EmployeeDao` には、主キー検索 `findById`、条件検索 `findByDepartmentId`、挿入 `insert`、一件更新 `update`、
+一括更新 `raiseSalaryByDepartmentId`、一件削除 `delete`、一括削除 `deleteByDepartmentId` があります。
 この例では DAO の 1 回の更新を 1 トランザクションとして確定し、検索は別の接続で DB から取り直します。
 `StatementBinder` は値の設定部分を共通の実行処理に渡すための小さな関数型インターフェースです。
 
-テストでは CRUD、該当なしの Optional／更新件数 0、重複キーの例外、引用符や SQL 構文を含む名前が値として保存されることを確認します。
+テストでは CRUD、部署を条件にした検索・一括更新・一括削除の件数、該当なしの Optional／更新件数 0、重複キーの例外、引用符や SQL 構文を含む名前が値として保存されることを確認します。
 DDL による削除・再作成はテストの初期化に限っています。
 PreparedStatement が守るのはバインドした値であり、文字列連結したテーブル名や ORDER BY の列名まで安全になるわけではありません。
 

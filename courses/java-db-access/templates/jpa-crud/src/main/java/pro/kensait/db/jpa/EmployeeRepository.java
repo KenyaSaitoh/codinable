@@ -4,10 +4,10 @@ import jakarta.persistence.EntityManager;
 import java.util.Optional;
 
 /*
- * JDBC Templateによる社員アクセス
+ * EntityManager を引数で受け取る社員のリポジトリ（begin・commit は呼び出し元が行う）
  */
 public final class EmployeeRepository {
-    // サービスメソッド：足し算の実行
+    // 社員の登録
     public void add(EntityManager entityManager, Employee employee) {
         entityManager.persist(employee);
     }

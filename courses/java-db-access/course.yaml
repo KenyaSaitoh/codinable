@@ -33,7 +33,7 @@
 id: java-db-access
 order: 9
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.3.1
+version: 1.3.2
 
 names:
   ja: Java DBアクセス
@@ -127,12 +127,12 @@ exercises:
       en: CRUD and a DAO with PreparedStatement
     descriptions:
       ja: >-
-        EmployeeDao が PreparedStatement で登録・検索・更新・削除を行い、ResultSet を Employee に詰め替えます。
-        EmployeeDaoTest.java を開いてエディタの右上の ▶ 実行で流し、該当なし（Optional の空・更新件数 0）、重複キー、SQL 構文を含む名前が
+        EmployeeDao が PreparedStatement で主キー検索・条件検索・挿入・一件更新・一括更新・一件削除・一括削除を行い、ResultSet を Employee に詰め替えます。
+        EmployeeDaoTest.java を開いてエディタの右上の ▶ 実行で流し、部署単位の検索と更新の件数、該当なし（Optional の空・更新件数 0）、重複キー、SQL 構文を含む名前が
         値として保存されることを確かめるテストの結果を見てください。
       en: >-
-        EmployeeDao inserts, finds, updates and deletes with PreparedStatement and maps the ResultSet to
-        Employee. Open EmployeeDaoTest.java, press ▶ Run at the top right of the editor and look at the tests for "not found" (empty Optional / 0 rows updated),
+        EmployeeDao finds by key or by department, inserts, updates and deletes one or many rows with PreparedStatement and maps the ResultSet to
+        Employee. Open EmployeeDaoTest.java, press ▶ Run at the top right of the editor and look at the tests for department-wide counts, "not found" (empty Optional / 0 rows updated),
         duplicate keys, and names containing SQL syntax being stored as plain values.
     openFiles:
       - README.md

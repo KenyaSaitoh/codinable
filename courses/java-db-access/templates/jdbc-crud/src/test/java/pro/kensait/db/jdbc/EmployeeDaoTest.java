@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.List;
 import org.hsqldb.jdbc.JDBCDataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,6 +66,22 @@ class EmployeeDaoTest {
 
         assertEquals(1, dao.delete(10017));
         assertTrue(dao.findById(10017).isEmpty());
+    }
+
+    // 「部署を条件にした検索・一括更新・一括削除」の検証
+    @Test
+    void handlesDepartmentWideSearchUpdateAndDelete() throws Exception {
+        List<Employee> sales = dao.findByDepartmentId(3);
+        assertEquals(List.of(10001, 10004, 10005, 10010, 10013),
+                sales.stream().map(Employee::id).toList());
+
+        assertEquals(3, dao.raiseSalaryByDepartmentId(1, new BigDecimal("10000")));
+        assertEquals(new BigDecimal("460000.00"), dao.findById(10002).orElseThrow().salary());
+        assertEquals(new BigDecimal("500000.00"), dao.findById(10001).orElseThrow().salary());
+
+        assertEquals(2, dao.deleteByDepartmentId(2));
+        assertTrue(dao.findByDepartmentId(2).isEmpty());
+        assertEquals(0, dao.deleteByDepartmentId(2));
     }
 
     // 「氏名内のSQL構文のデータ扱い」の検証
