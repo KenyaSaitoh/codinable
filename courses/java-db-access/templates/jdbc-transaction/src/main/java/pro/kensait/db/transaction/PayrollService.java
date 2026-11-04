@@ -26,6 +26,8 @@ public final class PayrollService {
     public int[] applyRaises(Map<Integer, BigDecimal> raises) throws SQLException {
         String sql = "UPDATE EMPLOYEE SET SALARY = SALARY + ? WHERE EMPLOYEE_ID = ?";
         try (Connection connection = connectionProvider.open()) {
+            // 分離レベルを明示する（HSQLDBの既定もREAD_COMMITTEDなので挙動は変わらない）
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             connection.setAutoCommit(false);
             try {
                 int[] counts;

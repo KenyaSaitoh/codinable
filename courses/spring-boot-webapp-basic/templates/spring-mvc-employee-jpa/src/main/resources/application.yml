@@ -35,6 +35,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+    # Hibernate が発行する SQL を実行ログに出す（@ManyToOne の left join や @Version の UPDATE を確かめるため）
+    show-sql: true
     properties:
       hibernate:
 # これがないとテーブル名が小文字になってしまい、RDSでエラーになる

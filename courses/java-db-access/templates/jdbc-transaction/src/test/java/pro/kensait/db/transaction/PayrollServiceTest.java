@@ -74,6 +74,20 @@ class PayrollServiceTest {
         assertEquals(0, service.countEmployees(99));
     }
 
+    // 「分離レベルREAD_COMMITTEDの明示」の検証
+    @Test
+    void appliesRaisesUnderReadCommitted() throws Exception {
+        // HSQLDBの接続の既定の分離レベルはREAD_COMMITTED（Connection.TRANSACTION_READ_COMMITTED = 2）
+        try (Connection connection = dataSource.getConnection()) {
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, connection.getTransactionIsolation());
+        }
+        // applyRaisesはREAD_COMMITTEDを明示して実行する。結果は変わらない
+        Map<Integer, BigDecimal> raises = new LinkedHashMap<>();
+        raises.put(10004, new BigDecimal("10000"));
+        assertArrayEquals(new int[] {1}, service.applyRaises(raises));
+        assertEquals(new BigDecimal("410000.00"), salaryOf(10004));
+    }
+
     // 「制約違反時の一括処理全体のロールバック」の検証
     @Test
     void rollsBackWholeBatchOnConstraintViolation() throws Exception {

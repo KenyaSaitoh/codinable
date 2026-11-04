@@ -7,8 +7,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-/** 社員、部署と役職は関連ではなくIDで保持する */
+import jakarta.persistence.Version;
+/** 社員、部署と役職は @ManyToOne の関連として保持する */
 @Entity
 @Table(name = "EMPLOYEE")
 public class Employee {
@@ -26,11 +29,13 @@ public class Employee {
     @Column(name = "EMPLOYEE_NAME")
     private String employeeName;
 
-    @Column(name = "DEPARTMENT_ID")
-    private Integer departmentId;
+    @ManyToOne
+    @JoinColumn(name = "DEPARTMENT_ID")
+    private Department department;
 
-    @Column(name = "JOB_ID")
-    private Integer jobId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "JOB_ID")
+    private Job job;
 
     @Column(name = "SALARY")
     private Integer salary;
@@ -41,8 +46,9 @@ public class Employee {
     @Column(name = "STATUS")
     private String status = ACTIVE;
 
+    @Version
     @Column(name = "VERSION")
-    private Integer version = 0;
+    private Integer version;
 
     // アクセサメソッド
     public Integer getEmployeeId() {
@@ -74,24 +80,24 @@ public class Employee {
         this.employeeName = employeeName;
     }
 
-    // アクセサメソッド
-    public Integer getDepartmentId() {
-        return departmentId;
+    // 部署へのアクセサメソッド
+    public Department getDepartment() {
+        return department;
     }
 
-    // 部署IDの設定
-    public void setDepartmentId(Integer departmentId) {
-        this.departmentId = departmentId;
+    // 部署の設定
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
-    // アクセサメソッド
-    public Integer getJobId() {
-        return jobId;
+    // 役職へのアクセサメソッド
+    public Job getJob() {
+        return job;
     }
 
-    // 役職IDの設定
-    public void setJobId(Integer jobId) {
-        this.jobId = jobId;
+    // 役職の設定
+    public void setJob(Job job) {
+        this.job = job;
     }
 
     // 月給へのアクセサメソッド
@@ -124,13 +130,8 @@ public class Employee {
         this.status = status;
     }
 
-    // バージョン（楽観的ロックで使用）へのアクセサメソッド
+    // version は永続化プロバイダーが管理する。アプリケーションは値を設定しない
     public Integer getVersion() {
         return version;
-    }
-
-    // バージョンの設定
-    public void setVersion(Integer version) {
-        this.version = version;
     }
 }

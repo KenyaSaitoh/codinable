@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.OptimisticLockException;
 import pro.kensait.spring.employee.entity.Department;
 import pro.kensait.spring.employee.entity.Employee;
 import pro.kensait.spring.employee.entity.EmployeeSearchCriteria;
@@ -42,6 +44,17 @@ public class EmployeeService {
         return jobRepository.findAll(Sort.by("grade"));
     }
 
+    // 指定した部署の取得（部署なし、または存在しない部署は null）
+    public Department department(Integer departmentId) {
+        return departmentId == null ? null
+                : departmentRepository.findById(departmentId).orElse(null);
+    }
+
+    // 指定した役職の取得（存在しない役職は null）
+    public Job job(Integer jobId) {
+        return jobId == null ? null : jobRepository.findById(jobId).orElse(null);
+    }
+
     // 指定された条件とページ番号で社員の検索
     public EmployeePage search(EmployeeSearchCriteria criteria, int page) {
         if (criteria.rangeReversed()) {
@@ -62,17 +75,19 @@ public class EmployeeService {
     }
 
     // 社員を登録し、採番されたIDから社員コードの設定
+    // （version は @Version なので設定しない。INSERT のときに永続化プロバイダーが 0 を入れる）
     @Transactional
     public Employee create(Employee employee) {
         employee.setStatus(Employee.ACTIVE);
-        employee.setVersion(0);
         employee.setEmployeeCode("E0000");
         Employee saved = employeeRepository.save(employee);
         saved.setEmployeeCode(String.format("E%04d", saved.getEmployeeId()));
-        return employeeRepository.save(saved);
+        return saved;
     }
 
     // バージョンが一致する場合に社員情報の更新
+    // 画面から来た version が現在の version と違えば競合。さらに flush のときに
+    // 永続化プロバイダーが検出した競合（OptimisticLockException）も ConflictException に変換する
     @Transactional
     public Employee update(Integer employeeId, Employee input, Integer version) {
         Employee current = get(employeeId);
@@ -80,44 +95,23 @@ public class EmployeeService {
             throw new ConflictException();
         }
         current.setEmployeeName(input.getEmployeeName());
-        current.setDepartmentId(input.getDepartmentId());
-        current.setJobId(input.getJobId());
+        current.setDepartment(input.getDepartment());
+        current.setJob(input.getJob());
         current.setSalary(input.getSalary());
         current.setEntranceDate(input.getEntranceDate());
-        current.setVersion(current.getVersion() + 1);
-        return employeeRepository.save(current);
+        try {
+            employeeRepository.flush();
+        } catch (ObjectOptimisticLockingFailureException | OptimisticLockException e) {
+            throw new ConflictException();
+        }
+        return current;
     }
 
     // 指定した社員を論理削除
+    // （managed のエンティティの状態を変えるだけで、コミット時に UPDATE が発行される）
     @Transactional
     public void delete(Integer employeeId) {
         Employee current = get(employeeId);
         current.setStatus(Employee.DELETED);
-        employeeRepository.save(current);
-    }
-
-    // 指定した部署が存在するか確認
-    public boolean departmentExists(Integer departmentId) {
-        return departmentId != null && departmentRepository.existsById(departmentId);
-    }
-
-    // 指定した役職が存在するか確認
-    public boolean jobExists(Integer jobId) {
-        return jobId != null && jobRepository.existsById(jobId);
-    }
-
-    // 指定した部署の名称の取得
-    public String departmentNameOf(Integer departmentId) {
-        // 部署なし（DEPARTMENT_ID が NULL）の社員もいるので、そのときは空欄にする
-        if (departmentId == null) {
-            return "";
-        }
-        return departmentRepository.findById(departmentId)
-                .map(Department::getDepartmentName).orElse("");
-    }
-
-    // 指定した役職の名称の取得
-    public String jobNameOf(Integer jobId) {
-        return jobRepository.findById(jobId).map(Job::getJobName).orElse("");
     }
 }

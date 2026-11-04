@@ -43,18 +43,19 @@
     <tr>
       <th>氏名</th><th>部署</th><th>役職</th><th>月給</th><th>入社日</th><th></th>
     </tr>
-    <tr th:each="row : ${employees}">
-      <td th:text="${row.employeeName}">氏名</td>
-      <td th:text="${row.departmentName}">部署</td>
-      <td th:text="${row.jobName}">役職</td>
-      <td th:text="${row.salaryText}">月給</td>
-      <td th:text="${row.entranceDateText}">入社日</td>
+    <!-- 部署・役職は @ManyToOne の関連をたどって表示する（部署なしの社員は department が null） -->
+    <tr th:each="employee : ${employees}">
+      <td th:text="${employee.employeeName}">氏名</td>
+      <td th:text="${employee.department?.departmentName}">部署</td>
+      <td th:text="${employee.job.jobName}">役職</td>
+      <td th:text="${#numbers.formatInteger(employee.salary, 1, 'COMMA')} + '円'">月給</td>
+      <td th:text="${employee.entranceDate}">入社日</td>
       <td>
-        <form method="get" th:action="@{|/employees/${row.employeeId}/edit|}"
+        <form method="get" th:action="@{|/employees/${employee.employeeId}/edit|}"
               style="display:inline">
           <button class="edit" type="submit">編集</button>
         </form>
-        <form method="post" th:action="@{|/employees/${row.employeeId}/delete|}"
+        <form method="post" th:action="@{|/employees/${employee.employeeId}/delete|}"
               style="display:inline">
           <button class="delete" type="submit">削除</button>
         </form>

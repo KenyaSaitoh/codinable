@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,32 @@ public final class EmployeeDao {
             statement.setString(3, employee.name());
             statement.setBigDecimal(4, employee.salary());
         });
+    }
+
+    // 社員の登録（社員番号はDBの自動採番に任せ、採番された社員番号を返す）
+    public int insertAndReturnId(Employee employee) throws SQLException {
+        String sql = "INSERT INTO EMPLOYEE "
+                + "(DEPARTMENT_ID, EMPLOYEE_NAME, SALARY) VALUES (?, ?, ?)";
+        try (Connection connection = connectionProvider.open()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql,
+                    Statement.RETURN_GENERATED_KEYS)) {
+                statement.setInt(1, employee.departmentId());
+                statement.setString(2, employee.name());
+                statement.setBigDecimal(3, employee.salary());
+                statement.executeUpdate();
+                // 採番されたキーをResultSetとして受け取る
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    generatedKeys.next();
+                    int generatedId = generatedKeys.getInt(1);
+                    connection.commit();
+                    return generatedId;
+                }
+            } catch (SQLException | RuntimeException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        }
     }
 
     // リポジトリメソッド：主キー検索によって社員の取得
@@ -76,6 +103,34 @@ public final class EmployeeDao {
             statement.setBigDecimal(3, employee.salary());
             statement.setInt(4, employee.id());
         });
+    }
+
+    // 楽観ロック：読み取り時のバージョン番号（expectedVersion）と一致する場合だけ給与を更新する
+    // 他者が先に更新してVERSIONが進んでいれば、更新件数0が返る
+    public int updateSalaryWithVersion(int employeeId, BigDecimal newSalary, int expectedVersion)
+            throws SQLException {
+        String sql = "UPDATE EMPLOYEE SET SALARY = ?, VERSION = VERSION + 1 "
+                + "WHERE EMPLOYEE_ID = ? AND VERSION = ?";
+        return executeUpdate(sql, statement -> {
+            statement.setBigDecimal(1, newSalary);
+            statement.setInt(2, employeeId);
+            statement.setInt(3, expectedVersion);
+        });
+    }
+
+    // 楽観ロック：社員の現在のバージョン番号を取得する
+    public int findVersionById(int employeeId) throws SQLException {
+        String sql = "SELECT VERSION FROM EMPLOYEE WHERE EMPLOYEE_ID = ?";
+        try (Connection connection = connectionProvider.open();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, employeeId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    throw new SQLException("Employee not found: " + employeeId);
+                }
+                return resultSet.getInt("VERSION");
+            }
+        }
     }
 
     // 一括更新：部署の全社員の給与を加算し、更新件数を返す

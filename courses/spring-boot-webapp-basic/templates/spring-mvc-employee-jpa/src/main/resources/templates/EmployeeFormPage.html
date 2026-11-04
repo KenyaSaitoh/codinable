@@ -10,12 +10,13 @@
 
   <form id="employeeForm" method="post" th:object="${employeeParam}"
         th:action="${employeeParam.employeeId} == null ? @{/employees} : @{|/employees/${employeeParam.employeeId}|}">
+    <!-- 編集を始めたときの version を隠し項目として保持し、更新のときに Service へ渡す -->
     <input type="hidden" name="version" th:value="*{version}" />
     <label for="employeeName">氏名</label>
     <input id="employeeName" name="employeeName" type="text" th:value="*{employeeName}" />
     <label for="formDepartmentId">部署</label>
     <select id="formDepartmentId" name="departmentId">
-      <option value="">選択してください</option>
+      <option value="">（所属なし）</option>
       <option th:each="department : ${departments}" th:value="${department.departmentId}"
               th:text="${department.departmentName}"
               th:selected="${department.departmentId} == *{departmentId}">部署</option>

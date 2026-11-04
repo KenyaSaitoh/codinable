@@ -33,7 +33,7 @@
 id: spring-boot-webapp-basic
 order: 2
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.5.1
+version: 1.6.0
 
 names:
   ja: Spring Boot Webアプリ基礎

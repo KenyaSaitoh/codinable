@@ -5,8 +5,10 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import pro.kensait.spring.employee.entity.Department;
 import pro.kensait.spring.employee.entity.Employee;
-/** 社員入力フォーム */
+import pro.kensait.spring.employee.entity.Job;
+/** 社員入力フォーム（部署と役職は ID で受け取り、エンティティへの変換時に関連へ置き換える） */
 public class EmployeeParam {
     private static final int NAME_MAX = 30;
     private static final int SALARY_MAX = 9_999_999;
@@ -19,8 +21,8 @@ public class EmployeeParam {
     private String entranceDate = "";
     private Integer version;
 
-    // 社員パラメータの検証
-    public List<String> validate(boolean departmentExists, boolean jobExists) {
+    // 社員パラメータの検証（部署は任意、役職は必須）
+    public List<String> validate(Department department, Job job) {
         List<String> errors = new ArrayList<>();
         String name = employeeName == null ? "" : employeeName.strip();
         if (name.isEmpty()) {
@@ -28,10 +30,10 @@ public class EmployeeParam {
         } else if (name.codePointCount(0, name.length()) > NAME_MAX) {
             errors.add("氏名は30文字以内で入力してください");
         }
-        if (!departmentExists) {
+        if (departmentId != null && department == null) {
             errors.add("部署を選んでください");
         }
-        if (!jobExists) {
+        if (job == null) {
             errors.add("役職を選んでください");
         }
         if (salaryValue() == null) {
@@ -62,12 +64,12 @@ public class EmployeeParam {
         }
     }
 
-    // リクエストを社員エンティティへの変換
-    public Employee toEmployee() {
+    // リクエストを社員エンティティへの変換（部署と役職は取得済みのエンティティを受け取る）
+    public Employee toEmployee(Department department, Job job) {
         Employee employee = new Employee();
         employee.setEmployeeName(employeeName == null ? null : employeeName.strip());
-        employee.setDepartmentId(departmentId);
-        employee.setJobId(jobId);
+        employee.setDepartment(department);
+        employee.setJob(job);
         employee.setSalary(salaryValue());
         employee.setEntranceDate(entranceDateValue());
         return employee;
@@ -78,8 +80,9 @@ public class EmployeeParam {
         EmployeeParam param = new EmployeeParam();
         param.employeeId = employee.getEmployeeId();
         param.employeeName = employee.getEmployeeName();
-        param.departmentId = employee.getDepartmentId();
-        param.jobId = employee.getJobId();
+        param.departmentId = employee.getDepartment() == null ? null
+                : employee.getDepartment().getDepartmentId();
+        param.jobId = employee.getJob().getJobId();
         param.salary = String.valueOf(employee.getSalary());
         param.entranceDate = String.valueOf(employee.getEntranceDate());
         param.version = employee.getVersion();

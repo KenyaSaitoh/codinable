@@ -12,9 +12,24 @@
 - 一括昇給: 全社員を更新できた場合だけ commit する。途中の制約違反や、存在しない社員への更新 0 件は全体を rollback する。
 - savepoint: 名前の変更後に savepoint を置き、給与だけ取り消して名前は確定する。給与更新自体が失敗した場合は名前も取り消す。
 - CallableStatement: `registerOutParameter` で登録した OUT 引数から部署の社員数を受け取る。プロシージャの DDL は HSQLDB 固有。
+- 分離レベル: `applyRaises` の冒頭で `connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED)` を呼び、トランザクションの分離レベルを明示する。HSQLDB の接続の既定も READ_COMMITTED なので、`Connection.getTransactionIsolation()` は設定の前後とも `TRANSACTION_READ_COMMITTED`（定数値 2）を返し、昇給の結果は変わらない。
 
 batch はトランザクションそのものではありません。成功時でもドライバが更新件数を返せず `SUCCESS_NO_INFO` を返す場合があります。
 例外時の rollback がさらに失敗した場合は、元の例外の suppressed 例外として保持します。取得した接続は Service が所有して閉じます。
+
+## 主なファイル
+
+| ファイル | 役割 |
+|---|---|
+| `src/main/java/pro/kensait/db/transaction/PayrollService.java` | 一括昇給（分離レベルの明示・addBatch・commit／rollback）、savepoint、CallableStatement |
+| `src/test/java/pro/kensait/db/transaction/PayrollServiceTest.java` | テーブルとストアドプロシージャの作成、初期データの投入、各メソッドの検証 |
+
+## 結果のどこを見るか
+
+- `commitsBatchAndCallsStoredProcedure`: 一括昇給の更新件数 `[1, 1]` と、OUT 引数で受け取った部署 3 の社員数 5。
+- `appliesRaisesUnderReadCommitted`: `getTransactionIsolation()` が `Connection.TRANSACTION_READ_COMMITTED`（2）を返し、READ_COMMITTED を明示した `applyRaises` でも Dave の給与が 410000.00 になること。
+- `rollsBackWholeBatchOnConstraintViolation`・`rollsBackWholeBatchWhenEmployeeIsMissing`: 途中で失敗すると先に済んだ更新も元に戻ること。
+- `rollsBackOnlyToSavepoint`・`rollsBackNameWhenSalaryUpdateFails`: savepoint までの限定ロールバックと、給与更新の失敗時に名前も戻ること。
 
 ## Codinable での動かし方
 

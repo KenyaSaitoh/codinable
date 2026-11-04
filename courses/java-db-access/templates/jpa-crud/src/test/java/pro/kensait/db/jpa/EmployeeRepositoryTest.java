@@ -57,4 +57,32 @@ class EmployeeRepositoryTest {
         assertTrue(repository.find(entityManager, 10017).isEmpty());
         entityManager.close();
     }
+
+    // 「callInTransaction による登録と検索」の検証
+    // JPA 3.2 の EntityManagerFactory.callInTransaction は、EntityManager の生成・begin・commit
+    // （例外時は rollback）・close をまとめて行う。上のテストの begin〜commit の定型を書かずに済む
+    @Test
+    void persistsAndFindsEntityWithCallInTransaction() {
+        EmployeeRepository repository = new EmployeeRepository();
+
+        // 登録（トランザクションは callInTransaction が開始・コミットする）
+        Integer id = factory.callInTransaction(entityManager -> {
+            Employee employee = new Employee(10018, 3, "Xavier", new BigDecimal("240000"));
+            repository.add(entityManager, employee);
+            return employee.getId();
+        });
+        assertEquals(10018, id);
+
+        // 別のトランザクション（別の EntityManager）で検索する
+        Employee found = factory.callInTransaction(
+                entityManager -> repository.find(entityManager, id).orElseThrow());
+        assertEquals("Xavier", found.getName());
+        assertEquals(new BigDecimal("240000.00"), found.getSalary());
+
+        // 後始末（戻り値が要らないときは runInTransaction）
+        factory.runInTransaction(entityManager -> repository.find(entityManager, id)
+                .ifPresent(employee -> repository.remove(entityManager, employee)));
+        assertTrue(factory.callInTransaction(
+                entityManager -> repository.find(entityManager, id)).isEmpty());
+    }
 }

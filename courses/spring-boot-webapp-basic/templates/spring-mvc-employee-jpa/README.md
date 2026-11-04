@@ -2,6 +2,8 @@
 
 チャプター 8.1「Spring Data JPAと永続化コンテキスト」で使うサンプルです。
 JDBC 版と同じ画面・URL のまま、永続化を `JpaRepository` と JPQL、`Pageable` に置き換えています。
+部署と役職は ID ではなく `@ManyToOne` の関連として持ち、更新の競合は `@Version` で、
+論理削除と更新は永続化コンテキストの変更の検出（ダーティチェック）で反映します。
 
 ## 動かし方
 
@@ -18,9 +20,18 @@ HSQLDB サーバーの起動や初期化は要りません。登録・更新し�
 
 ## 主なファイル
 
-- `src/main/java/pro/kensait/spring/employee/repository/EmployeeRepository.java` … JpaRepository と JPQL
-- `src/main/java/pro/kensait/spring/employee/entity/Employee.java` … エンティティ
-- `src/main/java/pro/kensait/spring/employee/service/EmployeeService.java` … トランザクションと更新競合
+- `src/main/java/pro/kensait/spring/employee/entity/Employee.java`、`Department.java`、`Job.java` … `@Entity`・`@Table`・`@Column` のマッピング、`@ManyToOne` の関連、`@Version`
+- `src/main/java/pro/kensait/spring/employee/repository/EmployeeRepository.java` … `JpaRepository` と JPQL（部署は `LEFT JOIN`。部署なしの社員を落とさない）
+- `src/main/java/pro/kensait/spring/employee/service/EmployeeService.java` … `create`（save で採番）、`update`（version の比較と `OptimisticLockException` → `ConflictException`）、`delete`（状態の変更だけ）
+- `src/main/java/pro/kensait/spring/employee/web/EmployeeController.java`、`EmployeeParam.java` … 部署・役職を ID で受け取り、エンティティを取得して関連に設定する
+- `src/main/resources/templates/EmployeeListPage.html`、`EmployeeFormPage.html` … 一覧（`employee.department?.departmentName` で関連をたどる）と、登録・編集画面（version を hidden で保持）
+
+## 結果のどこを見るか
+
+- 実行ログに Hibernate が発行する SQL が出る。一覧の検索では部署を `left join` した SELECT と件数の SELECT COUNT が、登録では INSERT に続いて社員コードの UPDATE が出る
+- 更新では、`VERSION` を条件に含み、`VERSION` を 1 増やす UPDATE が出る。アプリケーションは version の値を設定していない（`Employee` に `setVersion` は無い）
+- 削除では `STATUS` だけを変える UPDATE が出る。`EmployeeService#delete` は `setStatus` を呼ぶだけで、`save` は呼んでいない
+- 同じ社員を 2 つのタブで編集し、後から保存すると「ほかの人が先に更新しました」になる
 
 <!-- schema:begin -->
 <!-- この節は desktop/scripts/build-schema-docs.js が DDL から作っている。

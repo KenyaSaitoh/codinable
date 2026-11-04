@@ -18,12 +18,37 @@
 
 1. 下の「この演習で使うテーブル」（テーブル構成・初期データ。元は `sql/hsqldb/2_*.sql` と `3_*.sql`）を確認する。
 2. `src/main/resources/META-INF/persistence.xml` とエンティティの注釈を確認する。
-3. **▶ アプリ実行** で main を動かし、SQL・取得結果・更新後のデータを照合する。
+3. `CriteriaMain1`（固定の条件）→ `CriteriaMain2`（任意の条件を文字列の属性名で組み立てる）→
+   `CriteriaMain3`（同じ検索を静的メタモデル `Employee_` で書く）の順に読む。
+4. **▶ アプリ実行** で main を動かし、SQL・取得結果を照合する。
+
+## 主なファイル
+
+- `src/main/java/pro/kensait/jpa/company/entity/Employee.java`・`Department.java` — エンティティ
+- `src/main/java/pro/kensait/jpa/company/main/CriteriaMain1.java` — 部署 ID と月給の固定条件を Criteria API で組み立てる
+- `src/main/java/pro/kensait/jpa/company/main/CriteriaMain2.java` — 部署 ID・月給の下限・上限を任意条件にする。属性は `employee.get("salary")` のように文字列で指定する
+- `src/main/java/pro/kensait/jpa/company/main/CriteriaMain3.java` — 部署 ID・月給の下限・氏名の部分一致を任意条件にする。属性は静的メタモデル
+  `Employee_.salary`・`Employee_.employeeName`・`Employee_.department`（と `Department_.departmentId`）で指定する
+- `build/generated/sources/annotationProcessor/java/main/.../Employee_.java` — 注釈プロセッサ `hibernate-processor` がコンパイル時に生成する静的メタモデル
+  （`build.gradle` の `annotationProcessor` 行で有効にしている。手で書くファイルではない）
+
+## 静的メタモデルと LIKE のエスケープ（CriteriaMain3）
+
+`CriteriaMain2` のように属性名を文字列で書くと、綴りの誤りや型の不一致は実行するまで分かりません。
+静的メタモデル（`Employee_`）を使うと `employee.get(Employee_.salary)` のように属性を型付きで参照でき、誤りがコンパイルエラーになります。
+`Employee_` はエンティティから注釈プロセッサが生成するので、エンティティを変えればメタモデルも追従します。
+
+`CriteriaMain3` の氏名条件は `cb.like(path, "%" + 入力 + "%", '\\')` のように第 3 引数でエスケープ文字を指定しています。
+LIKE では `%`（任意の文字列）と `_`（任意の 1 文字）がワイルドカードなので、利用者の入力に含まれる `%` や `_` をそのまま渡すと、
+「`%` を含む氏名」を探したつもりが全件に一致する、といったことが起こります。
+入力側の `%`・`_`・`\` を `\` で前置きしてからパターンに組み込み、その `\` をエスケープ文字として宣言するのが定石です
+（TEST4 は氏名に `%` を含む社員の検索で、エスケープしているので 0 件になります）。
 
 ## 実行する main（mains.txt の順）
 
 - `pro.kensait.jpa.company.main.CriteriaMain1`
 - `pro.kensait.jpa.company.main.CriteriaMain2`
+- `pro.kensait.jpa.company.main.CriteriaMain3`
 
 <!-- schema:begin -->
 <!-- この節は desktop/scripts/build-schema-docs.js が DDL から作っている。

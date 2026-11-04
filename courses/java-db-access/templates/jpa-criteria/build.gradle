@@ -34,6 +34,10 @@ dependencies {
     implementation 'jakarta.persistence:jakarta.persistence-api:3.2.0'
     // 親では Spring Boot 4.1.0 の依存管理で解決していた版（7.4.1.Final）を直書きする
     implementation 'org.hibernate.orm:hibernate-core:7.4.1.Final'
+    // 静的メタモデル（Employee_ / Department_）をコンパイル時に生成する注釈プロセッサ
+    // （Hibernate 7 では hibernate-processor。6.x までの hibernate-jpamodelgen に当たる）
+    // 生成先は build/generated/sources/annotationProcessor/java/main。CriteriaMain3 が使う
+    annotationProcessor 'org.hibernate.orm:hibernate-processor:7.4.1.Final'
     // 元は $rootDir/hsqldb/lib/hsqldb.jar（2.7.4）を直接参照していた
     implementation 'org.hsqldb:hsqldb:2.7.4'
 }

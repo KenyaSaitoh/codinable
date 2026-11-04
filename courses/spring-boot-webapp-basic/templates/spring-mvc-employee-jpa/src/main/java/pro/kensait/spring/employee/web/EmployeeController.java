@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import pro.kensait.spring.employee.entity.Employee;
+import pro.kensait.spring.employee.entity.Department;
 import pro.kensait.spring.employee.entity.EmployeeSearchCriteria;
+import pro.kensait.spring.employee.entity.Job;
 import pro.kensait.spring.employee.service.ConflictException;
 import pro.kensait.spring.employee.service.EmployeeService;
 import pro.kensait.spring.employee.service.EmployeePage;
@@ -30,11 +31,6 @@ public class EmployeeController {
     public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
-    /** 一覧画面の1行 */
-    public record EmployeeRow(Integer employeeId, String employeeName, String departmentName,
-            String jobName, String salaryText, String entranceDateText) {
-    }
-
     // 初期画面の表示
     @GetMapping({"/", "/employees"})
     public String index(@ModelAttribute EmployeeSearchCriteria criteria,
@@ -90,18 +86,19 @@ public class EmployeeController {
 
     // データの保存
     private String save(EmployeeParam employeeParam, Model model, boolean creating) {
-        List<String> errors = employeeParam.validate(
-                employeeService.departmentExists(employeeParam.getDepartmentId()),
-                employeeService.jobExists(employeeParam.getJobId()));
+        // 部署と役職は画面から ID で受け取り、エンティティを取得して関連に設定する
+        Department department = employeeService.department(employeeParam.getDepartmentId());
+        Job job = employeeService.job(employeeParam.getJobId());
+        List<String> errors = employeeParam.validate(department, job);
         if (!errors.isEmpty()) {
             return form(employeeParam, errors, model);
         }
         try {
             if (creating) {
-                employeeService.create(employeeParam.toEmployee());
+                employeeService.create(employeeParam.toEmployee(department, job));
             } else {
                 employeeService.update(employeeParam.getEmployeeId(),
-                        employeeParam.toEmployee(), employeeParam.getVersion());
+                        employeeParam.toEmployee(department, job), employeeParam.getVersion());
             }
         } catch (ConflictException | NotFoundException exception) {
             return form(employeeParam, List.of(exception.getMessage()), model);
@@ -129,7 +126,8 @@ public class EmployeeController {
             messages.add(exception.getMessage());
             found = EmployeePage.empty();
         }
-        model.addAttribute("employees", found.content().stream().map(this::row).toList());
+        // 一覧にはエンティティをそのまま渡し、部署名・役職名は画面で関連をたどって表示する
+        model.addAttribute("employees", found.content());
         model.addAttribute("keyword",
                 criteria.getKeyword() == null ? "" : criteria.getKeyword());
         model.addAttribute("departmentId", criteria.getDepartmentId());
@@ -146,14 +144,5 @@ public class EmployeeController {
         model.addAttribute("hasNext", current < found.totalPages());
         model.addAttribute("errors", messages);
         return "EmployeeListPage";
-    }
-
-    // 行の実行
-    private EmployeeRow row(Employee employee) {
-        return new EmployeeRow(employee.getEmployeeId(), employee.getEmployeeName(),
-                employeeService.departmentNameOf(employee.getDepartmentId()),
-                employeeService.jobNameOf(employee.getJobId()),
-                String.format("%,d円", employee.getSalary()),
-                String.valueOf(employee.getEntranceDate()));
     }
 }
