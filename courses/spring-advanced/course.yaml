@@ -33,7 +33,7 @@
 id: spring-advanced
 order: 3
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.8.1
+version: 1.8.2
 
 names:
   ja: Spring FW 高度な仕組み
@@ -79,7 +79,7 @@ chapters:
     ja: '耐障害性の向上とリトライ・サーキットブレーカー'
     en: 'Handling Failures with Retries and Circuit Breakers'
   10:
-    ja: 'Springの観測・監視機能'
+    ja: '観測・監視機能'
     en: 'Observability and Monitoring in Spring'
 
 exercises:
@@ -367,7 +367,7 @@ exercises:
   # ── チャプター10: 観測・監視 ─────────────────────────────
   - id: spring-actuator-employee
     chapter: 10
-    lesson: '10.1 Springの観測・監視機能'
+    lesson: '10.1 観測・監視機能'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/actuator/health'
@@ -394,7 +394,7 @@ exercises:
 
   - id: spring-observability-employee
     chapter: 10
-    lesson: '10.1 Springの観測・監視機能'
+    lesson: '10.1 観測・監視機能'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/employees/10001'
