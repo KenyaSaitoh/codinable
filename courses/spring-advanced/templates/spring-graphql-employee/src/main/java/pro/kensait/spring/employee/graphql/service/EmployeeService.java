@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,12 +24,9 @@ public class EmployeeService {
     private static final Logger logger = LoggerFactory.getLogger(
             EmployeeService.class);
 
-    // インジェクションポイント
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
-    @Autowired
-    private DepartmentRepository departmentRepository;
+    private final DepartmentRepository departmentRepository;
 
     // コンストラクタ
     public EmployeeService(EmployeeRepository employeeRepository,
@@ -39,7 +35,7 @@ public class EmployeeService {
         this.departmentRepository = departmentRepository;
     }
 
-    // 社員による部署の実行
+    // 部署ごとの社員をまとめて取得
     @Transactional(readOnly = true)
     public java.util.Map<Department, List<Employee>> employeesByDepartments(List<Department> departments) {
         List<Employee> employees = employeeRepository.findByDepartmentIds(

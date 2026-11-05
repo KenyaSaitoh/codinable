@@ -27,10 +27,9 @@ public class CalcDAO {
     }
 
     // 最大の ID に 1 を足して採番し、保存する
-    public synchronized int save(CalcResult calc) {
+    public synchronized void save(CalcResult calc) {
         int nextId = calcMap.keySet().stream().mapToInt(Integer::intValue).max().orElse(0) + 1;
         calc.setId(nextId);
         calcMap.put(nextId, calc);
-        return 1;
     }
 }

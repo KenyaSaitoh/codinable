@@ -17,12 +17,15 @@
 |---|---|
 | `01_call_api.sh` | 社員 API を呼んでメトリクスを発生させる |
 | `02_health.sh`〜`03_info.sh` | `/actuator/health`・`/actuator/info` |
+| `14_health_probes.sh` | `/actuator/health/liveness`・`/actuator/health/readiness` |
 | `04_metrics.sh`〜`07_http_server_requests.sh` | メトリクス名の一覧、カスタムカウンター、JVM、HTTP リクエストの統計 |
 | `08_env.sh`〜`09_env_property.sh` | 設定値の一覧と 1 項目 |
 | `10_loggers.sh`〜`11_change_log_level.sh` | ログレベルの一覧と、再起動なしの変更 |
 | `12_mappings.sh`〜`13_beans.sh` | リクエストマッピングと Bean の一覧 |
 
 - `/actuator/health` … `components.database` にカスタムの `DatabaseHealthIndicator` の結果（DB 名と社員件数）が出ます
+- `/actuator/health/liveness` … プロセスが動き続けられるか（`livenessState` だけで判定し、`{"status":"UP"}` を返す。DOWN なら再起動の対象）
+- `/actuator/health/readiness` … 要求を受け付けられるか（`readinessState` と `database` で判定する。DOWN なら 503 を返し、振り分けの対象から外す）
 - `/actuator/info` … `info.app.*` と `AppInfoContributor` の起動時刻・Java バージョン
 - `/actuator/metrics` … `employee.get.count`（カスタムカウンター）、`http.server.requests`、`jvm.memory.used` など
 - `/actuator/env`・`/actuator/loggers`・`/actuator/mappings`・`/actuator/beans` も公開しています
@@ -31,6 +34,6 @@
 
 ## 主なファイル
 
-- `src/main/resources/application.yml` … 公開するエンドポイントと health の詳細表示
+- `src/main/resources/application.yml` … 公開するエンドポイント、health の詳細表示、`management.endpoint.health.probes.enabled` と readiness のグループ
 - `src/main/java/pro/kensait/spring/employee/rest/health/DatabaseHealthIndicator.java` … カスタムの HealthIndicator
 - `src/main/java/pro/kensait/spring/employee/rest/service/EmployeeService.java` … `MeterRegistry` によるカスタムカウンター

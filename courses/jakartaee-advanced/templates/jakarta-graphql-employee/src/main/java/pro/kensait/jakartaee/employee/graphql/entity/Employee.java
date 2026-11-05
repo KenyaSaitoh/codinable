@@ -18,23 +18,23 @@ import org.eclipse.microprofile.graphql.NonNull;
 @Entity
 @Table(name = "EMPLOYEE")
 public class Employee {
-    @jakarta.persistence.Id // 【1】
+    @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EMPLOYEE_ID")
-    @Name("id") @Id @NonNull // 【2】
+    @Name("id") @Id @NonNull // 【1】
     private Integer employeeId;
     @Column(name = "EMPLOYEE_NAME")
-    @NonNull // 【3】
+    @NonNull // 【2】
     private String employeeName;
     @ManyToOne
     @JoinColumn(name = "DEPARTMENT_ID")
-    private Department department; // 【4】
+    private Department department; // 【3】
     @Column(name = "JOB_NAME")
     private String jobName;
     @Column(name = "SALARY")
     private Integer salary;
     @Column(name = "ENTRANCE_DATE")
-    private LocalDate entranceDate; // 【5】
+    private LocalDate entranceDate; // 【4】
 
     public Employee() {
     }

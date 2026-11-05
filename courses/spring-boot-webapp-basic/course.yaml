@@ -33,7 +33,7 @@
 id: spring-boot-webapp-basic
 order: 2
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.6.0
+version: 1.6.1
 
 names:
   ja: Spring Boot Webアプリ基礎
@@ -392,12 +392,12 @@ exercises:
       en: Return a file with Resource and ResponseEntity
     descriptions:
       ja: >-
-        C:/tmp/output の下のファイルを Content-Disposition 付きで返します。
+        プロジェクト直下の download フォルダのファイルを Content-Disposition 付きで返します。
         先に scripts/01_prepare_sample.sh を開いてエディタの右上の ▶ 実行でファイルを用意し、
         ▶ アプリ実行で起動してから scripts/02_download.sh を ▶ 実行して、応答ヘッダーと中身を確かめてください。
         Web ブラウザで http://localhost:8080/download/sample.txt を開くと、ファイルとして保存されます。
       en: >-
-        Returns a file under C:/tmp/output with a Content-Disposition header.
+        Returns a file in the project's download folder with a Content-Disposition header.
         First open scripts/01_prepare_sample.sh and press ▶ Run at the top right of the editor to create the file,
         start the app with ▶ Run app, then run scripts/02_download.sh the same way to see the headers and the body.
         Opening http://localhost:8080/download/sample.txt in a web browser saves it as a file.

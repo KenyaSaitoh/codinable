@@ -32,7 +32,7 @@ public class CalcService {
         return save(param1, param2, CalcType.SUBTRACT, result);
     }
 
-    // 保存してから上限を判定する。上限を超えた場合も、履歴には結果が残る（チャプター7.1「検証と保存の順序」）
+    // 保存してから上限を判定する。上限を超えた場合も、履歴には結果が残る
     public int multiply(BigDecimal param1, BigDecimal param2)
             throws LimitOverException {
         BigDecimal result = param1.multiply(param2)

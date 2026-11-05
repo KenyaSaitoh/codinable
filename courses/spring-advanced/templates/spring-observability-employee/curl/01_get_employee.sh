@@ -5,7 +5,8 @@
 #   {"employeeId":10001,"employeeName":"Alice","departmentId":3,"departmentName":"SALES","jobName":"MANAGER","salary":500000,"hireDate":"2012-04-01"}
 # 出力タブのアプリのログには、次の形式でtraceId/spanIdが出る
 #   ... INFO [spring-observability-employee,64f3a1b2c3d4e5f6a7b8c9d0e1f2a3b4,8a21b3c4d5e6f7a8] ... EmployeeApi : [ EmployeeApi#get ]
-#   ... INFO [spring-observability-employee,64f3a1b2c3d4e5f6a7b8c9d0e1f2a3b4,9b32c4d5e6f7a8b9] ... EmployeeService : [ EmployeeService#getEmployee ]
-# ※同一リクエスト内はtraceIdが同じで、spanIdが処理単位で変わることを確かめる
+#   ... INFO [spring-observability-employee,64f3a1b2c3d4e5f6a7b8c9d0e1f2a3b4,8a21b3c4d5e6f7a8] ... EmployeeService : [ EmployeeService#getEmployee ]
+# ※同一リクエスト内はtraceIdが同じ。この2行はObservationの開始前に出すので、spanIdも同じになる
+#   （spanIdが変わる例は 02_get_employees.sh の EmployeeApi#getAll と getEmployeesAll）
 set -x
 curl -sS -i localhost:8080/employees/10001

@@ -25,16 +25,16 @@ public class NoticeSessions {
     }
 
     public void sendTo(Session session, Object message) {
-        if (!session.isOpen()) { // 【3】
+        if (!session.isOpen()) {
             remove(session);
             return;
         }
         try {
-            synchronized (session) { // 【4】
+            synchronized (session) { // 【3】
                 session.getBasicRemote().sendObject(message);
             }
         } catch (IOException | EncodeException e) {
-            remove(session); // 【5】
+            remove(session); // 【4】
         }
     }
 }

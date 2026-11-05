@@ -62,7 +62,7 @@ public class EmployeeService {
 
     // 指定した役職の在籍中の社員（メソッド名による問い合わせ）
     public List<Employee> findByJob(Integer jobId) {
-        return employeeRepository.findByStatusAndJobJobIdOrderByEmployeeId(
+        return employeeRepository.findByStatusAndJob_JobIdOrderByEmployeeId(
                 Employee.ACTIVE, jobId);
     }
 

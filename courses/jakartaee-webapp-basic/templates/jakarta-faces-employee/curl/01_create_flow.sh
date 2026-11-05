@@ -5,7 +5,7 @@
 #   1. 「新規登録」の POST は 302 で、入力画面の URL に cid（会話ID）が付く（toCreate が会話を開始）
 #   2. 氏名を空欄で「確認」すると、入力画面に必須のエラーが出る（@NotEmpty）
 #   3. 入力して「確認」すると、確認画面に入力値が出る（同じ会話の EmployeeEditBean）
-#   4. 「確定」で一覧へリダイレクトし、10017 の Zoe が増えている（update が会話を終了）
+#   4. 「確定」で一覧へリダイレクトし、10017 の Walter が増えている（update が会話を終了）
 BASE=http://localhost:8080/jakarta-faces-employee
 jar=$(mktemp)
 vs() { sed -n 's/.*name="jakarta.faces.ViewState"[^>]*value="\([^"]*\)".*/\1/p'; }
@@ -28,7 +28,7 @@ send() {
     --data-urlencode "jakarta.faces.ViewState=$(echo "$page" | vs)"
 }
 send "" SALES 300000 | grep -oE '<span style="color: red">[^<]*</span>'
-confirm=$(send Zoe SALES 300000 | loc)
+confirm=$(send Walter SALES 300000 | loc)
 echo "確認画面: $confirm"
 page=$(curl -sS -c "$jar" -b "$jar" "$confirm")
 echo "$page" | grep -E '<div>'

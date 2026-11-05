@@ -147,7 +147,7 @@ public class EmployeeGraphqlController {
         return department.getDepartmentId();
     }
 
-    // 部署ごとのクエリを一括化してN+1を防ぐ空の部署にも空リストの返却
+    // 部署ごとのクエリを一括化してN+1を防ぐ。社員のいない部署にも空のリストを返す
     @BatchMapping(typeName = "Department", field = "employees")
     public java.util.Map<Department, List<Employee>> employees(List<Department> departments) {
         return employeeService.employeesByDepartments(departments);

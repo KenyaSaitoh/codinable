@@ -4,8 +4,8 @@
 # 期待する結果: HTTP/1.1 200
 #   {"status":"UP"}
 # トレースの確認（Jaegerを立てている場合。README.md の手順で Docker から起動する）
-#   リクエストを何回か送り、ブラウザで http://localhost:16686 を開いてサービス名
+#   リクエストを何回か送り、Webブラウザで http://localhost:16686 を開いてサービス名
 #   spring-observability-employee を選択すると、
-#   HTTP受信 → employee.get → SQL発行 がスパンの階層として表示される
+#   HTTP受信（親）→ employee.get（子）がスパンの階層として表示される（SQLのスパンはない）
 set -x
 curl -sS -i localhost:8080/actuator/health

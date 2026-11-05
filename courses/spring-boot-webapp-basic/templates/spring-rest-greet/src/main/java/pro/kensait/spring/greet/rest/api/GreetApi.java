@@ -55,7 +55,7 @@ public class GreetApi {
         return ResponseEntity.ok().body(result);
     }
 
-    // APIメソッド：POST + フォーム
+    // APIメソッド：POST + JSON本文
     // saygoodeveningの実行
     @PostMapping(path = "/evening")
     public ResponseEntity<String> sayGoodEvening(

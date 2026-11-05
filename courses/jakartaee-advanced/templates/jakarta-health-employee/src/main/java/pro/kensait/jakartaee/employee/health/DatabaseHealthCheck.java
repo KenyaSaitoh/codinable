@@ -18,19 +18,19 @@ public class DatabaseHealthCheck implements HealthCheck {
     private EntityManager entityManager;
 
     @Override
-    public HealthCheckResponse call() { // 【2】
+    public HealthCheckResponse call() {
         try {
             Long count = entityManager
                     .createQuery("SELECT COUNT(e) FROM Employee e", Long.class)
-                    .getSingleResult(); // 【3】
+                    .getSingleResult(); // 【2】
             return HealthCheckResponse.named("database")
                     .up()
-                    .withData("employeeCount", count) // 【4】
+                    .withData("employeeCount", count) // 【3】
                     .build();
         } catch (RuntimeException ex) {
             return HealthCheckResponse.named("database")
                     .down()
-                    .withData("error", ex.getClass().getSimpleName()) // 【5】
+                    .withData("error", ex.getClass().getSimpleName()) // 【4】
                     .build();
         }
     }

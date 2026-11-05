@@ -53,7 +53,7 @@ public class EmployeeResource {
     public Response create(@Valid Employee input, @Context UriInfo uriInfo) {
         Employee result = service.save(null, input);
         URI location = uriInfo.getAbsolutePathBuilder()
-                .path(String.valueOf(result.employeeId())).build(); // 【3】
+                .path(String.valueOf(result.employeeId())).build();
         return Response.created(location).entity(result).build();
     }
 

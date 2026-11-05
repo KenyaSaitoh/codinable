@@ -33,7 +33,7 @@
 id: java-db-access
 order: 9
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.4.0
+version: 1.5.0
 
 names:
   ja: Java DBアクセス
@@ -63,38 +63,47 @@ chapters:
     ja: 'JDBCの接続・CRUD・トランザクション'
     en: 'JDBC Connections, CRUD and Transactions'
   4:
+    ja: 'JDBCの同時更新と分離レベル'
+    en: 'Concurrent Updates and Isolation Levels with JDBC'
+  5:
     ja: 'Table Data GatewayとMyBatisの基本'
     en: 'Table Data Gateway and MyBatis Basics'
-  5:
-    ja: 'Data MapperとJPAの基本'
-    en: 'Data Mapper and JPA Basics'
   6:
-    ja: '同時更新と楽観ロック・悲観ロック'
-    en: 'Concurrent Updates with Optimistic and Pessimistic Locking'
+    ja: 'MyBatisの楽観ロック・悲観ロック'
+    en: 'Optimistic and Pessimistic Locking with MyBatis'
   7:
-    ja: '関連の読み込み方式とMyBatis'
+    ja: 'MyBatisの関連の読み込み方式'
     en: 'Loading Associations with MyBatis'
   8:
+    ja: 'MyBatisの動的SQL'
+    en: 'Dynamic SQL with MyBatis'
+  9:
+    ja: 'Data MapperとJPAの基本'
+    en: 'Data Mapper and JPA Basics'
+  10:
+    ja: 'JPAの楽観ロック・悲観ロック'
+    en: 'Optimistic and Pessimistic Locking with JPA'
+  11:
     ja: 'JPAの関連・フェッチ・カスケード'
     en: 'JPA Associations, Fetching and Cascading'
-  9:
+  12:
     ja: 'JPQLの検索・結合・集約'
     en: 'JPQL Queries, Joins and Aggregation'
-  10:
+  13:
     ja: 'JPAの一括更新とネイティブSQL'
     en: 'JPA Bulk Updates and Native SQL'
-  11:
-    ja: 'MyBatisとCriteria APIの動的検索'
-    en: 'Dynamic Queries with MyBatis and the Criteria API'
-  12:
+  14:
+    ja: 'Criteria APIによる動的検索'
+    en: 'Dynamic Queries with the Criteria API'
+  15:
     ja: 'JPAの値オブジェクト・複合主キー'
     en: 'JPA Value Objects and Composite Keys'
-  13:
+  16:
     ja: 'JPAの継承とライフサイクル設計'
     en: 'JPA Inheritance and Lifecycle Design'
 
 exercises:
-  # ── チャプター3: JDBC ─────────────────────────────
+  # ── チャプター3: JDBC ────────────────────
   - id: jdbc-connection
     chapter: 3
     lesson: '3.1 JDBCの接続・CRUD・トランザクション'
@@ -161,10 +170,51 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター4: MyBatis の基本 ─────────────────────
-  - id: mybatis-basic-1
+  # ── チャプター4: JDBC の同時更新 ──────────────
+  - id: jdbc-crud-version
+    dir: jdbc-crud
     chapter: 4
-    lesson: '4.1 Table Data GatewayとMyBatisの基本'
+    lesson: '4.1 JDBCの同時更新と分離レベル'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: jdbc-crud-version
+    names:
+      ja: バージョン条件付き UPDATE による楽観ロック
+      en: Optimistic locking with a version-conditioned UPDATE
+    descriptions:
+      ja: >-
+        チャプター 3 と同じプロジェクトで、EmployeeDao の updateSalaryWithVersion を読みます。EmployeeDaoTest.java を開いて
+        エディタの右上の ▶ 実行で流し、同じバージョン 0 での 2 回目の更新が 0 件になり、給与が 410000 のまま残ることを確かめてください。
+      en: >-
+        The same project as chapter 3, this time reading updateSalaryWithVersion in EmployeeDao. Open EmployeeDaoTest.java, press
+        ▶ Run at the top right of the editor and check that a second update with version 0 affects 0 rows and the salary stays at 410000.
+    openFiles:
+      - README.md
+
+  - id: jdbc-transaction-isolation
+    dir: jdbc-transaction
+    chapter: 4
+    lesson: '4.1 JDBCの同時更新と分離レベル'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: jdbc-transaction-isolation
+    names:
+      ja: 接続に分離レベルを指定する
+      en: Setting the isolation level on a connection
+    descriptions:
+      ja: >-
+        チャプター 3 と同じプロジェクトで、PayrollService の setTransactionIsolation を読みます。PayrollServiceTest.java を開いて
+        エディタの右上の ▶ 実行で流し、接続の分離レベルと一括昇給の結果を確かめてください。
+      en: >-
+        The same project as chapter 3, this time reading setTransactionIsolation in PayrollService. Open PayrollServiceTest.java, press
+        ▶ Run at the top right of the editor and check the connection's isolation level and the result of the raises.
+    openFiles:
+      - README.md
+
+  # ── チャプター5: MyBatis の基本 ─────────────
+  - id: mybatis-basic-1
+    chapter: 5
+    lesson: '5.1 Table Data GatewayとMyBatisの基本'
     runtime: java
     run: 'gradle:run'
     suggestName: mybatis-basic-1
@@ -186,8 +236,8 @@ exercises:
       - README.md
 
   - id: mybatis-basic-2
-    chapter: 4
-    lesson: '4.1 Table Data GatewayとMyBatisの基本'
+    chapter: 5
+    lesson: '5.1 Table Data GatewayとMyBatisの基本'
     runtime: java
     run: 'gradle:run'
     suggestName: mybatis-basic-2
@@ -207,8 +257,8 @@ exercises:
       - README.md
 
   - id: mybatis-crud
-    chapter: 4
-    lesson: '4.1 Table Data GatewayとMyBatisの基本'
+    chapter: 5
+    lesson: '5.1 Table Data GatewayとMyBatisの基本'
     runtime: java
     run: 'gradle:test'
     suggestName: mybatis-crud
@@ -225,71 +275,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター5: JPA の基本 ─────────────────────────
-  - id: jpa-basic-1
-    chapter: 5
-    lesson: '5.1 Data MapperとJPAの基本'
-    runtime: java
-    run: 'gradle:run'
-    suggestName: jpa-basic-1
-    names:
-      ja: EntityManager による CRUD と変更検知
-      en: CRUD and change detection with EntityManager
-    descriptions:
-      ja: >-
-        ▶ アプリ実行で SelectMain → InsertMain → UpdateMain → DeleteMain を順に実行します。
-        Hibernate が出力する SQL を見て、find・persist・remove と、UpdateMain で setter を呼んだだけの変更が
-        コミット時に UPDATE になることを確かめてください。
-      en: >-
-        ▶ Run app executes SelectMain, InsertMain, UpdateMain and DeleteMain in order.
-        Read the SQL Hibernate prints and see how find, persist and remove map to SQL, and how a plain
-        setter call in UpdateMain becomes an UPDATE at commit.
-    openFiles:
-      - README.md
-
-  - id: jpa-basic-2
-    chapter: 5
-    lesson: '5.1 Data MapperとJPAの基本'
-    runtime: java
-    run: 'gradle:run'
-    suggestName: jpa-basic-2
-    names:
-      ja: LocalDate・列挙型・LOB のマッピング
-      en: Mapping LocalDate, enums and LOBs
-    descriptions:
-      ja: >-
-        入社日・職務・写真を加えた Employee で、Java の型と列の対応を扱います。▶ アプリ実行で CRUD の 4 つの main を
-        順に実行し、列挙型がどの値で保存され、日付がどう読み戻されるかを出力の SQL と取得結果で確かめてください。
-      en: >-
-        Employee gains a hire date, a job and a photo to show how Java types map to columns. ▶ Run app
-        executes the four CRUD mains; use the printed SQL and results to see how the enum is stored and how
-        the date is read back.
-    openFiles:
-      - README.md
-
-  - id: jpa-crud
-    chapter: 5
-    lesson: '5.1 Data MapperとJPAの基本'
-    runtime: java
-    run: 'gradle:test'
-    suggestName: jpa-crud
-    names:
-      ja: Repository とトランザクションの分担
-      en: Repository and transaction responsibilities
-    descriptions:
-      ja: >-
-        EmployeeRepository は EntityManager を引数で受け取り、トランザクションは呼び出し元が開始・確定します。
-        EmployeeRepositoryTest.java を開いてエディタの右上の ▶ 実行で流し、テスト結果とテストコードでこの分担を確かめてください。
-      en: >-
-        EmployeeRepository receives the EntityManager as an argument and the caller begins and commits the
-        transaction. Open EmployeeRepositoryTest.java, press ▶ Run at the top right of the editor and follow this split in the test results and the test code.
-    openFiles:
-      - README.md
-
-  # ── チャプター6: 楽観ロック・悲観ロック ─────────────
+  # ── チャプター6: MyBatis のロック ────────────
   - id: mybatis-lock
     chapter: 6
-    lesson: '6.1 同時更新と楽観ロック・悲観ロック'
+    lesson: '6.1 MyBatisの楽観ロック・悲観ロック'
     runtime: java
     run: 'gradle:run'
     suggestName: mybatis-lock
@@ -311,33 +300,10 @@ exercises:
     openFiles:
       - README.md
 
-  - id: jpa-lock
-    chapter: 6
-    lesson: '6.1 同時更新と楽観ロック・悲観ロック'
-    runtime: java
-    run: 'gradle:run'
-    suggestName: jpa-lock
-    names:
-      ja: JPA の @Version と悲観ロック
-      en: '@Version and pessimistic locks in JPA'
-    descriptions:
-      ja: >-
-        ▶ アプリ実行で LockMain と LockConflictor、ReadLock・WriteLock・WriteLockForce の各組を 3 秒ずらして
-        同時に動かします（4 組で 1 分半ほど）。LockMain が OptimisticLockException で終わること、悲観ロックの
-        競合側が先の側のコミット後に終わることを、出力の経過秒と SQL で確かめてください。
-        OptimisticLockTest.java を開いてエディタの右上の ▶ 実行で流すと、古いバージョンでの更新の拒否を確かめられます。
-      en: >-
-        ▶ Run app starts LockMain with LockConflictor and the ReadLock, WriteLock and WriteLockForce pairs,
-        each pair 3 seconds apart (about 90 seconds for all four). Use the elapsed seconds and SQL in the output
-        to see LockMain end with OptimisticLockException and each pessimistic conflicter finish only after the
-        first one commits. Open OptimisticLockTest.java and press ▶ Run at the top right of the editor to check that a stale version is rejected.
-    openFiles:
-      - README.md
-
-  # ── チャプター7: 関連の読み込み（MyBatis）──────────
+  # ── チャプター7: MyBatis の関連 ─────────────
   - id: mybatis-relation
     chapter: 7
-    lesson: '7.1 関連の読み込み方式とMyBatis'
+    lesson: '7.1 MyBatisの関連の読み込み方式'
     runtime: java
     run: 'gradle:run'
     suggestName: mybatis-relation
@@ -359,7 +325,7 @@ exercises:
   - id: mybatis-dynamic-summary
     dir: mybatis-dynamic
     chapter: 7
-    lesson: '7.1 関連の読み込み方式とMyBatis'
+    lesson: '7.1 MyBatisの関連の読み込み方式'
     runtime: java
     run: 'gradle:test'
     suggestName: mybatis-dynamic-summary
@@ -370,18 +336,145 @@ exercises:
       ja: >-
         CompanyMapper.xml の summarizeDepartments は、関連をたどるオブジェクトではなく、業務に必要な集約値だけを
         DepartmentSummary で返します。CompanyMapperTest.java を開いてエディタの右上の ▶ 実行で流し、集約のテスト結果を確かめてください。
-        （同じプロジェクトはチャプター 11 の動的 SQL でも使います）
+        （同じプロジェクトはチャプター 8 の動的 SQL でも使います）
       en: >-
         summarizeDepartments in CompanyMapper.xml returns only the aggregate values needed, as DepartmentSummary,
         instead of an object graph. Open CompanyMapperTest.java, press ▶ Run at the top right of the editor and check the aggregation test.
-        (The same project is used again for dynamic SQL in chapter 11.)
+        (The same project is used again for dynamic SQL in chapter 8.)
     openFiles:
       - README.md
 
-  # ── チャプター8: JPA の関連 ─────────────────────────
-  - id: jpa-relation-1
+  # ── チャプター8: MyBatis の動的 SQL ─────────
+  - id: mybatis-dynamic-sample
     chapter: 8
-    lesson: '8.1 JPAの関連・フェッチ・カスケード'
+    lesson: '8.1 MyBatisの動的SQL'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: mybatis-dynamic-sample
+    names:
+      ja: where・if による任意条件の検索
+      en: Optional search conditions with where and if
+    descriptions:
+      ja: >-
+        部署名・給与下限・給与上限を任意条件にした検索です。▶ アプリ実行で DynamicSelectMain1〜3 を順に実行し、
+        条件の与え方によって「==> Preparing」の WHERE 句がどう組み立てられ、何件返るかを見比べてください。
+      en: >-
+        A search where department name, minimum salary and maximum salary are all optional. ▶ Run app executes
+        DynamicSelectMain1-3; compare how the WHERE clause on the "==> Preparing" lines is built for each way of
+        passing conditions, and how many rows come back.
+    openFiles:
+      - README.md
+
+  - id: mybatis-dynamic
+    chapter: 8
+    lesson: '8.1 MyBatisの動的SQL'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: mybatis-dynamic
+    names:
+      ja: foreach と集合条件
+      en: foreach and collection conditions
+    descriptions:
+      ja: >-
+        EmployeeFilter の部署番号・給与下限・社員番号リストを組み合わせ、CompanyMapper.xml の where・if・foreach で
+        SQL を組み立てます。CompanyMapperTest.java を開いてエディタの右上の ▶ 実行で流し、部署・給与・社員番号リストを
+        同時に指定したときの結果を確かめてください。
+      en: >-
+        EmployeeFilter combines department, minimum salary and a list of employee IDs, and CompanyMapper.xml builds the
+        SQL with where, if and foreach. Open CompanyMapperTest.java, press ▶ Run at the top right of the editor and check the result
+        when department, salary and the ID list are all given at once.
+    openFiles:
+      - README.md
+
+  # ── チャプター9: JPA の基本 ─────────────────
+  - id: jpa-basic-1
+    chapter: 9
+    lesson: '9.1 Data MapperとJPAの基本'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-basic-1
+    names:
+      ja: EntityManager による CRUD と変更検知
+      en: CRUD and change detection with EntityManager
+    descriptions:
+      ja: >-
+        ▶ アプリ実行で SelectMain → InsertMain → UpdateMain → DeleteMain を順に実行します。
+        Hibernate が出力する SQL を見て、find・persist・remove と、UpdateMain で setter を呼んだだけの変更が
+        コミット時に UPDATE になることを確かめてください。
+      en: >-
+        ▶ Run app executes SelectMain, InsertMain, UpdateMain and DeleteMain in order.
+        Read the SQL Hibernate prints and see how find, persist and remove map to SQL, and how a plain
+        setter call in UpdateMain becomes an UPDATE at commit.
+    openFiles:
+      - README.md
+
+  - id: jpa-basic-2
+    chapter: 9
+    lesson: '9.1 Data MapperとJPAの基本'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-basic-2
+    names:
+      ja: LocalDate・列挙型・LOB のマッピング
+      en: Mapping LocalDate, enums and LOBs
+    descriptions:
+      ja: >-
+        入社日・職務・写真を加えた Employee で、Java の型と列の対応を扱います。▶ アプリ実行で CRUD の 4 つの main を
+        順に実行し、列挙型がどの値で保存され、日付がどう読み戻されるかを出力の SQL と取得結果で確かめてください。
+      en: >-
+        Employee gains a hire date, a job and a photo to show how Java types map to columns. ▶ Run app
+        executes the four CRUD mains; use the printed SQL and results to see how the enum is stored and how
+        the date is read back.
+    openFiles:
+      - README.md
+
+  - id: jpa-crud
+    chapter: 9
+    lesson: '9.1 Data MapperとJPAの基本'
+    runtime: java
+    run: 'gradle:test'
+    suggestName: jpa-crud
+    names:
+      ja: Repository とトランザクションの分担
+      en: Repository and transaction responsibilities
+    descriptions:
+      ja: >-
+        EmployeeRepository は EntityManager を引数で受け取り、トランザクションは呼び出し元が開始・確定します。
+        EmployeeRepositoryTest.java を開いてエディタの右上の ▶ 実行で流し、テスト結果とテストコードでこの分担を確かめてください。
+      en: >-
+        EmployeeRepository receives the EntityManager as an argument and the caller begins and commits the
+        transaction. Open EmployeeRepositoryTest.java, press ▶ Run at the top right of the editor and follow this split in the test results and the test code.
+    openFiles:
+      - README.md
+
+  # ── チャプター10: JPA のロック ───────────────
+  - id: jpa-lock
+    chapter: 10
+    lesson: '10.1 JPAの楽観ロック・悲観ロック'
+    runtime: java
+    run: 'gradle:run'
+    suggestName: jpa-lock
+    names:
+      ja: JPA の @Version と悲観ロック
+      en: '@Version and pessimistic locks in JPA'
+    descriptions:
+      ja: >-
+        ▶ アプリ実行で LockMain と LockConflictor、ReadLock・WriteLock・WriteLockForce の各組を 3 秒ずらして
+        同時に動かします（4 組で 1 分半ほど）。LockMain が OptimisticLockException で終わること、悲観ロックの
+        競合側が先の側のコミット後に終わることを、出力の経過秒と SQL で確かめてください。
+        OptimisticLockTest.java を開いてエディタの右上の ▶ 実行で流すと、古いバージョンでの更新の拒否を確かめられます。
+      en: >-
+        ▶ Run app starts LockMain with LockConflictor and the ReadLock, WriteLock and WriteLockForce pairs,
+        each pair 3 seconds apart (about 90 seconds for all four). Use the elapsed seconds and SQL in the output
+        to see LockMain end with OptimisticLockException and each pessimistic conflicter finish only after the
+        first one commits. Open OptimisticLockTest.java and press ▶ Run at the top right of the editor to check that a stale version is rejected.
+    openFiles:
+      - README.md
+
+  # ── チャプター11: JPA の関連 ────────────────
+  - id: jpa-relation-1
+    chapter: 11
+    lesson: '11.1 JPAの関連・フェッチ・カスケード'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-relation-1
@@ -403,8 +496,8 @@ exercises:
       - README.md
 
   - id: jpa-relations
-    chapter: 8
-    lesson: '8.1 JPAの関連・フェッチ・カスケード'
+    chapter: 11
+    lesson: '11.1 JPAの関連・フェッチ・カスケード'
     runtime: java
     run: 'gradle:test'
     suggestName: jpa-relations
@@ -422,8 +515,8 @@ exercises:
       - README.md
 
   - id: jpa-relation-2
-    chapter: 8
-    lesson: '8.1 JPAの関連・フェッチ・カスケード'
+    chapter: 11
+    lesson: '11.1 JPAの関連・フェッチ・カスケード'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-relation-2
@@ -441,10 +534,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター9: JPQL ───────────────────────────────
+  # ── チャプター12: JPQL ───────────────────
   - id: jpa-jpql-query
-    chapter: 9
-    lesson: '9.1 JPQLの検索・結合・集約'
+    chapter: 12
+    lesson: '12.1 JPQLの検索・結合・集約'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-jpql-query
@@ -463,11 +556,11 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター10: 一括更新とネイティブSQL ──────────
+  # ── チャプター13: 一括更新とネイティブ SQL ─────────
   - id: jpa-jpql-query-bulk
     dir: jpa-jpql-query
-    chapter: 10
-    lesson: '10.1 JPAの一括更新とネイティブSQL'
+    chapter: 13
+    lesson: '13.1 JPAの一括更新とネイティブSQL'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-jpql-query-bulk
@@ -476,12 +569,12 @@ exercises:
       en: Bulk updates and flush modes
     descriptions:
       ja: >-
-        チャプター 9 と同じプロジェクトで、mains.txt の「10.1」の部分（JpaBulkUpdateMain1、JpaBulkDeleteMain、
+        チャプター 12 と同じプロジェクトで、mains.txt の「13.1」の部分（JpaBulkUpdateMain1、JpaBulkDeleteMain、
         JpaBulkUpdateMain2、JpaFlashModeMain）を見ます。9.1 の行を # で止めてから ▶ アプリ実行を押すと、
         一括更新の件数、取得済みエンティティに古い値が残る様子、AUTO と COMMIT で flush の時期が変わる様子を
         出力で確かめやすくなります。
       en: >-
-        The same project as chapter 9, focusing on the "10.1" part of mains.txt (JpaBulkUpdateMain1,
+        The same project as chapter 12, focusing on the "13.1" part of mains.txt (JpaBulkUpdateMain1,
         JpaBulkDeleteMain, JpaBulkUpdateMain2, JpaFlashModeMain). Comment out the 9.1 lines with # and press
         ▶ Run app to see the bulk update counts, stale values left in managed entities, and how AUTO and
         COMMIT change when a flush happens.
@@ -489,8 +582,8 @@ exercises:
       - README.md
 
   - id: jpa-jpql-native
-    chapter: 10
-    lesson: '10.1 JPAの一括更新とネイティブSQL'
+    chapter: 13
+    lesson: '13.1 JPAの一括更新とネイティブSQL'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-jpql-native
@@ -509,51 +602,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター11: 動的検索 ─────────────────────────
-  - id: mybatis-dynamic-sample
-    chapter: 11
-    lesson: '11.1 MyBatisとCriteria APIの動的検索'
-    runtime: java
-    run: 'gradle:run'
-    suggestName: mybatis-dynamic-sample
-    names:
-      ja: where・if による任意条件の検索
-      en: Optional search conditions with where and if
-    descriptions:
-      ja: >-
-        部署名・給与下限・給与上限を任意条件にした検索です。▶ アプリ実行で DynamicSelectMain1〜3 を順に実行し、
-        条件の与え方によって「==> Preparing」の WHERE 句がどう組み立てられ、何件返るかを見比べてください。
-      en: >-
-        A search where department name, minimum salary and maximum salary are all optional. ▶ Run app executes
-        DynamicSelectMain1-3; compare how the WHERE clause on the "==> Preparing" lines is built for each way of
-        passing conditions, and how many rows come back.
-    openFiles:
-      - README.md
-
-  - id: mybatis-dynamic
-    chapter: 11
-    lesson: '11.1 MyBatisとCriteria APIの動的検索'
-    runtime: java
-    run: 'gradle:test'
-    suggestName: mybatis-dynamic
-    names:
-      ja: foreach と集合条件
-      en: foreach and collection conditions
-    descriptions:
-      ja: >-
-        EmployeeFilter の部署番号・給与下限・社員番号リストを組み合わせ、CompanyMapper.xml の where・if・foreach で
-        SQL を組み立てます。CompanyMapperTest.java を開いてエディタの右上の ▶ 実行で流し、部署・給与・社員番号リストを
-        同時に指定したときの結果を確かめてください。
-      en: >-
-        EmployeeFilter combines department, minimum salary and a list of employee IDs, and CompanyMapper.xml builds the
-        SQL with where, if and foreach. Open CompanyMapperTest.java, press ▶ Run at the top right of the editor and check the result
-        when department, salary and the ID list are all given at once.
-    openFiles:
-      - README.md
-
+  # ── チャプター14: Criteria API ───────────
   - id: jpa-criteria
-    chapter: 11
-    lesson: '11.1 MyBatisとCriteria APIの動的検索'
+    chapter: 14
+    lesson: '14.1 Criteria APIによる動的検索'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-criteria
@@ -572,8 +624,8 @@ exercises:
 
   - id: jpa-relations-criteria
     dir: jpa-relations
-    chapter: 11
-    lesson: '11.1 MyBatisとCriteria APIの動的検索'
+    chapter: 14
+    lesson: '14.1 Criteria APIによる動的検索'
     runtime: java
     run: 'gradle:test'
     suggestName: jpa-relations-criteria
@@ -582,18 +634,18 @@ exercises:
       en: Salary conditions with Criteria in CompanyQuery
     descriptions:
       ja: >-
-        チャプター 8 と同じプロジェクトで、CompanyQuery にある Criteria API の給与条件の検索を読みます。
+        チャプター 11 と同じプロジェクトで、CompanyQuery にある Criteria API の給与条件の検索を読みます。
         CompanyQueryTest.java を開いてエディタの右上の ▶ 実行で流し、該当するテストと出力される SQL を確かめてください。
       en: >-
-        The same project as chapter 8, this time reading the Criteria API salary search in CompanyQuery.
+        The same project as chapter 11, this time reading the Criteria API salary search in CompanyQuery.
         Open CompanyQueryTest.java, press ▶ Run at the top right of the editor and check the corresponding test and the SQL it prints.
     openFiles:
       - README.md
 
-  # ── チャプター12: 値オブジェクト・複合主キー ──────
+  # ── チャプター15: 値オブジェクト・複合主キー ──────────
   - id: jpa-embeddable
-    chapter: 12
-    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    chapter: 15
+    lesson: '15.1 JPAの値オブジェクト・複合主キー'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-embeddable
@@ -612,8 +664,8 @@ exercises:
       - README.md
 
   - id: jpa-collection
-    chapter: 12
-    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    chapter: 15
+    lesson: '15.1 JPAの値オブジェクト・複合主キー'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-collection
@@ -631,8 +683,8 @@ exercises:
       - README.md
 
   - id: jpa-secondary-table
-    chapter: 12
-    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    chapter: 15
+    lesson: '15.1 JPAの値オブジェクト・複合主キー'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-secondary-table
@@ -650,8 +702,8 @@ exercises:
       - README.md
 
   - id: jpa-embedded-id-1
-    chapter: 12
-    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    chapter: 15
+    lesson: '15.1 JPAの値オブジェクト・複合主キー'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-embedded-id-1
@@ -669,8 +721,8 @@ exercises:
       - README.md
 
   - id: jpa-id-class-1
-    chapter: 12
-    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    chapter: 15
+    lesson: '15.1 JPAの値オブジェクト・複合主キー'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-id-class-1
@@ -688,8 +740,8 @@ exercises:
       - README.md
 
   - id: jpa-embedded-id-2
-    chapter: 12
-    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    chapter: 15
+    lesson: '15.1 JPAの値オブジェクト・複合主キー'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-embedded-id-2
@@ -708,8 +760,8 @@ exercises:
       - README.md
 
   - id: jpa-id-class-2
-    chapter: 12
-    lesson: '12.1 JPAの値オブジェクト・複合主キー'
+    chapter: 15
+    lesson: '15.1 JPAの値オブジェクト・複合主キー'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-id-class-2
@@ -726,10 +778,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター13: 継承とライフサイクル ─────────────
+  # ── チャプター16: 継承とライフサイクル ─────────────
   - id: jpa-inheritance-1
-    chapter: 13
-    lesson: '13.1 JPAの継承とライフサイクル設計'
+    chapter: 16
+    lesson: '16.1 JPAの継承とライフサイクル設計'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-inheritance-1
@@ -747,8 +799,8 @@ exercises:
       - README.md
 
   - id: jpa-inheritance-2
-    chapter: 13
-    lesson: '13.1 JPAの継承とライフサイクル設計'
+    chapter: 16
+    lesson: '16.1 JPAの継承とライフサイクル設計'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-inheritance-2
@@ -766,8 +818,8 @@ exercises:
       - README.md
 
   - id: jpa-mapped-superclass
-    chapter: 13
-    lesson: '13.1 JPAの継承とライフサイクル設計'
+    chapter: 16
+    lesson: '16.1 JPAの継承とライフサイクル設計'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-mapped-superclass
@@ -785,8 +837,8 @@ exercises:
       - README.md
 
   - id: jpa-entity-listener-1
-    chapter: 13
-    lesson: '13.1 JPAの継承とライフサイクル設計'
+    chapter: 16
+    lesson: '16.1 JPAの継承とライフサイクル設計'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-entity-listener-1
@@ -806,8 +858,8 @@ exercises:
       - README.md
 
   - id: jpa-entity-listener-2
-    chapter: 13
-    lesson: '13.1 JPAの継承とライフサイクル設計'
+    chapter: 16
+    lesson: '16.1 JPAの継承とライフサイクル設計'
     runtime: java
     run: 'gradle:run'
     suggestName: jpa-entity-listener-2

@@ -19,7 +19,7 @@ public class EmployeeParam {
     private String entranceDate = "";
     private Integer version;
 
-    // 社員パラメータの検証
+    // 社員パラメータの検証（部署は任意、役職は必須）
     public List<String> validate(boolean departmentExists, boolean jobExists) {
         List<String> errors = new ArrayList<>();
         String name = employeeName == null ? "" : employeeName.strip();
@@ -28,7 +28,7 @@ public class EmployeeParam {
         } else if (name.codePointCount(0, name.length()) > NAME_MAX) {
             errors.add("氏名は30文字以内で入力してください");
         }
-        if (!departmentExists) {
+        if (departmentId != null && !departmentExists) {
             errors.add("部署を選んでください");
         }
         if (!jobExists) {

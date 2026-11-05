@@ -4,11 +4,10 @@
 `Authorization: Bearer <アクセストークン>` を MicroProfile JWT で検証し、`groups` クレームをロールにして `@RolesAllowed` で認可する
 リソースサーバーです。Cookie を使わないので、CSRF トークンは使いません。
 
-アクセストークンの発行者は、講座本編では Keycloak（realm: `learn`）ですが、この演習では Docker を使わずに動かせるよう、
-同じ形のパスで JWKS とトークンを返す教材用の簡易な発行者（`issuer/`）を一緒にデプロイします。
-発行者の URI は `http://localhost:8080/jakarta-mpjwt-issuer/realms/learn` です。
-そのため `microprofile-config.properties` の `mp.jwt.verify.publickey.location` と `mp.jwt.verify.issuer` だけは、講座のコード
-（Keycloak の `http://localhost:8180/realms/learn`）と違い、この発行者の URL を指しています。ほかの設定とコードは講座と同じです。
+この演習では Docker を使わずに動かせるよう、Keycloak と同じ形のパスで JWKS とトークンを返す教材用の簡易な発行者（`issuer/`）を一緒にデプロイします。
+発行者の URI は `http://localhost:8080/jakarta-mpjwt-issuer/realms/learn` で、`microprofile-config.properties` の
+`mp.jwt.verify.publickey.location` と `mp.jwt.verify.issuer` はこの発行者を指しています。
+Keycloak を発行者にする場合は、この 2 つを Keycloak の URI にします（レッスン 5.1.5）。
 
 | 場所 | 中身 | 動かし方 |
 |---|---|---|

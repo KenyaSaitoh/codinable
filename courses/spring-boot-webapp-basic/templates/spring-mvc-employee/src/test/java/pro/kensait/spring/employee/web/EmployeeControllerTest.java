@@ -75,6 +75,28 @@ class EmployeeControllerTest {
                 .andExpect(model().hasNoErrors());
     }
 
+    // 「確認画面の戻るボタン（POST /back）で入力値を保ったまま入力画面へ戻る」の検証
+    @Test
+    void returnsFromConfirmToInputWithSessionValues() throws Exception {
+        EmployeeSession session = new EmployeeSession("Walter", "SALES", 230_000);
+
+        mockMvc.perform(post("/back").sessionAttr("employeeSession", session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("EmployeeInputPage"))
+                .andExpect(model().attribute("employeeSession", session));
+    }
+
+    // 「編集の途中で新規登録を始めると、前の値が残らない」の検証
+    @Test
+    void startsCreateWithEmptySessionEvenAfterEdit() throws Exception {
+        EmployeeSession editing = new EmployeeSession(10001, "Alice", "SALES", 500_000);
+
+        mockMvc.perform(post("/toCreate").sessionAttr("employeeSession", editing))
+                .andExpect(status().isOk())
+                .andExpect(view().name("EmployeeInputPage"))
+                .andExpect(model().attribute("employeeSession", new EmployeeSession()));
+    }
+
     // 「クエリパラメータで選択した社員の表示」の検証
     @Test
     void showsEmployeeSelectedByQueryParameter() throws Exception {

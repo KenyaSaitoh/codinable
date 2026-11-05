@@ -29,10 +29,10 @@ public class TransferBroadcaster {
         if (broadcaster == null) {
             return;
         }
-        broadcaster.broadcast(sse.newEventBuilder()
-                .name("transferred") // 【3】
+        broadcaster.broadcast(sse.newEventBuilder() // 【3】
+                .name("transferred") // 【4】
                 .mediaType(MediaType.APPLICATION_JSON_TYPE)
                 .data(EmployeeTransferred.class, event)
-                .build()); // 【4】
+                .build());
     }
 }

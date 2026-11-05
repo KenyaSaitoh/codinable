@@ -31,7 +31,7 @@
     </security-constraint>
     <deny-uncovered-http-methods/> <!-- 【4】 -->
     <security-role>
-        <role-name>BASIC</role-name> <!-- 【5】 -->
+        <role-name>BASIC</role-name>
     </security-role>
     <security-role>
         <role-name>ADMIN</role-name>
@@ -40,13 +40,13 @@
     <session-config>
         <session-timeout>30</session-timeout> <!-- 【1】 -->
         <cookie-config>
-            <name>SECURITY_SESSION</name> <!-- 【2】 -->
-            <http-only>true</http-only> <!-- 【3】 -->
+            <name>SECURITY_SESSION</name>
+            <http-only>true</http-only> <!-- 【2】 -->
             <attribute>
-                <attribute-name>SameSite</attribute-name> <!-- 【4】 -->
+                <attribute-name>SameSite</attribute-name> <!-- 【3】 -->
                 <attribute-value>Lax</attribute-value>
             </attribute>
         </cookie-config>
-        <tracking-mode>COOKIE</tracking-mode> <!-- 【5】 -->
+        <tracking-mode>COOKIE</tracking-mode> <!-- 【4】 -->
     </session-config>
 </web-app>

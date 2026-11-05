@@ -256,7 +256,7 @@ courses/<講座ID>/
 |---|---|---|
 | `webapp-archi-overview` | Webシステムアーキテクチャ概要 | 全 30 件（下記） |
 | `spring-boot-webapp-basic` | Spring Boot Webアプリ基礎 | 24 件（DI / MVC・Thymeleaf / 入力検証 / PRG・セッション / ファイル / JDBC・JPA・MyBatis / トランザクション / REST / RestClient） |
-| `spring-advanced` | Spring FW 高度な仕組み | 13 件（WebClient・WebSocket / OAuth2・OIDC / Security / GraphQL / WebFlux・Kafka・RabbitMQ / Resilience・Retry / Actuator・Observability） |
+| `spring-advanced` | Spring FW 高度な仕組み | 13 件（WebClient・WebSocket / Security / JWT リソースサーバー / GraphQL / WebFlux・@Async とイベント / Kafka・RabbitMQ / Resilience・Retry / Actuator・Observability） |
 | `spring-boot-cicd` | Spring Boot CICD | 9 件（JUnit・Mockito / Spring の結合テスト / Database Rider・API テスト / Playwright / Gatling / CI） |
 | `spring-cloud-aws` | Springクラウド機能 on AWS | 6 件（ECS / Spring Session・Cloud Config / Cognito） |
 | `spring-boot-webapp-practical` | Spring Boot Webアプリ応用（ECサイト） | 8 件（書店アプリ MVC 版・REST+React 版と、外部 API 役の customer-hub） |

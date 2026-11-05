@@ -2,7 +2,6 @@ package pro.kensait.spring.employee.rest.health;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,9 +17,7 @@ public class DatabaseHealthIndicator implements HealthIndicator {
     private static final Logger logger = LoggerFactory.getLogger(
             DatabaseHealthIndicator.class);
 
-    // インジェクションポイント
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     // コンストラクタ
     public DatabaseHealthIndicator(JdbcTemplate jdbcTemplate) {

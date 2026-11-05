@@ -25,7 +25,7 @@ public interface EmployeeRepository
     // メソッド名による問い合わせ（Query by Method Name）
     long countByStatus(String status);
 
-    List<Employee> findByStatusAndJobJobIdOrderByEmployeeId(
+    List<Employee> findByStatusAndJob_JobIdOrderByEmployeeId(
             String status, Integer jobId);
 
     boolean existsByEmployeeCode(String employeeCode);

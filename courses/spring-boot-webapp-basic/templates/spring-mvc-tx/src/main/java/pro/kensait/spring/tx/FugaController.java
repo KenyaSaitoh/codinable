@@ -30,7 +30,7 @@ public class FugaController {
         try {
             fooBean.doBusiness(param);
         } catch(RuntimeException re) {
-            return "ERROR OCCURED!!!";
+            return "ERROR OCCURRED!!!";
         }
         return "NORMAL END";
     }

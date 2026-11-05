@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,5 +39,12 @@ public class FileUploadController {
     public String result(@PathVariable Long id, Model model) {
         model.addAttribute("storedFile", fileService.find(id));
         return "UploadResultPage";
+    }
+
+    // 空のファイルや未登録のIDは、入力画面にメッセージを出す
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleInvalid(IllegalArgumentException exception, Model model) {
+        model.addAttribute("errorMessage", exception.getMessage());
+        return "FileUploadPage";
     }
 }

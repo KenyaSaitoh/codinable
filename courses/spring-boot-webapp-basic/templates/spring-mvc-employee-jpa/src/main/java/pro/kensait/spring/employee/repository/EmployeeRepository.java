@@ -13,7 +13,7 @@ import pro.kensait.spring.employee.entity.EmployeeSearchCriteria;
  * 社員テーブルにアクセスするためのリポジトリインタフェース
  */
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
-    // アクションメソッド：社員を検索する（静的なクエリを使用する）
+    // 社員を検索する（静的なクエリを使用する）
     // 部署は LEFT JOIN で結合する（部署なし（DEPARTMENT_ID が NULL）の社員を落とさないため）
     @Query("""
             SELECT e FROM Employee e LEFT JOIN e.department d

@@ -11,5 +11,5 @@ set -x
 open "$jar" EmployeeFormPage.xhtml
 post "$jar" employeeForm saveButton employeeName= departmentId=3 jobId= salary=-1 entranceDate=2026-04-01; messages
 open "$jar" EmployeeFormPage.xhtml
-post "$jar" employeeForm saveButton employeeName=Zoe departmentId=3 jobId=1 salary=260000 entranceDate=2026-04-01; messages
-post "$jar" searchForm searchButton keyword=Zoe; rows
+post "$jar" employeeForm saveButton employeeName=Walter departmentId=3 jobId=1 salary=260000 entranceDate=2026-04-01; messages
+post "$jar" searchForm searchButton keyword=Walter; rows

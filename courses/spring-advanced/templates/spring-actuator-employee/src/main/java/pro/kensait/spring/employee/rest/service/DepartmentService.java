@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pro.kensait.spring.employee.rest.entity.Department;
@@ -18,9 +17,7 @@ public class DepartmentService {
     private static final Logger logger = LoggerFactory.getLogger(
             DepartmentService.class);
 
-    // インジェクションポイント
-    @Autowired
-    private DepartmentRepository departmentRepository;
+    private final DepartmentRepository departmentRepository;
 
     // コンストラクタ
     public DepartmentService(DepartmentRepository departmentRepository) {

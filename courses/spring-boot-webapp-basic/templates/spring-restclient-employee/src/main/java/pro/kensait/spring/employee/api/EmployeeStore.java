@@ -7,7 +7,7 @@ import java.util.TreeMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-/** プロセス内だけで保持する教材用データ再起動すると初期状態に戻る */
+/** プロセス内だけで保持する教材用データ。再起動すると初期状態に戻る */
 final class EmployeeStore {
     private final Map<Integer, Employee> employees = new TreeMap<>();
     private int nextId = 10017;
@@ -54,14 +54,14 @@ final class EmployeeStore {
         return employee;
     }
 
-    // 顧客リソースの新規登録
+    // 社員の新規登録
     public synchronized Employee create(Employee input) {
         Employee employee = withServerFields(nextId, input);
         employees.put(nextId++, employee);
         return employee;
     }
 
-    // アクションメソッド：人物を更新・追加
+    // 社員の更新
     public synchronized Employee update(int id, Employee input) {
         find(id);
         Employee employee = withServerFields(id, input);
@@ -75,7 +75,7 @@ final class EmployeeStore {
         employees.remove(id);
     }
 
-    // を用いたサーバー項目の実行
+    // サーバー側で決める項目（社員ID・部署名）の設定
     private Employee withServerFields(int id, Employee input) {
         return new Employee(id, input.employeeName(), input.departmentId(),
                 departmentName(input.departmentId()), input.jobName(), input.salary(),

@@ -10,7 +10,7 @@ import pro.kensait.mybatis.company.mapper.EmployeeMapper;
  * 悲観的ロック
  *
  * このプログラムを、PessimisticLockMain2よりも先に実行する
- * → 10秒間のスリープの後、正常終了し、月給は+10000円で更新される
+ * → 15秒間のスリープの後、正常終了し、月給は+10000円で更新される
  */
 public class PessimisticLockMain1 {
 

@@ -78,7 +78,7 @@ public class CalcController {
         // 2つのパラメータの値が同一だった場合はエラーにする
         // → グローバルエラーを追加し、元の画面に遷移する
         if (calcParam.param1().equals(calcParam.param2())) {
-            ObjectError error = new ObjectError("globarError",
+            ObjectError error = new ObjectError("globalError",
                     new String[]{"error.same.value"}, null, null);
             errors.addError(error);
         }

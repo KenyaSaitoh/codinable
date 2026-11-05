@@ -52,6 +52,15 @@ management:
     health:
       # ヘルスチェックの詳細（DB接続状態やディスク容量など）を常に表示する
       show-details: always
+      probes:
+        # /actuator/health/liveness と /actuator/health/readiness を公開する
+        # （Kubernetes の上では自動で有効になる。それ以外の環境では明示する）
+        enabled: true
+      group:
+        readiness:
+          # 受付の可否の判定に DB の状態を含める。liveness には含めない
+          # （DB の障害で liveness が DOWN になると、再起動しても直らないのに再起動が繰り返されるため）
+          include: readinessState,database
   info:
     env:
       # info.*で始まるプロパティを/actuator/infoに表示する

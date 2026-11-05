@@ -35,7 +35,7 @@ public class CriteriaMain2 {
         // 月給が30万円以上、40万円以下の社員（全部署）
         System.out.println("##### TEST4 START #####");
         executeQuery(null, 300000, 400000);
-        System.out.println("##### TEST5 END #####\n");
+        System.out.println("##### TEST4 END #####\n");
     }
 
     // クエリの実行

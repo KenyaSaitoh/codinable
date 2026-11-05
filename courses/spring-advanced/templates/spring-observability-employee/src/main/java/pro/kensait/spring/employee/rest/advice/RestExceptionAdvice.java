@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import pro.kensait.spring.employee.rest.service.EmployeeNotFoundException;
 
@@ -42,6 +43,14 @@ public class RestExceptionAdvice {
                 HttpStatus.CONFLICT.value(), "Conflict",
                 "データ整合性違反が発生しました");
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
+    // 例外ハンドラ：対応するパスが無い場合（公開していないエンドポイントを含む）はステータス404で応答
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFound(NoResourceFoundException ex) {
+        ErrorResponse body = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(), "Not Found", "対応するパスがありません");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
     // 例外ハンドラ：その他の例外の場合はステータス500で応答

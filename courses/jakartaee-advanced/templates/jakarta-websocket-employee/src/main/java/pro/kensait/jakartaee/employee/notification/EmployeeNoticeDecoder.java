@@ -13,7 +13,7 @@ public class EmployeeNoticeDecoder implements Decoder.Text<EmployeeNotice> { // 
     private static final Jsonb JSONB = JsonbBuilder.create();
 
     @Override
-    public boolean willDecode(String text) { // 【2】
+    public boolean willDecode(String text) {
         return text != null && !text.isBlank();
     }
 
@@ -22,7 +22,7 @@ public class EmployeeNoticeDecoder implements Decoder.Text<EmployeeNotice> { // 
         try {
             return JSONB.fromJson(text, EmployeeNotice.class);
         } catch (JsonbException e) {
-            throw new DecodeException(text, "通知のJSONを読み取れません", e); // 【3】
+            throw new DecodeException(text, "通知のJSONを読み取れません", e); // 【2】
         }
     }
 }

@@ -48,13 +48,15 @@ management:
         # Codinable では Jaeger などの送信先を用意しないため、OTLP での送信だけを止める
         # （スパンは作られ、traceId／spanId はログに出る。送信先が無いときの接続エラーを出さない）
         enabled: false
-  otlp:
+  opentelemetry:
     tracing:
-      # トレース（スパン）の送信先となるOTLP/HTTPエンドポイント
-      # ローカルではOpenTelemetry Collector（またはJaeger）の4318番ポートに送る
-      # AWSではECSタスクにサイドカーとして同居させたADOTコレクター経由でX-Rayに送るため、
-      # 環境変数OTLP_ENDPOINTで送信先を上書きする
-      endpoint: ${OTLP_ENDPOINT:http://localhost:4318/v1/traces}
+      export:
+        otlp:
+          # トレース（スパン）の送信先となるOTLP/HTTPエンドポイント（Spring Boot 4.1 のキー）
+          # ローカルではOpenTelemetry Collector（またはJaeger）の4318番ポートに送る
+          # AWSではECSタスクにサイドカーとして同居させたADOTコレクター経由でX-Rayに送るため、
+          # 環境変数OTLP_ENDPOINTで送信先を上書きする
+          endpoint: ${OTLP_ENDPOINT:http://localhost:4318/v1/traces}
 
 logging:
   pattern:

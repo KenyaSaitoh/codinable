@@ -4,7 +4,6 @@ import java.time.Duration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pro.kensait.spring.employee.flux.repository.Employee;
@@ -26,9 +25,7 @@ public class EmployeeFluxService {
     private static final Logger logger = LoggerFactory.getLogger(
             EmployeeFluxService.class);
 
-    // インジェクションポイント
-    @Autowired
-    private EmployeeReactiveRepository employeeRepository;
+    private final EmployeeReactiveRepository employeeRepository;
 
     // コンストラクタ
     @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2",

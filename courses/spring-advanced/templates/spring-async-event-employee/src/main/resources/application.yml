@@ -1,0 +1,21 @@
+server:
+  port: 8098
+
+spring:
+  datasource:
+    # インメモリの HSQLDB。起動のたびに schema.sql・data.sql が流れ、社員 16 件・部署 4 件に戻る
+    url: jdbc:hsqldb:mem:employee
+    username: SA
+    password:
+  sql:
+    init:
+      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+
+# true にして ▶ アプリ実行し直すと、メール通知が失敗する（異動履歴の記録は止まらない）
+transfer:
+  mail:
+    fail: false

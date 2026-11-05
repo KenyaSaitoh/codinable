@@ -29,7 +29,6 @@ dependencies {
     // WebSocket（STOMP）サポート
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
-    compileOnly 'jakarta.platform:jakarta.jakartaee-api:10.0.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

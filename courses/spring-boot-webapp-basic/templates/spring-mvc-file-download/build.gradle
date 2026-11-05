@@ -26,9 +26,6 @@ dependencies {
     // Spring Boot 4 では spring-boot-starter-web は spring-boot-starter-webmvc に改名された
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    // FileDownloadController が jakarta.ws.rs.core.HttpHeaders の定数を参照するため、
-    // コンパイル時だけ JAX-RS の API を足す（サンプルは jakarta.jakartaee-api 全体を入れていた）
-    compileOnly 'jakarta.ws.rs:jakarta.ws.rs-api'
 }
 
 test {

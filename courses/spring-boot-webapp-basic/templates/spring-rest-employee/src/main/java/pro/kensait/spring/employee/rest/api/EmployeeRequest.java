@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import pro.kensait.spring.employee.rest.entity.Employee;
-/** 更新可能な項目だけを受け取るID・社員コード・状態はサーバーが管理する */
+/** 更新可能な項目だけを受け取る。ID・社員コード・状態はサーバーが管理する */
 public record EmployeeRequest(
         @NotBlank @Size(max = 30) String employeeName,
         @NotNull @Positive Integer departmentId,

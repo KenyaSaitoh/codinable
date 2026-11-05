@@ -26,7 +26,6 @@ import jakarta.ws.rs.core.UriInfo;
 import pro.kensait.jakartaee.employee.entity.Department;
 import pro.kensait.jakartaee.employee.entity.Employee;
 import pro.kensait.jakartaee.employee.entity.Job;
-import pro.kensait.jakartaee.employee.service.EmployeePage;
 import pro.kensait.jakartaee.employee.service.EmployeeService;
 
 /** 社員管理 API のリソースクラス。URL・HTTP メソッド・入力 DTO・応答の型をここで宣言する */
@@ -44,9 +43,9 @@ public class EmployeeResource {
     private UriInfo uriInfo;
 
     @GET
-    public EmployeePage search(@BeanParam EmployeeSearchParam param,
+    public EmployeePageResponse search(@BeanParam EmployeeSearchParam param,
             @QueryParam("page") @DefaultValue("1") int page) {
-        return employeeService.search(param.toCriteria(), page);
+        return EmployeePageResponse.from(employeeService.search(param.toCriteria(), page));
     }
 
     @GET

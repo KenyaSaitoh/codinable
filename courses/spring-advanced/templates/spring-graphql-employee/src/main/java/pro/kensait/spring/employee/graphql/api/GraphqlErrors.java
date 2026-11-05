@@ -4,6 +4,7 @@ import graphql.GraphqlErrorBuilder;
 import graphql.schema.DataFetchingEnvironment;
 import org.springframework.graphql.data.method.annotation.GraphQlExceptionHandler;
 import org.springframework.graphql.execution.ErrorType;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import pro.kensait.spring.employee.graphql.service.EmployeeNotFoundException;
 /*
@@ -11,7 +12,7 @@ import pro.kensait.spring.employee.graphql.service.EmployeeNotFoundException;
  */
 @ControllerAdvice
 public class GraphqlErrors {
-    // 未存在の実行
+    // 社員が存在しない場合の応答
     @GraphQlExceptionHandler(EmployeeNotFoundException.class)
     public GraphQLError missing(EmployeeNotFoundException error, DataFetchingEnvironment environment) {
         return GraphqlErrorBuilder.newError(environment).errorType(ErrorType.NOT_FOUND)
@@ -24,5 +25,11 @@ public class GraphqlErrors {
     public GraphQLError invalid(Exception error, DataFetchingEnvironment environment) {
         return GraphqlErrorBuilder.newError(environment).errorType(ErrorType.BAD_REQUEST)
                 .message("社員名・部署・給与・日付を確認してください").build();
+    }
+    // 引数の型へ変換できない入力（数字でない社員IDなど）への応答
+    @GraphQlExceptionHandler(BindException.class)
+    public GraphQLError invalidArgument(BindException error, DataFetchingEnvironment environment) {
+        return GraphqlErrorBuilder.newError(environment).errorType(ErrorType.BAD_REQUEST)
+                .message("引数の形式を確認してください").build();
     }
 }

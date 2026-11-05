@@ -58,22 +58,22 @@ public class EmployeeSearchCriteria {
         this.jobId = jobId;
     }
 
-    // 月給変換元の取得
+    // 月給の下限の取得
     public Integer getSalaryFrom() {
         return salaryFrom;
     }
 
-    // 月給変換元の設定
+    // 月給の下限の設定
     public void setSalaryFrom(Integer salaryFrom) {
         this.salaryFrom = salaryFrom;
     }
 
-    // 月給変換先の取得
+    // 月給の上限の取得
     public Integer getSalaryTo() {
         return salaryTo;
     }
 
-    // 月給変換先の設定
+    // 月給の上限の設定
     public void setSalaryTo(Integer salaryTo) {
         this.salaryTo = salaryTo;
     }

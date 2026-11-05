@@ -21,7 +21,7 @@ import pro.kensait.jakartaee.employee.service.EmployeeEventHandler;
         @ActivationConfigProperty(propertyName = "destinationLookup",
                 propertyValue = "java:app/jms/EmployeeEventQueue"), // 【1】
         @ActivationConfigProperty(propertyName = "destinationType",
-                propertyValue = "jakarta.jms.Queue") }) // 【2】
+                propertyValue = "jakarta.jms.Queue") })
 public class EmployeeEventListener implements MessageListener {
     private static final Logger logger = Logger.getLogger(EmployeeEventListener.class.getName());
     private static final Jsonb JSONB = JsonbBuilder.create();
@@ -30,15 +30,15 @@ public class EmployeeEventListener implements MessageListener {
     private EmployeeEventHandler handler;
 
     @Override
-    public void onMessage(Message message) { // 【3】
+    public void onMessage(Message message) { // 【2】
         try {
             logger.info("[ EmployeeEventListener#onMessage ] JMSMessageID=" + message.getJMSMessageID()
                     + " JMSXDeliveryCount=" + message.getIntProperty("JMSXDeliveryCount"));
             EmployeeEvent event = JSONB.fromJson(
-                    message.getBody(String.class), EmployeeEvent.class); // 【4】
-            handler.handle(event, message.getIntProperty("JMSXDeliveryCount")); // 【5】
+                    message.getBody(String.class), EmployeeEvent.class); // 【3】
+            handler.handle(event, message.getIntProperty("JMSXDeliveryCount")); // 【4】
         } catch (JMSException e) {
-            throw new IllegalStateException("メッセージを読み取れません", e); // 【6】
+            throw new IllegalStateException("メッセージを読み取れません", e);
         }
     }
 }

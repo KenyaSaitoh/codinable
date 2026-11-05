@@ -25,9 +25,11 @@ spring:
 
 # Spring Data JPA
   jpa:
+    # 発行される SQL を実行結果に出す（@BatchMapping と N+1 の違いを確かめるため）
+    show-sql: true
     properties:
       hibernate:
-# これがないとテーブル名が小文字になってしまい、RDSでエラーになる
+# エンティティの @Table・@Column の名前を、変換せずにそのまま使う
         naming:
           physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 

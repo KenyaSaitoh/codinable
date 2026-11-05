@@ -12,7 +12,7 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 |---|---|
 | `rest/RestApplication.java` | `@ApplicationPath("/api")` |
 | `rest/EmployeeResource.java` | 一覧・1 件・登録・更新・削除・月給の下限での検索。`evaluatePreconditions` による ETag の判定と、`UriInfo` による Location |
-| `rest/EmployeeRequest.java`、`EmployeeResponse.java`、`EmployeeSearchParam.java` | 入力専用の DTO（Bean Validation の制約）、応答の DTO、`@BeanParam` の検索条件 |
+| `rest/EmployeeRequest.java`、`EmployeeResponse.java`、`EmployeePageResponse.java`、`EmployeeSearchParam.java` | 入力専用の DTO（Bean Validation の制約）、1 件と一覧の応答の DTO、`@BeanParam` の検索条件 |
 | `rest/MasterDataResource.java` | `GET /api/departments`、`GET /api/jobs` |
 | `rest/mapper/` | `ConstraintViolationException`・`InvalidRequestException`・`RangeException`・本文の JSON を読み取れない `ProcessingException` → 400、`EmployeeNotFoundException` → 404、`ConflictException` → 409 |
 | `rest/ApiError.java`、`InvalidRequestException.java` | エラー本文の共通の形と、既存データと整合しない要求を表す例外 |

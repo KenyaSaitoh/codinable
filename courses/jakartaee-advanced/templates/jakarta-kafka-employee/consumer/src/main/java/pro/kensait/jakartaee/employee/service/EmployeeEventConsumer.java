@@ -34,7 +34,7 @@ public class EmployeeEventConsumer {
     private static final Jsonb JSONB = JsonbBuilder.create();
 
     @Resource
-    private ManagedExecutorService executor; // 【1】
+    private ManagedExecutorService executor;
 
     @Inject
     private KafkaSettings settings;
@@ -44,15 +44,15 @@ public class EmployeeEventConsumer {
     private KafkaConsumer<String, String> consumer;
     private volatile boolean running = true;
 
-    void start(@Observes Startup startup) { // 【2】
-        consumer = new KafkaConsumer<>(settings.consumerProperties()); // 【3】
-        executor.submit(this::pollLoop); // 【4】
+    void start(@Observes Startup startup) {
+        consumer = new KafkaConsumer<>(settings.consumerProperties());
+        executor.submit(this::pollLoop);
     }
 
     @PreDestroy
     void stop() {
-        running = false; // 【5】
-        consumer.wakeup(); // 【6】
+        running = false;
+        consumer.wakeup();
     }
 
     private void pollLoop() {
@@ -64,13 +64,13 @@ public class EmployeeEventConsumer {
                 if (processAll(records)) { // 【3】
                     consumer.commitSync(); // 【4】
                 } else {
-                    rewindToCommitted(); // 【5】
+                    rewindToCommitted();
                 }
             }
         } catch (WakeupException e) {
             // 停止の合図なので、何もせずにループを抜ける
         } finally {
-            consumer.close(); // 【6】
+            consumer.close();
         }
     }
 
@@ -91,14 +91,14 @@ public class EmployeeEventConsumer {
     }
 
     private void rewindToCommitted() {
-        Set<TopicPartition> assigned = consumer.assignment(); // 【1】
-        Map<TopicPartition, OffsetAndMetadata> committed = consumer.committed(assigned); // 【2】
+        Set<TopicPartition> assigned = consumer.assignment();
+        Map<TopicPartition, OffsetAndMetadata> committed = consumer.committed(assigned);
         for (TopicPartition partition : assigned) {
             OffsetAndMetadata offset = committed.get(partition);
             if (offset == null) {
-                consumer.seekToBeginning(List.of(partition)); // 【3】
+                consumer.seekToBeginning(List.of(partition));
             } else {
-                consumer.seek(partition, offset.offset()); // 【4】
+                consumer.seek(partition, offset.offset());
             }
         }
     }

@@ -3,7 +3,6 @@ package pro.kensait.spring.employee.resilience.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,9 +22,7 @@ public class ResilienceController {
     private static final Logger logger = LoggerFactory.getLogger(
             ResilienceController.class);
 
-    // インジェクションポイント
-    @Autowired
-    private EmployeeClientService employeeClientService;
+    private final EmployeeClientService employeeClientService;
 
     // コンストラクタ
     public ResilienceController(EmployeeClientService employeeClientService) {

@@ -1,19 +1,16 @@
 package pro.kensait.spring.tx;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /*
- * 2つめのXAデータソース（dataSource2）を更新するクラス 引数が0未満の場合は例外をスローし、BarBeanが行った1つめのデータソースへの 更新も含めて、グローバルトランザクション全体がロールバックされることを確認する
+ * BUSINESSテーブルの"Qux"のローを更新するクラス
+ * REQUIREDを指定し、呼び出し元（FooBean）のトランザクションに参加する
+ * 引数が0未満の場合は更新後に例外をスローし、この更新を取り消す
  */
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
@@ -21,48 +18,26 @@ public class QuxBean {
     private static final Logger logger = LoggerFactory.getLogger(
             QuxBean.class);
 
-    // インジェクションポイント
-    @Autowired
-    private DataSource ds;
-
-    // 引数なしのコンストラクタ
-    public QuxBean() {
-    }
+    // JdbcTemplateは、現在のトランザクションの接続でSQLを実行する
+    private final JdbcTemplate jdbcTemplate;
 
     // コンストラクタ
-    public QuxBean(DataSource ds) {
-        this.ds = ds;
+    public QuxBean(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     // ビジネスメソッド
     public void doBusiness(int param) {
         logger.info("[ QuxBean#doBusiness ] Start");
-        Connection conn = null;
-        try {
-            // OPERATIONテーブルの、主キーが"Qux"のローを更新する
-            conn = ds.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(
-                    "UPDATE BUSINESS SET COUNT = COUNT + ? " +
-                    "WHERE NAME = 'Qux'");
-            pstmt.setInt(1, param);
-            pstmt.executeUpdate();
 
-            // 引数が0未満の場合は、例外をスローする
-            if (param < 0) {
-                throw new RuntimeException("param is invalid");
-            }
+        // BUSINESSテーブルの、主キーが"Qux"のローを更新する
+        jdbcTemplate.update(
+                "UPDATE BUSINESS SET COUNT = COUNT + ? WHERE NAME = 'Qux'",
+                param);
 
-        } catch (SQLException sqle) {
-            throw new RuntimeException(sqle);
-        } finally {
-            // コネクションをクローズする
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException sqle) {
-                throw new RuntimeException(sqle);
-            }
+        // 引数が0未満の場合は、例外をスローする
+        if (param < 0) {
+            throw new RuntimeException("param is invalid");
         }
 
         logger.info("[ QuxBean#doBusiness ] End");

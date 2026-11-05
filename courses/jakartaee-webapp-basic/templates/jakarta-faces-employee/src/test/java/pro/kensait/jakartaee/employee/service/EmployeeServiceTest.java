@@ -31,9 +31,9 @@ class EmployeeServiceTest {
     @Test
     void createEmployee_assignsNextId() {
         Employee created = employeeService.createEmployee(
-                new Employee(null, "Zoe", "SALES", 300_000));
+                new Employee(null, "Walter", "SALES", 300_000));
         assertEquals(10017, created.getEmployeeId());
-        assertEquals("Zoe", employeeService.getEmployee(10017).getEmployeeName());
+        assertEquals("Walter", employeeService.getEmployee(10017).getEmployeeName());
     }
 
     @Test

@@ -40,7 +40,7 @@ public class EmployeeController {
         return new EmployeeSession();
     }
 
-    // アクションメソッド：入力画面への遷移
+    // アクションメソッド：一覧画面へのリダイレクト
     @GetMapping("/")
     public String index() {
         return "redirect:/viewList";
@@ -48,8 +48,9 @@ public class EmployeeController {
 
     // アクションメソッド：入力画面への遷移
     @PostMapping("/toCreate")
-    public String toCreate(SessionStatus sessionStatus) {
-        sessionStatus.setComplete();
+    public String toCreate(Model model) {
+        // 前の操作の値がセッションに残っていても、空のオブジェクトで置き換える
+        model.addAttribute("employeeSession", new EmployeeSession());
         return "EmployeeInputPage";
     }
 
@@ -58,7 +59,7 @@ public class EmployeeController {
     public String toConfirm(@Validated EmployeeSession employeeSession,
             BindingResult errors, Model model) {
         if (errors.hasErrors()) {
-            String errorMessage = messageSource.getMessage("error.occured", null,
+            String errorMessage = messageSource.getMessage("error.occurred", null,
                     Locale.JAPANESE);
             model.addAttribute("errorMessage", errorMessage);
             return "EmployeeInputPage";
@@ -67,12 +68,12 @@ public class EmployeeController {
     }
 
     // アクションメソッド：入力画面に戻る
-    @GetMapping("/back")
+    @PostMapping("/back")
     public String back() {
         return "EmployeeInputPage";
     }
 
-    // アクションメソッド：人物を更新・追加
+    // アクションメソッド：社員を更新・追加
     @PostMapping("/update")
     public String update(@Validated EmployeeSession employeeSession,
             SessionStatus sessionStatus) {
@@ -86,7 +87,7 @@ public class EmployeeController {
         return "redirect:/viewList";
     }
 
-    // アクションメソッド：人物を編集
+    // アクションメソッド：社員を編集
     @PostMapping("/edit")
     public String edit(@RequestParam("employeeId") Integer employeeId,
             EmployeeSession employeeSession) {
@@ -98,14 +99,14 @@ public class EmployeeController {
         return "EmployeeInputPage";
     }
 
-    // アクションメソッド：人物の削除
+    // アクションメソッド：社員の削除
     @PostMapping("/remove")
     public String remove(@RequestParam("employeeId") Integer employeeId) {
         employeeService.removeEmployee(employeeId);
         return "redirect:/viewList";
     }
 
-    // アクションメソッド：人物リストの表示
+    // アクションメソッド：社員一覧の表示
     @GetMapping("/viewList")
     public String viewList(Model model) {
         List<Employee> employees = employeeService.getEmployeesAll();

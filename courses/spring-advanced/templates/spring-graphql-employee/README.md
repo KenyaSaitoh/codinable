@@ -25,6 +25,34 @@ Spring for GraphQL の Query／Mutation による社員 CRUD です。GET では
 
 curl で確かめる場合は、▶ アプリ実行で起動したまま `curl/` のスクリプト（`01_employees.sh` 〜 `08_delete_employee.sh`）を順に開き、エディタの右上の ▶ 実行で送ります。Query（全件・主キー・存在しない場合の `errors`・部署で検索・部署から社員へのネスト）と Mutation（登録・更新・削除）の順に並んでいて、各スクリプトの先頭のコメントに期待する結果を書いてあります。
 
+## errors の実例
+
+どれも HTTP ステータスは 200 で、本文の `errors` で失敗が返ります（実際に送って得た応答です）。
+
+`curl/03_employee_not_found.sh`（存在しない社員。`GraphqlErrors` の `missing` が `NOT_FOUND` に変換する。`employee` は null を許す型なので `data.employee` が null）
+
+```json
+{"errors":[{"message":"社員が存在しません => 99999","locations":[{"line":1,"column":3}],"path":["employee"],"extensions":{"classification":"NOT_FOUND"}}],"data":{"employee":null}}
+```
+
+`{ a: employee(id: 10001) { employeeName } b: employee(id: 99999) { employeeName } }`（一部だけ失敗。成功したフィールドは `data` に残る）
+
+```json
+{"errors":[{"message":"社員が存在しません => 99999","locations":[{"line":1,"column":43}],"path":["b"],"extensions":{"classification":"NOT_FOUND"}}],"data":{"a":{"employeeName":"Alice"},"b":null}}
+```
+
+`mutation { createEmployee(input: {employeeName: "", departmentId: 3, jobName: "ASSOCIATE", salary: 230000, entranceDate: "2018-04-01"}) { id } }`（入力の不備。`GraphqlErrors` の `invalid` が `BAD_REQUEST` に変換する。`createEmployee` は null を許さない型なので `data` 全体が null）
+
+```json
+{"errors":[{"message":"社員名・部署・給与・日付を確認してください","locations":[{"line":1,"column":12}],"path":["createEmployee"],"extensions":{"classification":"BAD_REQUEST"}}],"data":null}
+```
+
+`{ employee(id: 99999) { nosuchfield } }`（スキーマに無いフィールド。実行の前に検証で止まるので `data` が無い）
+
+```json
+{"errors":[{"message":"Validation error (FieldUndefined@[employee/nosuchfield]) : Field 'nosuchfield' in type 'Employee' is undefined","locations":[{"line":1,"column":25}],"extensions":{"classification":"ValidationError"}}]}
+```
+
 ## 主なファイル
 
 - `src/main/resources/graphql/schema.graphqls` … スキーマ（型・Query・Mutation）

@@ -27,7 +27,7 @@ public class Main_Employee {
 
     // 社員の取得
     private static void readEmployees(RestClient client) {
-        // body()はJSONをDTOへ変換するtoEntity()ならステータスとヘッダーも参照できる
+        // body()はJSONをDTOへ変換する。toEntity()ならステータスとヘッダーも参照できる
         EmployeeTO employee = client.get().uri("/employees/10001").retrieve().body(EmployeeTO.class);
         System.out.println("Employee => " + employee);
         ResponseEntity<EmployeeTO> response = client.get().uri("/employees/10001")
@@ -54,7 +54,7 @@ public class Main_Employee {
         System.out.println("Salary => " + salary);
     }
 
-    // updatedeleteの生成
+    // 社員の登録・更新・削除
     private static void createUpdateDelete(RestClient client) {
         // 既存社員には書き込まず、この実行で採番された社員だけを更新・削除する
         EmployeeTO draft = new EmployeeTO(null, "Walter", 3, null,

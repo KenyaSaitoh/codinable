@@ -16,6 +16,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.springframework.web.reactive.function.client.WebClient;
 /*
  * consoleクライアントのテスト
  */
@@ -103,6 +104,39 @@ class ConsoleClientTest {
         assertEquals(0, activeId);
     }
 
+    // 「Mono.zip による並行の合成」の検証
+    @Test
+    void zipCombinesTwoResponses() {
+        WebClient client = WebClient.create(baseUrl);
+        assertEquals("Walter / SALES 1", Main_Employee.readAndCombine(client));
+        assertTrue(requests.contains("GET /employees/10001"));
+        assertTrue(requests.contains("GET /employees/query_by_department?departmentId=3"));
+    }
+
+    // 「Mono.zip は片方の失敗を全体の失敗にする」の検証
+    @Test
+    void zipFailsWhenOneResponseFails() {
+        failRead = true;
+        assertThrows(Exception.class, () -> Main_Employee.readAndCombine(WebClient.create(baseUrl)));
+    }
+
+    // 「flatMap は前の結果の部署IDで次の要求を送る」の検証
+    @Test
+    void flatMapUsesThePreviousResult() {
+        assertEquals("Walter / 1", Main_Employee.readThenSearch(WebClient.create(baseUrl)));
+        assertEquals(List.of("GET /employees/10001", "GET /employees/query_by_department?departmentId=3"), requests);
+    }
+
+    // 「HTTP インタフェースの宣言どおりの要求と、404 だけを想定内として扱う制御」の検証
+    @Test
+    void httpInterfaceSendsDeclaredRequests() {
+        Main_Employee.useHttpInterface(WebClient.create(baseUrl), 10099);
+        assertEquals(List.of("GET /employees/10001", "GET /employees/query_by_department?departmentId=3",
+                "GET /employees/10099"), requests);
+        failMissing = true;
+        assertThrows(Exception.class, () -> Main_Employee.useHttpInterface(WebClient.create(baseUrl), 10099));
+    }
+
     // consoleクライアントの処理
     private void handle(HttpExchange exchange) throws IOException {
         try (exchange) {
@@ -148,7 +182,7 @@ class ConsoleClientTest {
         }
     }
 
-    // 引数は@Argumentによりスキーマの引数「id」からバインドされる）
+    // 指定したIDの社員を表すJSON
     private String employee(int id) {
         return "{\"employeeId\":" + id + ",\"employeeName\":\"Walter\","
                 + "\"departmentId\":3,\"departmentName\":\"SALES\",\"jobName\":\"ASSOCIATE\","

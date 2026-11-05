@@ -21,7 +21,7 @@ import pro.kensait.spring.employee.rest.entity.Employee;
 import pro.kensait.spring.employee.rest.entity.EmployeeSearchCriteria;
 import pro.kensait.spring.employee.rest.service.EmployeePage;
 import pro.kensait.spring.employee.rest.service.EmployeeService;
-/** 第7章の社員管理をJSONとHTTPステータスで提供する */
+/** 社員管理をJSONとHTTPステータスで提供する */
 @RestController
 @RequestMapping("/employees")
 public class EmployeeApi {
@@ -68,7 +68,7 @@ public class EmployeeApi {
         return ResponseEntity.noContent().build();
     }
 
-    // 既存のREST教材で使っていた月給下限検索も引き続き提供
+    // 月給の下限による検索
     @GetMapping("/query_by_salary")
     public List<Employee> queryByLowerSalary(@RequestParam Integer lowerSalary) {
         if (lowerSalary < 0 || lowerSalary > 9_999_999) {

@@ -20,7 +20,7 @@
 id: jakartaee-webapp-basic
 order: 11
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.0.1
+version: 1.0.2
 
 names:
   ja: Jakarta EE Webアプリ基礎

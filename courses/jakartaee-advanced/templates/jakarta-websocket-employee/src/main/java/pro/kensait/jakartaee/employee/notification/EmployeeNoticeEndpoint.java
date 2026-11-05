@@ -25,33 +25,33 @@ public class EmployeeNoticeEndpoint {
     private static final Logger logger = Logger.getLogger(EmployeeNoticeEndpoint.class.getName());
 
     @Inject
-    NoticeSessions sessions; // 【2】
+    NoticeSessions sessions;
     @Inject
     Validator validator;
 
     @OnOpen
-    public void open(Session session) { // 【3】
+    public void open(Session session) { // 【2】
         sessions.add(session);
         logger.info("[ EmployeeNoticeEndpoint#open ] session=" + session.getId());
     }
 
     @OnMessage
-    public void notify(EmployeeNotice notice, Session session) { // 【4】
-        if (!validator.validate(notice).isEmpty()) {
+    public void notify(EmployeeNotice notice, Session session) { // 【1】
+        if (!validator.validate(notice).isEmpty()) { // 【2】
             sessions.sendTo(session, NoticeError.INVALID);
             return;
         }
-        sessions.broadcast(notice.withOccurredAt(LocalDateTime.now()));
+        sessions.broadcast(notice.withOccurredAt(LocalDateTime.now())); // 【3】
     }
 
     @OnClose
-    public void close(Session session, CloseReason reason) { // 【5】
+    public void close(Session session, CloseReason reason) { // 【3】
         sessions.remove(session);
         logger.info("[ EmployeeNoticeEndpoint#close ] session=" + session.getId() + " reason=" + reason);
     }
 
     @OnError
-    public void error(Session session, Throwable error) { // 【6】
+    public void error(Session session, Throwable error) { // 【4】
         logger.info("[ EmployeeNoticeEndpoint#error ] " + error);
         if (error instanceof DecodeException && session.isOpen()) {
             sessions.sendTo(session, NoticeError.INVALID);

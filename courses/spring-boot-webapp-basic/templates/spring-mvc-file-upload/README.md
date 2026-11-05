@@ -13,6 +13,7 @@
 3. 結果画面の `/files/{id}` で保存した内容を確かめる
 
 保存先は OS の一時フォルダの下の `spring-file-upload` です。
+空のファイルを送ったときと、未登録の ID の `/files/{id}` は、入力画面にメッセージを出します（`FileUploadController#handleInvalid`）。
 
 ## 主なファイル
 

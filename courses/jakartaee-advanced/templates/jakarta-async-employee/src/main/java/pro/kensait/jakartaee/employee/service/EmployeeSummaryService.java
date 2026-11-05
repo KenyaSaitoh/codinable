@@ -40,6 +40,6 @@ public class EmployeeSummaryService {
         logger.info("[ EmployeeSummaryService#summarize ] departmentId=" + departmentId
                 + " thread=" + Thread.currentThread());
         List<Employee> members = employeeRepository.findByDepartmentId(departmentId);
-        return DepartmentSummary.of(departmentId, members); // 【5】
+        return DepartmentSummary.of(departmentId, members);
     }
 }

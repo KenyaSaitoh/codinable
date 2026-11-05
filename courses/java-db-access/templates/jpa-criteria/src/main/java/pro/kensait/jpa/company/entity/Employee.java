@@ -134,4 +134,11 @@ public class Employee {
     public void setVersion(Long version) {
         this.version = version;
     }
+
+    // 文字列表現の生成
+    @Override
+    public String toString() {
+        return "Employee [employeeId=" + employeeId + ", employeeName=" + employeeName
+                + ", salary=" + salary + "]";
+    }
 }

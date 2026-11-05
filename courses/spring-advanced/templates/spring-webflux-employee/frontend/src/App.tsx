@@ -18,7 +18,6 @@ export default function App() {
     </aside>
     <main>
       <header><span className="eyebrow">EMPLOYEE MANAGEMENT / ADVANCED</span><h1>{chapter.title}</h1><p>{chapter.description}</p></header>
-      {new URLSearchParams(location.search).has('loginError') && <p role="alert" className="error">OIDCログインに失敗しました。クライアント設定・リダイレクトURIを確認してください。</p>}
       <div>
         {chapter.kind === 'employees' && <EmployeeWorkspace chapter={chapter} />}
         {chapter.kind === 'events' && <EventPanel chapter={chapter} />}

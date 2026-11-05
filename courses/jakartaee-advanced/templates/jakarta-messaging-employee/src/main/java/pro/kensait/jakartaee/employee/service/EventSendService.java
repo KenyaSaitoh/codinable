@@ -24,9 +24,9 @@ public class EventSendService {
     private Queue queue; // 【2】
 
     public void send(EmployeeEvent event) {
-        context.createProducer() // 【3】
-                .setDeliveryMode(DeliveryMode.PERSISTENT) // 【4】
-                .setProperty("eventType", event.eventType()) // 【5】
-                .send(queue, JSONB.toJson(event)); // 【6】
+        context.createProducer()
+                .setDeliveryMode(DeliveryMode.PERSISTENT) // 【3】
+                .setProperty("eventType", event.eventType())
+                .send(queue, JSONB.toJson(event)); // 【4】
     }
 }

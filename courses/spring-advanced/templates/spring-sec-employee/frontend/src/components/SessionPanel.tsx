@@ -10,14 +10,14 @@ export default function SessionPanel({ chapter, session, onSession }: { chapter:
   return <section className="panel">
     <h2>ログインと権限</h2>
     <p>{session ? session.name + ' / ' + session.authorities.join(', ') : 'セッション未確認・未ログイン'}</p>
-    {chapter === 'security' ? <form className="inline" onSubmit={(event) => { event.preventDefault(); void task.run(async () => {
+    <form className="inline" onSubmit={(event) => { event.preventDefault(); void task.run(async () => {
       await login(chapter, username, password); setPassword(''); onSession(await request<Session>(chapter, '/session'));
     }); }}>
       <label>ユーザー名<input value={username} onChange={(event) => setUsername(event.target.value)} autoComplete="username" required /></label>
       <label>パスワード<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required /></label>
       <button disabled={task.busy}>ログイン</button>
       <small>教材用：Alice / 1111（閲覧）、Bob / 2222（管理者）</small>
-    </form> : <a className="button" href={'/api/' + chapter + '/oauth2/authorization/' + chapter}>{chapter} でログイン</a>}
+    </form>
     <div className="inline">
       <button disabled={task.busy} onClick={() => void task.run(async () => {
         try { onSession(await request<Session>(chapter, '/session')); }

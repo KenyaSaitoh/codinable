@@ -13,7 +13,7 @@
 1. ツールバーの ▶ アプリ実行で起動する
 2. `http://localhost:8080/JtaPage.html` を開き、PARAMETER に 100 や -5 を入れて送る
    （`http://localhost:8080/jta?param=100` を直接開いてもよい）
-3. 正常時は `NORMAL END`、負の値では `ERROR OCCURED!!!` が返ることと、実行ログの流れを確かめる
+3. 正常時は `NORMAL END`、負の値では `ERROR OCCURRED!!!` が返ることと、実行ログの流れを確かめる
 
 ## Codinable 向けに変えた点
 

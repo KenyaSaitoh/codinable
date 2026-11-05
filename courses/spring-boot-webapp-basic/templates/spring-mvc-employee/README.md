@@ -11,6 +11,8 @@
 2. プレビューで `http://localhost:8080/` を開く（社員一覧へ移る）
 3. 登録（入力 → 確認 → 確定）・編集・削除を操作する
    - 入力途中の値は `@SessionAttributes("employeeSession")` でセッションに保持される
+   - 確認画面の「戻る」（`POST /back`）は、セッションの値を入力画面に表示し直す
+   - 一覧画面の「新規登録」（`POST /toCreate`）は、セッションの値を空のオブジェクトで置き換える
    - 詳細表示は `/employees/by-query?employeeId=10001`（クエリ）と `/employees/10001`（パス変数）の 2 通り
 
 `src/test/java` の `EmployeeServiceTest.java` と `EmployeeControllerTest.java`（Mockito で依存先を差し替えたテスト）は、

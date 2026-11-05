@@ -13,7 +13,7 @@ import pro.kensait.spring.employee.entity.Employee;
 /** Controllerを書かず、CRUDと検索メソッドをHTTP APIとして公開する */
 @RepositoryRestResource(path = "employees", collectionResourceRel = "employees")
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
-    // 第10章のquery_by_salaryに対応Pageableを付けると検索結果もページングできる
+    // 月給の下限による検索。Pageableを付けると検索結果もページングできる
     @RestResource(path = "by-salary", rel = "by-salary")
     Page<Employee> findBySalaryGreaterThanEqual(
             @Param("lowerSalary") Integer lowerSalary, Pageable pageable);

@@ -47,7 +47,7 @@ public class EmployeeResource {
     public Response delete(@PathParam("id") int id) {
         service.delete(id);
         logger.info(() -> "社員を削除しました id=" + id + " by=" + userName
-                + " sub=" + jwt.getSubject()); // 【5】
+                + " sub=" + jwt.getSubject());
         return Response.noContent().build();
     }
 }

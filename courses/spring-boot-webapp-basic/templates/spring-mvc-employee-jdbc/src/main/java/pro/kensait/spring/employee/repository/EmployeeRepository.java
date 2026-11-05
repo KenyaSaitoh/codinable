@@ -3,6 +3,7 @@ package pro.kensait.spring.employee.repository;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,14 +43,14 @@ public class EmployeeRepository {
         return employee;
     };
 
-    // 社員の初期化
+    // コンストラクタ
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
             justification = "Spring manages the injected collaborator")
     public EmployeeRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // データの検索
+    // 社員の検索
     public List<Employee> search(EmployeeSearchCriteria criteria, int offset, int limit) {
         SearchSql searchSql = searchSql(criteria);
         String sql = SELECT_COLUMNS + searchSql.whereClause()
@@ -60,7 +61,7 @@ public class EmployeeRepository {
         return jdbcTemplate.query(sql, rowMapper, parameters.toArray());
     }
 
-    // 件数の実行
+    // 件数の取得
     public long count(EmployeeSearchCriteria criteria) {
         SearchSql searchSql = searchSql(criteria);
         Long count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM EMPLOYEE "
@@ -68,7 +69,7 @@ public class EmployeeRepository {
         return count == null ? 0 : count;
     }
 
-    // リポジトリメソッド：主キー検索によって社員の取得
+    // 主キー検索による社員の取得
     public Optional<Employee> findById(Integer employeeId) {
         return jdbcTemplate.query(SELECT_COLUMNS + " WHERE EMPLOYEE_ID = ?",
                 rowMapper, employeeId).stream().findFirst();
@@ -87,7 +88,7 @@ public class EmployeeRepository {
                     Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, employee.getEmployeeCode());
             statement.setString(2, employee.getEmployeeName());
-            statement.setInt(3, employee.getDepartmentId());
+            statement.setObject(3, employee.getDepartmentId(), Types.INTEGER);
             statement.setInt(4, employee.getJobId());
             statement.setInt(5, employee.getSalary());
             statement.setDate(6, Date.valueOf(employee.getEntranceDate()));
@@ -128,7 +129,7 @@ public class EmployeeRepository {
                 employee.getStatus(), employee.getEmployeeId());
     }
 
-    // SQLの検索
+    // 検索SQLの組み立て
     private SearchSql searchSql(EmployeeSearchCriteria criteria) {
         StringBuilder where = new StringBuilder(" WHERE STATUS = 'active'");
         List<Object> parameters = new ArrayList<>();
@@ -145,7 +146,7 @@ public class EmployeeRepository {
         return new SearchSql(where.toString(), parameters);
     }
 
-    // appendの実行
+    // 条件があるときだけ、WHERE句とパラメータを追加
     private void append(StringBuilder sql, List<Object> parameters, Object condition,
             String clause, Object value) {
         if (condition != null) {

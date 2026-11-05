@@ -1,6 +1,6 @@
 # spring-webclient-employee — WebClient と確認用 API
 
-WebClient の Mono／Flux と購読を学ぶ Java コンソール（`client/`）と、呼び出し先の確認用 Spring Boot API（このフォルダ直下）の組です。DB や他章のアプリは不要です。
+WebClient の Mono／Flux と購読、`Mono.zip`・`flatMap` による要求の合成、`@HttpExchange` の HTTP インタフェースを学ぶ Java コンソール（`client/`）と、呼び出し先の確認用 Spring Boot API（このフォルダ直下）の組です。DB や他章のアプリは不要です。
 
 | 場所 | 中身 | 起動方法 |
 |---|---|---|
@@ -12,7 +12,7 @@ WebClient の Mono／Flux と購読を学ぶ Java コンソール（`client/`）
 1. ▶ アプリ実行を押し、API を起動します。プレビューに `http://127.0.0.1:8087/employees`（初期社員 16 件）が開きます。
 2. API を起動したまま、`client/run.sh` を開いてエディタの右上の ▶ 実行を押します。API は止まらず、その脇でクライアントが動きます。
 
-   社員の取得・検索に続いて、確認用社員の登録・更新・削除と、削除後の 404 が実行結果に表示されて終了します。
+   社員の取得・検索、要求の合成、確認用社員の登録・更新・削除と削除後の 404、HTTP インタフェースでの呼び出しが実行結果に表示されて終了します。
 3. API は「停止」で止めます。データはメモリ内にあり、再起動で初期化されます。
 
 `client/` には Gradle Wrapper が無いので、`client/run.sh` はルートの `gradlew.bat`（▶ アプリ実行のときに Codinable が作る）を使います。
@@ -26,5 +26,15 @@ WebClient の Mono／Flux と購読を学ぶ Java コンソール（`client/`）
 
 ## 主なファイル
 
-- `client/src/main/java/pro/kensait/spring/employee/client/Main_Employee.java` … WebClient の入口（retrieve、onStatus、toStream、subscribe）
+- `client/src/main/java/pro/kensait/spring/employee/client/Main_Employee.java` … WebClient の入口（retrieve、onStatus、toStream、subscribe、`Mono.zip`、`flatMap`、`onErrorResume`）
+- `client/src/main/java/pro/kensait/spring/employee/client/EmployeeHttpClient.java` … `@HttpExchange` で宣言した HTTP インタフェース（実装は `HttpServiceProxyFactory` が作る）
 - `src/main/java/pro/kensait/spring/employee/api/EmployeeController.java` … 確認用 API（CRUD・検索・400／404）
+
+## 結果のどこを見るか
+
+`client/run.sh` の実行結果に、次の行が出ます。
+
+- `Summary => Alice / SALES 5` … 社員 10001 の取得と部署 3 の検索を両方送り、`Mono.zip` で合成した結果。どちらかが失敗すれば全体が失敗します
+- `Same department => Alice / 5` … 社員 10001 を取得してから、その部署 ID で検索した結果。前の結果に依存する要求は `flatMap` でつなぎます
+- `Http Interface => ...`・`Http Interface SALES => 5` … `@HttpExchange` のインタフェースで同じ API を呼んだ結果
+- 最後の `Expected error => 404` … 削除済みの社員の 404 だけを `onErrorResume` で空の結果に変えた結果

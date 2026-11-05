@@ -4,4 +4,4 @@ server:
 logging:
   level:
     root: INFO
-    pro.kensait.spring.rs.greet: DEBUG
+    pro.kensait.spring.greet: DEBUG

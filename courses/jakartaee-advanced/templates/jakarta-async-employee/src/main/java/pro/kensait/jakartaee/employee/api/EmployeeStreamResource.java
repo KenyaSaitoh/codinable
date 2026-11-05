@@ -44,22 +44,22 @@ public class EmployeeStreamResource {
 
     @GET
     @Path("/stream")
-    @Produces(MediaType.SERVER_SENT_EVENTS) // 【1】
-    public void stream(@Context SseEventSink sink, @Context Sse sse) { // 【2】
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    public void stream(@Context SseEventSink sink, @Context Sse sse) { // 【1】
         List<Employee> employees = employeeRepository.findAllOrderById();
-        executor.runAsync(() -> { // 【3】
+        executor.runAsync(() -> { // 【2】
             try (sink) {
                 for (Employee employee : employees) {
-                    if (sink.isClosed()) { // 【4】
+                    if (sink.isClosed()) { // 【3】
                         return;
                     }
                     sink.send(sse.newEventBuilder()
                             .mediaType(MediaType.APPLICATION_JSON_TYPE)
-                            .data(EmployeeView.class, EmployeeView.from(employee)) // 【5】
+                            .data(EmployeeView.class, EmployeeView.from(employee))
                             .build()).toCompletableFuture().join();
                     Thread.sleep(1000);
                 }
-                sink.send(sse.newEvent("complete", "{\"complete\":true}")) // 【6】
+                sink.send(sse.newEvent("complete", "{\"complete\":true}")) // 【4】
                         .toCompletableFuture().join();
             } catch (IOException | InterruptedException e) {
                 logger.log(Level.INFO, "配信を終了しました", e);

@@ -8,7 +8,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /*
- * JTA標準アノテーション（jakarta.transaction.Transactional）を使用する SpringのTransactionalと異なりrollbackFor属性はなく、 非チェック例外（RuntimeException）で自動的にロールバックされる
+ * 外側のトランザクションを開始し、BarBeanとQuxBeanを順に呼び出すクラス
+ * SpringのTransactionalのrollbackFor属性により、チェック例外でもロールバックする
  */
 @Service
 @Transactional(propagation = Propagation.REQUIRED,
@@ -29,10 +30,10 @@ public class FooBean {
     public void doBusiness(int param) {
         logger.info("[ FooBean#doBusiness ] Start");
 
-        // セッションBean（BarBean）のビジネスメソッドを呼び出す
+        // BarBeanのビジネスメソッドを呼び出す
         barBean.doBusiness(param);
 
-        // セッションBean（QuxBean）のビジネスメソッドを呼び出す
+        // QuxBeanのビジネスメソッドを呼び出す
         quxBean.doBusiness(param);
 
         logger.info("[ FooBean#doBusiness ] End");

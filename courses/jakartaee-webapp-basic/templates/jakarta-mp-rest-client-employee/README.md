@@ -19,7 +19,7 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/client/` の�
 | `EmployeeTO.java` | 転送オブジェクト（クライアント API 版と同じ） |
 | `api/` | 呼び出し先の確認用の社員 API（`employee-api.war`）。メモリー内に社員 16 件を持つ |
 | `codinable.services.json` | `"wars": ["api"]` で、`api/` の WAR も同じ Payara Server に一緒にデプロイする |
-| `curl/01_run.sh`、`curl/02_api_direct.sh` | 呼び出す側と、呼び出し先の API を叩くスクリプト |
+| `curl/01_run.sh`、`curl/02_api_direct.sh` | 呼び出す側と、呼び出し先の API を呼び出すスクリプト |
 
 ## 動かし方
 

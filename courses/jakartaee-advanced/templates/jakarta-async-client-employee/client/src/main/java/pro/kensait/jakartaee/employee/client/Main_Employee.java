@@ -46,10 +46,10 @@ public class Main_Employee {
     private static void readAndCombine(WebTarget employees) throws Exception {
         CompletionStage<EmployeeTO> alice = employees.path("{id}") // 【1】
                 .resolveTemplate("id", 10001)
-                .request(MediaType.APPLICATION_JSON) // 【2】
-                .rx() // 【3】
-                .get(EmployeeTO.class); // 【4】
-        CompletionStage<String> name = alice.thenApply(EmployeeTO::employeeName); // 【5】
+                .request(MediaType.APPLICATION_JSON)
+                .rx() // 【2】
+                .get(EmployeeTO.class); // 【3】
+        CompletionStage<String> name = alice.thenApply(EmployeeTO::employeeName); // 【4】
 
         CompletionStage<List<EmployeeTO>> sales = employees.path("query_by_department")
                 .queryParam("departmentId", 3) // 【1】
@@ -98,10 +98,10 @@ public class Main_Employee {
     private static void useRestClient(String[] args, int deletedId) throws Exception {
         try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
             EmployeeApi api = RestClientBuilder.newBuilder()
-                    .baseUri(URI.create(ClientOptions.baseUrl(args))) // 【4】
+                    .baseUri(URI.create(ClientOptions.baseUrl(args)))
                     .connectTimeout(2, TimeUnit.SECONDS)
                     .readTimeout(3, TimeUnit.SECONDS)
-                    .executorService(executor) // 【5】
+                    .executorService(executor)
                     .build(EmployeeApi.class);
             System.out.println("Rest Client => "
                     + api.findAsync(10001).toCompletableFuture().get(5, TimeUnit.SECONDS));

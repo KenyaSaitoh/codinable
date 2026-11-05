@@ -33,7 +33,7 @@
 id: spring-advanced
 order: 3
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.7.1
+version: 1.8.1
 
 names:
   ja: Spring FW 高度な仕組み
@@ -41,14 +41,14 @@ names:
 
 descriptions:
   ja: >-
-    社員管理システムを題材に、WebClient と WebSocket、Spring Security、
-    GraphQL、WebFlux、Kafka と RabbitMQ、リトライとサーキットブレーカー、Actuator と
-    OpenTelemetry までを扱う講座の演習です。サンプルは Java 25 / Spring Boot 4.1 で動き、
+    社員管理システムを題材に、WebClient と WebSocket、Spring Security、JWT のリソースサーバー、
+    GraphQL、WebFlux、@Async とコミット後のイベント、Kafka と RabbitMQ、リトライとサーキットブレーカー、
+    Actuator と OpenTelemetry までを扱う講座の演習です。サンプルは Java 25 / Spring Boot 4.1 で動き、
     DB は HSQLDB のインメモリ、Kafka と RabbitMQ は Codinable 同梱のものを使います。
   en: >-
     Exercises for the course that builds on an employee management system: WebClient and
-    WebSocket, Spring Security, GraphQL, WebFlux, Kafka and RabbitMQ,
-    retry and circuit breakers, Actuator and OpenTelemetry. The samples run on Java 25 /
+    WebSocket, Spring Security, a JWT resource server, GraphQL, WebFlux, @Async and after-commit
+    events, Kafka and RabbitMQ, retry and circuit breakers, Actuator and OpenTelemetry. The samples run on Java 25 /
     Spring Boot 4.1 with an in-memory HSQLDB, and use the Kafka and RabbitMQ bundled with
     Codinable.
 
@@ -61,21 +61,24 @@ chapters:
     ja: 'HTTPクライアントとWebSocketによる通信'
     en: 'Communication with HTTP Clients and WebSocket'
   4:
-    ja: 'OAuth 2・OIDC・JWTによる認証連携'
-    en: 'Federated Authentication with OAuth 2, OIDC and JWT'
-  5:
     ja: 'Spring Securityの認証・認可とリクエスト保護'
     en: 'Authentication, Authorization and Request Protection with Spring Security'
+  5:
+    ja: 'OAuth 2・OIDC・JWTによる認証連携'
+    en: 'Federated Authentication with OAuth 2, OIDC and JWT'
   6:
     ja: 'GraphQLのスキーマとデータ取得'
     en: 'GraphQL Schemas and Data Fetching'
   7:
-    ja: 'リアクティブ処理と非同期メッセージング'
-    en: 'Reactive Processing and Asynchronous Messaging'
+    ja: 'リアクティブ処理と非同期イベント'
+    en: 'Reactive Processing and Asynchronous Events'
   8:
+    ja: 'Kafka・RabbitMQによる非同期メッセージング'
+    en: 'Asynchronous Messaging with Kafka and RabbitMQ'
+  9:
     ja: '耐障害性の向上とリトライ・サーキットブレーカー'
     en: 'Handling Failures with Retries and Circuit Breakers'
-  9:
+  10:
     ja: 'Springの観測・監視機能'
     en: 'Observability and Monitoring in Spring'
 
@@ -95,12 +98,14 @@ exercises:
       ja: >-
         ▶ アプリ実行で確認用の社員 API（8087）が起動します。起動したまま client/run.sh を開いて
         エディタの右上の ▶ 実行を押すと、WebClient の Java コンソールが
-        取得・検索・登録・更新・削除と削除後の 404 を順に表示して終了します。
+        取得・検索、Mono.zip と flatMap による要求の合成、登録・更新・削除と削除後の 404、
+        @HttpExchange の HTTP インタフェースでの呼び出しを順に表示して終了します。
         API のテストは EmployeeApiTest.java を開いて、エディタの右上の ▶ 実行で流してください（クライアントも含めて確かめます）。
       en: >-
         ▶ Run app starts the employee API used for checking (port 8087). Keep it running, open
         client/run.sh and press ▶ Run at the top right of the editor: the WebClient console prints
-        get, search, create, update, delete and the 404 after deletion, then exits.
+        get, search, requests combined with Mono.zip and flatMap, create, update, delete and the 404
+        after deletion, and calls through an @HttpExchange HTTP interface, then exits.
         For the API tests, which also drive the client, open EmployeeApiTest.java and press ▶ Run
         at the top right of the editor.
     openFiles:
@@ -127,10 +132,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター5: Spring Security ─────────────────────────
+  # ── チャプター4: Spring Security ─────────────────────────
   - id: spring-sec-employee
-    chapter: 5
-    lesson: '5.1 Spring Securityの認証・認可とリクエスト保護'
+    chapter: 4
+    lesson: '4.1 Spring Securityの認証・認可とリクエスト保護'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-sec-employee
@@ -141,12 +146,40 @@ exercises:
       ja: >-
         ▶ アプリ実行でバックエンド（8083）と React の画面（5173）が一緒に起動し、プレビューに画面が開きます。
         Alice / 1111（閲覧）と Bob / 2222（CRUD）でログインし、401・403 と CSRF トークンの
-        やり取りを画面と出力で確かめます。
+        やり取りを画面と出力で確かめます。curl/02_session_cookie.sh を開いて ▶ 実行すると、
+        セッションの Cookie の属性と、ログインでセッション ID が変わることを確かめられます。
       en: >-
         ▶ Run app starts the backend (port 8083) together with the React screen (port 5173), which
         opens in the preview. Sign in as
         Alice / 1111 (read-only) and Bob / 2222 (CRUD) and look at the 401 / 403 responses and
-        the CSRF token exchange.
+        the CSRF token exchange. Open curl/02_session_cookie.sh and press ▶ Run to see the session
+        cookie attributes and the session ID changing at login.
+    openFiles:
+      - README.md
+
+  # ── チャプター5: OAuth 2・OIDC・JWT ──────────────────────
+  - id: spring-resource-server-employee
+    chapter: 5
+    lesson: '5.1 OAuth 2・OIDC・JWTによる認証連携'
+    runtime: spring
+    run: 'gradle:bootRun'
+    preview: '/employees'
+    suggestName: spring-resource-server-employee
+    names:
+      ja: JWTのリソースサーバーでREST APIを保護する
+      en: Protect a REST API as a JWT resource server
+    descriptions:
+      ja: >-
+        Bearer のアクセストークンを oauth2ResourceServer().jwt() で検証し、employee_roles クレームの権限で認可する社員 API（8097）です。
+        トークンは同じアプリの中の教材用の発行者が、リソースに置いた鍵ペアで発行します。▶ アプリ実行のあと curl/ のスクリプトを
+        ▶ 実行すると、トークンなし・権限不足・ID トークン・署名の改ざんがそれぞれ拒否されることを確かめられます。
+        EmployeeApiSecurityTest.java を開いて ▶ 実行すると、別の鍵・別の発行者・期限切れの拒否も流れます。
+      en: >-
+        An employee API (port 8097) that verifies Bearer access tokens with oauth2ResourceServer().jwt() and authorizes by the
+        employee_roles claim. A teaching token issuer inside the same app signs the tokens with a key pair kept in the resources.
+        After ▶ Run app, run the scripts in curl/ with ▶ Run to see requests without a token, with too few roles, with an ID token
+        and with a tampered signature rejected. Open EmployeeApiSecurityTest.java and press ▶ Run for tokens with another key,
+        another issuer and an expired lifetime.
     openFiles:
       - README.md
 
@@ -178,10 +211,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター7: リアクティブ処理と非同期メッセージング ───────
+  # ── チャプター7: リアクティブ処理と非同期イベント ─────────────
   - id: spring-webflux-employee
     chapter: 7
-    lesson: '7.1 リアクティブ処理と非同期メッセージング'
+    lesson: '7.1 リアクティブ処理と非同期イベント'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/employees'
@@ -204,9 +237,33 @@ exercises:
     openFiles:
       - README.md
 
-  - id: spring-kafka-employee
+  - id: spring-async-event-employee
     chapter: 7
-    lesson: '7.1 リアクティブ処理と非同期メッセージング'
+    lesson: '7.1 リアクティブ処理と非同期イベント'
+    runtime: spring
+    run: 'gradle:bootRun'
+    preview: '/departments/summary'
+    suggestName: spring-async-event-employee
+    names:
+      ja: '@Asyncとコミット後のイベントを動かす'
+      en: Run @Async and after-commit events
+    descriptions:
+      ja: >-
+        仮想スレッドのエグゼキューターによる部署ごとの並行集計、@Async のメソッド、@TransactionalEventListener(phase = AFTER_COMMIT) による
+        異動の通知を読みます。▶ アプリ実行（8098、インメモリ DB）のあと curl/ のスクリプトを ▶ 実行すると、異動の通知が別の仮想スレッドで動くことと、
+        ロールバックした異動では通知されないことを確かめられます。TransferEventTest.java を開いて ▶ 実行すると同じことをテストで確かめられます。
+      en: >-
+        Read the parallel per-department summary on a virtual-thread executor, an @Async method, and the transfer notification with
+        @TransactionalEventListener(phase = AFTER_COMMIT). After ▶ Run app (port 8098, in-memory database), run the scripts in curl/ with
+        ▶ Run to see the notification running on another virtual thread, and no notification for a transfer that rolled back.
+        Open TransferEventTest.java and press ▶ Run to check the same in tests.
+    openFiles:
+      - README.md
+
+  # ── チャプター8: Kafka・RabbitMQによる非同期メッセージング ─────
+  - id: spring-kafka-employee
+    chapter: 8
+    lesson: '8.1 Kafka・RabbitMQによる非同期メッセージング'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-kafka-employee
@@ -228,8 +285,8 @@ exercises:
       - README.md
 
   - id: spring-amqp-employee
-    chapter: 7
-    lesson: '7.1 リアクティブ処理と非同期メッセージング'
+    chapter: 8
+    lesson: '8.1 Kafka・RabbitMQによる非同期メッセージング'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-amqp-employee
@@ -249,10 +306,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター8: リトライとサーキットブレーカー ──────────────
+  # ── チャプター9: リトライとサーキットブレーカー ──────────────
   - id: spring-resilience-employee
-    chapter: 8
-    lesson: '8.1 耐障害性の向上とリトライ・サーキットブレーカー'
+    chapter: 9
+    lesson: '9.1 耐障害性の向上とリトライ・サーキットブレーカー'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/resilience-demo'
@@ -281,8 +338,8 @@ exercises:
       - README.md
 
   - id: spring-retry-employee
-    chapter: 8
-    lesson: '8.1 耐障害性の向上とリトライ・サーキットブレーカー'
+    chapter: 9
+    lesson: '9.1 耐障害性の向上とリトライ・サーキットブレーカー'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/retry-demo'
@@ -307,10 +364,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター9: 観測・監視 ──────────────────────────────
+  # ── チャプター10: 観測・監視 ─────────────────────────────
   - id: spring-actuator-employee
-    chapter: 9
-    lesson: '9.1 Springの観測・監視機能'
+    chapter: 10
+    lesson: '10.1 Springの観測・監視機能'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/actuator/health'
@@ -322,21 +379,22 @@ exercises:
       ja: >-
         ▶ アプリ実行で社員 API（8080）がインメモリ DB で起動します。起動したまま、curl/ のスクリプトを順に開いて
         エディタの右上の ▶ 実行で送ってください（プレビューで開いてもかまいません）。
-        /actuator/health（カスタムの database コンポーネント）、/actuator/info、
+        /actuator/health（カスタムの database コンポーネント）、/actuator/health/liveness・readiness、/actuator/info、
         /actuator/metrics/employee.get.count を見て、/employees/10001 を呼ぶ前後でカウンターの
         変化を確かめます。/actuator/loggers でログレベルを再起動なしで変えられます。
       en: >-
         ▶ Run app starts the employee API (port 8080) on an in-memory database. Keep it running,
         then open the scripts in curl/ in order and press ▶ Run at the top right of the editor (or
         open the URLs in the preview). Look at /actuator/health (with the custom database component),
+        /actuator/health/liveness and readiness,
         /actuator/info and /actuator/metrics/employee.get.count, and compare the counter before and
         after calling /employees/10001. /actuator/loggers changes the log level without a restart.
     openFiles:
       - README.md
 
   - id: spring-observability-employee
-    chapter: 9
-    lesson: '9.1 Springの観測・監視機能'
+    chapter: 10
+    lesson: '10.1 Springの観測・監視機能'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/employees/10001'

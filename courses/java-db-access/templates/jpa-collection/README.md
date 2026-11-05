@@ -70,15 +70,15 @@
 | EMPLOYEE_ID | ADDRESS |
 |---|---|
 | 10001 | alice@example.com |
-| 10001 | alice@outlook.jp |
-| 10001 | alice@yahoo.co.jp |
+| 10001 | alice.work@example.com |
+| 10001 | alice.home@example.com |
 | 10002 | bob@example.com |
-| 10002 | bob@outlook.jp |
+| 10002 | bob.work@example.com |
 | 10003 | carol@example.com |
-| 10003 | carol@outlook.jp |
+| 10003 | carol.work@example.com |
 | 10004 | dave@example.com |
-| 10004 | dave@outlook.jp |
+| 10004 | dave.work@example.com |
 | 10005 | ellen@example.com |
 | 10006 | frank@example.com |
-| 10006 | frank@outlook.jp |
+| 10006 | frank.work@example.com |
 <!-- schema:end -->

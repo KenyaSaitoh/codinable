@@ -33,5 +33,5 @@ curl で確かめる場合は、`curl/01_send_event.sh` を開いてエディタ
 
 - `src/main/java/pro/kensait/spring/amqp/config/AmqpConfig.java` … エクスチェンジ・キュー・バインディングの定義
 - `src/main/java/pro/kensait/spring/amqp/service/EventSendService.java` … 送信と publisher confirm
-- `consumer/src/main/java/pro/kensait/spring/amqp/service/EventReceiveService.java` … 受信と ack
+- `consumer/src/main/java/pro/kensait/spring/amqp/service/EventReceiveService.java` … 受信（ack はコンテナの AUTO に任せる）
 - `src/main/resources/application.yml` … publisher confirm／return の設定

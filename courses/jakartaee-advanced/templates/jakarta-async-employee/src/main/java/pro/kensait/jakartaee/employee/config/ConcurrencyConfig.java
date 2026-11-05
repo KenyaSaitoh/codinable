@@ -14,15 +14,15 @@ import jakarta.enterprise.context.ApplicationScoped;
  * 管理コンソールでの設定なしに、アプリケーションと一緒に配布できる（java:app の名前はこのアプリケーションの中で有効）
  */
 @ContextServiceDefinition(
-        name = "java:app/concurrent/EmployeeContextService", // 【1】
-        propagated = { APPLICATION, SECURITY }, // 【2】
-        cleared = TRANSACTION, // 【3】
+        name = "java:app/concurrent/EmployeeContextService",
+        propagated = { APPLICATION, SECURITY }, // 【1】
+        cleared = TRANSACTION, // 【2】
         unchanged = ALL_REMAINING)
 @ManagedExecutorDefinition(
-        name = "java:app/concurrent/EmployeeExecutor", // 【4】
+        name = "java:app/concurrent/EmployeeExecutor",
         context = "java:app/concurrent/EmployeeContextService",
-        maxAsync = 8, // 【5】
-        virtual = true) // 【6】
+        maxAsync = 8, // 【3】
+        virtual = true) // 【4】
 @ApplicationScoped
 public class ConcurrencyConfig {
 }

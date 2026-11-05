@@ -38,7 +38,7 @@ public class EmployeeClientService {
     @Fallback(fallbackMethod = "fallbackEmployees")
     public EmployeeResult getEmployees() {
         logger.info("[ EmployeeClientService#getEmployees ]");
-        List<EmployeeTO> employees = employeeApiClient.findAll(); // 【5】
+        List<EmployeeTO> employees = employeeApiClient.findAll();
         return new EmployeeResult(employees, false, "取得成功");
     }
 
@@ -59,7 +59,7 @@ public class EmployeeClientService {
     public CompletionStage<EmployeeTO> getEmployeeAsync(Integer employeeId) {
         logger.info("[ EmployeeClientService#getEmployeeAsync ]");
         return CompletableFuture.completedFuture(
-                employeeApiClient.find(employeeId)); // 【5】
+                employeeApiClient.find(employeeId));
     }
 
     @Retry(maxRetries = 2, // 【1】
@@ -72,7 +72,7 @@ public class EmployeeClientService {
             skipOn = WebApplicationException.class)
     public EmployeeResult getEmployeesWithRetry() {
         logger.info("[ EmployeeClientService#getEmployeesWithRetry ]");
-        List<EmployeeTO> employees = employeeApiClient.findAll(); // 【5】
+        List<EmployeeTO> employees = employeeApiClient.findAll();
         return new EmployeeResult(employees, false, "取得成功");
     }
 }

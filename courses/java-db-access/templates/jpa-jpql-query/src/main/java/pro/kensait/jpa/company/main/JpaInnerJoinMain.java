@@ -43,7 +43,7 @@ public class JpaInnerJoinMain {
                         "WHERE d.departmentId = :departmentId")
                         .setParameter("departmentId", 2);
                 List result = query.getResultList();
-                showEntityList(result); // 検索結果を表示
+                showColumnsList(result); // 検索結果を表示
                 System.out.println("##### TEST2 END #####\n");
                 }
 
@@ -56,7 +56,7 @@ public class JpaInnerJoinMain {
                         "WHERE d.departmentId = :departmentId")
                         .setParameter("departmentId", 2);
                 List resultList = query.getResultList();
-                showEntityList(resultList); // 検索結果を表示
+                showColumnsList(resultList); // 検索結果を表示
                 System.out.println("##### TEST3 END #####\n");
                 }
 
@@ -69,7 +69,7 @@ public class JpaInnerJoinMain {
                         "WHERE d.departmentId = :departmentId")
                         .setParameter("departmentId", 2);
                 List resultList = query.getResultList();
-                showEntityList(resultList); // 検索結果を表示
+                showColumnsList(resultList); // 検索結果を表示
                 System.out.println("##### TEST4 END #####\n");
                 }
             } finally {

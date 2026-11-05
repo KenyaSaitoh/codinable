@@ -26,17 +26,17 @@ public class EmployeeAuthenticationMechanism implements HttpAuthenticationMechan
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
             HttpServletResponse response, HttpMessageContext context) {
-        Credential credential = context.getAuthParameters().getCredential(); // 【2】
+        Credential credential = context.getAuthParameters().getCredential();
         if (credential != null) {
-            CredentialValidationResult result = identityStoreHandler.validate(credential); // 【3】
+            CredentialValidationResult result = identityStoreHandler.validate(credential); // 【2】
             if (result.getStatus() == CredentialValidationResult.Status.VALID
                     && request.getSession(false) != null) {
-                request.changeSessionId(); // 【4】
+                request.changeSessionId();
             }
-            return context.notifyContainerAboutLogin(result); // 【5】
+            return context.notifyContainerAboutLogin(result); // 【3】
         }
         if (context.isProtected()) {
-            return context.responseUnauthorized(); // 【6】
+            return context.responseUnauthorized(); // 【4】
         }
         return context.doNothing();
     }

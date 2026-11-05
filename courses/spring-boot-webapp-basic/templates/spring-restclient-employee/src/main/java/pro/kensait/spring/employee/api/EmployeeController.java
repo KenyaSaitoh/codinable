@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 /*
- * 社員管理画面のコントローラー
+ * 社員APIのコントローラー
  */
 @RestController
 @RequestMapping("/employees")
@@ -37,7 +37,7 @@ public class EmployeeController {
         return store.find(id);
     }
 
-    // による部署の実行
+    // 部署による検索
     @GetMapping("/query_by_department")
     public List<Employee> byDepartment(@RequestParam int departmentId) {
         return store.findAll().stream()
@@ -45,7 +45,7 @@ public class EmployeeController {
                 .toList();
     }
 
-    // による月給の実行
+    // 月給の範囲による検索
     @GetMapping("/query_by_salary")
     public List<Employee> bySalary(@RequestParam int lowerSalary, @RequestParam int upperSalary) {
         if (lowerSalary < 0 || lowerSalary > upperSalary) {
@@ -55,14 +55,14 @@ public class EmployeeController {
                 && employee.salary() <= upperSalary).toList();
     }
 
-    // 顧客リソースの新規登録
+    // 社員の新規登録
     @PostMapping
     public ResponseEntity<Employee> create(@Valid @RequestBody Employee input) {
         Employee created = store.create(input);
         return ResponseEntity.created(URI.create("/employees/" + created.employeeId())).body(created);
     }
 
-    // アクションメソッド：人物を更新・追加
+    // 社員の更新
     @PutMapping("/{id}")
     public Employee update(@PathVariable int id, @Valid @RequestBody Employee input) {
         return store.update(id, input);

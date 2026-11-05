@@ -16,7 +16,7 @@ import pro.kensait.spring.employee.rest.entity.EmployeeSearchCriteria;
  * 社員テーブルにアクセスするためのリポジトリインタフェース
  */
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
-    // アクションメソッド：書籍を検索する（静的なクエリを使用する）
+    // 条件に一致する社員を検索する（静的なクエリを使用する）
     @Query("""
             SELECT e FROM Employee e
              WHERE e.status = 'active'
@@ -31,7 +31,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     Page<Employee> search(@Param("criteria") EmployeeSearchCriteria criteria,
             Pageable pageable);
 
-    // 状態月給以上thanequal注文社員IDの検索
+    // 指定した状態で、月給が下限以上の社員を社員ID順に検索
     List<Employee> findByStatusAndSalaryGreaterThanEqualOrderByEmployeeIdAsc(
             String status, Integer salary);
 
@@ -47,7 +47,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     int updateIfVersionMatches(@Param("employeeId") Integer employeeId,
             @Param("input") Employee input, @Param("version") Integer version);
 
-    // mark削除済みの実行
+    // 論理削除（STATUSをdeletedに更新）
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""
             UPDATE Employee e SET e.status = 'deleted', e.version = e.version + 1

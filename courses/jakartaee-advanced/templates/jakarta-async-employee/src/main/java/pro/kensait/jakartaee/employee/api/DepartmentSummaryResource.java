@@ -47,7 +47,7 @@ public class DepartmentSummaryResource {
     @Path("/summary-stage")
     @Produces(MediaType.APPLICATION_JSON)
     public CompletionStage<List<DepartmentSummary>> summaryStage() { // 【4】
-        return summaryService.summarizeAll() // 【5】
+        return summaryService.summarizeAll()
                 .orTimeout(5, TimeUnit.SECONDS);
     }
 

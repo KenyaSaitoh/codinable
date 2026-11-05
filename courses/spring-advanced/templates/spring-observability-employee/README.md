@@ -16,7 +16,7 @@
 Observation から生成されたタイマー（`employee.get`・`employee.get-all`）と HTTP リクエストの統計を見ます。
 各スクリプトの先頭のコメントに、期待する結果を書いてあります。
 
-出力タブのログには `INFO [spring-observability-employee,<traceId>,<spanId>]` の形式で traceId／spanId が出ます。同じリクエストのログは traceId が同じで、spanId が処理単位で変わることを確かめます。
+出力タブのログには `INFO [spring-observability-employee,<traceId>,<spanId>]` の形式で traceId／spanId が出ます。同じリクエストのログは traceId が同じです。spanId は、Observation の中で出すログ（`EmployeeService#getEmployeesAll`）では変わり、開始前に出すログ（`EmployeeService#getEmployee`）では変わらないことを確かめます。
 
 ## トレースについて（Codinable での変更点）
 

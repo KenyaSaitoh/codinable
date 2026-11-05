@@ -14,11 +14,10 @@ export default function App() {
   useEffect(() => observeTrace(setTrace), []);
   return <div className="app">
     <aside><div className="brand"><span className="brand-mark">E</span><div>Employee Lab<small>Spring Boot 発展編</small></div></div>
-      <p className="aside-note">この画面は「05 · フォーム認証」専用です。<br />対象バックエンドを起動して操作してください。</p>
+      <p className="aside-note">この画面は「04 · フォーム認証」専用です。<br />対象バックエンドを起動して操作してください。</p>
     </aside>
     <main>
       <header><span className="eyebrow">EMPLOYEE MANAGEMENT / ADVANCED</span><h1>{chapter.title}</h1><p>{chapter.description}</p></header>
-      {new URLSearchParams(location.search).has('loginError') && <p role="alert" className="error">OIDCログインに失敗しました。クライアント設定・リダイレクトURIを確認してください。</p>}
       <div>
         {chapter.kind === 'employees' && <EmployeeWorkspace chapter={chapter} />}
         {chapter.kind === 'events' && <EventPanel chapter={chapter} />}

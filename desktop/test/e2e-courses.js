@@ -42,7 +42,6 @@ const NO_PAGE_SERVERS = new Set(['spring-kafka-employee', 'spring-amqp-employee'
 const SQL_EXPECTED_ERRORS = new Set(['sql-ddl:02_constraints.sql']);
 
 // わざと 5xx を見せるスクリプト (演習 ID:スクリプト)。それ以外の 5xx は問題にする
-//   jakarta-security-employee-faces … protected-views のトークンが無いと ProtectedViewException (500)
 //   jakarta-fault-tolerance-employee … バルクヘッドの上限を超えた要求は 503
 //   jakarta-servlet-calc … 数値でない入力の NumberFormatException をコンテナが 500 にする (07 の 2.1)
 //   jakarta-faces-calc-5-conversation … 終了した会話の cid は NonexistentConversationException (07 の 7.1)
@@ -51,7 +50,6 @@ const CURL_EXPECTED_5XX = new Set([
   'jakarta-servlet-calc:file:curl/04_not_number.sh',
   'jakarta-faces-calc-5-conversation:file:curl/01_conversation.sh',
   'jakarta-servlet-file-upload:file:curl/02_invalid_file.sh',
-  'jakarta-security-employee-faces:file:curl/01_login_flow.sh',
   'jakarta-fault-tolerance-employee:file:curl/03_bulkhead.sh',
 ]);
 

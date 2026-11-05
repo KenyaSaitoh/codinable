@@ -44,12 +44,12 @@ public class EventSendService {
             Thread.currentThread().interrupt();
             throw new EventSendException(e);
         } catch (ExecutionException | TimeoutException e) {
-            throw new EventSendException(e); // 【5】
+            throw new EventSendException(e);
         }
     }
 
     @PreDestroy
     void close() {
-        producer.close(); // 【6】
+        producer.close();
     }
 }

@@ -70,7 +70,7 @@ public class EmployeeService {
         employees.put(employeeId, result);
         return result;
     }
-    // 指定した社員を論理削除
+    // 指定した社員を削除
     public synchronized void delete(int id) {
         find(id);
         employees.remove(id);

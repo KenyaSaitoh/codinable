@@ -28,7 +28,7 @@ public class EmployeeService {
     private EntityManager entityManager;
 
     @Inject
-    private Tracer tracer; // 【1】
+    private Tracer tracer;
 
     @WithSpan("employee.get") // 【1】
     public EmployeeTO getEmployee(
@@ -44,8 +44,8 @@ public class EmployeeService {
     }
 
     public List<EmployeeTO> getEmployeesAll() {
-        Span span = tracer.spanBuilder("employee.get-all").startSpan(); // 【2】
-        try (Scope scope = span.makeCurrent()) { // 【3】
+        Span span = tracer.spanBuilder("employee.get-all").startSpan(); // 【1】
+        try (Scope scope = span.makeCurrent()) { // 【2】
             List<EmployeeTO> employees = entityManager
                     .createQuery("SELECT e FROM Employee e ORDER BY e.employeeId",
                             Employee.class)
@@ -53,11 +53,11 @@ public class EmployeeService {
             span.setAttribute("employee.count", employees.size());
             return employees;
         } catch (RuntimeException ex) {
-            span.recordException(ex); // 【4】
+            span.recordException(ex); // 【3】
             span.setStatus(StatusCode.ERROR);
             throw ex;
         } finally {
-            span.end(); // 【5】
+            span.end(); // 【4】
         }
     }
 

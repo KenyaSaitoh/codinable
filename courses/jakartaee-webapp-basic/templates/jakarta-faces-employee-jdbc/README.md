@@ -35,7 +35,7 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 - 新規登録した社員には ID 10017 から採番され、社員コードは `E10017` のように ID から作られる
   （`insert` と `updateCode` が同じトランザクションで確定する）
 - `03_conflict.sh`: 同じ社員を 2 人が編集すると、後から保存した側は「ほかの人が先に更新しました」になる
-  （`UPDATE … WHERE EMPLOYEE_ID = ? AND VERSION = ?` の更新件数が 0）
+  （`EmployeeService#update` が画面の version と現在の version を比べ、UPDATE の前に検出する。比較の後に割り込まれたときは、`UPDATE … WHERE EMPLOYEE_ID = ? AND VERSION = ?` の更新件数が 0 になって同じ結果になる）
 - 削除した社員は一覧から消えるが、行は残り `STATUS` が `deleted` になる（論理削除）
 - 月給の下限が上限より大きいと「月給の範囲が正しくありません」（`RangeException`）
 

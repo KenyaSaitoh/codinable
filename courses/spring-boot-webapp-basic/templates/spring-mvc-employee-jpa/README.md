@@ -30,7 +30,7 @@ HSQLDB サーバーの起動や初期化は要りません。登録・更新し�
 
 - 実行ログに Hibernate が発行する SQL が出る。一覧の検索では部署を `left join` した SELECT と件数の SELECT COUNT が、登録では INSERT に続いて社員コードの UPDATE が出る
 - 更新では、`VERSION` を条件に含み、`VERSION` を 1 増やす UPDATE が出る。アプリケーションは version の値を設定していない（`Employee` に `setVersion` は無い）
-- 削除では `STATUS` だけを変える UPDATE が出る。`EmployeeService#delete` は `setStatus` を呼ぶだけで、`save` は呼んでいない
+- 削除では `STATUS` を変える UPDATE が出る（SET 句には全列が並び、値が変わるのは `STATUS` と `VERSION`）。`EmployeeService#delete` は `setStatus` を呼ぶだけで、`save` は呼んでいない
 - 同じ社員を 2 つのタブで編集し、後から保存すると「ほかの人が先に更新しました」になる
 
 <!-- schema:begin -->

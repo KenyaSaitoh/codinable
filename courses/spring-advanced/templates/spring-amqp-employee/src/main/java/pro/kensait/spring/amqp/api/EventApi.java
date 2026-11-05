@@ -29,7 +29,7 @@ public class EventApi {
     // unavailableの実行
     @org.springframework.web.bind.annotation.ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> unavailable(IllegalStateException error) {
-        return ResponseEntity.status(503).body("ブローカーへの送信を確認できません受信履歴を確認してください");
+        return ResponseEntity.status(503).body("ブローカーへの送信を確認できません。受信履歴を確認してください");
     }
 
     // APIメソッド：社員イベントのRabbitMQへの送信

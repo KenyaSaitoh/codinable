@@ -196,17 +196,17 @@
 | EMAIL_ID | HOLDER_ID | ADDRESS |
 |---|---|---|
 | 1 | 10001 | alice@example.com |
-| 2 | 10001 | alice@outlook.jp |
-| 3 | 10001 | alice@yahoo.co.jp |
+| 2 | 10001 | alice.work@example.com |
+| 3 | 10001 | alice.home@example.com |
 | 4 | 10002 | bob@example.com |
-| 5 | 10002 | bob@outlook.jp |
+| 5 | 10002 | bob.work@example.com |
 | 6 | 10003 | carol@example.com |
-| 7 | 10003 | carol@outlook.jp |
+| 7 | 10003 | carol.work@example.com |
 | 8 | 10004 | dave@example.com |
-| 9 | 10004 | dave@outlook.jp |
+| 9 | 10004 | dave.work@example.com |
 | 10 | 10005 | ellen@example.com |
 | 11 | 10006 | frank@example.com |
-| 12 | 10006 | frank@outlook.jp |
+| 12 | 10006 | frank.work@example.com |
 
 ### EMPLOYEE_PROJECT（社員プロジェクト関係）
 

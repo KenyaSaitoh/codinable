@@ -15,5 +15,5 @@ logging:
   level:
     root: INFO
     org.springframework: ERROR
-    pro.kensait.spring.mvc.calc: INFO
+    pro.kensait.spring.calc: INFO
 #  file: spring_mvc_calc_3.log

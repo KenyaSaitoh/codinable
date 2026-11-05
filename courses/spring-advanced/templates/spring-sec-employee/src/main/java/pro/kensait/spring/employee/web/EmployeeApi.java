@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,18 +35,19 @@ public class EmployeeApi {
     public CsrfToken csrf(CsrfToken token) {
         return token;
     }
-    // セッションの実行
+    // ログイン中の利用者と権限（FACTOR_ で始まるログイン方法の項目は除く）
     @GetMapping("/session")
     public Map<String, Object> session(Authentication user) {
         return Map.of("name", user.getName(), "authorities",
-                user.getAuthorities().stream().map(Object::toString).toList());
+                user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                        .filter(authority -> !authority.startsWith("FACTOR_")).toList());
     }
     // クエリメソッド：全Employeeリスト取得
     @GetMapping("/employees")
     public List<Employee> employees() {
         return service.findAll();
     }
-    // 引数は@Argumentによりスキーマの引数「id」からバインドされる）
+    // 主キー検索
     @GetMapping("/employees/{id}")
     public Employee employee(@PathVariable int id) {
         return service.find(id);

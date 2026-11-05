@@ -2,8 +2,15 @@ server:
   port: 8083
   servlet:
     session:
+      # 最後の要求からセッションを保つ時間
+      timeout: 30m
+      # セッション ID は Cookie だけで受け渡す（URL に載せない）
+      tracking-modes: cookie
       cookie:
         name: SECURITY_SESSION
+        # JavaScript から読めなくする
+        http-only: true
+        # 別サイトからの POST などには Cookie を付けない
         same-site: lax
-frontend:
-  url: ${FRONTEND_URL:http://localhost:5173}
+        # HTTPS のときだけ送る。この演習は http://localhost で動かすので false。本番では true にする
+        secure: false

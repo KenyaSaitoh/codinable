@@ -13,7 +13,7 @@ public class EventReceiveService {
     private static final Logger logger = LoggerFactory.getLogger(
             EventReceiveService.class);
 
-    // UIで実際の受信を確認するための直近100件永続的な監査ログではない
+    // UIで実際の受信を確認するための直近100件。永続的な監査ログではない
     private final java.util.Deque<EmployeeEvent> received = new java.util.ArrayDeque<>();
     // 履歴の実行
     public synchronized java.util.List<EmployeeEvent> history() {

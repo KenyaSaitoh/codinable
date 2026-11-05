@@ -21,7 +21,7 @@
 id: jakartaee-advanced
 order: 12
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.1.1
+version: 1.2.1
 
 names:
   ja: Jakarta EE 高度な仕組み
@@ -160,28 +160,6 @@ exercises:
         Read the login with a custom authentication mechanism and a database identity store (PBKDF2),
         authorization by web.xml constraints, and the CSRF token. ▶ Run app starts the employee API and the React screen (5173).
         Log in as Bob / 2222 (ADMIN) and Alice / 1111 (BASIC), and use the scripts in curl/ to see 401, 403 and 201.
-    openFiles:
-      - README.md
-  - id: jakarta-security-employee-faces
-    chapter: 4
-    lesson: '4.1 Jakarta Securityの認証・認可とリクエスト保護'
-    runtime: jakarta
-    run: 'gradle:payaraRun'
-    preview: '/jakarta-security-employee-faces/employees/list.xhtml'
-    suggestName: jakarta-security-employee-faces
-    names:
-      ja: Facesのフォーム認証とprotected-viewsを確かめる
-      en: Check Faces form login and protected views
-    descriptions:
-      ja: >-
-        @CustomFormAuthenticationMechanismDefinition によるログイン画面と、faces-config.xml の protected-views による
-        削除画面の保護を読みます。▶ アプリ実行でプレビューがログイン画面へ移り、Bob / 2222 でログインすると社員一覧へ戻ります。
-        curl/01_login_flow.sh を ▶ 実行すると、トークンの無い URL の拒否と Alice の 403 も確かめられます。
-      en: >-
-        Read the login page with @CustomFormAuthenticationMechanismDefinition and the delete page protected by
-        protected-views in faces-config.xml. ▶ Run app sends the preview to the login page, and logging in as Bob / 2222
-        returns you to the employee list. Run curl/01_login_flow.sh with ▶ Run to also see URLs without the token rejected
-        and the 403 for Alice.
     openFiles:
       - README.md
   # ── チャプター5: OpenID Connect・JWTによる認証連携 ─────────────

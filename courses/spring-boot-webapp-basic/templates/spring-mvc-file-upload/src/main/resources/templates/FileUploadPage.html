@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
   <meta charset="UTF-8">
   <title>ファイルアップロード</title>
 </head>
 <body>
 <h1>ファイルアップロード</h1>
+<p th:if="${errorMessage}" th:text="${errorMessage}" style="color:red">エラー</p>
 <form action="/files" method="post" enctype="multipart/form-data">
   <label>
     タイトル

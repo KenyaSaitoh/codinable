@@ -73,7 +73,7 @@ public class ApiExceptionHandler {
     // データの整合性制約に違反した場合は409の返却
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> integrity() {
-        return error(HttpStatus.CONFLICT, "関連データが変更されました読み込み直してください");
+        return error(HttpStatus.CONFLICT, "関連データが変更されました。読み込み直してください");
     }
 
     // ステータスとメッセージから共通形式のエラーレスポンスの生成

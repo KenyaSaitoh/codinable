@@ -1,0 +1,22 @@
+server:
+  port: 8097
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # 【1】 署名の検証に使う公開鍵（教材用の鍵ペアの公開鍵）
+          # Keycloak を使う場合は、この行の代わりに issuer-uri で発行者を指す（公開鍵は発行者の JWKS から取る）
+          public-key-location: classpath:keys/issuer-public.pem
+          # 【2】 受け入れる受信者（aud）。これが無いと ID トークンでも通ってしまう
+          audiences: employee-api
+          # 【3】 受け入れる署名アルゴリズム
+          jws-algorithms: RS256
+
+# 【4】 受け入れる発行者（iss）。SecurityConfig の issuerValidator が読む
+# Keycloak を使う場合の spring.security.oauth2.resourceserver.jwt.issuer-uri は、発行者へ OIDC の設定
+# （/.well-known/openid-configuration）を問い合わせにいくので、公開鍵を直接指定するこの演習では使わない
+employee:
+  jwt:
+    expected-issuer: http://localhost:8097/realms/learn

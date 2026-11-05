@@ -29,10 +29,9 @@ dependencies {
     // Spring Retry本体（@EnableRetry / @Retryable / @Recover）
     implementation 'org.springframework.retry:spring-retry:2.0.12'
     // Spring RetryはAOPプロキシで実現されるため、AspectJサポートが必須
-    // （これがないと@Retryableを付けてもリトライされない）
+    // （これがないと起動時に NoClassDefFoundError で止まる）
     implementation 'org.springframework:spring-aspects'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
-    compileOnly 'jakarta.platform:jakarta.jakartaee-api:10.0.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

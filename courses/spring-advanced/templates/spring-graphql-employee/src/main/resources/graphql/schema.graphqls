@@ -19,7 +19,7 @@ type Department {
     id: ID!                     # 部署ID
     departmentName: String!     # 部署名
     location: String            # 所在地
-    employees: [Employee!]!     # 所属する社員のリスト（@SchemaMappingで解決される）
+    employees: [Employee!]!     # 所属する社員のリスト（@BatchMappingで解決される）
 }
 
 # 問い合わせ（参照系）の操作

@@ -24,7 +24,7 @@ import jakarta.validation.constraints.Size;
 /** 社員、部署と役職は関連ではなくIDで保持する */
 @Entity
 @Table(name = "EMPLOYEE")
-// 第10章の論理削除を、Repositoryの標準delete/find系メソッドでも維持する
+// 論理削除を、Repositoryの標準delete/find系メソッドでも維持する
 @SQLDelete(sql = "UPDATE EMPLOYEE SET STATUS = 'deleted', VERSION = VERSION + 1 "
         + "WHERE EMPLOYEE_ID = ? AND VERSION = ?", verify = Expectation.RowCount.class)
 @SQLRestriction("STATUS = 'active'")

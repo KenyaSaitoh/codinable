@@ -1,12 +1,14 @@
 package pro.kensait.spring.employee.flux.api;
 
 import java.net.URI;
+import java.util.Map;
 import jakarta.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -128,13 +130,13 @@ public class EmployeeFluxApi {
     // 「準備できた要素から順次ストリーミング」できるのが大きな違い
     @GetMapping(path = "/stream",
             produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<org.springframework.http.codec.ServerSentEvent<Object>> stream() {
+    public Flux<ServerSentEvent<Object>> stream() {
         logger.info("[ EmployeeFluxApi#stream ]");
 
         // ビジネスロジックを呼び出し、1秒間隔のストリーミングFluxを返す
         return employeeService.streamEmployees()
-                .map(employee -> org.springframework.http.codec.ServerSentEvent.<Object>builder(employee).build())
-                .concatWithValues(org.springframework.http.codec.ServerSentEvent.<Object>builder()
-                        .event("complete").data(java.util.Map.of("complete", true)).build());
+                .map(employee -> ServerSentEvent.<Object>builder(employee).build())
+                .concatWithValues(ServerSentEvent.<Object>builder()
+                        .event("complete").data(Map.of("complete", true)).build());
     }
 }

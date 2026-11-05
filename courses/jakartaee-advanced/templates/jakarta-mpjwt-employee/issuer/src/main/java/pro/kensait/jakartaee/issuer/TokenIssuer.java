@@ -32,8 +32,8 @@ public class TokenIssuer {
     }
 
     private static final Map<String, User> USERS = Map.of(
-            "alice", new User("1111", "8f2d6c1e-0a01-4c5e-9a10-000000010001", "alice@example.test", List.of("BASIC")),
-            "bob", new User("2222", "8f2d6c1e-0a01-4c5e-9a10-000000010002", "bob@example.test", List.of("ADMIN")));
+            "alice", new User("1111", "8f2d6c1e-0a01-4c5e-9a10-000000010001", "alice@example.com", List.of("BASIC")),
+            "bob", new User("2222", "8f2d6c1e-0a01-4c5e-9a10-000000010002", "bob@example.com", List.of("ADMIN")));
 
     private final KeyPair keyPair;
     private final String kid = UUID.randomUUID().toString();

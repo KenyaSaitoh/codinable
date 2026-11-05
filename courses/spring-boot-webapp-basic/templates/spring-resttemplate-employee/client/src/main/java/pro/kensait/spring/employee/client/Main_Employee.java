@@ -62,7 +62,7 @@ public class Main_Employee {
         System.out.println("Salary => " + salary.getBody());
     }
 
-    // updatedeleteの生成
+    // 社員の登録・更新・削除
     private static void createUpdateDelete(RestTemplate client, String baseUrl) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -80,7 +80,7 @@ public class Main_Employee {
             System.out.println("Updated => "
                     + client.getForObject(baseUrl + "/employees/{id}", EmployeeTO.class, id));
         } finally {
-            // delete()は戻り値なし204を調べたい場合はexchange(..., DELETE, ..., Void.class)
+            // delete()は戻り値なし。204を調べたい場合はexchange(..., DELETE, ..., Void.class)
             client.delete(baseUrl + "/employees/{id}", id);
             System.out.println("Deleted => " + id);
         }

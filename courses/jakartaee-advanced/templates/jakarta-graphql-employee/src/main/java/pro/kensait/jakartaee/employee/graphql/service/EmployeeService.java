@@ -79,7 +79,7 @@ public class EmployeeService {
                 input.jobName(), input.salary(), input.entranceDate());
         em.persist(employee); // 【3】
         em.flush();
-        return employee; // 【4】
+        return employee;
     }
 
     public Employee updateEmployee(int id, EmployeeInput input)

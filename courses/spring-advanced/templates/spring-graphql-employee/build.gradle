@@ -30,7 +30,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    compileOnly 'jakarta.platform:jakarta.jakartaee-api:10.0.0'
     // HSQLDB JDBC Driver
     // 講座リポジトリではリポジトリ直下の hsqldb/lib/hsqldb.jar を参照しているが、ここでは Maven Central から取る
     runtimeOnly 'org.hsqldb:hsqldb'

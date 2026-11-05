@@ -39,7 +39,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
-# これがないとテーブル名が小文字になってしまい、RDSでエラーになる
+# エンティティの @Table・@Column の名前を、変換せずにそのまま使う
         naming:
           physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 

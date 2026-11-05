@@ -18,7 +18,7 @@ public class EmployeeNoticeController {
         return new EmployeeNotice(notice.employeeId(), notice.employeeName(),
                 notice.message(), LocalDateTime.now().toString());
     }
-    // 業務上不正な入力の場合は400の返却
+    // 入力が不正な場合は、送信元だけにエラーの文を返す
     @MessageExceptionHandler
     @SendToUser(value = "/queue/errors", broadcast = false)
     public String invalid(Exception error) {

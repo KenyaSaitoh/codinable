@@ -18,9 +18,9 @@ resilience4j:
         sliding-window-size: 10
 # 失敗率を計算し始めるまでの最低呼び出し回数（教材として少なめに設定）
         minimum-number-of-calls: 5
-# 失敗率がこの割合（%）を超えるとOPENに遷移する
+# 失敗率がこの割合（%）以上になるとOPENに遷移する
         failure-rate-threshold: 50
-# OPENのまま維持する時間。経過後にHALF_OPENへ遷移する
+# OPENのまま維持する時間。経過後の次の呼び出しでHALF_OPENへ遷移する
         wait-duration-in-open-state: 10s
 # HALF_OPEN状態で試験的に許可する呼び出し回数
         permitted-number-of-calls-in-half-open-state: 3

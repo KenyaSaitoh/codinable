@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# ダウンロードするファイル C:/tmp/output/sample.txt を用意する
-# FileDownloadController は C:/tmp/output の下のファイルを返す（場所はコードに直接書かれている）
+# ダウンロードするファイル download/sample.txt を用意する
+# FileDownloadController はプロジェクト直下の download フォルダのファイルを返す（場所はコードに直接書かれている）
 # アプリを起動する前でも後でも動かせる
+cd "$(dirname "$0")/.."
 set -x
-mkdir -p C:/tmp/output
-echo "download sample" > C:/tmp/output/sample.txt
-ls -l C:/tmp/output
+mkdir -p download
+echo "download sample" > download/sample.txt
+ls -l download

@@ -31,7 +31,6 @@ dependencies {
     // Thymeleaf extras は Spring Boot の BOM で管理されないため、講座リポジトリと同じ版を直書きする
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE'
-    compileOnly 'jakarta.platform:jakarta.jakartaee-api:10.0.0'
     // ソース中の @SuppressFBWarnings（SpotBugs の指摘を抑止する注釈）をコンパイルするためだけに使う
     // （講座リポジトリでは親 build.gradle が全プロジェクトに入れている。SpotBugs 自体は Codinable では動かさない）
     compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.3'

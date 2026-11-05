@@ -1,4 +1,4 @@
-# 第10章と同じDDL・10社員・4部署・5職種。既存DBから独立した確認用DB。
+# 既存DBから独立した確認用DB。
 spring:
   datasource:
     url: jdbc:hsqldb:mem:data_rest_employee_demo

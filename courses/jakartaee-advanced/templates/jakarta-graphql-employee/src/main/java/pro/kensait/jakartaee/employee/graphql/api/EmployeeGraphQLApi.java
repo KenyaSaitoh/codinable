@@ -33,14 +33,14 @@ public class EmployeeGraphQLApi {
 
     @Query("employee") // 【2】
     @Description("社員IDで社員を1件取得する")
-    public Employee employee(@Name("id") @Id int id)
-            throws EmployeeNotFoundException { // 【3】
-        return employeeService.getEmployee(id); // 【4】
+    public Employee employee(@Name("id") @Id int id) // 【3】
+            throws EmployeeNotFoundException {
+        return employeeService.getEmployee(id);
     }
 
     @Query("employees")
     @NonNull
-    public List<@NonNull Employee> employees() { // 【5】
+    public List<@NonNull Employee> employees() { // 【4】
         return employeeService.getEmployeesAll();
     }
 

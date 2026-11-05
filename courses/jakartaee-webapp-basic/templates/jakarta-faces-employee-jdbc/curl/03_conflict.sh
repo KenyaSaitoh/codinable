@@ -4,7 +4,8 @@
 # 期待する結果:
 #   1. 先に保存した利用者 A は「社員ID 10001 を更新しました」（VERSION が 0 → 1）
 #   2. 後から保存した利用者 B は「ほかの人が先に更新しました。読み込み直してください」
-#      B の画面は VERSION 0 のままなので、UPDATE … WHERE EMPLOYEE_ID = ? AND VERSION = ? の更新件数が 0 になる
+#      B の画面の version（0）が現在の version（1）と違うので、EmployeeService#update が UPDATE の前に ConflictException にする
+#      （比較の後に割り込まれたときは、UPDATE … WHERE EMPLOYEE_ID = ? AND VERSION = ? の更新件数が 0 になり、同じ例外になる）
 source "$(dirname "$0")/faces.inc"
 jarA=$(mktemp); jarB=$(mktemp)
 set -x

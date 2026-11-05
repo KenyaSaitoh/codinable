@@ -4,15 +4,18 @@
 
 - `FooBean`（`REQUIRED`、`rollbackFor = Exception.class`）が外側の境界を作り、
   `BarBean` と `QuxBean` を順に呼ぶ
-- `BarBean` は `REQUIRES_NEW`（独立したトランザクション）で `BUSINESS` 表の `Bar` 行を更新する
-- `QuxBean` は `REQUIRED`（外側へ参加）で `Qux` 行を更新し、引数が負なら更新後に `RuntimeException` を送出する
+- `BarBean` は `REQUIRES_NEW`（独立したトランザクション）で、`JdbcTemplate` により `BUSINESS` 表の `Bar` 行を更新する
+- `QuxBean` は `REQUIRED`（外側へ参加）で、`JdbcTemplate` により `Qux` 行を更新し、引数が負なら更新後に `RuntimeException` を送出する
 
 ## 動かし方
 
 1. ツールバーの ▶ アプリ実行で起動する
 2. `http://localhost:8080/fuga?param=100` を開くと `NORMAL END`
-3. `http://localhost:8080/fuga?param=-5` を開くと `ERROR OCCURED!!!`
+3. `http://localhost:8080/fuga?param=-5` を開くと `ERROR OCCURRED!!!`
 4. 実行ログで `[ BarBean#doBusiness ]` と `[ QuxBean#doBusiness ]` の Start / End の順を確かめる
+
+`param=100` の後に続けて `param=-5` を送ると、`COUNT` は `Bar` が 95、`Qux` が 100 になります。
+`Bar` の更新は独立したトランザクションで確定済みなので残り、`Qux` の更新は外側のトランザクションとともに取り消されます。
 
 DB は Codinable 用にインメモリの HSQLDB（`jdbc:hsqldb:mem:testdb`）へ切り替えてあり、
 起動時に `sql/hsqldb` の SQL で `BUSINESS` 表を作ります（HSQLDB サーバーは要りません）。
