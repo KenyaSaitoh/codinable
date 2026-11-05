@@ -1,6 +1,6 @@
 # spring-mvc-thymeleaf-2 — フォーム・共通化・JavaScript 連携・メッセージ
 
-チャプター 3.1「Spring MVCとThymeleafによる画面生成」の後半で使うサンプルです。
+チャプター 3.1「Spring MVCの基本機能」（3.1.3〜3.1.5）で使うサンプルです。
 トップページから各ページへ移れます。
 
 | URL | 内容 |

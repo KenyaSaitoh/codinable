@@ -6,7 +6,7 @@
 #  問題を出して解かせることはしない
 #
 #  master のディレクトリ番号（02_〜12_）と講座のチャプター番号は 1 対 1 ではない
-#  （例: 02_spring-mvc-basic はチャプター 3・4、06_rdb-jdbc はチャプター 7）
+#  （例: 02_spring-mvc-basic はチャプター 3.1、06_rdb-jdbc はチャプター 4）
 #  演習は原稿の各チャプターが使うサンプルに合わせて並べてある
 #  同じサンプルを別のチャプターでも使うときは dir で同じ雛形を指す
 #  （作業用プロジェクトは演習ごとに別に作られる）
@@ -19,6 +19,7 @@
 #    id           演習の識別子（dir 省略時はディレクトリ名として使う）
 #    dir          templates/ 配下のディレクトリ名（省略時は id）
 #    chapter      対応するチャプター番号。一覧のバッジに出る
+#                 チャプター 3 は 3.1（基本機能）と 3.2（発展機能）に分かれるので小数で書く
 #    lesson       対応するレッスン番号と名前。一覧の副題に出る
 #    runtime      実行環境（java / spring / node / react / python / static / sql / shell）
 #    run          ▶ アプリ実行で動かすもの（gradle:bootRun）。gradle:test ならテストクラスが主役で、
@@ -33,7 +34,7 @@
 id: spring-boot-webapp-basic
 order: 2
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.6.1
+version: 1.6.2
 
 names:
   ja: Spring Boot Webアプリ基礎
@@ -58,44 +59,38 @@ udemy:
 
 # チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
 chapters:
-  2:
+  '2.1':
     ja: 'Spring BootとDI・レイヤー設計'
     en: 'Spring Boot, DI and Layered Design'
-  3:
-    ja: 'Spring MVCとThymeleafによる画面生成'
-    en: 'Rendering Pages with Spring MVC and Thymeleaf'
-  4:
-    ja: 'Spring MVCのリクエスト処理・入力検証・例外処理'
-    en: 'Request Handling, Validation and Exception Handling in Spring MVC'
-  5:
-    ja: 'リダイレクトとセッションによる状態管理'
-    en: 'State Management with Redirects and Sessions'
-  6:
-    ja: 'Spring MVCによるファイルアップロードとダウンロード'
-    en: 'File Upload and Download with Spring MVC'
-  7:
+  '3.1':
+    ja: 'Spring MVCの基本機能'
+    en: 'Spring MVC Basics'
+  '3.2':
+    ja: 'Spring MVCの発展機能'
+    en: 'Spring MVC: Advanced Features'
+  '4.1':
     ja: 'Spring JDBCによるデータベースアクセス'
     en: 'Database Access with Spring JDBC'
-  8:
+  '5.1':
     ja: 'Spring Data JPAと永続化コンテキスト'
     en: 'Spring Data JPA and the Persistence Context'
-  9:
+  '6.1':
     ja: 'MyBatisによるSQLマッピングと動的SQL'
     en: 'SQL Mapping and Dynamic SQL with MyBatis'
-  10:
+  '7.1':
     ja: 'Springのトランザクション管理と伝播'
     en: 'Transaction Management and Propagation in Spring'
-  11:
+  '8.1':
     ja: 'Spring WebとSpring Data RESTによるREST API'
     en: 'REST APIs with Spring Web and Spring Data REST'
-  12:
+  '9.1':
     ja: 'RestClientとRestTemplateによる同期HTTP通信'
     en: 'Synchronous HTTP with RestClient and RestTemplate'
 
 exercises:
   # ── チャプター2: DI とレイヤー設計 ─────────────────────
   - id: spring-mvc-employee
-    chapter: 2
+    chapter: '2.1'
     lesson: '2.1 Spring BootとDI・レイヤー設計'
     runtime: spring
     run: 'gradle:bootRun'
@@ -119,10 +114,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター3: Spring MVC と Thymeleaf ──────────────
+  # ── チャプター3.1: Spring MVC の基本機能（画面生成） ──
   - id: spring-mvc-hello
-    chapter: 3
-    lesson: '3.1 Spring MVCとThymeleafによる画面生成'
+    chapter: '3.1'
+    lesson: '3.1 Spring MVCの基本機能'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/hello'
@@ -143,8 +138,8 @@ exercises:
       - README.md
 
   - id: spring-mvc-thymeleaf-1
-    chapter: 3
-    lesson: '3.1 Spring MVCとThymeleafによる画面生成'
+    chapter: '3.1'
+    lesson: '3.1 Spring MVCの基本機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-thymeleaf-1
@@ -165,8 +160,8 @@ exercises:
       - README.md
 
   - id: spring-mvc-thymeleaf-2
-    chapter: 3
-    lesson: '3.1 Spring MVCとThymeleafによる画面生成'
+    chapter: '3.1'
+    lesson: '3.1 Spring MVCの基本機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-thymeleaf-2
@@ -187,10 +182,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター4: リクエスト処理・入力検証・例外処理 ─────
+  # ── チャプター3.1: Spring MVC の基本機能（入力検証と例外処理） ──
   - id: spring-mvc-calc-1-request
-    chapter: 4
-    lesson: '4.1 Spring MVCのリクエスト処理・入力検証・例外処理'
+    chapter: '3.1'
+    lesson: '3.1 Spring MVCの基本機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-calc-1-request
@@ -210,8 +205,8 @@ exercises:
       - README.md
 
   - id: spring-mvc-calc-2-validation
-    chapter: 4
-    lesson: '4.1 Spring MVCのリクエスト処理・入力検証・例外処理'
+    chapter: '3.1'
+    lesson: '3.1 Spring MVCの基本機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-calc-2-validation
@@ -231,8 +226,8 @@ exercises:
 
   - id: spring-mvc-calc-4-prg-rebind
     dir: spring-mvc-calc-4-prg
-    chapter: 4
-    lesson: '4.1 Spring MVCのリクエスト処理・入力検証・例外処理'
+    chapter: '3.1'
+    lesson: '3.1 Spring MVCの基本機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-calc-4-prg-rebind
@@ -252,8 +247,8 @@ exercises:
       - README.md
 
   - id: spring-mvc-calc-3-config-exception
-    chapter: 4
-    lesson: '4.1 Spring MVCのリクエスト処理・入力検証・例外処理'
+    chapter: '3.1'
+    lesson: '3.1 Spring MVCの基本機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-calc-3-config-exception
@@ -273,10 +268,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター5: リダイレクトとセッション ─────────────
+  # ── チャプター3.2: Spring MVC の発展機能（リダイレクトとセッション） ──
   - id: spring-mvc-calc-4-prg
-    chapter: 5
-    lesson: '5.1 リダイレクトとセッションによる状態管理'
+    chapter: '3.2'
+    lesson: '3.2 Spring MVCの発展機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-calc-4-prg
@@ -296,8 +291,8 @@ exercises:
       - README.md
 
   - id: spring-mvc-calc-6-history
-    chapter: 5
-    lesson: '5.1 リダイレクトとセッションによる状態管理'
+    chapter: '3.2'
+    lesson: '3.2 Spring MVCの発展機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-calc-6-history
@@ -317,8 +312,8 @@ exercises:
       - README.md
 
   - id: spring-mvc-calc-5-session
-    chapter: 5
-    lesson: '5.1 リダイレクトとセッションによる状態管理'
+    chapter: '3.2'
+    lesson: '3.2 Spring MVCの発展機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-calc-5-session
@@ -338,8 +333,8 @@ exercises:
 
   - id: spring-mvc-employee-session
     dir: spring-mvc-employee
-    chapter: 5
-    lesson: '5.1 リダイレクトとセッションによる状態管理'
+    chapter: '3.2'
+    lesson: '3.2 Spring MVCの発展機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-employee-session
@@ -359,10 +354,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター6: ファイルのアップロードとダウンロード ──
+  # ── チャプター3.2: Spring MVC の発展機能（ファイル） ──
   - id: spring-mvc-file-upload
-    chapter: 6
-    lesson: '6.1 Spring MVCによるファイルアップロードとダウンロード'
+    chapter: '3.2'
+    lesson: '3.2 Spring MVCの発展機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-file-upload
@@ -382,8 +377,8 @@ exercises:
       - README.md
 
   - id: spring-mvc-file-download
-    chapter: 6
-    lesson: '6.1 Spring MVCによるファイルアップロードとダウンロード'
+    chapter: '3.2'
+    lesson: '3.2 Spring MVCの発展機能'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-file-download
@@ -404,10 +399,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター7〜9: DB アクセス ───────────────────────
+  # ── チャプター4〜6: DB アクセス ───────────────────────
   - id: spring-mvc-employee-jdbc
-    chapter: 7
-    lesson: '7.1 Spring JDBCによるデータベースアクセス'
+    chapter: '4.1'
+    lesson: '4.1 Spring JDBCによるデータベースアクセス'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-employee-jdbc
@@ -427,8 +422,8 @@ exercises:
       - README.md
 
   - id: spring-mvc-employee-jpa
-    chapter: 8
-    lesson: '8.1 Spring Data JPAと永続化コンテキスト'
+    chapter: '5.1'
+    lesson: '5.1 Spring Data JPAと永続化コンテキスト'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-employee-jpa
@@ -448,8 +443,8 @@ exercises:
       - README.md
 
   - id: spring-mvc-employee-mybatis
-    chapter: 9
-    lesson: '9.1 MyBatisによるSQLマッピングと動的SQL'
+    chapter: '6.1'
+    lesson: '6.1 MyBatisによるSQLマッピングと動的SQL'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-mvc-employee-mybatis
@@ -467,10 +462,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター10: トランザクション ──────────────────
+  # ── チャプター7: トランザクション ───────────────────
   - id: spring-mvc-tx
-    chapter: 10
-    lesson: '10.1 Springのトランザクション管理と伝播'
+    chapter: '7.1'
+    lesson: '7.1 Springのトランザクション管理と伝播'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/fuga?param=100'
@@ -491,8 +486,8 @@ exercises:
       - README.md
 
   - id: spring-mvc-tx-jta
-    chapter: 10
-    lesson: '10.1 Springのトランザクション管理と伝播'
+    chapter: '7.1'
+    lesson: '7.1 Springのトランザクション管理と伝播'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/JtaPage.html'
@@ -512,10 +507,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター11: REST API と Spring Data REST ─────────
+  # ── チャプター8: REST API と Spring Data REST ─────────
   - id: spring-rest-greet
-    chapter: 11
-    lesson: '11.1 Spring WebとSpring Data RESTによるREST API'
+    chapter: '8.1'
+    lesson: '8.1 Spring WebとSpring Data RESTによるREST API'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-rest-greet
@@ -534,8 +529,8 @@ exercises:
       - README.md
 
   - id: spring-rest-employee
-    chapter: 11
-    lesson: '11.1 Spring WebとSpring Data RESTによるREST API'
+    chapter: '8.1'
+    lesson: '8.1 Spring WebとSpring Data RESTによるREST API'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: spring-rest-employee
@@ -558,8 +553,8 @@ exercises:
       - README.md
 
   - id: spring-data-rest-employee
-    chapter: 11
-    lesson: '11.1 Spring WebとSpring Data RESTによるREST API'
+    chapter: '8.1'
+    lesson: '8.1 Spring WebとSpring Data RESTによるREST API'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/api'
@@ -582,11 +577,11 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター12: RestClient / RestTemplate ──────────────
+  # ── チャプター9: RestClient / RestTemplate ──────────────
   # ルートが確認用 API（▶ アプリ実行）、client/ がコンソールクライアント（client/run.sh を ▶ 実行）
   - id: spring-restclient-employee
-    chapter: 12
-    lesson: '12.1 RestClientとRestTemplateによる同期HTTP通信'
+    chapter: '9.1'
+    lesson: '9.1 RestClientとRestTemplateによる同期HTTP通信'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/employees'
@@ -607,8 +602,8 @@ exercises:
       - README.md
 
   - id: spring-resttemplate-employee
-    chapter: 12
-    lesson: '12.1 RestClientとRestTemplateによる同期HTTP通信'
+    chapter: '9.1'
+    lesson: '9.1 RestClientとRestTemplateによる同期HTTP通信'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/employees'

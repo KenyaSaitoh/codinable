@@ -1,6 +1,6 @@
 # spring-mvc-calc-3-config-exception — 外部設定と業務例外
 
-チャプター 4.1「Spring MVCのリクエスト処理・入力検証・例外処理」の後半（4.1.4・4.1.5）で使うサンプルです。
+チャプター 3.1「Spring MVCの基本機能」（3.1.9・3.1.10）で使うサンプルです。
 
 - `ConfigHolder` が `config.properties` の `calc.result.scale`（桁数 4）と `calc.result.limit`（上限 100000）を `@Value` で受け取る
 - `CalcService` が `BigDecimal` で計算し、上限超過で `LimitOverException`、ゼロ除算で `ZeroDivideException` を送出する

@@ -1,6 +1,6 @@
 # spring-mvc-calc-2-validation — データバインディングと Bean Validation
 
-チャプター 4.1「Spring MVCのリクエスト処理・入力検証・例外処理」で使うサンプルです。
+チャプター 3.1「Spring MVCの基本機能」で使うサンプルです。
 入力は `CalcParam`（`@NotNull` と -1000〜1000 の範囲制約）にバインドされ、
 `CalcController` が `BindingResult` を見て入力画面へ戻すか計算するかを決めます。
 計算は `@Service` の `CalcService` に任せ、Controller にはフィールドインジェクションで注入しています

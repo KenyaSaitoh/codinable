@@ -1,6 +1,6 @@
 # jakarta-servlet-file-download — HTTP レスポンスとしてのダウンロード
 
-チャプター 8.1「ファイルのアップロードとダウンロード」のうち、サーブレットからファイル本体を返すサンプルです。
+チャプター 5.2「Jakarta Facesの発展機能」のうち、サーブレットからファイル本体を返すサンプルです。
 `FileDownloadServlet` は `/download/<ファイル名>` の要求で `C:/tmp/output` の下のファイルを探し、
 `Content-Type`・`Content-Length`・`Content-Disposition` を本文より前に決めてから、ストリームで本体を書き出します。
 

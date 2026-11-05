@@ -1,6 +1,6 @@
 # jakarta-faces-hello — FacesServlet とバッキングBean
 
-チャプター 5.1「Jakarta Facesによる画面生成」の最初の画面です。
+チャプター 5.1「Jakarta Facesの基本機能」の最初の画面です。
 `web.xml` で `*.xhtml` の要求を `FacesServlet` に対応付け、`HelloPage.xhtml` の式 `#{helloBean.message}` が
 バッキングBean `HelloBean` の `getMessage()` を呼んで値を表示します。
 

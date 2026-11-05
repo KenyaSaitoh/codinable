@@ -1,6 +1,6 @@
 # spring-mvc-tx-jta — JTA による複数データソースのグローバルトランザクション
 
-チャプター 10.1「Springのトランザクション管理と伝播」（10.1.5 ローカルトランザクションとJTA）で使うサンプルです。
+チャプター 7.1「Springのトランザクション管理と伝播」（7.1.5 ローカルトランザクションとJTA）で使うサンプルです。
 
 - `XaDataSourceConfig` が HSQLDB の XA データソースを 2 つ（`dataSource1` / `dataSource2`）、
   Atomikos の `AtomikosDataSourceBean` として登録する

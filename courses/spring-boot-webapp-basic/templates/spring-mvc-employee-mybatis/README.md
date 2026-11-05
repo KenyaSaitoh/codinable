@@ -1,6 +1,6 @@
 # spring-mvc-employee-mybatis — MyBatis による社員管理
 
-チャプター 9.1「MyBatisによるSQLマッピングと動的SQL」で使うサンプルです。
+チャプター 6.1「MyBatisによるSQLマッピングと動的SQL」で使うサンプルです。
 Mapper インタフェース（`EmployeeMapper` など）と、同じパッケージ階層の XML
 （`src/main/resources/pro/kensait/spring/employee/mapper/*.xml`）の SQL が対応します。
 一覧と件数取得は共通の条件（`activeConditions`）を使い、`<if>` による動的 SQL で組み立てます。

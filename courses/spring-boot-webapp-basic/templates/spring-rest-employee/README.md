@@ -1,6 +1,6 @@
 # spring-rest-employee — @RestController による社員管理 REST API
 
-チャプター 11.1「Spring WebとSpring Data RESTによるREST API」（11.1.1〜11.1.3）で使うサンプルです。
+チャプター 8.1「Spring WebとSpring Data RESTによるREST API」（8.1.1〜8.1.3）で使うサンプルです。
 `EmployeeApi` → `EmployeeService` → `EmployeeRepository`（JPA）の構成で、
 入力 DTO の検証、`ResponseEntity` による 201 / 204、例外から 400 / 404 / 409 への変換
 （`ApiExceptionHandler`）、version による更新競合を扱います。

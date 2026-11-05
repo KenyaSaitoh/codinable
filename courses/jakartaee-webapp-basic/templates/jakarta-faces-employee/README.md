@@ -1,8 +1,8 @@
 # jakarta-faces-employee — CDI によるレイヤー設計（メモリー版の社員管理）
 
 メモリー版の社員管理システムです。チャプター 4.1「CDIによるDIとレイヤー設計」で、バッキングBean・Service・DAO が
-`@Inject` で接続されたレイヤー構成を読みます。同じアプリケーションを、チャプター 5.1（一覧画面の `h:dataTable`）、
-6.1（空欄を null として扱う設定と `@NotEmpty`）、7.1（会話スコープによる入力・確認・確定）でも使います。
+`@Inject` で接続されたレイヤー構成を読みます。同じアプリケーションを、チャプター 5.1（一覧画面の `h:dataTable`、空欄を null として扱う設定と `@NotEmpty`）、
+5.2（会話スコープによる入力・確認・確定）でも使います。
 社員データはデータベースではなく、`EmployeeDAO` の中の Map にあります。
 
 ## 見るファイル
@@ -13,7 +13,7 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 |---|---|
 | `src/main/webapp/WEB-INF/beans.xml` | `bean-discovery-mode="annotated"`。スコープを付けたクラスだけが CDI Bean になる |
 | `web/EmployeeTableBean.java` | 一覧画面のバッキングBean（プレゼンテーション層）。`@PostConstruct` で一覧を取得、`remove` で削除 |
-| `web/EmployeeEditBean.java` | 入力画面・確認画面の値を保持する `@ConversationScoped` のバッキングBean（チャプター 7.1） |
+| `web/EmployeeEditBean.java` | 入力画面・確認画面の値を保持する `@ConversationScoped` のバッキングBean（チャプター 5.2） |
 | `service/EmployeeService.java` | ビジネス層。`EmployeeDAO` をコンストラクタ注入で受け取る。`protected` の引数なしコンストラクタはクライアントプロキシ用 |
 | `service/EmployeeDAO.java`、`service/Employee.java` | データアクセス層。`@PostConstruct` で 16 人の初期データを Map に入れる |
 | `src/main/webapp/EmployeeTablePage.xhtml`、`EmployeeInputPage.xhtml`、`EmployeeConfirmPage.xhtml` | 一覧・入力・確認の画面 |

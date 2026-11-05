@@ -1,6 +1,6 @@
 # jakarta-faces-employee-jdbc — DataSource と JDBC によるデータベースアクセス
 
-チャプター 9.1「DataSourceとJDBCによるデータベースアクセス」の社員管理システム（データベース版）です。
+チャプター 6.1「DataSourceとJDBCによるデータベースアクセス」の社員管理システム（データベース版）です。
 アプリケーションサーバーが管理する `DataSource` を JNDI の名前で受け取り、`EmployeeRepository` が
 `PreparedStatement` で SQL を実行して、`ResultSet` の行を `Employee` に変換します。
 登録・更新・論理削除の業務処理は `EmployeeService` が `@Transactional` でまとめます。

@@ -11,16 +11,16 @@
 #  exercises[] の項目は spring-boot-webapp-basic/course.yaml と同じ
 #  （runtime は jakarta、run は gradle:payaraRun）
 #  同じアプリケーションを複数のチャプターで使うときは dir で同じ雛形を指す
-#  （jakarta-faces-calc-3-config-exception はチャプター4 と 6 の両方に出す。講座原稿 1.2 の演習の表に合わせて、
+#  （jakarta-faces-calc-3-config-exception はチャプター4.1 と 5.1 の両方に出す。講座原稿 1.2 の演習の表に合わせて、
 #    どちらも作業用プロジェクト名の既定値は jakarta-faces-calc-3-config-exception にしている）
-#  DB を使う演習（チャプター9〜13）は @DataSourceDefinition でインメモリの HSQLDB を定義し、
+#  DB を使う演習（チャプター6.1〜9.1）は @DataSourceDefinition でインメモリの HSQLDB を定義し、
 #  起動時に sql/hsqldb のテーブル定義と初期データを流す（デプロイのたびに初期データへ戻る）
-#  チャプター14 の 2 つの演習は、呼び出し先の確認用 API（employee-api.war）を同梱する
+#  チャプター10.1 の 2 つの演習は、呼び出し先の確認用 API（employee-api.war）を同梱する
 # ═══════════════════════════════════════════════════════════
 id: jakartaee-webapp-basic
 order: 11
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.0.2
+version: 1.0.3
 
 names:
   ja: Jakarta EE Webアプリ基礎
@@ -40,50 +40,44 @@ descriptions:
 
 # チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
 chapters:
-  2:
+  '2.1':
     ja: 'Jakarta EEとサーブレットによるHTTP処理'
     en: 'HTTP Processing with Jakarta EE and Servlets'
-  3:
+  '3.1':
     ja: 'JSPとMVCパターンによる画面生成'
     en: 'Rendering Pages with JSP and the MVC Pattern'
-  4:
+  '4.1':
     ja: 'CDIによるDIとレイヤー設計'
     en: 'DI and Layered Design with CDI'
-  5:
-    ja: 'Jakarta Facesによる画面生成'
-    en: 'Rendering Pages with Jakarta Faces'
-  6:
-    ja: 'Jakarta Facesの入力検証・変換・例外処理'
-    en: 'Validation, Conversion and Exception Handling in Jakarta Faces'
-  7:
-    ja: '画面遷移とスコープによる状態管理'
-    en: 'Navigation and State Management with Scopes'
-  8:
-    ja: 'ファイルのアップロードとダウンロード'
-    en: 'File Upload and Download'
-  9:
+  '5.1':
+    ja: 'Jakarta Facesの基本機能'
+    en: 'Jakarta Faces Fundamentals'
+  '5.2':
+    ja: 'Jakarta Facesの発展機能'
+    en: 'Advanced Jakarta Faces Features'
+  '6.1':
     ja: 'DataSourceとJDBCによるデータベースアクセス'
     en: 'Database Access with DataSource and JDBC'
-  10:
+  '7.1':
     ja: 'Jakarta Persistenceと永続化コンテキスト'
     en: 'Jakarta Persistence and the Persistence Context'
-  11:
+  '7.2':
     ja: 'Criteria APIとJakarta Dataによる検索'
     en: 'Queries with the Criteria API and Jakarta Data'
-  12:
+  '8.1':
     ja: 'Jakarta Transactionsによるトランザクション管理と伝播'
     en: 'Transaction Management and Propagation with Jakarta Transactions'
-  13:
+  '9.1':
     ja: 'Jakarta RESTによるREST API'
     en: 'REST APIs with Jakarta REST'
-  14:
+  '10.1':
     ja: 'クライアントAPIによる同期HTTP通信'
     en: 'Synchronous HTTP Communication with the Client API'
 
 exercises:
-  # ── チャプター2: Jakarta EE とサーブレット ────────────────────
+  # ── チャプター2.1: Jakarta EE とサーブレット ────────────────────
   - id: jakarta-servlet-hello
-    chapter: 2
+    chapter: '2.1'
     lesson: '2.1 Jakarta EEとサーブレットによるHTTP処理'
     runtime: jakarta
     run: 'gradle:payaraRun'
@@ -107,7 +101,7 @@ exercises:
       - README.md
 
   - id: jakarta-servlet-calc
-    chapter: 2
+    chapter: '2.1'
     lesson: '2.1 Jakarta EEとサーブレットによるHTTP処理'
     runtime: jakarta
     run: 'gradle:payaraRun'
@@ -128,9 +122,9 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター3: JSP と MVC ────────────────────
+  # ── チャプター3.1: JSP と MVC ────────────────────
   - id: jakarta-jsp-calc
-    chapter: 3
+    chapter: '3.1'
     lesson: '3.1 JSPとMVCパターンによる画面生成'
     runtime: jakarta
     run: 'gradle:payaraRun'
@@ -152,7 +146,7 @@ exercises:
       - README.md
 
   - id: jakarta-jsp-employee
-    chapter: 3
+    chapter: '3.1'
     lesson: '3.1 JSPとMVCパターンによる画面生成'
     runtime: jakarta
     run: 'gradle:payaraRun'
@@ -173,10 +167,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター4: CDI とレイヤー設計 ────────────────────
+  # ── チャプター4.1: CDI とレイヤー設計 ────────────────────
   - id: jakarta-faces-calc-3-config-exception-cdi
     dir: jakarta-faces-calc-3-config-exception
-    chapter: 4
+    chapter: '4.1'
     lesson: '4.1 CDIによるDIとレイヤー設計'
     runtime: jakarta
     run: 'gradle:payaraRun'
@@ -189,16 +183,16 @@ exercises:
       ja: >-
         計算アプリケーションの CalcBean は CalcService と Logger を @Inject で受け取り、CalcService には @Logged のインターセプタが働きます。
         ▶ アプリ実行で http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml が開きます。
-        計算のたびに、実行結果に LoggingInterceptor の start・end のログが出ることを確かめてください（チャプター6.1でも同じアプリケーションを使います）。
+        計算のたびに、実行結果に LoggingInterceptor の start・end のログが出ることを確かめてください（チャプター5.1でも同じアプリケーションを使います）。
       en: >-
         CalcBean in the calculator receives CalcService and a Logger through @Inject, and the @Logged interceptor applies to CalcService.
         ▶ Run app opens http://localhost:8080/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml.
-        Check that each calculation prints the start and end log lines of LoggingInterceptor (the same application is used again in chapter 6.1).
+        Check that each calculation prints the start and end log lines of LoggingInterceptor (the same application is used again in chapter 5.1).
     openFiles:
       - README.md
 
   - id: jakarta-faces-employee
-    chapter: 4
+    chapter: '4.1'
     lesson: '4.1 CDIによるDIとレイヤー設計'
     runtime: jakarta
     run: 'gradle:payaraRun'
@@ -219,10 +213,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター5: Jakarta Faces の画面生成 ────────────────────
+  # ── チャプター5.1: Jakarta Faces の画面生成 ────────────────────
   - id: jakarta-faces-hello
-    chapter: 5
-    lesson: '5.1 Jakarta Facesによる画面生成'
+    chapter: '5.1'
+    lesson: '5.1 Jakarta Facesの基本機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-hello/HelloPage.xhtml'
@@ -241,8 +235,8 @@ exercises:
       - README.md
 
   - id: jakarta-faces-facelets-1
-    chapter: 5
-    lesson: '5.1 Jakarta Facesによる画面生成'
+    chapter: '5.1'
+    lesson: '5.1 Jakarta Facesの基本機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-facelets-1/IndexPage.xhtml'
@@ -261,8 +255,8 @@ exercises:
       - README.md
 
   - id: jakarta-faces-facelets-2
-    chapter: 5
-    lesson: '5.1 Jakarta Facesによる画面生成'
+    chapter: '5.1'
+    lesson: '5.1 Jakarta Facesの基本機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-facelets-2/IndexPage.xhtml'
@@ -281,8 +275,8 @@ exercises:
       - README.md
 
   - id: jakarta-faces-calc-1-request
-    chapter: 5
-    lesson: '5.1 Jakarta Facesによる画面生成'
+    chapter: '5.1'
+    lesson: '5.1 Jakarta Facesの基本機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-calc-1-request/CalcInputPage.xhtml'
@@ -293,17 +287,17 @@ exercises:
     descriptions:
       ja: >-
         h:inputText の値が CalcBean の Double のプロパティに設定され、h:commandButton の add が計算します。CalcAddByGetPage.xhtml は f:viewParam で GET のクエリを受け取ります。
-        ▶ アプリ実行で http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml が開きます。curl/ のスクリプトでポストバックとビューパラメータを確かめてください（チャプター6.1でも使います）。
+        ▶ アプリ実行で http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml が開きます。curl/ のスクリプトでポストバックとビューパラメータを確かめてください（チャプター5.1の後半でも使います）。
       en: >-
         Values of h:inputText are set to the Double properties of CalcBean, and add on h:commandButton calculates. CalcAddByGetPage.xhtml receives the GET query with f:viewParam.
-        ▶ Run app opens http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml. Use the scripts in curl/ to see the postback and the view parameters (also used in chapter 6.1).
+        ▶ Run app opens http://localhost:8080/jakarta-faces-calc-1-request/CalcInputPage.xhtml. Use the scripts in curl/ to see the postback and the view parameters (also used later in chapter 5.1).
     openFiles:
       - README.md
 
-  # ── チャプター6: 入力検証・変換・例外処理 ────────────────────
+  # ── チャプター5.1: 入力検証・変換・例外処理 ────────────────────
   - id: jakarta-faces-calc-2-validation
-    chapter: 6
-    lesson: '6.1 Jakarta Facesの入力検証・変換・例外処理'
+    chapter: '5.1'
+    lesson: '5.1 Jakarta Facesの基本機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-calc-2-validation/CalcInputPage.xhtml'
@@ -324,8 +318,8 @@ exercises:
       - README.md
 
   - id: jakarta-faces-calc-3-config-exception
-    chapter: 6
-    lesson: '6.1 Jakarta Facesの入力検証・変換・例外処理'
+    chapter: '5.1'
+    lesson: '5.1 Jakarta Facesの基本機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-calc-3-config-exception/CalcInputPage.xhtml'
@@ -345,10 +339,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター7: 画面遷移とスコープ ────────────────────
+  # ── チャプター5.2: 画面遷移とスコープ ────────────────────
   - id: jakarta-faces-calc-4-prg
-    chapter: 7
-    lesson: '7.1 画面遷移とスコープによる状態管理'
+    chapter: '5.2'
+    lesson: '5.2 Jakarta Facesの発展機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-calc-4-prg/CalcInputPage.xhtml'
@@ -369,8 +363,8 @@ exercises:
       - README.md
 
   - id: jakarta-faces-calc-5-conversation
-    chapter: 7
-    lesson: '7.1 画面遷移とスコープによる状態管理'
+    chapter: '5.2'
+    lesson: '5.2 Jakarta Facesの発展機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-calc-5-conversation/CalcInputPage.xhtml'
@@ -391,8 +385,8 @@ exercises:
       - README.md
 
   - id: jakarta-faces-calc-6-history
-    chapter: 7
-    lesson: '7.1 画面遷移とスコープによる状態管理'
+    chapter: '5.2'
+    lesson: '5.2 Jakarta Facesの発展機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-calc-6-history/CalcInputPage.xhtml'
@@ -410,10 +404,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター8: ファイルのアップロードとダウンロード ────────────────────
+  # ── チャプター5.2: ファイルのアップロードとダウンロード ────────────────────
   - id: jakarta-servlet-file-upload
-    chapter: 8
-    lesson: '8.1 ファイルのアップロードとダウンロード'
+    chapter: '5.2'
+    lesson: '5.2 Jakarta Facesの発展機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-servlet-file-upload/'
@@ -434,8 +428,8 @@ exercises:
       - README.md
 
   - id: jakarta-faces-file-upload
-    chapter: 8
-    lesson: '8.1 ファイルのアップロードとダウンロード'
+    chapter: '5.2'
+    lesson: '5.2 Jakarta Facesの発展機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-file-upload/FileUploadPage.xhtml'
@@ -454,8 +448,8 @@ exercises:
       - README.md
 
   - id: jakarta-servlet-file-download
-    chapter: 8
-    lesson: '8.1 ファイルのアップロードとダウンロード'
+    chapter: '5.2'
+    lesson: '5.2 Jakarta Facesの発展機能'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-servlet-file-download/'
@@ -475,10 +469,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター9: DataSource と JDBC ────────────────────
+  # ── チャプター6.1: DataSource と JDBC ────────────────────
   - id: jakarta-faces-employee-jdbc
-    chapter: 9
-    lesson: '9.1 DataSourceとJDBCによるデータベースアクセス'
+    chapter: '6.1'
+    lesson: '6.1 DataSourceとJDBCによるデータベースアクセス'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-employee-jdbc/EmployeeTablePage.xhtml'
@@ -498,10 +492,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター10: Jakarta Persistence ────────────────────
+  # ── チャプター7.1: Jakarta Persistence ────────────────────
   - id: jakarta-faces-employee-jpa
-    chapter: 10
-    lesson: '10.1 Jakarta Persistenceと永続化コンテキスト'
+    chapter: '7.1'
+    lesson: '7.1 Jakarta Persistenceと永続化コンテキスト'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-employee-jpa/EmployeeTablePage.xhtml'
@@ -521,10 +515,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター11: Criteria API と Jakarta Data ────────────────────
+  # ── チャプター7.2: Criteria API と Jakarta Data ────────────────────
   - id: jakarta-faces-employee-criteria
-    chapter: 11
-    lesson: '11.1 Criteria APIとJakarta Dataによる検索'
+    chapter: '7.2'
+    lesson: '7.2 Criteria APIとJakarta Dataによる検索'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-faces-employee-criteria/EmployeeTablePage.xhtml'
@@ -543,8 +537,8 @@ exercises:
       - README.md
 
   - id: jakarta-data-employee
-    chapter: 11
-    lesson: '11.1 Criteria APIとJakarta Dataによる検索'
+    chapter: '7.2'
+    lesson: '7.2 Criteria APIとJakarta Dataによる検索'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-data-employee/EmployeeTablePage.xhtml'
@@ -562,10 +556,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター12: Jakarta Transactions ────────────────────
+  # ── チャプター8.1: Jakarta Transactions ────────────────────
   - id: jakarta-tx
-    chapter: 12
-    lesson: '12.1 Jakarta Transactionsによるトランザクション管理と伝播'
+    chapter: '8.1'
+    lesson: '8.1 Jakarta Transactionsによるトランザクション管理と伝播'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-tx/'
@@ -585,10 +579,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター13: Jakarta REST ────────────────────
+  # ── チャプター9.1: Jakarta REST ────────────────────
   - id: jakarta-rest-greet
-    chapter: 13
-    lesson: '13.1 Jakarta RESTによるREST API'
+    chapter: '9.1'
+    lesson: '9.1 Jakarta RESTによるREST API'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-rest-greet/api/greet/hello/Alice'
@@ -607,8 +601,8 @@ exercises:
       - README.md
 
   - id: jakarta-rest-employee
-    chapter: 13
-    lesson: '13.1 Jakarta RESTによるREST API'
+    chapter: '9.1'
+    lesson: '9.1 Jakarta RESTによるREST API'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-rest-employee/api/employees'
@@ -626,10 +620,10 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター14: クライアント API ────────────────────
+  # ── チャプター10.1: クライアント API ────────────────────
   - id: jakarta-rest-client-employee
-    chapter: 14
-    lesson: '14.1 クライアントAPIによる同期HTTP通信'
+    chapter: '10.1'
+    lesson: '10.1 クライアントAPIによる同期HTTP通信'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/employee-api/api/employees'
@@ -650,8 +644,8 @@ exercises:
       - README.md
 
   - id: jakarta-mp-rest-client-employee
-    chapter: 14
-    lesson: '14.1 クライアントAPIによる同期HTTP通信'
+    chapter: '10.1'
+    lesson: '10.1 クライアントAPIによる同期HTTP通信'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/jakarta-mp-rest-client-employee/'

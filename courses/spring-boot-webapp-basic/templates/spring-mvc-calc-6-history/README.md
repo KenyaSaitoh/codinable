@@ -1,8 +1,8 @@
 # spring-mvc-calc-6-history — ID 付き URL と保存済みデータの再取得
 
-チャプター 5.1「リダイレクトとセッションによる状態管理」（5.1.3）で使うサンプルです。
+チャプター 3.2「Spring MVCの発展機能」（3.2.3）で使うサンプルです。
 クエリパラメータとパス変数の例（`/viewResultByQuery?id=1`、`/viewResultByPath/1`）は
-チャプター 4.1（4.1.1）でも取り上げます。
+チャプター 3.1（3.1.6）でも取り上げます。
 
 - 計算結果は `CalcDAO` がメモリー上に履歴として保存し、`CalcService` は保存した ID を返す
 - Controller は `RedirectAttributes.addAttribute("id", id)` を付けて `redirect:/viewResult` を返す（URL は `/viewResult?id=...` になる）

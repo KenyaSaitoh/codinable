@@ -1,6 +1,6 @@
 # jakarta-rest-greet — リソースクラスと入力の受け取り
 
-チャプター 13.1「Jakarta RESTによるREST API」の最初のサンプル（挨拶 API）です。
+チャプター 9.1「Jakarta RESTによるREST API」の最初のサンプル（挨拶 API）です。
 `@ApplicationPath("/api")` の `RestApplication` と、`@Path("/greet")` の `GreetResource` だけで、
 同じ名前の値をパス・クエリ・フォーム・JSON の本文・ヘッダーのそれぞれから受け取ります。
 

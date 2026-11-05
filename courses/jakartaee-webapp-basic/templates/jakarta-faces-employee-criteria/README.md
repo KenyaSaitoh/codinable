@@ -1,6 +1,6 @@
 # jakarta-faces-employee-criteria — Criteria API と静的メタモデルによる検索
 
-チャプター 11.1「Criteria APIとJakarta Dataによる検索」のうち、Criteria API の演習です。チャプター 10.1 の `jakarta-faces-employee-jpa` と
+チャプター 7.2「Criteria APIとJakarta Dataによる検索」のうち、Criteria API の演習です。チャプター 7.1 の `jakarta-faces-employee-jpa` と
 同じ画面・Service のまま、`EmployeeRepository` の検索と件数だけを、指定された条件だけを組み立てる Criteria API に書き換えています。
 条件の属性は、ビルドのときにアノテーションプロセッサがエンティティから生成する静的メタモデル（`Employee_` など）で参照します。
 
@@ -31,7 +31,7 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 
 - 実行結果（Payara のログ）に、Criteria API から作られた SQL が出る。部署で絞り込んだときだけ `DEPARTMENT` との結合が現れ、
   指定しなかったキーワード・役職・月給の条件は SQL に現れない
-- 部署を持たない Victor は、部署で絞り込まないときには一覧に残る（チャプター 10.1 の JPQL では `LEFT JOIN` が必要だった）
+- 部署を持たない Victor は、部署で絞り込まないときには一覧に残る（チャプター 7.1 の JPQL では `LEFT JOIN` が必要だった）
 - `Employee_.employeeName` のようなメタモデルの属性を使っているので、エンティティの属性名を変えると、古い名前を使った箇所がコンパイルエラーになる
 - 一覧と総件数は同じ `predicates` から作るので、表示と件数がずれない
 

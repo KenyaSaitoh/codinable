@@ -1,6 +1,6 @@
 # jakarta-data-employee — Jakarta Data の Repository とページング
 
-チャプター 11.1「Criteria APIとJakarta Dataによる検索」のうち、Jakarta Data 1.0 の演習です。エンティティはチャプター 10.1 と同じ
+チャプター 7.2「Criteria APIとJakarta Dataによる検索」のうち、Jakarta Data 1.0 の演習です。エンティティはチャプター 7.1 と同じ
 `Employee`・`Department`・`Job` で、データアクセス層の `EmployeeRepository` をインタフェースの宣言だけで書きます。
 実装クラスは Jakarta Data のプロバイダー（Payara Server が持つ）が生成し、CDI Bean として `EmployeeService` に注入されます。
 
@@ -14,8 +14,8 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 | `repository/DepartmentRepository.java`、`JobRepository.java` | 読み取りだけの `BasicRepository` |
 | `service/EmployeeService.java` | `PageRequest.ofPage` と `Page` によるページング、`insert`・`update` の明示的な呼び出し、`OptimisticLockingFailureException` の変換 |
 | `web/EmployeeTableBean.java`、`src/main/webapp/EmployeeTablePage.xhtml` | 氏名と月給の範囲で検索する一覧。社員コードで編集画面を開く欄と、在籍中の人数（`countByStatus`） |
-| `web/EmployeeFormBean.java`、`src/main/webapp/EmployeeFormPage.xhtml` | 登録・編集画面（チャプター 10.1 と同じ） |
-| `entity/`、`src/main/resources/META-INF/persistence.xml` | チャプター 10.1 と同じエンティティと永続化ユニット `EmployeePU` |
+| `web/EmployeeFormBean.java`、`src/main/webapp/EmployeeFormPage.xhtml` | 登録・編集画面（チャプター 7.1 と同じ） |
+| `entity/`、`src/main/resources/META-INF/persistence.xml` | チャプター 7.1 と同じエンティティと永続化ユニット `EmployeePU` |
 | `config/DataSourceConfig.java`、`config/DatabaseInitializer.java`、`sql/hsqldb/` | データソースの定義と、起動時にテーブルを作り直す演習用の処理 |
 | `curl/01_search.sh` 〜 `curl/04_delete.sh` | 検索・登録・更新の競合・削除を HTTP の要求で確かめるスクリプト（`curl/faces.inc` はそれらが読み込む補助の関数） |
 

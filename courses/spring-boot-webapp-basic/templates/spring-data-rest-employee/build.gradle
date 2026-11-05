@@ -40,7 +40,7 @@ test {
     }
 }
 
-// 第 11 章（REST API）と同じ SQL を demo プロファイルとテストでも使う
+// チャプター 8.1（REST API）の spring-rest-employee と同じ SQL を demo プロファイルとテストでも使う
 processResources {
     from('sql/hsqldb') {
         include '2_EMPLOYEE_DDL.sql', '3_EMPLOYEE_DML.sql'

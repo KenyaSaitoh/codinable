@@ -1,6 +1,6 @@
 # jakarta-faces-facelets-1 — Facelets の式とデータ表示
 
-チャプター 5.1「Jakarta Facesによる画面生成」のうち、Facelets の画面で値を出す仕組み
+チャプター 5.1「Jakarta Facesの基本機能」のうち、Facelets の画面で値を出す仕組み
 （値式・エスケープ・繰り返し・条件・リンク・表示形式）を確かめるサンプルです。
 目次の画面 `IndexPage.xhtml` から、3 つの画面へ移動できます。
 

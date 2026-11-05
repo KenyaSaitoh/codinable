@@ -1,6 +1,6 @@
 # spring-mvc-calc-1-request — HTTP の入力と Controller の引数
 
-チャプター 4.1「Spring MVCのリクエスト処理・入力検証・例外処理」の最初のサンプルです。
+チャプター 3.1「Spring MVCの基本機能」（3.1.6）で使うサンプルです。
 `GET /` が入力画面、フォームの POST は `/add`、GET による計算は `/addByGet` が受け取ります。
 この段階には入力検証がありません。
 

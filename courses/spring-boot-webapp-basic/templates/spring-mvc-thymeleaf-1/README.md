@@ -1,6 +1,6 @@
 # spring-mvc-thymeleaf-1 — Thymeleaf の式とデータ表示
 
-チャプター 3.1「Spring MVCとThymeleafによる画面生成」で使うサンプルです。
+チャプター 3.1「Spring MVCの基本機能」で使うサンプルです。
 トップページから各ページへ移れます。
 
 | URL | テンプレート | 内容 |

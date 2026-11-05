@@ -1,6 +1,6 @@
 # spring-mvc-file-download — Resource と ResponseEntity によるダウンロード
 
-チャプター 6.1「Spring MVCによるファイルアップロードとダウンロード」（6.1.5）で使うサンプルです。
+チャプター 3.2「Spring MVCの発展機能」（3.2.10）で使うサンプルです。
 `FileDownloadController` がプロジェクト直下の `download` フォルダのファイルを `Resource` として読み、
 `Content-Disposition: attachment` を付けた `ResponseEntity` で返します。
 

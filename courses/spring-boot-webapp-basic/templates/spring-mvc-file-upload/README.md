@@ -1,6 +1,6 @@
 # spring-mvc-file-upload — マルチパートと MultipartFile
 
-チャプター 6.1「Spring MVCによるファイルアップロードとダウンロード」の前半で使うサンプルです。
+チャプター 3.2「Spring MVCの発展機能」（3.2.6〜3.2.8）で使うサンプルです。
 
 - `FileUploadPage.html` のフォームが `multipart/form-data` でタイトルとファイルを送る
 - `FileUploadController` が `MultipartFile` で受け取り、`FileStorageService` に保存を任せる

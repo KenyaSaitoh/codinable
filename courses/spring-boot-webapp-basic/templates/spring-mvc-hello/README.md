@@ -1,6 +1,6 @@
 # spring-mvc-hello — Controller・Model・View の最小構成
 
-チャプター 3.1「Spring MVCとThymeleafによる画面生成」の最初のサンプルです。
+チャプター 3.1「Spring MVCの基本機能」の最初のサンプルです。
 `HelloController` が Model に `message` を入れてビュー名 `HelloPage` を返し、
 Thymeleaf の `templates/HelloPage.html` が `th:text="${message}"` で表示します。
 

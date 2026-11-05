@@ -8,7 +8,7 @@ import pro.kensait.jakartaee.facelets.dto.Member;
 /**
  * 会員詳細の画面（MemberDetailPage.xhtml）のバッキングBean
  * リンクの f:param で渡った memberId を、画面の f:viewParam が setMemberId で設定する
- * （ビューパラメータの仕組みはチャプター6.1で取り上げる）
+ * （ビューパラメータの仕組みはレッスン5.1.6で取り上げる）
  */
 @Named
 @RequestScoped

@@ -1,7 +1,7 @@
 # spring-mvc-calc-4-prg — PRG とフラッシュ属性
 
-チャプター 5.1「リダイレクトとセッションによる状態管理」（5.1.2）で使うサンプルです。
-入力エラーを同じ画面に再表示する `CalcInputPage.html` の書き方は、チャプター 4.1（4.1.3）でも取り上げます。
+チャプター 3.2「Spring MVCの発展機能」（3.2.2）で使うサンプルです。
+入力エラーを同じ画面に再表示する `CalcInputPage.html` の書き方は、チャプター 3.1（3.1.8）でも取り上げます。
 
 - POST `/add` は計算結果をフラッシュ属性に入れて `redirect:/viewAddResult` を返す
 - GET `/viewAddResult` がその値を Model の `value` に入れて `CalcOutputPage` を表示する

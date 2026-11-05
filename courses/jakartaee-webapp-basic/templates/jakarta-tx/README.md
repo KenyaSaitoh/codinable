@@ -1,6 +1,6 @@
 # jakarta-tx — @Transactional の伝播と UserTransaction
 
-チャプター 12.1「Jakarta Transactionsによるトランザクション管理と伝播」のサンプルです。
+チャプター 8.1「Jakarta Transactionsによるトランザクション管理と伝播」のサンプルです。
 
 - `FooBean`（`REQUIRED`、`rollbackOn = Exception.class`）が外側の境界を作り、`BarBean` と `QuxBean` を順に呼ぶ
 - `BarBean` は `REQUIRES_NEW`（独立したトランザクション）で `BUSINESS` テーブルの `Bar` の行を更新する

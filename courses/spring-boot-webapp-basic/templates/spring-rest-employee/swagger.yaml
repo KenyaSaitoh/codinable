@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Employee / Department / Job API
   version: 2.0.0
-  description: 第7章のJPA版社員管理をREST API化。EmployeeはDepartmentとJobをIDで参照する。
+  description: チャプター5.1のJPA版社員管理をREST API化。EmployeeはDepartmentとJobをIDで参照する。
 servers:
 - url: http://127.0.0.1:8080
 paths:

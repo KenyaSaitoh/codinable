@@ -1,8 +1,8 @@
 # jakarta-faces-calc-4-prg — faces-redirect=true による PRG と Flash
 
-計算アプリケーションの 4 番目の版です。チャプター 7.1「画面遷移とスコープによる状態管理」で、
+計算アプリケーションの 4 番目の版です。チャプター 5.2「Jakarta Facesの発展機能」で、
 処理の POST と表示の GET を分ける PRG（Post/Redirect/Get）と、リダイレクト先へ値を 1 回だけ持ち越す Flash を確かめます。
-入力値の制約と変換はチャプター 6.1 の `jakarta-faces-calc-2-validation` と同じです。
+入力値の制約と変換はチャプター 5.1 の `jakarta-faces-calc-2-validation` と同じです。
 
 ## 見るファイル
 

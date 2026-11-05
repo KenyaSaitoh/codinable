@@ -1,6 +1,6 @@
 # spring-data-rest-employee — Spring Data REST による Repository の自動公開
 
-チャプター 11.1「Spring WebとSpring Data RESTによるREST API」（11.1.4・11.1.5）で使うサンプルです。
+チャプター 8.1「Spring WebとSpring Data RESTによるREST API」（8.1.4・8.1.5）で使うサンプルです。
 自作の CRUD Controller・Service は置かず、`@RepositoryRestResource` を付けた
 `EmployeeRepository` を Spring Data REST が `/api` の下に公開します。
 

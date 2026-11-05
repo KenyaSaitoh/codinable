@@ -1,6 +1,6 @@
 # jakarta-rest-client-employee — Jakarta REST のクライアント API による同期 HTTP 通信
 
-チャプター 14.1「クライアントAPIによる同期HTTP通信」のうち、Jakarta REST のクライアント API の演習です。
+チャプター 10.1「クライアントAPIによる同期HTTP通信」のうち、Jakarta REST のクライアント API の演習です。
 2 つのプログラムからなります。
 
 - ルート: 呼び出し先の確認用の社員 API（`employee-api.war`）。メモリー内に社員 16 件を持ち、▶ アプリ実行で Payara Server にデプロイする

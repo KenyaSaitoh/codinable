@@ -1,6 +1,6 @@
 # spring-resttemplate-employee — RestTemplate による同期 HTTP 通信
 
-チャプター 12.1「RestClientとRestTemplateによる同期HTTP通信」で使うサンプルです。
+チャプター 9.1「RestClientとRestTemplateによる同期HTTP通信」で使うサンプルです。
 2 つのプログラムの組になっています。
 
 | 場所 | 中身 | 動かし方 |

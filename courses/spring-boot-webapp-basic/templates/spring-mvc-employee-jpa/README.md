@@ -1,6 +1,6 @@
 # spring-mvc-employee-jpa — Spring Data JPA による社員管理
 
-チャプター 8.1「Spring Data JPAと永続化コンテキスト」で使うサンプルです。
+チャプター 5.1「Spring Data JPAと永続化コンテキスト」で使うサンプルです。
 JDBC 版と同じ画面・URL のまま、永続化を `JpaRepository` と JPQL、`Pageable` に置き換えています。
 部署と役職は ID ではなく `@ManyToOne` の関連として持ち、更新の競合は `@Version` で、
 論理削除と更新は永続化コンテキストの変更の検出（ダーティチェック）で反映します。

@@ -1,6 +1,6 @@
 # spring-mvc-tx — @Transactional の伝播（REQUIRED / REQUIRES_NEW）
 
-チャプター 10.1「Springのトランザクション管理と伝播」で使うサンプルです。
+チャプター 7.1「Springのトランザクション管理と伝播」で使うサンプルです。
 
 - `FooBean`（`REQUIRED`、`rollbackFor = Exception.class`）が外側の境界を作り、
   `BarBean` と `QuxBean` を順に呼ぶ

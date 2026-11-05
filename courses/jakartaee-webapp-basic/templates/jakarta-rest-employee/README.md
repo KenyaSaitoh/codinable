@@ -1,6 +1,6 @@
 # jakarta-rest-employee — Jakarta REST による社員管理 API
 
-チャプター 13.1「Jakarta RESTによるREST API」の社員管理 API です。エンティティ・Repository・Service はチャプター 10.1 の
+チャプター 9.1「Jakarta RESTによるREST API」の社員管理 API です。エンティティ・Repository・Service はチャプター 7.1 の
 Jakarta Persistence 版と同じで、HTTP の入出力をリソースクラス `EmployeeResource` が受け持ちます。
 JSON の本文は入力専用の `EmployeeRequest` と応答用の `EmployeeResponse` で受け渡し、例外は `ExceptionMapper` で HTTP の応答に変換します。
 
@@ -16,7 +16,7 @@ Java のクラスは `src/main/java/pro/kensait/jakartaee/employee/` の下に�
 | `rest/MasterDataResource.java` | `GET /api/departments`、`GET /api/jobs` |
 | `rest/mapper/` | `ConstraintViolationException`・`InvalidRequestException`・`RangeException`・本文の JSON を読み取れない `ProcessingException` → 400、`EmployeeNotFoundException` → 404、`ConflictException` → 409 |
 | `rest/ApiError.java`、`InvalidRequestException.java` | エラー本文の共通の形と、既存データと整合しない要求を表す例外 |
-| `service/EmployeeService.java`、`repository/`、`entity/` | チャプター 10.1 と同じ業務処理・データアクセス・エンティティ（`@Version` で競合を検出） |
+| `service/EmployeeService.java`、`repository/`、`entity/` | チャプター 7.1 と同じ業務処理・データアクセス・エンティティ（`@Version` で競合を検出） |
 | `config/DataSourceConfig.java`、`config/DatabaseInitializer.java`、`sql/hsqldb/` | データソースの定義と、起動時にテーブルを作り直す演習用の処理 |
 | `curl/01_masters.sh` 〜 `curl/09_invalid_request.sh` | API を呼び出すスクリプト |
 

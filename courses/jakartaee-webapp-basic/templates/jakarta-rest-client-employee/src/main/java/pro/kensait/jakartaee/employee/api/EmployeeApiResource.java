@@ -19,7 +19,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-/** 確認用の社員 API（チャプター 13.1 の API を簡略化したもの。一覧は配列で返し、ETag は付けない） */
+/** 確認用の社員 API（チャプター 9.1 の API を簡略化したもの。一覧は配列で返し、ETag は付けない） */
 @Path("/employees")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)

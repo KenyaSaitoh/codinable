@@ -1,6 +1,6 @@
 # spring-mvc-employee-jdbc — JdbcTemplate による社員管理
 
-チャプター 7.1「Spring JDBCによるデータベースアクセス」で使うサンプルです。
+チャプター 4.1「Spring JDBCによるデータベースアクセス」で使うサンプルです。
 `EmployeeRepository` が `JdbcTemplate` と `RowMapper` で検索・登録・更新・論理削除を行い、
 `EmployeeService` がトランザクション境界と更新競合（version の比較）を担当します。
 

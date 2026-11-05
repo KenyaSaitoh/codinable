@@ -1,6 +1,6 @@
 # jakarta-faces-employee-jpa — Jakarta Persistence と永続化コンテキスト
 
-チャプター 10.1「Jakarta Persistenceと永続化コンテキスト」の社員管理システムです。チャプター 9.1 の JDBC 版と同じ画面・同じテーブルを、
+チャプター 7.1「Jakarta Persistenceと永続化コンテキスト」の社員管理システムです。チャプター 6.1 の JDBC 版と同じ画面・同じテーブルを、
 エンティティのマッピングと `EntityManager` で読み書きします。部署と役職は ID ではなく `@ManyToOne` の関連として持ち、
 更新の競合は `@Version` で、論理削除と更新は永続化コンテキストの変更の検出（ダーティチェック）で反映します。
 

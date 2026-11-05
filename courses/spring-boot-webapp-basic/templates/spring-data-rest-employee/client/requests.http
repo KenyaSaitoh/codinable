@@ -5,7 +5,7 @@
 GET {{base}}
 Accept: application/hal+json
 
-### 一覧（第10章のpage=1に相当）
+### 一覧（spring-rest-employee の page=1 に相当）
 GET {{base}}/employees?page=0&size=5&sort=employeeId,asc
 
 ### 部署と職種

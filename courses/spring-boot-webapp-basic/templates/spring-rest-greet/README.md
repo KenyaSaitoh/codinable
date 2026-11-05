@@ -1,6 +1,6 @@
 # spring-rest-greet — REST API の入力の受け取り方
 
-チャプター 11.1「Spring WebとSpring Data RESTによるREST API」（11.1.1・11.1.2）で使うサンプルです。
+チャプター 8.1「Spring WebとSpring Data RESTによるREST API」（8.1.1・8.1.2）で使うサンプルです。
 `GreetApi`（`@RestController`、`@RequestMapping("/greet")`）が、同じ名前の値を
 いろいろな HTTP の場所から受け取ります。
 

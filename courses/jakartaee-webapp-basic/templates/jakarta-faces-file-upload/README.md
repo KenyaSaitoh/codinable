@@ -1,6 +1,6 @@
 # jakarta-faces-file-upload — Faces の h:inputFile と保存処理の検証
 
-チャプター 8.1「ファイルのアップロードとダウンロード」のうち、Jakarta Faces でファイルを受け取るサンプルです。
+チャプター 5.2「Jakarta Facesの発展機能」のうち、Jakarta Faces でファイルを受け取るサンプルです。
 `h:inputFile` の値が `Part` としてバッキングBean に設定され、保存は `jakarta-servlet-file-upload` と同じ
 `FileStorageService` が検証して行います。受け付けない理由は、入力欄のメッセージとして同じ画面に表示します。
 

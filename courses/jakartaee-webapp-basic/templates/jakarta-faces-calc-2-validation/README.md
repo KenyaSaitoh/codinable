@@ -1,6 +1,6 @@
 # jakarta-faces-calc-2-validation — コンバーターと Bean Validation・FacesMessage
 
-計算アプリケーションの 2 番目の版です。チャプター 6.1「Jakarta Facesの入力検証・変換・例外処理」で、
+計算アプリケーションの 2 番目の版です。チャプター 5.1「Jakarta Facesの基本機能」で、
 送信された文字列が `BigDecimal` へ変換され、Bean Validation の制約で検証されてから `CalcBean` に設定される順序と、
 入力エラーを項目ごとに再表示する仕組みを確かめます。
 

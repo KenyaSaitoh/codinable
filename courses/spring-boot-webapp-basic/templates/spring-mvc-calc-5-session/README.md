@@ -1,6 +1,6 @@
 # spring-mvc-calc-5-session — @SessionAttributes による複数画面の状態管理
 
-チャプター 5.1「リダイレクトとセッションによる状態管理」（5.1.4）で使うサンプルです。
+チャプター 3.2「Spring MVCの発展機能」（3.2.4）で使うサンプルです。
 計算結果を `CalcSession` としてセッションに保持し、次の画面の `/calcTax` で
 `TaxService` が税込金額（1.1 倍）を求めます。
 

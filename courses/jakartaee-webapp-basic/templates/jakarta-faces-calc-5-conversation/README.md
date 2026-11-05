@@ -1,6 +1,6 @@
 # jakarta-faces-calc-5-conversation — 会話スコープと Flash
 
-計算アプリケーションの 5 番目の版です。チャプター 7.1「画面遷移とスコープによる状態管理」で、
+計算アプリケーションの 5 番目の版です。チャプター 5.2「Jakarta Facesの発展機能」で、
 計算結果を会話スコープ（`@ConversationScoped`）のバッキングBeanに保持して次の画面で税込金額を求め、
 `Conversation` の `begin()` から `end()` までを 1 つの操作として扱う仕組みを確かめます。
 

@@ -1,6 +1,6 @@
 # jakarta-servlet-file-upload — マルチパートと @MultipartConfig・Part
 
-チャプター 8.1「ファイルのアップロードとダウンロード」のうち、サーブレットでファイルを受け取るサンプルです。
+チャプター 5.2「Jakarta Facesの発展機能」のうち、サーブレットでファイルを受け取るサンプルです。
 `multipart/form-data` のフォームを `@MultipartConfig` を付けた `FileUploadServlet` が受け、`getPart` で取り出した `Part` を
 `FileStorageService` に渡して検証・保存し、結果の表示は `/files/result?id=…` の GET へリダイレクトで分けます（PRG）。
 

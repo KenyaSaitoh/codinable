@@ -1,6 +1,6 @@
 # jakarta-mp-rest-client-employee — MicroProfile Rest Client による同期 HTTP 通信
 
-チャプター 14.1「クライアントAPIによる同期HTTP通信」のうち、MicroProfile Rest Client の演習です。
+チャプター 10.1「クライアントAPIによる同期HTTP通信」のうち、MicroProfile Rest Client の演習です。
 呼び出す側のアプリケーション（このプロジェクト）は Payara Server に配置する WAR で、確認用の社員 API（`api/`）を
 インタフェース `EmployeeApiClient` の宣言だけで呼び出します。接続先とタイムアウトは MicroProfile Config で指定します。
 呼び出しの手順と結果は `jakarta-rest-client-employee`（クライアント API 版）と同じです。
