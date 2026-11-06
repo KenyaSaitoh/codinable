@@ -1,4 +1,4 @@
-# customer-hub — 外部 API の Customer Hub（Jakarta REST + Jakarta Persistence）
+# customer-hub — 外部システムの Customer Hub（Jakarta REST + Jakarta Persistence）
 
 書店 Leaf Books から呼ばれる側（プロバイダー）の顧客 API です。顧客の照会・登録などを JSON で提供します。
 書店の演習（leaf-books）では同じ Payara Server に一緒にデプロイされますが、ここでは Customer Hub だけを動かします。
@@ -36,7 +36,7 @@
      テーブルを変えたら、手で直さずに node scripts/build-schema-docs.js で作り直すこと -->
 ## この演習で使うテーブル
 
-「外部APIのCustomer Hubを動かす」のコードが読み書きするテーブルです。
+「外部システムのCustomer Hubを動かす」のコードが読み書きするテーブルです。
 テーブルはインメモリの HSQLDB に作られます（定義: `src/backend/sql/hsqldb/2_CUSTOMER_HUB_DDL.sql`、初期データ: `src/backend/sql/hsqldb/3_CUSTOMER_HUB_DML.sql`）。
 
 ### CUSTOMER

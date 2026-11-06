@@ -1,17 +1,17 @@
-# Leaf Books（MVC 版）
+# Leaf Books（サーバサイドMVC版）
 
-Spring MVC + Thymeleaf でサーバーが HTML を生成する書店アプリです（ポート 8080）。
+Spring Web（MVC）+ Thymeleaf でサーバーが HTML を生成する書店アプリです（ポート 8080）。
 書籍の検索、カート、ログイン、注文、在庫更新、注文履歴までを扱います。
-ログインと顧客登録では、外部 API の Customer Hub（ポート 8081）を呼びます。
+ログインと顧客登録では、外部システムの Customer Hub（ポート 8081）を呼びます。
 
 ## この雛形を使う演習
 
 | 演習 | 主に読むファイル |
 |---|---|
-| MVC版のServiceとDTOを読む（2.1） | `service/order/OrderService.java`（orderBooks）、`service/order/OrderTO.java`、`service/delivery/DeliveryFeeService.java` |
+| サーバサイドMVC版のServiceとDTOを読む（2.1） | `service/order/OrderService.java`（orderBooks）、`service/order/OrderTO.java`、`service/delivery/DeliveryFeeService.java` |
 | JPAの関連・検索・楽観的ロックを動かす（3.1） | `entity/OrderDetail.java`・`OrderDetailPK.java`、`repository/BookRepository.java`、`service/book/BookService.java`、`repository/StockRepository.java`、テーブルは 下の「この演習で使うテーブル」 |
-| 外部APIの呼び出しと入力検証を試す（3.1） | `external/CustomerApiClient.java`、`web/customer/CustomerParam.java` |
-| MVC版の画面遷移・セッション・PRGを動かす（4.1） | `web/order/OrderController.java`、`web/cart/CartSession.java`、`web/login/TokenProcessor.java` |
+| 外部システム連携（API）と入力検証を試す（3.1） | `external/CustomerApiClient.java`、`web/customer/CustomerParam.java` |
+| サーバサイドMVC版の画面遷移・セッション・PRGを動かす（4.1） | `web/order/OrderController.java`、`web/cart/CartSession.java`、`web/login/TokenProcessor.java` |
 
 パスは `src/main/java/pro/kensait/leafbooks/` からの相対です。
 
@@ -75,7 +75,7 @@ src/main/java/pro/kensait/leafbooks/
 src/main/resources/
 ├── templates/    Thymeleaf テンプレート
 └── static/       CSS と書籍の表紙画像
-customer-hub/     外部 API 役の Customer Hub（別の Gradle プロジェクト）
+customer-hub/     外部システム役の Customer Hub（別の Gradle プロジェクト）
 sql/hsqldb/       起動時に流す DDL / DML
 ```
 

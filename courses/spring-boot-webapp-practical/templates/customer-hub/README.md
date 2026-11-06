@@ -1,7 +1,7 @@
-# Customer Hub（外部 API 役の REST API）
+# Customer Hub（外部システム役の REST API）
 
 顧客の登録・照会・変更・削除を HTTP API として提供する Spring Boot アプリです。
-Leaf Books（MVC 版 / SPA 版）はログインと顧客登録のときに、この API を呼びます。
+Leaf Books（サーバサイドMVC版 / SPA版）はログインと顧客登録のときに、この API を呼びます。
 
 ## Codinable での動かし方
 

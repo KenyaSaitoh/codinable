@@ -259,7 +259,7 @@ courses/<講座ID>/
 | `spring-advanced` | Spring FW 高度な仕組み | 13 件（WebClient・WebSocket / Security / JWT リソースサーバー / GraphQL / WebFlux・@Async とイベント / Kafka・RabbitMQ / Resilience・Retry / Actuator・Observability） |
 | `spring-boot-cicd` | Spring Boot CICD | 9 件（JUnit・Mockito / Spring の結合テスト / Database Rider・API テスト / Playwright / Gatling / CI） |
 | `spring-cloud-aws` | Springクラウド機能 on AWS | 6 件（ECS / Spring Session・Cloud Config / Cognito） |
-| `spring-boot-webapp-practical` | Spring Boot Webアプリ応用（ECサイト） | 8 件（書店アプリ MVC 版・REST+React 版と、外部 API 役の customer-hub） |
+| `spring-boot-webapp-practical` | Spring Boot Webアプリ応用（ECサイト） | 8 件（書店アプリのサーバサイドMVC版・React（SPA）版と、外部システム役の customer-hub） |
 | `java-db-access` | Java DBアクセス | 35 件（JDBC / MyBatis / JPA のロック・関連・JPQL・Criteria・複合主キー・継承） |
 | `java-basic` | Java Basic | 94 件（型とメモリー・制御構文・オブジェクト指向・例外・コレクション・日時。AI が書いたコードのレビューと実行での確認） |
 | `java-advanced` | Java Advanced | 45 件（モジュール・スレッド・ラムダ式とストリーム・入出力・ネットワーク・総称型・リフレクション・レコード） |

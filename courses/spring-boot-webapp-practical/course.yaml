@@ -6,7 +6,7 @@
 #  問題を出して解かせることはしない
 #
 #  サンプルは 3 つのアプリで、チャプターごとに同じアプリを別の観点で読む
-#    leaf-books-mvc  Spring MVC + Thymeleaf の書店（ポート 8080）
+#    leaf-books-mvc  Spring Web（MVC）+ Thymeleaf の書店（ポート 8080）
 #    leaf-books      REST API + React の書店（API 8080 / Vite 5173）
 #    customer-hub    書店が呼ぶ外部 API（ポート 8081）
 #  同じアプリを使う演習は dir で同じ雛形を指す（作業用プロジェクトは演習ごとに別に作られる）
@@ -31,7 +31,7 @@
 id: spring-boot-webapp-practical
 order: 7
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.3.1
+version: 1.3.2
 
 names:
   ja: Spring Boot Webアプリ応用（ECサイト）
@@ -40,12 +40,12 @@ names:
 descriptions:
   ja: >-
     書籍の検索・カート・ログイン・注文・在庫更新を持つ書店アプリを、
-    Spring MVC 版と REST API + React 版の両方から読み解く講座の演習です。
-    外部 API 役の Customer Hub も含みます。
+    サーバサイドMVC版と React（SPA）+ REST API 版の両方から読み解く講座の演習です。
+    外部システム役の Customer Hub も含みます。
     講座本編は HSQLDB サーバーを使いますが、ここではインメモリの HSQLDB で動くように調整してあります。
   en: >-
     Exercises for the course that reads a bookstore app - search, cart, login, orders and
-    stock updates - both as a Spring MVC app and as a REST API + React SPA,
+    stock updates - both as a server-side MVC app (Spring Web) and as a React SPA with a REST API,
     together with Customer Hub, the external API it calls.
     The course itself uses an HSQLDB server; these are adjusted to run on in-memory HSQLDB.
 
@@ -55,24 +55,27 @@ udemy:
 # チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
 chapters:
   2:
-    ja: 'レイヤ設計・DTO・業務処理と画面方式の比較'
-    en: 'Layered Design, DTOs, Business Logic and UI Approaches Compared'
+    ja: '全体のコンポーネント構成'
+    en: 'Overall Component Structure'
   3:
-    ja: 'JPA・トランザクション・外部APIと入力検証'
-    en: 'JPA, Transactions, External APIs and Validation'
+    ja: 'DBアクセス・外部システム連携（API）'
+    en: 'Database Access and External System Integration (API)'
   4:
-    ja: 'Spring MVCの画面生成・セッション・認証・PRG'
-    en: 'Pages, Sessions, Authentication and PRG in Spring MVC'
+    ja: 'Spring WebによるサーバサイドMVC'
+    en: 'Server-Side MVC with Spring Web'
   5:
-    ja: 'React・REST API・JWT認証と非同期処理の状態管理'
-    en: 'React, REST APIs, JWT Authentication and Async State Management'
+    ja: 'React（SPA）とSpring WebによるREST API連携'
+    en: 'React (SPA) and REST API Integration with Spring Web'
+  6:
+    ja: 'Spring SecurityとJWTによる認証・認可'
+    en: 'Authentication and Authorization with Spring Security and JWT'
 
 exercises:
-  # ── チャプター2: レイヤ設計・DTO・業務処理 ─────────────────
+  # ── チャプター2: 全体のコンポーネント構成 ─────────────────
   - id: leaf-books-api-layers
     dir: leaf-books
     chapter: 2
-    lesson: '2.1 レイヤ設計・DTO・業務処理と画面方式の比較'
+    lesson: '2.1 全体のコンポーネント構成'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: leaf-books-api-layers
@@ -82,7 +85,7 @@ exercises:
     descriptions:
       ja: >-
         REST API 版の書店です。api / service / repository / entity / external の
-        パッケージが、HTTP 入出力・業務処理・DB・外部 API のどれを受け持つかを対応付けて読みます。
+        パッケージが、HTTP 入出力・業務処理・DB・外部システム連携（API）のどれを受け持つかを対応付けて読みます。
         ▶ アプリ実行で API が 8080 で、呼び出し先の Customer Hub が 8081 で起動します。
         React の画面（5173）も一緒に起動します。ログインして JSON を確かめる手順は README.md にあります。
       en: >-
@@ -96,16 +99,16 @@ exercises:
   - id: leaf-books-mvc-layers
     dir: leaf-books-mvc
     chapter: 2
-    lesson: '2.1 レイヤ設計・DTO・業務処理と画面方式の比較'
+    lesson: '2.1 全体のコンポーネント構成'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: leaf-books-mvc-layers
     names:
-      ja: MVC版のServiceとDTOを読む
+      ja: サーバサイドMVC版のServiceとDTOを読む
       en: Read the Service and DTOs of the MVC version
     descriptions:
       ja: >-
-        MVC 版の書店です。OrderService.orderBooks（Transaction Script）、注文の入力を運ぶ OrderTO、
+        サーバサイドMVC版の書店です。OrderService.orderBooks（Transaction Script）、注文の入力を運ぶ OrderTO、
         送料を決める DeliveryFeeService を読みます。▶ アプリ実行で書店が 8080 で、
         ログインに使う Customer Hub が 8081 で起動します。
         alice@example.com / password でログインし、カートから注文すると送料と注文履歴が確かめられます。
@@ -118,11 +121,11 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター3: JPA・トランザクション・外部API・入力検証 ─────
+  # ── チャプター3: DBアクセス・外部システム連携（API） ─────
   - id: leaf-books-mvc-jpa
     dir: leaf-books-mvc
     chapter: 3
-    lesson: '3.1 JPA・トランザクション・外部APIと入力検証'
+    lesson: '3.1 DBアクセス・外部システム連携（API）'
     runtime: spring
     run: 'gradle:test'
     suggestName: leaf-books-mvc-jpa
@@ -145,13 +148,13 @@ exercises:
 
   - id: customer-hub
     chapter: 3
-    lesson: '3.1 JPA・トランザクション・外部APIと入力検証'
+    lesson: '3.1 DBアクセス・外部システム連携（API）'
     runtime: spring
     run: 'gradle:bootRun'
     preview: '/customers/1'
     suggestName: customer-hub
     names:
-      ja: 外部APIのCustomer Hubを動かす
+      ja: 外部システムのCustomer Hubを動かす
       en: Run Customer Hub, the external API
     descriptions:
       ja: >-
@@ -172,12 +175,12 @@ exercises:
   - id: leaf-books-mvc-external
     dir: leaf-books-mvc
     chapter: 3
-    lesson: '3.1 JPA・トランザクション・外部APIと入力検証'
+    lesson: '3.1 DBアクセス・外部システム連携（API）'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: leaf-books-mvc-external
     names:
-      ja: 外部APIの呼び出しと入力検証を試す
+      ja: 外部システム連携（API）と入力検証を試す
       en: Try the external API call and input validation
     descriptions:
       ja: >-
@@ -195,16 +198,16 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター4: Spring MVC の画面生成・セッション・認証・PRG ──
+  # ── チャプター4: Spring Web によるサーバサイドMVC ──
   - id: leaf-books-mvc-web
     dir: leaf-books-mvc
     chapter: 4
-    lesson: '4.1 Spring MVCの画面生成・セッション・認証・PRG'
+    lesson: '4.1 Spring WebによるサーバサイドMVC'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: leaf-books-mvc-web
     names:
-      ja: MVC版の画面遷移・セッション・PRGを動かす
+      ja: サーバサイドMVC版の画面遷移・セッション・PRGを動かす
       en: Run screen flow, sessions and PRG in the MVC version
     descriptions:
       ja: >-
@@ -223,16 +226,16 @@ exercises:
     openFiles:
       - README.md
 
-  # ── チャプター5: React・REST API・JWT 認証 ─────────────────
+  # ── チャプター5: React（SPA）と Spring Web による REST API 連携 ─────
   - id: leaf-books-spa
     dir: leaf-books
     chapter: 5
-    lesson: '5.1 React・REST API・JWT認証と非同期処理の状態管理'
+    lesson: '5.1 React（SPA）とSpring WebによるREST API連携'
     runtime: react
     run: 'gradle:bootRun'
     suggestName: leaf-books-spa
     names:
-      ja: ReactのSPAで状態の移り変わりを追う
+      ja: React（SPA）で状態の移り変わりを追う
       en: Follow state changes in the React SPA
     descriptions:
       ja: >-
@@ -250,15 +253,17 @@ exercises:
     openFiles:
       - README.md
 
+  # ── チャプター6: Spring Security と JWT による認証・認可 ─────
+  #    サーバサイドMVCのログイン（TokenProcessor）は、チャプター4の leaf-books-mvc-web で読む
   - id: leaf-books-api-jwt
     dir: leaf-books
-    chapter: 5
-    lesson: '5.1 React・REST API・JWT認証と非同期処理の状態管理'
+    chapter: 6
+    lesson: '6.1 Spring SecurityとJWTによる認証・認可'
     runtime: spring
     run: 'gradle:bootRun'
     suggestName: leaf-books-api-jwt
     names:
-      ja: REST APIのJWT認証とエラー応答を確かめる
+      ja: JWTによる認証・認可とエラー応答を確かめる
       en: Check JWT authentication and error responses in the REST API
     descriptions:
       ja: >-

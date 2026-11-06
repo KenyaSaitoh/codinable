@@ -1,13 +1,13 @@
 # leaf-books — オンライン書店 Leaf Books（Jakarta REST + React）
 
 オンライン書店 Leaf Books の SPA です。書籍の検索・カート・ログイン・注文・在庫更新を、
-Jakarta REST の書店 API と React の画面で動かします。顧客情報は外部 API の Customer Hub から取得します。
+Jakarta REST の書店 API と React の画面で動かします。顧客情報は外部システムの Customer Hub から取得します。
 この雛形はチャプター2〜5の演習で共通に使い、チャプターごとに別の観点で読みます。
 
 | 場所 | 中身 | 起動方法 |
 |---|---|---|
 | `src/backend/` | 書店 API（WAR `leaf-books-api`、`http://localhost:8080/leaf-books-api/api/...`） | ▶ アプリ実行 |
-| `customer-hub/src/backend/` | 外部 API の Customer Hub（WAR `customer-hub-api`） | ▶ アプリ実行で同じ Payara Server に一緒にデプロイ |
+| `customer-hub/src/backend/` | 外部システムの Customer Hub（WAR `customer-hub-api`） | ▶ アプリ実行で同じ Payara Server に一緒にデプロイ |
 | `src/frontend/` | React の画面（Vite、5173。`/api` を書店 API へ中継） | ▶ アプリ実行で一緒に起動 |
 
 ## 動かし方
@@ -20,7 +20,7 @@ Jakarta REST の書店 API と React の画面で動かします。顧客情報�
 
 ## チャプターごとに見るところ
 
-### チャプター2 業務処理のレイヤー設計とデータ契約
+### チャプター2 全体のコンポーネント構成
 
 | ファイル | 内容 |
 |---|---|
@@ -28,12 +28,12 @@ Jakarta REST の書店 API と React の画面で動かします。顧客情報�
 | `src/backend/src/main/java/pro/kensait/leafbooks/service/order/OrderService.java` | 在庫確認・在庫更新・注文と明細の保存（Transaction Script） |
 | `src/backend/src/main/java/pro/kensait/leafbooks/service/order/OrderTO.java` | 注文の入力を運ぶ DTO |
 | `src/backend/src/main/java/pro/kensait/leafbooks/service/delivery/DeliveryFeeService.java` | 送料の決定（800 円・沖縄県 1700 円・5000 円以上は無料） |
-| `src/backend/src/test/java/pro/kensait/leafbooks/architecture/LayeredArchitectureTest.java` | ArchUnit によるレイヤーの依存方向の検査 |
+| `src/backend/src/test/java/pro/kensait/leafbooks/architecture/LayeredArchitectureTest.java` | ArchUnit によるレイヤの依存方向の検査 |
 
 テストクラスを開いて、エディタの右上の ▶ 実行で流します。`DeliveryFeeServiceTest` は送料の分岐を、
 `OrderServiceTest` は注文の業務処理をモックで確かめます。結果はテスト結果タブに出ます。
 
-### チャプター3 永続化とトランザクション、外部連携の境界
+### チャプター3 DBアクセス・外部システム連携（API）
 
 | ファイル | 内容 |
 |---|---|
@@ -48,7 +48,7 @@ Jakarta REST の書店 API と React の画面で動かします。顧客情報�
 | `curl/01_search_books.sh` | JPQL と Criteria API に同じ条件を渡して、同じ書籍が返る |
 | `curl/04_update_stock.sh` | 読み取った version での更新は 200、同じ version でもう一度更新すると 409 |
 
-### チャプター4 Reactの画面構成とREST APIの契約
+### チャプター4 React（SPA）とJakarta RESTによるREST API連携
 
 | ファイル | 内容 |
 |---|---|
@@ -56,15 +56,15 @@ Jakarta REST の書店 API と React の画面で動かします。顧客情報�
 | `src/frontend/src/services/api.ts` | Axios の共通設定（`baseURL` は `/api`、`withCredentials`） |
 | `src/frontend/src/contexts/CartContext.tsx` | カートの状態と、その寿命 |
 | `src/backend/src/main/java/pro/kensait/leafbooks/api/dto/OrderRequest.java` | 画面から送る注文の JSON の契約 |
+| `src/frontend/src/pages/OrderConfirmPage.tsx`・`src/services/orderService.ts` | 非同期送信と失敗からの回復 |
 
-### チャプター5 JWT認証と非同期処理の状態管理
+### チャプター5 JWTによる認証・認可
 
 | ファイル | 内容 |
 |---|---|
 | `src/backend/src/main/java/pro/kensait/leafbooks/api/AuthResource.java` | ログインで JWT の Cookie と CSRF トークンの Cookie を返す |
 | `src/backend/src/main/java/pro/kensait/leafbooks/security/JwtAuthFilter.java` | 公開パスを列挙し、それ以外は既定で拒否する |
 | `src/backend/src/main/java/pro/kensait/leafbooks/security/CsrfTokenFilter.java` | 更新系の要求で Cookie とヘッダーのトークンを照合する |
-| `src/frontend/src/pages/OrderConfirmPage.tsx`・`src/services/orderService.ts` | 非同期送信と失敗からの回復 |
 
 | スクリプト | 確かめること |
 |---|---|

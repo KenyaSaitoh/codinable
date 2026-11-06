@@ -22,7 +22,7 @@
 id: jakartaee-webapp-practical
 order: 13
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.0.1
+version: 1.0.2
 names:
   ja: Jakarta EE Webアプリ応用（ECサイト）
   en: 'Jakarta EE Web Apps: Advanced (E-commerce Site)'
@@ -30,7 +30,7 @@ descriptions:
   ja: >-
     書籍の検索・カート・ログイン・注文・在庫更新を持つ書店アプリ Leaf Books を、
     Jakarta REST の API と React の画面からなる SPA として読み解く講座の演習です。
-    外部 API 役の Customer Hub も含みます。WAR は同梱の Payara Server 7 へデプロイし、
+    外部システム役の Customer Hub も含みます。WAR は同梱の Payara Server 7 へデプロイし、
     DB はインメモリの HSQLDB で動くように調整してあります。
   en: >-
     Exercises for the course that reads Leaf Books - a bookstore with search, cart, login,
@@ -42,33 +42,33 @@ udemy:
 # チャプター名（演習一覧の見出し。講座原稿の目次と同じ名前にする）
 chapters:
   2:
-    ja: '業務処理のレイヤー設計とデータ契約'
-    en: 'Layered Design of Business Logic and Data Contracts'
+    ja: '全体のコンポーネント構成'
+    en: 'Overall Component Structure'
   3:
-    ja: '永続化とトランザクション、外部連携の境界'
-    en: 'Persistence, Transactions and the Boundary of External Integration'
+    ja: 'DBアクセス・外部システム連携（API）'
+    en: 'DB Access and External System Integration (API)'
   4:
-    ja: 'Reactの画面構成とREST APIの契約'
-    en: 'React Screen Structure and the REST API Contract'
+    ja: 'React（SPA）とJakarta RESTによるREST API連携'
+    en: 'REST API Integration with React (SPA) and Jakarta REST'
   5:
-    ja: 'JWT認証と非同期処理の状態管理'
-    en: 'JWT Authentication and State Management in Async Processing'
+    ja: 'JWTによる認証・認可'
+    en: 'Authentication and Authorization with JWT'
 exercises:
-  # ── チャプター2: 業務処理のレイヤー設計とデータ契約 ─────────────
+  # ── チャプター2: 全体のコンポーネント構成 ─────────────
   - id: leaf-books-layers
     dir: leaf-books
     chapter: 2
-    lesson: '2.1 業務処理のレイヤー設計とデータ契約'
+    lesson: '2.1 全体のコンポーネント構成'
     runtime: jakarta
     run: 'gradle:payaraRun'
     suggestName: leaf-books-layers
     names:
-      ja: 書店APIをレイヤーで読む
+      ja: 書店APIをレイヤで読む
       en: Read the bookstore API layer by layer
     descriptions:
       ja: >-
         Leaf Books の書店 API です。api / service / dao / entity / external のパッケージが、
-        HTTP の入出力・業務処理・DB・外部 API のどれを受け持つかを対応付けて読みます。
+        HTTP の入出力・業務処理・DB・外部システム連携（API）のどれを受け持つかを対応付けて読みます。
         ▶ アプリ実行で書店 API と Customer Hub が Payara Server 7 にデプロイされ、React の画面（5173）も起動します。
         alice@example.com / password でログインし、カートから注文すると、送料と注文履歴が確かめられます。
       en: >-
@@ -81,16 +81,16 @@ exercises:
   - id: leaf-books-architecture-test
     dir: leaf-books
     chapter: 2
-    lesson: '2.1 業務処理のレイヤー設計とデータ契約'
+    lesson: '2.1 全体のコンポーネント構成'
     runtime: jakarta
     run: 'gradle:test'
     suggestName: leaf-books-architecture-test
     names:
-      ja: レイヤーの依存方向と業務ルールをテストで確かめる
+      ja: レイヤの依存方向と業務ルールをテストで確かめる
       en: Check layer dependencies and business rules with tests
     descriptions:
       ja: >-
-        LayeredArchitectureTest は、レイヤー間の依存方向（api → service → dao → entity）を ArchUnit で検査します。
+        LayeredArchitectureTest は、レイヤ間の依存方向（api → service → dao → entity）を ArchUnit で検査します。
         DeliveryFeeServiceTest は送料の分岐、OrderServiceTest は注文の業務処理をモックで確かめます。
         テストクラスを開いて、エディタの右上の ▶ 実行で流してください。結果はテスト結果タブに出ます。
       en: >-
@@ -99,11 +99,11 @@ exercises:
         Open a test class and press ▶ Run at the top right of the editor. The results appear in the test tab.
     openFiles:
       - README.md
-  # ── チャプター3: 永続化とトランザクション、外部連携の境界 ─────────
+  # ── チャプター3: DBアクセス・外部システム連携（API） ─────────
   - id: leaf-books-persistence
     dir: leaf-books
     chapter: 3
-    lesson: '3.1 永続化とトランザクション、外部連携の境界'
+    lesson: '3.1 DBアクセス・外部システム連携（API）'
     runtime: jakarta
     run: 'gradle:payaraRun'
     suggestName: leaf-books-persistence
@@ -123,13 +123,13 @@ exercises:
       - README.md
   - id: customer-hub
     chapter: 3
-    lesson: '3.1 永続化とトランザクション、外部連携の境界'
+    lesson: '3.1 DBアクセス・外部システム連携（API）'
     runtime: jakarta
     run: 'gradle:payaraRun'
     preview: '/customer-hub-api/customers/1'
     suggestName: customer-hub
     names:
-      ja: 外部APIのCustomer Hubを動かす
+      ja: 外部システムのCustomer Hubを動かす
       en: Run Customer Hub, the external API
     descriptions:
       ja: >-
@@ -142,16 +142,16 @@ exercises:
         The scripts in curl/ show the lookup by email address and the 409 returned when registering an existing email address.
     openFiles:
       - README.md
-  # ── チャプター4: Reactの画面構成とREST APIの契約 ───────────────
+  # ── チャプター4: React（SPA）とJakarta RESTによるREST API連携 ───────────────
   - id: leaf-books-react
     dir: leaf-books
     chapter: 4
-    lesson: '4.1 Reactの画面構成とREST APIの契約'
+    lesson: '4.1 React（SPA）とJakarta RESTによるREST API連携'
     runtime: jakarta
     run: 'gradle:payaraRun'
     suggestName: leaf-books-react
     names:
-      ja: Reactの画面とAPIの契約を確かめる
+      ja: React（SPA）の画面とREST API連携を確かめる
       en: Check the React screen and the API contract
     descriptions:
       ja: >-
@@ -164,11 +164,11 @@ exercises:
         and the Web browser switches to the React screen. The proxy in vite.config.ts forwards /api to /leaf-books-api on Payara Server.
     openFiles:
       - README.md
-  # ── チャプター5: JWT認証と非同期処理の状態管理 ─────────────────
+  # ── チャプター5: JWTによる認証・認可 ─────────────────
   - id: leaf-books-jwt
     dir: leaf-books
     chapter: 5
-    lesson: '5.1 JWT認証と非同期処理の状態管理'
+    lesson: '5.1 JWTによる認証・認可'
     runtime: jakarta
     run: 'gradle:payaraRun'
     suggestName: leaf-books-jwt

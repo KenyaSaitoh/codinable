@@ -2,15 +2,15 @@
 
 React の画面（`frontend/`）と、JSON を返す Spring Boot の REST API
 （このフォルダ直下、ポート 8080）で動く書店アプリです。
-ログインと顧客登録では、外部 API の Customer Hub（ポート 8081）を呼びます。
+ログインと顧客登録では、外部システムの Customer Hub（ポート 8081）を呼びます。
 
 ## この雛形を使う演習
 
 | 演習 | 主に読むファイル |
 |---|---|
 | SPA版のバックエンドをレイヤで読む（2.1） | `src/main/java/pro/kensait/leafbooks/` の `api/` `service/` `repository/` `entity/` `external/`（例: `api/OrderController.java`） |
-| ReactのSPAで状態の移り変わりを追う（5.1） | `frontend/src/App.tsx`、`frontend/src/contexts/CartContext.tsx`、`frontend/src/pages/OrderConfirmPage.tsx` |
-| REST APIのJWT認証とエラー応答を確かめる（5.1） | `api/AuthController.java`、`security/JwtAuthenticationFilter.java`、`api/OrderController.java`、`api/GlobalExceptionHandler.java` |
+| React（SPA）で状態の移り変わりを追う（5.1） | `frontend/src/App.tsx`、`frontend/src/contexts/CartContext.tsx`、`frontend/src/pages/OrderConfirmPage.tsx` |
+| JWTによる認証・認可とエラー応答を確かめる（6.1） | `api/AuthController.java`、`security/JwtAuthenticationFilter.java`、`api/OrderController.java`、`api/GlobalExceptionHandler.java` |
 
 ## Codinable での動かし方
 
@@ -20,7 +20,7 @@ React の画面（`frontend/`）と、JSON を返す Spring Boot の REST API
 | プロセス | ポート | 出力の目印 |
 |---|---|---|
 | REST API（このフォルダ直下） | 8080 | なし |
-| Customer Hub（`customer-hub/`、ログイン・顧客登録で呼ぶ外部 API） | 8081 | `[customer-hub]` |
+| Customer Hub（`customer-hub/`、ログイン・顧客登録で呼ぶ外部システム） | 8081 | `[customer-hub]` |
 | React の開発サーバー（`frontend/`、`npm run dev`） | 5173 | `[frontend]` |
 
 1. **▶ アプリ実行** を押す。初回は `frontend/` の `npm install` が自動で走るので少し時間がかかる
@@ -74,6 +74,6 @@ src/main/java/pro/kensait/leafbooks/
 └── external/     Customer Hub を呼ぶ CustomerApiClient
 src/main/resources/static/images/covers/   書籍の表紙画像（/api/images/covers/{id} で配信）
 frontend/         React + TypeScript + Vite の画面（pages / components / contexts / services）
-customer-hub/     外部 API 役の Customer Hub（別の Gradle プロジェクト）
+customer-hub/     外部システム役の Customer Hub（別の Gradle プロジェクト）
 sql/hsqldb/       起動時に流す DDL / DML
 ```
