@@ -3,6 +3,26 @@
 <head>
 <meta charset="UTF-8" />
 <title>社員管理</title>
+<style>
+  /* コースのテーマカラー（#345065 / #486A83 / #7299B5）で社員管理の画面を整える */
+  body { font-family: "BIZ UDPGothic", "Yu Gothic UI", "Meiryo", sans-serif; color: #1F2D3A; background: #F6F8FA; margin: 0; padding: 20px 28px; }
+  h1, h2 { color: #345065; font-size: 22px; margin: 0 0 12px; padding-bottom: 8px; border-bottom: 3px solid #486A83; }
+  hr { display: none; }
+  form { margin: 8px 0; }
+  label { color: #486A83; font-size: 13px; margin: 0 4px 0 10px; }
+  input[type=text], input[type=number], input[type=date], select { border: 1px solid #CBD5DD; border-radius: 4px; padding: 4px 6px; font-size: 14px; background: #fff; }
+  button, input[type=submit] { background: #486A83; color: #fff; border: 0; border-radius: 4px; padding: 5px 14px; font-size: 14px; cursor: pointer; margin: 0 2px; }
+  button:hover, input[type=submit]:hover { background: #345065; }
+  button:disabled { background: #B8C4CE; cursor: default; }
+  button.delete, input[value="削除"] { background: #9A5B5B; }
+  a { color: #345065; }
+  table { border-collapse: collapse; margin: 12px 0; background: #fff; font-size: 14px; }
+  th, td { border: 1px solid #CBD5DD; padding: 6px 12px; }
+  th { background: #486A83; color: #fff; font-weight: 600; text-align: left; }
+  tr:nth-child(even) td { background: #EEF2F5; }
+  td button, td input[type=submit] { padding: 3px 10px; font-size: 13px; }
+  .error, [style*="color: red"], [style*="color:red"] { color: #B4423F; }
+</style>
 </head>
 <body>
   <h1>社員管理</h1>
