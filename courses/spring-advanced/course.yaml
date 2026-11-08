@@ -33,7 +33,7 @@
 id: spring-advanced
 order: 3
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.8.2
+version: 1.8.3
 
 names:
   ja: Spring FW 高度な仕組み

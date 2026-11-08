@@ -249,8 +249,8 @@ const UI_STRINGS = {
 
     // ── チャット ──
     chatTitle:           '🤖 チャット',
-    chatWelcome1:        '🤖 コードの相談相手です。使うかどうかは自由です。',
-    chatWelcome2:        '📄 演習のファイルと直近の実行結果は、送信時に自動で渡します。',
+    chatWelcome1:        '🤖 AIに問い合わせや修正の指示を出すためのチャットで、使うかどうかは自由です。',
+    chatWelcome2:        '📄 演習ファイル一式と直近の実行結果は、自動的にAIに送信されます。',
     chatWelcome3:        '🔑 使う前に ⚙ 設定で API キーを登録してください。',
     chatInputAsk:        '質問を入力... (Enter で送信 / Shift+Enter で改行)',
     chatInputAgent:      'この演習で直してほしいことを入力... (Enter で送信 / Shift+Enter で改行)',
@@ -520,8 +520,8 @@ const UI_STRINGS = {
     resetPartlyFailed:   'Some items were in use and could not be deleted: {names}',
 
     chatTitle:           '🤖 Chat',
-    chatWelcome1:        '🤖 A coding sounding board. Using it is entirely optional.',
-    chatWelcome2:        '📄 The exercise files and the latest run results are sent along automatically.',
+    chatWelcome1:        '🤖 A chat for asking the AI questions and giving it instructions to fix code. Using it is entirely optional.',
+    chatWelcome2:        '📄 All the exercise files and the latest run results are sent to the AI automatically.',
     chatWelcome3:        '🔑 Register an API key in ⚙ Settings before your first message.',
     chatInputAsk:        'Ask something... (Enter to send / Shift+Enter for a new line)',
     chatInputAgent:      'What should change in this exercise? (Enter to send / Shift+Enter for a new line)',
