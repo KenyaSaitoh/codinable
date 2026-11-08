@@ -10,3 +10,6 @@ button { padding: 6px 14px; font-size: 14px; cursor: pointer; }
 table { border-collapse: collapse; width: 100%; background: #fff; }
 th, td { border: 1px solid #ddd; padding: 6px 8px; font-size: 14px; text-align: left; }
 th { background: #eef0f3; }
+
+/* 文字を大きく（受講者に読みやすく） */
+html { font-size: 18px; }

@@ -12,3 +12,6 @@ th, td { border: 1px solid #ddd; padding: 6px 8px; font-size: 14px; text-align: 
 th { background: #eef0f3; }
 pre { background: #fff; border: 1px solid #ddd; padding: 8px 12px; font-size: 13px; overflow-x: auto; }
 section.panel { margin: 16px 0; }
+
+/* 文字を大きく（受講者に読みやすく） */
+html { font-size: 18px; }

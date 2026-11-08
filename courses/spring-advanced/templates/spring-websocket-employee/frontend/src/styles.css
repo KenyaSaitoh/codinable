@@ -54,3 +54,6 @@ pre { padding: 16px; background: #f1f5f2; color: #344e3d; overflow: auto; max-he
 footer { margin-top: 30px; font-size: .73rem; color: #65786b; }
 @media (max-width: 900px) { .app { grid-template-columns: 1fr; } aside { padding: 16px; } .brand { padding-bottom: 14px; } nav { display: flex; overflow-x: auto; } nav button { white-space: nowrap; flex: 0 0 auto; } .aside-note { display: none; } main { padding: 24px 16px; } }
 @media (max-width: 500px) { .panel { padding: 16px; } .form-grid { grid-template-columns: 1fr; } .inline label { max-width: 100%; flex: 1 1 140px; } }
+
+/* 文字を大きく（受講者に読みやすく） */
+html { font-size: 18px; }

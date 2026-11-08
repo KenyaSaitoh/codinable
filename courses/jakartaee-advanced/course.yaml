@@ -21,7 +21,7 @@
 id: jakartaee-advanced
 order: 12
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.2.2
+version: 1.2.3
 
 names:
   ja: Jakarta EE 高度な仕組み

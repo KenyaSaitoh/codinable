@@ -35,6 +35,8 @@ module.exports = {
 
   files: [
     'src/**',
+    // ウィンドウのアイコン (タスクバーが exe のアイコンのキャッシュに引きずられないよう、明示的に渡す)
+    'assets/icon.ico',
     'node_modules/**',
     'package.json',
     // コースパック (course.yaml + 雛形) は asar の中に入れる
