@@ -70,6 +70,12 @@
   th, td { padding: 7px 10px; }
   h1, h2 { font-size: 24px; }
   h3 { font-size: 19px; }
+  /* Thymeleaf の登録・更新フォームを 2 列に */
+  #employeeForm:has(> label) { display: grid; grid-template-columns: 7em minmax(0, 20em); gap: 10px 12px; align-items: center; max-width: 30em; }
+  #employeeForm:has(> label) > label { width: auto; margin: 0; text-align: right; }
+  #employeeForm:has(> label) > input, #employeeForm:has(> label) > select { width: 100%; box-sizing: border-box; }
+  #employeeForm:has(> label) > button, #employeeForm:has(> label) > input[type=submit] { grid-column: 2; justify-self: end; margin-top: 4px; }
+  #employeeForm:has(> label) > span { grid-column: 2; }
 </style>
 </head>
 <body>
