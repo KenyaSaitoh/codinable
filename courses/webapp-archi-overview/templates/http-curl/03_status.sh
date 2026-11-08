@@ -11,5 +11,8 @@ done
 
 echo
 echo "=== リダイレクト: -L を付けると追いかける ==="
-curl -s -o /dev/null -w '追わない: %{http_code}\n' "https://httpbin.org/redirect/1"
-curl -sL -o /dev/null -w '追う:     %{http_code}\n' "https://httpbin.org/redirect/1"
+# -w の書式に日本語を入れると Windows の curl では文字化けするので、見出しは printf で出す
+printf '追わない: '
+curl -s -o /dev/null -w '%{http_code}\n' "https://httpbin.org/redirect/1"
+printf '追う:     '
+curl -sL -o /dev/null -w '%{http_code}\n' "https://httpbin.org/redirect/1"
