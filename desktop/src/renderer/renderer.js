@@ -2858,6 +2858,11 @@ function wireEvents() {
   // ── プレビュー ──
   const view = $('mini-browser');
   view.addEventListener('dom-ready', () => { previewReady = true; });
+  // 画面の中でのリンク・リダイレクト・履歴の移動に、URL 欄を付いていかせる
+  // （これが無いと、PRG のリダイレクトの後も最初の URL のままに見える）
+  const followUrl = ev => { if (ev.url && !/^about:/.test(ev.url)) $('browser-url').value = ev.url; };
+  view.addEventListener('did-navigate', followUrl);
+  view.addEventListener('did-navigate-in-page', ev => { if (ev.isMainFrame !== false) followUrl(ev); });
   $('browser-back').addEventListener('click', () => { try { view.goBack(); } catch {} });
   $('browser-forward').addEventListener('click', () => { try { view.goForward(); } catch {} });
   $('browser-reload').addEventListener('click', () => { try { view.reload(); } catch {} });
