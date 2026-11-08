@@ -259,7 +259,9 @@ ipcMain.handle('ws-project-info', (_event, { name } = {}) => {
   const info = workspace.detectProject(dir);
   // fileRuns: 単独で動かせるファイル (ツリーの ▶ バッジ・演習を選んだときのハイライト)
   return { ok: true, name, path: dir, ...info, fileRuns: workspace.listFileRuns(dir, info),
-           ...workspace.readProjectMeta(dir), services, processes };
+           ...workspace.readProjectMeta(dir), services, processes,
+           // Web アプリの演習が HSQLDB サーバー (localhost:9001) につなぐなら SQL タブと DB の起動・停止を出す
+           usesDbServer: sqlEngine.usesDbServer(dir) };
 });
 
 // エディタのタブの右上の「▶ 実行」: 開いているファイルだけを動かすときの実行対象 (動かせなければ null)

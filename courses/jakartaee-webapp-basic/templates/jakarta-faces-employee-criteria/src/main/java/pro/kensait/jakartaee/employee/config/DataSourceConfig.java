@@ -11,7 +11,7 @@ import jakarta.servlet.annotation.WebListener;
 @DataSourceDefinition(
         name = "java:app/jdbc/EmployeeDS",
         className = "org.hsqldb.jdbc.JDBCDataSource",
-        url = "jdbc:hsqldb:mem:testdb",
+        url = "jdbc:hsqldb:hsql://localhost:9001/testdb",
         user = "SA",
         password = "",
         minPoolSize = 2,

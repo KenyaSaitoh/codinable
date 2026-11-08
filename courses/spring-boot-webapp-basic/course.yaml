@@ -11,7 +11,8 @@
 #  同じサンプルを別のチャプターでも使うときは dir で同じ雛形を指す
 #  （作業用プロジェクトは演習ごとに別に作られる）
 #
-#  DB は HSQLDB サーバーではなくインメモリで、起動のたびに sql/hsqldb/ から作り直す
+#  DB は Codinable が起こす HSQLDB サーバー（localhost:9001 の testdb。中身はインメモリ）で、
+#  起動のたびに sql/hsqldb/ から作り直す。SQL タブから同じ DB を SELECT で確かめられる
 #  2 つのプログラムの組（REST API とクライアント）は、ルートを ▶ アプリ実行で起動し、
 #  client/ は client/run.sh をエディタの右上の ▶ 実行で動かす（アプリの脇で動く）
 #
@@ -34,7 +35,7 @@
 id: spring-boot-webapp-basic
 order: 2
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.6.5
+version: 1.6.6
 
 names:
   ja: Spring Boot Webアプリ基礎
@@ -412,11 +413,11 @@ exercises:
     descriptions:
       ja: >-
         EmployeeRepository が JdbcTemplate と RowMapper で検索・登録・更新・論理削除を行う社員管理です。
-        DB はインメモリの HSQLDB で、起動時に sql/hsqldb の SQL で作ります。
+        DB は Codinable が起こす HSQLDB サーバーで、起動時に sql/hsqldb の SQL で作ります。SQL タブで同じ DB を確かめられます。
         ▶ アプリ実行で起動し、http://localhost:8080/ で検索・ページ送り・登録・編集・削除を操作してください。
       en: >-
         An employee app whose EmployeeRepository searches, inserts, updates and soft-deletes with
-        JdbcTemplate and RowMapper. The database is in-memory HSQLDB built from sql/hsqldb at startup.
+        JdbcTemplate and RowMapper. The database is the HSQLDB server started by Codinable, built from sql/hsqldb at startup, and the SQL tab queries the same database.
         Start it with ▶ Run app and search, page, create, edit and delete at http://localhost:8080/.
     openFiles:
       - README.md

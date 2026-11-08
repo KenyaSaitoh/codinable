@@ -12,7 +12,7 @@
 id: java-testing
 order: 23
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.0.0
+version: 1.0.1
 
 names:
   ja: Javaテスト基礎＆実践

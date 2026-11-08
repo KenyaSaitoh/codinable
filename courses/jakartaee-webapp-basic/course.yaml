@@ -13,14 +13,14 @@
 #  同じアプリケーションを複数のチャプターで使うときは dir で同じ雛形を指す
 #  （jakarta-faces-calc-3-config-exception はチャプター4.1 と 5.1 の両方に出す。講座原稿 1.2 の演習の表に合わせて、
 #    どちらも作業用プロジェクト名の既定値は jakarta-faces-calc-3-config-exception にしている）
-#  DB を使う演習（チャプター6.1〜9.1）は @DataSourceDefinition でインメモリの HSQLDB を定義し、
+#  DB を使う演習（チャプター6.1〜9.1）は @DataSourceDefinition で Codinable が起こす HSQLDB サーバー（localhost:9001 の testdb）を定義し、
 #  起動時に sql/hsqldb のテーブル定義と初期データを流す（デプロイのたびに初期データへ戻る）
 #  チャプター10.1 の 2 つの演習は、呼び出し先の確認用 API（employee-api.war）を同梱する
 # ═══════════════════════════════════════════════════════════
 id: jakartaee-webapp-basic
 order: 11
 # 同じ id の講座が複数の置き場にあるときは、この version が新しいほうが使われる
-version: 1.0.6
+version: 1.0.7
 
 names:
   ja: Jakarta EE Webアプリ基礎

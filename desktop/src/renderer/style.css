@@ -2592,6 +2592,25 @@ body.theme-dark .ai-error { color: #e07070; }
 /* ═══════════════════════════════════════════
    SQL モード – 実行結果テーブル
    ═══════════════════════════════════════════ */
+.sql-input-bar {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 8px 10px 0;
+}
+.sql-input-bar textarea {
+  flex: 1;
+  resize: vertical;
+  min-height: 2.6em;
+  font-family: var(--editor-font-family);
+  font-size: calc(var(--editor-font-size) - 1px);
+  padding: 6px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-input, var(--bg-overlay));
+  color: var(--text-main);
+}
+.sql-input-bar .btn { white-space: nowrap; }
 .sql-result-wrap {
   flex: 1;
   overflow: auto;
@@ -2630,8 +2649,8 @@ body.theme-dark .ai-error { color: #e07070; }
   white-space: nowrap;
 }
 .sql-table th {
-  background: var(--bg-overlay);
-  color: var(--accent-blue);
+  background: #486A83;
+  color: #fff;
   font-weight: 700;
   padding: 4px 10px;
   border: 1px solid var(--border-color);

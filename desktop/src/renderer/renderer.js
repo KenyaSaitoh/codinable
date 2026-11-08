@@ -1354,6 +1354,8 @@ const RUN_TAB_IDS = {
 function applyExerciseTabs(exercise) {
   const tabs = new Set(exercise?.tabs?.length ? exercise.tabs : Object.keys(RUN_TAB_IDS));
   tabs.add('output');
+  // HSQLDB サーバーにつなぐ Web アプリの演習は、画面で登録した行を SQL で確かめられるようにする
+  if (projectInfo?.usesDbServer) tabs.add('sql');
   for (const [tab, id] of Object.entries(RUN_TAB_IDS)) {
     $(id).classList.toggle('hidden', !tabs.has(tab));
   }
@@ -1449,7 +1451,7 @@ function renderServiceControls() {
   const live = state => ['running', 'starting', 'stopping'].includes(state);
   const groups = [];
 
-  const usesSql = (projectInfo?.runnableFiles || []).some(f => f.kind === 'sql');
+  const usesSql = (projectInfo?.runnableFiles || []).some(f => f.kind === 'sql') || !!projectInfo?.usesDbServer;
   if (usesSql || sqlState !== 'stopped') {
     groups.push({ id: 'hsqldb', name: t('serviceDb'), title: 'HSQLDB', state: sqlState, available: true });
   }
@@ -1750,6 +1752,19 @@ async function stopSql() {
   await window.api.sqlStop();
   setSqlState('stopped');
   setSqlMessage(escapeHtml(t('sqlStopped')));
+}
+
+/** SQL タブの入力欄の SQL を流す (DB が止まっていれば起こす) */
+async function runSqlFromInput() {
+  const sql = $('sql-input').value.trim();
+  if (!sql) { setSqlMessage(escapeHtml(t('sqlNoInput')), 'sql-error'); return; }
+  if (sqlState !== 'running') {
+    await startSql();
+    if (sqlState !== 'running') return;
+  }
+  $('sql-run-btn').disabled = true;
+  try { renderSqlResult(await window.api.sqlRun(sql)); }
+  finally { $('sql-run-btn').disabled = false; }
 }
 
 /** エディタの選択範囲、なければファイル全体を SQL として取り出す */
@@ -2375,7 +2390,6 @@ function clearChat() {
   $('chat-history').innerHTML =
     '<div class="chat-welcome">' +
     `<p>${escapeHtml(t('chatWelcome1'))}</p>` +
-    `<p>${escapeHtml(t('chatWelcome2'))}</p>` +
     `<p>${escapeHtml(t('chatWelcome3'))}</p>` +
     '</div>';
 }
@@ -2963,6 +2977,12 @@ function wireIpc() {
   window.api.onRunTestResults(data => {
     renderTestResults(data);
     showRunPane('tab-test-results');
+  });
+  // 「▶ アプリ実行」が HSQLDB サーバーを起こしたとき (SQL タブの DB の表示を合わせる)
+  window.api.onSqlState(({ state }) => { if (state) setSqlState(state); });
+  $('sql-run-btn').addEventListener('click', () => runSqlFromInput());
+  $('sql-input').addEventListener('keydown', event => {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') { event.preventDefault(); runSqlFromInput(); }
   });
 
 

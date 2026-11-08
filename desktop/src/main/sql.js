@@ -1,9 +1,13 @@
 // ═══════════════════════════════════════════════════════════
-//  SQL 実行エンジン (HSQLDB インメモリ)
+//  SQL 実行エンジン (HSQLDB インメモリ・サーバーモード)
 //
 //  講座の DB / SQL の章で「サーバーを別に立てずに SQL を試す」ための仕組み
 //  同梱の HSQLDB jar を使い、常駐する小さな Java プロセス (SqlServer) と
 //  標準入出力で 1 行 1 リクエストの JSON をやり取りする
+//
+//  SqlServer は同じプロセスの中で HSQLDB をサーバーモード (localhost:9001 の testdb、
+//  中身はインメモリ) でも開く。Web アプリの演習 (jdbc:hsqldb:hsql://localhost:9001/testdb)
+//  と SQL タブが同じ DB を見るので、画面で登録した行を SELECT で確かめられる
 //
 //  SqlServer.java は初回だけコンパイルして userData にキャッシュする
 // ═══════════════════════════════════════════════════════════
@@ -17,19 +21,44 @@ const {
   IS_WIN, resolveJavaTool, resolveHsqldb, getDevEnv,
   getJavaRuntimeOptions, getJavacRuntimeOptions,
 } = require('./runtimes');
-const { decodeOutput } = require('./util');
+const { decodeOutput, killPort } = require('./util');
+
+/** Web アプリの演習がつなぐ HSQLDB サーバーのポートと JDBC URL */
+const DB_PORT = 9001;
+const DB_URL_PATTERN = /jdbc:hsqldb:hsql:\/\/(?:localhost|127\.0\.0\.1):9001\//;
 
 const SQL_SERVER_SOURCE = `
 import java.sql.*;
 import java.io.*;
 
 public class SqlServer {
+    private static final int DB_PORT = 9001;
     private static Connection conn;
 
     public static void main(String[] args) throws Exception {
         Class.forName("org.hsqldb.jdbc.JDBCDriver");
+        // サーバーモードで開く (Web アプリの演習が同じ DB に接続する)
+        org.hsqldb.server.Server server = new org.hsqldb.server.Server();
+        // 標準出力は 1 行 1 JSON のやり取りに使うので、サーバーのログは出さない (先に止める)
+        server.setLogWriter(null);
+        server.setErrWriter(null);
+        server.setSilent(true);
+        server.setTrace(false);
+        server.setDatabaseName(0, "testdb");
+        server.setDatabasePath(0, "mem:testdb;DB_CLOSE_DELAY=-1");
+        server.setPort(DB_PORT);
+        server.setNoSystemExit(true);
+        server.start();
+        if (server.getState() != org.hsqldb.server.ServerConstants.SERVER_STATE_ONLINE) {
+            System.out.println("{\\"error\\":\\"HSQLDB server could not listen on port " + DB_PORT + "\\"}");
+            return;
+        }
         conn = DriverManager.getConnection(
-            "jdbc:hsqldb:mem:sqldb;DB_CLOSE_DELAY=-1", "SA", "");
+            "jdbc:hsqldb:hsql://localhost:" + DB_PORT + "/testdb", "SA", "");
+        // 行単位のロック (JTA の演習で、同じ表を 2 つの接続から更新しても待ち続けない)
+        try (Statement s = conn.createStatement()) {
+            s.execute("SET DATABASE TRANSACTION CONTROL MVCC");
+        }
 
         PrintStream out = new PrintStream(
             new BufferedOutputStream(System.out), true, "UTF-8");
@@ -58,6 +87,7 @@ public class SqlServer {
             }
         }
         try { conn.close(); } catch (Exception ignored) {}
+        try { server.shutdown(); } catch (Exception ignored) {}
     }
 
     // 失敗したら、何文目のどの文だったかを付けて返す (その前の文は流れている)
@@ -261,6 +291,9 @@ async function start({ schemaSQL, uiLang } = {}) {
     const classpath = dir + (IS_WIN ? ';' : ':') + hsqlJar;
     outputBuf = '';
 
+    // 前回の Codinable が残した HSQLDB サーバーがポートを掴んでいれば片付ける
+    await killPort(DB_PORT);
+
     // spawn する前に ready の受け口を用意しておく (取りこぼし防止)
     const ready = new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
@@ -277,7 +310,11 @@ async function start({ schemaSQL, uiLang } = {}) {
     serverProcess.stderr.on('data', () => { /* HSQLDB の起動ログは捨てる */ });
     serverProcess.on('close', () => { serverProcess = null; });
 
-    await ready;
+    const readiness = await ready;
+    if (readiness && readiness.error) {
+      stop();
+      return { ok: false, error: readiness.error, running: false };
+    }
 
     if (schemaSQL && schemaSQL.trim()) {
       const loaded = await request(schemaSQL);
@@ -305,4 +342,34 @@ function isRunning() {
   return !!serverProcess;
 }
 
-module.exports = { start, run, stop, isRunning };
+/** 動いていなければ起こす (中身は触らない)。Web アプリの演習を動かす前に呼ぶ */
+async function ensure({ uiLang } = {}) {
+  if (serverProcess) return { ok: true, running: true, reused: true };
+  return start({ uiLang });
+}
+
+/**
+ * そのプロジェクトが HSQLDB サーバー (localhost:9001 の testdb) につなぐ Web アプリかどうか
+ * (設定ファイルか Java のソースに接続 URL が書いてある)
+ */
+function usesDbServer(projectDir) {
+  const roots = ['src/main/resources', 'src/main/java', 'src/main/webapp/WEB-INF'];
+  const exts = new Set(['.yml', '.yaml', '.properties', '.xml', '.java']);
+  let budget = 400;
+  const visit = dir => {
+    if (budget <= 0 || !fs.existsSync(dir)) return false;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (budget-- <= 0) return false;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) { if (visit(full)) return true; continue; }
+      if (!exts.has(path.extname(entry.name))) continue;
+      try {
+        if (fs.statSync(full).size <= 64 * 1024 && DB_URL_PATTERN.test(fs.readFileSync(full, 'utf8'))) return true;
+      } catch { /* 読めないファイルは飛ばす */ }
+    }
+    return false;
+  };
+  return roots.some(root => visit(path.join(projectDir, root)));
+}
+
+module.exports = { start, run, stop, isRunning, ensure, usesDbServer, DB_PORT };

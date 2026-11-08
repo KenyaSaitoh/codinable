@@ -314,6 +314,11 @@
 
               <!-- SQL (HSQLDB インメモリ) -->
               <div class="run-pane" id="tab-sql">
+                <!-- 自由入力の SQL。Web アプリの演習では、画面で登録した行を SELECT で確かめる -->
+                <div class="sql-input-bar">
+                  <textarea id="sql-input" rows="2" spellcheck="false" data-i18n-placeholder="sqlInputPlaceholder" placeholder="SELECT * FROM EMPLOYEE"></textarea>
+                  <button class="btn btn-run" id="sql-run-btn" data-i18n="sqlRunButton" data-i18n-title="sqlRunButtonTitle" title="入力した SQL を実行します（Ctrl+Enter）">▶ SQL実行</button>
+                </div>
                 <div class="sql-result-wrap" id="sql-result-wrap">
                   <div class="sql-placeholder" data-i18n="sqlPlaceholder">「実行」を押すと、選んだ .sql を HSQLDB に流して結果をここに出します（DB は自動で起動します）。</div>
                 </div>
@@ -364,9 +369,8 @@
 
       <div class="chat-history" id="chat-history">
         <div class="chat-welcome">
-          <p data-i18n="chatWelcome1">🤖 AIに問い合わせや修正の指示を出すためのチャットで、使うかどうかは自由です。</p>
-          <p data-i18n="chatWelcome2">📄 演習ファイル一式と直近の実行結果は、自動的にAIに送信されます。</p>
-          <p data-i18n="chatWelcome3">🔑 使う前に ⚙ 設定で API キーを登録してください。</p>
+          <p data-i18n="chatWelcome1">AIに問い合わせや修正の指示を出すためのチャットで、使うかどうかは自由です。</p>
+          <p data-i18n="chatWelcome3">使う前に ⚙ 設定で API キーを登録してください。</p>
         </div>
       </div>
 

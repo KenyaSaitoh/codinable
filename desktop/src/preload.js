@@ -78,6 +78,7 @@ contextBridge.exposeInMainWorld('api', {
   onRunExit:        handler       => subscribe('run-exit', handler),
   onRunUrl:         handler       => subscribe('run-url', handler),
   onRunTestResults: handler       => subscribe('run-test-results', handler),
+  onSqlState:       handler       => subscribe('sql-state', handler),
 
   // ── ターミナル ──
 

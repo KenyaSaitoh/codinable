@@ -38,6 +38,7 @@ const { JACOCO_INIT_SCRIPT, collectTestRunArtifacts } = require('../test-report'
 const messaging = require('./messaging');
 const companions = require('./companions');
 const payara = require('./payara');
+const sqlEngine = require('./sql');
 
 const CP_SEP = IS_WIN ? ';' : ':';
 
@@ -618,6 +619,18 @@ async function start(event, { project, kind, relPath, task, uiLang } = {}) {
     await companions.getManager().stopOthers(projectDir);
     companions.getManager().restartFor(projectDir, extras, uiLang)
       .catch(err => send('run-output', `\n❌ ${err.message}\n`));
+    // Web アプリの演習が HSQLDB サーバー (localhost:9001) につなぐなら、先に起こしておく
+    // (SQL タブからも同じ DB が見える)
+    if (kind === 'gradle' && sqlEngine.usesDbServer(projectDir)) {
+      if (!sqlEngine.isRunning()) {
+        send('run-output', (uiLang === 'en' ? 'Starting HSQLDB server (localhost:9001)...\n'
+                                             : 'HSQLDB サーバー (localhost:9001) を起動しています...\n'));
+      }
+      const db = await sqlEngine.ensure({ uiLang });
+      if (!db.ok) throw new Error(db.error || 'HSQLDB');
+      send('sql-state', { state: 'running' });
+      if (token !== runToken) return { ok: false, error: uiLang === 'en' ? 'Run cancelled' : '実行を停止しました' };
+    }
   } catch (err) {
     send('run-output', `\n❌ ${err.message}\n`);
     send('run-exit', { code: -1, phase: 'prepare' });
