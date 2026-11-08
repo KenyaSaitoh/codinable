@@ -4,6 +4,70 @@
 <meta charset="UTF-8" />
 <title>MemberDetailPage</title>
 <link rel="stylesheet" th:href="@{/css/style.css}" />
+<style>
+  /* コースのテーマカラー（#345065 / #486A83 / #7299B5）で社員管理の画面を整える */
+  body { font-family: "BIZ UDPGothic", "Yu Gothic UI", "Meiryo", sans-serif; color: #1F2D3A; background: #F6F8FA; margin: 0; padding: 20px 28px; }
+  h1, h2 { color: #345065; font-size: 22px; margin: 0 0 12px; padding-bottom: 8px; border-bottom: 3px solid #486A83; }
+  hr { display: none; }
+  form { margin: 8px 0; }
+  label { color: #486A83; font-size: 13px; margin: 0 4px 0 10px; }
+  input[type=text], input[type=number], input[type=date], select { border: 1px solid #CBD5DD; border-radius: 4px; padding: 4px 6px; font-size: 14px; background: #fff; }
+  button, input[type=submit] { background: #486A83; color: #fff; border: 0; border-radius: 4px; padding: 5px 14px; font-size: 14px; cursor: pointer; margin: 0 2px; }
+  button:hover, input[type=submit]:hover { background: #345065; }
+  button:disabled { background: #B8C4CE; cursor: default; }
+  button.delete, input[value="削除"] { background: #9A5B5B; }
+  a { color: #345065; }
+  table { border-collapse: collapse; margin: 12px 0; background: #fff; font-size: 14px; width: 100%; table-layout: fixed; }
+  th, td { border: 1px solid #CBD5DD; padding: 5px 8px; white-space: nowrap; overflow: hidden; text-overflow: clip; }
+  th { background: #486A83; color: #fff; font-weight: 600; text-align: left; }
+  td:last-child { overflow: visible; }
+  td button, td input[type=submit], td a { display: inline-block; padding: 3px 8px; font-size: 13px; line-height: 1.4; vertical-align: middle; }
+  td a { background: #486A83; color: #fff; border-radius: 4px; text-decoration: none; margin-right: 4px; }
+  td a:hover { background: #345065; }
+  td form { display: inline; margin: 0; }
+  /* 検索フォーム: 項目は左、検索ボタンは右端に寄せる */
+  #searchForm { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; margin: 6px 0; }
+  form[id$="searchForm"] > div { flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; }
+  #searchForm label, form[id$="searchForm"] label { margin-left: 8px; }
+  #search, #searchButton, [id$=":searchButton"] { margin-left: auto; }
+  /* 新規登録: 表の右下にボタンとして置く */
+  .actions { display: flex; justify-content: flex-end; margin: 8px 0; }
+  .actions a, .btn { display: inline-block; background: #486A83; color: #fff; padding: 6px 16px; border-radius: 4px; text-decoration: none; font-size: 14px; }
+  .actions a:hover, .btn:hover { background: #345065; }
+  /* 登録フォーム（Faces: 1 行 1 div）: ラベル幅をそろえ、行間を広げる */
+  form[id$="employeeForm"] > div { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  form[id$="employeeForm"] > div span, form[id$="employeeForm"] > div > span { color: #486A83; }
+  form[id$="employeeForm"] label { display: inline-block; width: 12em; text-align: right; margin: 0; }
+  form[id$="employeeForm"] { max-width: 36em; }
+  form[id$="employeeForm"] > input[type=submit] { display: block; margin: 8px 0 0 auto; }
+  form[id$="employeeForm"] + a, .back { display: inline-block; margin-top: 12px; }
+  .pager { display: flex; align-items: center; gap: 4px; margin: 10px 0; }
+  .pager .btn { margin-left: auto; }
+  /* ボタンの高さを全部そろえる（前へ・次へ・検索・新規登録・保存・編集・削除） */
+  button, input[type=submit], .btn, .actions a, td a { box-sizing: border-box; height: 30px; line-height: 20px; padding: 5px 14px; font-size: 14px; display: inline-block; vertical-align: middle; }
+  td button, td input[type=submit], td a { padding: 5px 8px; margin: 0 2px 0 0; }
+  th:last-child { width: 7.4em; }
+  td:last-child { padding-left: 6px; padding-right: 6px; }
+  /* フォント: 入力欄と同じ種類・大きさ（14px）に統一。表は 13px */
+  body, input, select, button, label, span, a, p, div { font-family: system-ui, "Yu Gothic UI", "Meiryo", sans-serif; }
+  body { font-size: 14px; line-height: 1.4; }
+  input, select, button, textarea { font-size: 14px; font-family: inherit; }
+  table { font-size: 13px; }
+  h1, h2 { font-size: 20px; }
+  /* ラベル＋値の行（入力・確認・詳細）: ラベル 12em、行間 8px、ボタンは右下 */
+  .rows { max-width: 36em; }
+  .rows > div { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .rows label { display: inline-block; width: 12em; text-align: right; margin: 0; }
+  .rows .actions, .rows + .actions { max-width: 36em; }
+  form.actions { display: flex; justify-content: flex-end; gap: 4px; max-width: 36em; }
+  /* 電卓: 入力欄の行は 8px 間隔、ボタンの上に 10px の隙間（全電卓アプリで共通） */
+  form > div { margin: 8px 0; display: flex; align-items: center; gap: 10px; }
+  form > div > span, form > div > label { display: inline-block; width: 7em; margin: 0; }
+  form > button, form > input[type=submit], form > div:last-child > button, form > div:last-child > input[type=submit] { margin-top: 10px; }
+  form > div:last-child:has(> button), form > div:last-child:has(> input[type=submit]) { gap: 4px; }
+  p { margin: 10px 0; }
+  .error, [style*="color: red"], [style*="color:red"] { color: #B4423F; }
+</style>
 </head>
 <body>
   <h2>会員詳細</h2>

@@ -54,21 +54,24 @@
   input, select, button, textarea { font-size: 14px; font-family: inherit; }
   table { font-size: 13px; }
   h1, h2 { font-size: 20px; }
+  /* ラベル＋値の行（入力・確認・詳細）: ラベル 12em、行間 8px、ボタンは右下 */
+  .rows { max-width: 36em; }
+  .rows > div { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .rows label { display: inline-block; width: 12em; text-align: right; margin: 0; }
+  .rows .actions, .rows + .actions { max-width: 36em; }
+  form.actions { display: flex; justify-content: flex-end; gap: 4px; max-width: 36em; }
   .error, [style*="color: red"], [style*="color:red"] { color: #B4423F; }
 </style>
 </h:head>
 <h:body>
   <h2>#{empty employeeEditBean.employeeId ? '社員の新規登録' : '社員の編集'}（確認）</h2>
   <hr />
-  <div>社員ID: #{empty employeeEditBean.employeeId ? '（登録時に採番）' : employeeEditBean.employeeId}</div>
-  <div>氏名: #{employeeEditBean.employeeName}</div>
-  <div>部署名: #{employeeEditBean.departmentName}</div>
-  <div>月給:
-    <h:outputText value="#{employeeEditBean.salary}">
-      <f:convertNumber pattern="#,##0" />
-    </h:outputText>
+  <div class="rows">
+  <div><label>氏名</label><span>#{employeeEditBean.employeeName}</span></div>
+  <div><label>部署名</label><span>#{employeeEditBean.departmentName}</span></div>
+  <div><label>月給</label><span><h:outputText value="#{employeeEditBean.salary}"><f:convertNumber pattern="#,##0" /></h:outputText></span></div>
   </div>
-  <h:form id="confirmForm">
+  <h:form id="confirmForm" styleClass="actions">
     <h:commandButton id="backButton" value="戻る" action="#{employeeEditBean.back}" />
     <h:commandButton id="updateButton" value="確定" action="#{employeeEditBean.update}" />
   </h:form>

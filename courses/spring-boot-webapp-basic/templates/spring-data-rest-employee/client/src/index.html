@@ -55,6 +55,12 @@
   input, select, button, textarea { font-size: 14px; font-family: inherit; }
   table { font-size: 13px; }
   h1, h2 { font-size: 20px; }
+  /* ラベル＋値の行（入力・確認・詳細）: ラベル 12em、行間 8px、ボタンは右下 */
+  .rows { max-width: 36em; }
+  .rows > div { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .rows label { display: inline-block; width: 12em; text-align: right; margin: 0; }
+  .rows .actions, .rows + .actions { max-width: 36em; }
+  form.actions { display: flex; justify-content: flex-end; gap: 4px; max-width: 36em; }
   .error, [style*="color: red"], [style*="color:red"] { color: #B4423F; }
 </style>
 </head>

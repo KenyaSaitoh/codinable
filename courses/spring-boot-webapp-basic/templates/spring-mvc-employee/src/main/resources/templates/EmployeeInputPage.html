@@ -53,25 +53,24 @@
   input, select, button, textarea { font-size: 14px; font-family: inherit; }
   table { font-size: 13px; }
   h1, h2 { font-size: 20px; }
+  /* ラベル＋値の行（入力・確認・詳細）: ラベル 12em、行間 8px、ボタンは右下 */
+  .rows { max-width: 36em; }
+  .rows > div { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .rows label { display: inline-block; width: 12em; text-align: right; margin: 0; }
+  .rows .actions, .rows + .actions { max-width: 36em; }
+  form.actions { display: flex; justify-content: flex-end; gap: 4px; max-width: 36em; }
   .error, [style*="color: red"], [style*="color:red"] { color: #B4423F; }
 </style>
 </head>
 <body>
   <h1>社員入力</h1>
-  <form th:action="@{/toConfirm}" th:object="${employeeSession}" method="post">
-    <p th:if="*{employeeId} != null" th:text="|社員ID: *{employeeId}|">社員ID</p>
-    <label for="employeeName">氏名</label>
-    <input id="employeeName" type="text" th:field="*{employeeName}" />
-    <span th:errors="*{employeeName}" style="color:red">氏名エラー</span>
-    <label for="departmentName">部署名</label>
-    <input id="departmentName" type="text" th:field="*{departmentName}" />
-    <span th:errors="*{departmentName}" style="color:red">部署名エラー</span>
-    <label for="salary">月給</label>
-    <input id="salary" type="text" th:field="*{salary}" />
-    <span th:errors="*{salary}" style="color:red">月給エラー</span>
+  <form class="rows" th:action="@{/toConfirm}" th:object="${employeeSession}" method="post">
+    <div><label for="employeeName">氏名</label><input id="employeeName" type="text" th:field="*{employeeName}" /><span th:errors="*{employeeName}" style="color:red">氏名エラー</span></div>
+    <div><label for="departmentName">部署名</label><input id="departmentName" type="text" th:field="*{departmentName}" /><span th:errors="*{departmentName}" style="color:red">部署名エラー</span></div>
+    <div><label for="salary">月給</label><input id="salary" type="text" th:field="*{salary}" /><span th:errors="*{salary}" style="color:red">月給エラー</span></div>
     <p th:if="${errorMessage}" th:text="${errorMessage}" style="color:red">エラー</p>
     <input type="hidden" th:field="*{employeeId}" />
-    <button type="submit">確認画面へ</button>
+    <div class="actions"><button type="submit">確認画面へ</button></div>
   </form>
 </body>
 </html>
