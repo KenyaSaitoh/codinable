@@ -458,12 +458,16 @@ let splashWindow = null;
 let mainWindow   = null;
 let revealed     = false;
 
+// 開発時 (electron .) のウィンドウとタスクバーのアイコン。配布版では exe のアイコンが使われる
+const WINDOW_ICON = path.join(__dirname, '..', 'assets', 'icon.ico');
+
 function createSplash() {
   splashWindow = new BrowserWindow({
     width: 460, height: 300,
     frame: false, resizable: false, maximizable: false, fullscreenable: false,
     center: true, show: false,
     title: APP_NAME,
+    ...(fs.existsSync(WINDOW_ICON) ? { icon: WINDOW_ICON } : {}),   // 開発時のタスクバー用 (配布版は exe のアイコン)
     backgroundColor: '#181818',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -499,6 +503,7 @@ function createWindow() {
     width: 1500, height: 950,
     minWidth: 1100, minHeight: 680,
     title: APP_NAME,
+    ...(fs.existsSync(WINDOW_ICON) ? { icon: WINDOW_ICON } : {}),   // 開発時のタスクバー用 (配布版は exe のアイコン)
     backgroundColor: '#181818',
     // renderer の初期化が終わってから表示する (空の IDE を見せないため)
     show: false,
