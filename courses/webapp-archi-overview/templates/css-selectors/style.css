@@ -91,7 +91,8 @@ input[disabled] {
 */
 #priority { color: #1a7f37; }
 
-/* ── 継承: 親に指定した色とフォントが子に引き継がれる ───── */
+/* ── 継承: 親に指定した色とフォントが子に引き継がれる ─────
+   ただし子に直接の指定（上の p { color } など）があれば、そちらが優先される */
 .inherit-demo {
   color: #8250df;
   font-family: 'Georgia', serif;

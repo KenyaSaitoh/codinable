@@ -5,7 +5,7 @@
 // フレームワークの書き方だけであることを見比べてほしい
 //
 // ▶ アプリ実行を押すと、初回だけ依存パッケージ (express / ejs) を自動で入れてから起動し、
-// http://localhost:3000 を検知してプレビュータブが開く
+// http://localhost:3000 を検知して「🌐 Webブラウザ」タブが開く
 
 const express = require('express');
 
@@ -98,6 +98,6 @@ for (const operator of Object.keys(operations)) {
 }
 
 app.listen(port, () => {
-  // この URL の出力をアプリが見つけて、プレビュータブを開く
+  // この URL の出力をアプリが見つけて、「🌐 Webブラウザ」タブを開く
   console.log(`http://localhost:${port} で待ち受けています`);
 });

@@ -5,7 +5,7 @@
 // 主役はクライアント側の public/app.js (jQuery) なので、こちらは読み流してよい
 //
 // ▶ アプリ実行を押すと、初回だけ依存パッケージ (express / jquery) を自動で入れてから起動し、
-// http://localhost:3000 を検知してプレビュータブが開く
+// http://localhost:3000 を検知して「🌐 Webブラウザ」タブが開く
 
 const express = require('express');
 const path    = require('path');

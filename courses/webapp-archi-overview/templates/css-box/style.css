@@ -12,12 +12,12 @@ code { font-family: 'Consolas', monospace; background: #eaeef2; padding: 0 4px; 
 
 /* ── 4 つの領域を入れ子で見せる ──────────────────────── */
 .box-demo {
-  /* いちばん外の灰色が margin にあたる領域 */
+  /* 外側の箱。margin は透明なので、この灰色の背景が margin の部分に透けて見える */
   background: #eaeef2;
-  padding: 24px;          /* ここでは margin の代わりに padding で厚みを見せている */
-  display: inline-block;
+  display: inline-block;  /* 中の箱の margin が外へはみ出さず、灰色の内側に収まる */
 }
 .box-demo-border {
+  margin: 24px;                /* margin（外側の余白）。灰色に見える部分 */
   border: 4px solid #2f6feb;   /* border（境界線） */
 }
 .box-demo-padding {
