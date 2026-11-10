@@ -8,8 +8,8 @@ const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function main() {
   console.log('1. 開始');
 
-  await wait(2000);
-  console.log('2. 2秒待った');
+  await wait(5000);
+  console.log('2. 5秒待った');
 
   // fetch は Node.js に標準で入っている (ブラウザーと同じ API)
   const response = await fetch('https://httpbin.org/json');
@@ -22,8 +22,8 @@ async function main() {
 
   // ── 並行実行: 順番に待つ必要がないものは Promise.all でまとめる ──
   const started = Date.now();
-  await Promise.all([wait(2000), wait(2000), wait(2000)]);
-  console.log(`4. 3 本まとめて待つと ${Date.now() - started}ms (直列なら 6000ms)`);
+  await Promise.all([wait(5000), wait(5000), wait(5000)]);
+  console.log(`4. 3 本まとめて待つと ${Date.now() - started}ms (直列なら 15000ms)`);
 }
 
 main().catch(err => {
